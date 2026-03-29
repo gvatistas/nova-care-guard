@@ -1,63 +1,29 @@
 import { motion } from "framer-motion";
-import { useState, useRef, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 
-const HeroVisualization = lazy(() => import("./HeroVisualization"));
+const DataMeshVisualization = lazy(() => import("./DataMeshVisualization"));
 
 const HeroSection = () => {
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoFailed, setVideoFailed] = useState(false);
-
-  const handleMouse = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePos({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-    });
-  };
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" onMouseMove={handleMouse}>
-      {/* Video background */}
-      <div className="absolute inset-0">
-        {!videoFailed && (
-          <video
-            ref={videoRef}
-            src="/hero-mesh.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-            style={{ opacity: 0.6 }}
-            onError={() => setVideoFailed(true)}
-          />
-        )}
-        {/* Dark overlay for readability - always present */}
-        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.6)" }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
-        {/* Fallback gradient if video fails */}
-        {videoFailed && (
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
-        )}
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Full-screen Three.js data mesh background */}
+      <Suspense fallback={<div className="absolute inset-0 bg-black" />}>
+        <DataMeshVisualization />
+      </Suspense>
 
-      {/* Crosshatch texture */}
-      <div className="absolute inset-0 texture-crosshatch pointer-events-none" />
-
-      {/* Mouse-follow glow */}
-      <div className="absolute inset-0 pointer-events-none transition-none"
-        style={{ background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.03), transparent 50%)` }} />
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.6)" }} />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
 
       {/* Content */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-8 w-full grid grid-cols-1 lg:grid-cols-12 items-center">
-        <div className="lg:col-span-5">
+        <div className="lg:col-span-6">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
             className="text-white font-mono font-light leading-[1.1] tracking-[-0.03em]"
-            style={{ fontSize: "4rem" }}
+            style={{ fontSize: "3rem" }}
           >
             The Bridge Between AI and <span style={{ color: "#10b981" }}>Evidence-Based</span> Healthcare
           </motion.h1>
@@ -86,13 +52,6 @@ const HeroSection = () => {
               <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} className="text-lg">↓</motion.span>
             </a>
           </motion.div>
-        </div>
-
-        {/* Right: 3D Visualization */}
-        <div className="hidden lg:block lg:col-span-7 h-[600px]">
-          <Suspense fallback={null}>
-            <HeroVisualization />
-          </Suspense>
         </div>
       </div>
 
