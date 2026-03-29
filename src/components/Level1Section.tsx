@@ -117,7 +117,7 @@ const Level1Section = () => {
                         <span className="ml-auto font-mono tracking-[0.1em] uppercase" style={{ color: RED, fontSize: "0.75rem" }}>MISSED</span>
                       )}
                       {risk.found && (
-                        <span className="ml-auto font-mono tracking-[0.1em] uppercase text-amber-400" style={{ fontSize: "0.75rem" }}>NOTICED</span>
+                        <span className="ml-auto font-mono tracking-[0.1em] uppercase" style={{ fontSize: "0.75rem", color: "#999999" }}>NOTICED</span>
                       )}
                     </div>
                   ))}

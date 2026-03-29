@@ -1,9 +1,9 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 
-const GREEN = "#10b981";
-const RED = "#ef4444";
-const AMBER = "#f59e0b";
+const GREEN = "#e5e5e5";
+const RED = "#666666";
+const AMBER = "#999999";
 
 // Quebec province rough outline
 const QUEBEC_OUTLINE = "M60,20 L90,10 L130,8 L170,15 L200,10 L240,5 L280,12 L320,8 L360,15 L380,25 L390,45 L385,70 L375,95 L360,115 L340,130 L315,140 L285,148 L250,150 L215,148 L180,142 L150,135 L125,125 L105,110 L85,90 L70,65 L58,40 Z";

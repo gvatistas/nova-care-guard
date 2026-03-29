@@ -48,10 +48,10 @@
     --gray-200: 0 0% 85%;
     --white: 0 0% 100%;
 
-    /* Signal accents — used sparingly */
-    --emerald: 160 84% 39%;
-    --amber: 38 92% 50%;
-    --coral: 0 84% 60%;
+    /* Signal accents — monochromatic, used sparingly */
+    --emerald: 0 0% 90%;
+    --amber: 0 0% 60%;
+    --coral: 0 0% 40%;
 
     --sidebar-background: 0 0% 0%;
     --sidebar-foreground: 0 0% 100%;

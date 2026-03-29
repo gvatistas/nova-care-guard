@@ -162,7 +162,7 @@ function DecisionTree() {
       let color: THREE.Color;
       if (node.isProblem) {
         const flashPhase = ((t * 3) % 1);
-        color = flashPhase > 0.5 ? AMBER : new THREE.Color(0xef4444);
+        color = flashPhase > 0.5 ? AMBER : new THREE.Color(0x666666);
       } else {
         color = GREEN_BRIGHT;
       }
