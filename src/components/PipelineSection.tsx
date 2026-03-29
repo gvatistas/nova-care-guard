@@ -4,9 +4,9 @@ import { useRef, useState, useEffect } from "react";
 const stages = [
   { num: "01", name: "INGEST", short: "Parse & Structure", desc: "Clinical guidelines deconstructed from unstructured knowledge into atomic logical components.", icon: "↓" },
   { num: "02", name: "MODEL", short: "Type & Constrain", desc: "Decision schema with explicit constraints, typed branches, and deterministic pathways.", icon: "◇" },
-  { num: "03", name: "VERIFY", short: "Prove Correctness", desc: "Formal verification proves exhaustiveness and determinism across the entire input space.", icon: "✓" },
-  { num: "04", name: "ANALYZE", short: "Validate Topology", desc: "Graph analysis confirms no orphan nodes, unreachable states, or infinite loops.", icon: "△" },
-  { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. Deterministic at runtime. Zero inference.", icon: "→" },
+  { num: "03", name: "VERIFY", short: "Prove Correctness", desc: "Formal verification via SMT solver proves exhaustiveness, determinism, and safety properties across the entire input space.", icon: "✓" },
+  { num: "04", name: "ANALYZE", short: "Validate & Audit", desc: "Graph analysis confirms no orphan nodes or unreachable states. Complete decision provenance from input to source guideline paragraph.", icon: "△" },
+  { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. On-premises or cloud. Air-gapped network support. Zero inference at runtime.", icon: "→" },
 ];
 
 const differentiators = [
@@ -277,14 +277,13 @@ const PipelineSection = () => {
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-6">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-7">
-            <div className="font-mono text-sm tracking-[0.25em] uppercase text-[hsl(210,70%,55%)]/70 mb-3">Architecture</div>
             <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">
               Five stages. <span className="text-gray-500">Verified at every gate.</span>
             </h2>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="lg:col-span-5 flex items-end">
             <p className="text-gray-300 text-lg font-light leading-relaxed">
-              No inference at runtime. Compiled once, verified exhaustively, deployed as <span className="text-white font-normal">deterministic infrastructure</span>.
+              No inference at runtime. Compiled once, verified exhaustively, deployed as <span className="text-white font-normal">deterministic infrastructure</span>. Zero patient data exposure.
             </p>
           </motion.div>
         </div>
@@ -396,6 +395,26 @@ const PipelineSection = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Compliance & Standards bar */}
+        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}
+          className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
+          {[
+            { name: "SOC 2 Type II", status: "In Progress", desc: "Enterprise security controls", color: "hsl(35,50%,60%)" },
+            { name: "HIPAA", status: "Compliant", desc: "Full PHI protection with BAA", color: "hsl(160,82%,61%)" },
+            { name: "FHIR R4", status: "Native", desc: "Standard clinical data interchange", color: "hsl(160,82%,61%)" },
+            { name: "FDA SaMD", status: "Pathway Active", desc: "Class II Medical Device clearance", color: "hsl(35,50%,60%)" },
+          ].map((cert, i) => (
+            <div key={i} className="bg-background/80 p-4 md:p-5 panel-3d group hover:bg-white/[0.015] transition-all duration-500">
+              <h4 className="font-mono text-base md:text-lg text-white font-light group-hover:text-accent transition-colors duration-300">{cert.name}</h4>
+              <p className="text-gray-500 text-sm mt-1">{cert.desc}</p>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rotate-45" style={{ backgroundColor: cert.color, opacity: 0.7 }} />
+                <span className="font-mono text-xs tracking-[0.15em] uppercase" style={{ color: cert.color, opacity: 0.7 }}>{cert.status}</span>
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
