@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        mono: ["JetBrains Mono", "monospace"],
+        heading: ["Montserrat", "sans-serif"],
+        mono: ["Montserrat", "sans-serif"],
         sans: ["Inter", "-apple-system", "sans-serif"],
       },
       colors: {

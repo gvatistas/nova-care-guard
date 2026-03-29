@@ -24,17 +24,17 @@ const Navbar = () => {
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
           <FacetedCrownLogo size={32} />
-          <span className="font-mono text-white text-lg tracking-[0.08em] font-light">MEDIENT</span>
-          <span className="font-mono text-white text-lg tracking-[0.08em] font-extralight">HEALTH</span>
+          <span className="font-heading text-white text-lg tracking-[0.08em] font-bold">MEDIENT</span>
+          <span className="font-heading text-white text-lg tracking-[0.08em] font-light">HEALTH</span>
         </a>
         <div className="flex items-center gap-6 md:gap-10">
-          <a href="#pipeline" className="hidden md:block font-mono text-base tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <a href="#pipeline" className="hidden md:block font-heading text-sm font-medium tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
             Architecture
           </a>
-          <a href="#project-alpha" className="hidden md:block font-mono text-base tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <a href="#project-alpha" className="hidden md:block font-heading text-sm font-medium tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
             Project Alpha
           </a>
-          <a href="#contact" className="font-mono text-base tracking-[0.1em] uppercase text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300">
+          <a href="#contact" className="font-heading text-sm font-semibold tracking-[0.1em] uppercase text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300">
             Get Started
           </a>
         </div>

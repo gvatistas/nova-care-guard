@@ -61,7 +61,7 @@ const DifferentiatorsSection = () => {
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-6">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-7">
-            <h2 className="text-white font-mono font-light leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
+            <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
               Not another AI wrapper. <span style={{ color: "rgba(255,255,255,0.45)" }}>A compiler.</span>
             </h2>
           </motion.div>

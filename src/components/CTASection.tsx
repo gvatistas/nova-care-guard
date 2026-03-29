@@ -13,7 +13,7 @@ const CTASection = () => {
       <div className="relative max-w-[1440px] mx-auto px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}>
-          <h2 className="text-white font-mono font-light leading-[1.15] tracking-[-0.02em] mb-4" style={{ fontSize: "2.5rem" }}>
+          <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em] mb-4" style={{ fontSize: "2.5rem" }}>
             Unlocking the proactive healthcare patients deserve.
           </h2>
           <p className="font-light leading-relaxed mb-8 max-w-3xl" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem", lineHeight: 1.7 }}>

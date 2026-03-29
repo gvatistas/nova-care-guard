@@ -97,7 +97,7 @@ const GuideBenchSection = () => {
           <span className="font-mono tracking-[0.2em] uppercase" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)" }}>
             Verification Lab
           </span>
-          <h2 className="text-white font-mono font-light leading-[1.15] tracking-[-0.02em] mt-2" style={{ fontSize: "2.5rem" }}>
+          <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em] mt-2" style={{ fontSize: "2.5rem" }}>
             GuideBench
           </h2>
           <p className="font-light mt-2 max-w-2xl leading-relaxed" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}>
@@ -173,7 +173,7 @@ const GuideBenchSection = () => {
                       <motion.text
                         x={pos.x + offsetX} y={pos.y + offsetY + (i === 0 ? -4 : i === 2 ? 8 : 4)}
                         textAnchor="middle"
-                        fontFamily="'JetBrains Mono', monospace" fontSize="13" fontWeight="300"
+                        fontFamily="'Montserrat', sans-serif" fontSize="13" fontWeight="600"
                         fill="white"
                         initial={{ opacity: 0 }}
                         animate={inView ? { opacity: 0.85 } : {}}
@@ -183,7 +183,7 @@ const GuideBenchSection = () => {
                       <text
                         x={pos.x + offsetX * 1.8} y={pos.y + offsetY * 1.5 + (i === 0 ? -18 : i === 2 ? 22 : 4)}
                         textAnchor="middle"
-                        fontFamily="'JetBrains Mono', monospace" fontSize="8" letterSpacing="2" fill="white" opacity="0.3">
+                        fontFamily="'Montserrat', sans-serif" fontSize="8" letterSpacing="2" fill="white" opacity="0.3">
                         {pos.label.label.toUpperCase()}
                       </text>
                     </g>
