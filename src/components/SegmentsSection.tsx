@@ -72,7 +72,7 @@ const SegmentsSection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="mb-10">
-          <h2 className="text-white font-mono font-light leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
+          <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
             Deployment targets. <span style={{ color: "rgba(255,255,255,0.45)" }}>Select sector.</span>
           </h2>
           <p className="font-light mt-3 max-w-2xl" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}>

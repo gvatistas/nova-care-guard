@@ -206,7 +206,7 @@ const PipelineSection = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="lg:col-span-7">
-            <h2 className="text-white font-mono font-light leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
+            <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
               Five stages. <span style={{ color: "rgba(255,255,255,0.45)" }}>Verified at every gate.</span>
             </h2>
           </motion.div>

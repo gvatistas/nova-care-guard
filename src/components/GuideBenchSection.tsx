@@ -97,7 +97,7 @@ const GuideBenchSection = () => {
           <span className="font-mono tracking-[0.2em] uppercase" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)" }}>
             Verification Lab
           </span>
-          <h2 className="text-white font-mono font-light leading-[1.15] tracking-[-0.02em] mt-2" style={{ fontSize: "2.5rem" }}>
+          <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em] mt-2" style={{ fontSize: "2.5rem" }}>
             GuideBench
           </h2>
           <p className="font-light mt-2 max-w-2xl leading-relaxed" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}>
