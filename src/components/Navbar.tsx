@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import medientLogo from "@/assets/medient-logo.jpg";
+import medientLogo from "@/assets/medient-logo-new.jpg";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -18,8 +18,7 @@ const Navbar = () => {
     >
       <div className="max-w-[1400px] mx-auto px-6 md:px-8 h-16 md:h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
-          <img src={medientLogo} alt="Medient Health" className="h-7 md:h-8 w-7 md:w-8 object-contain rounded-sm invert brightness-200" />
-          <span className="font-mono text-white text-sm tracking-[0.15em] uppercase font-light">Medient</span>
+          <img src={medientLogo} alt="Medient Health" className="h-8 md:h-10 w-auto object-contain invert brightness-200" />
         </a>
         <div className="flex items-center gap-6 md:gap-10">
           <a href="#pipeline" className="hidden md:block font-mono text-gray-400 text-sm tracking-[0.15em] uppercase hover:text-white transition-colors duration-300">
