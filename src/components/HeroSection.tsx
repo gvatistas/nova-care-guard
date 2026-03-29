@@ -18,7 +18,6 @@ const HeroSection = () => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       onMouseMove={handleMouse}
     >
-      {/* Mouse-following primary glow */}
       <div
         className="absolute inset-0 pointer-events-none transition-none"
         style={{
@@ -26,15 +25,12 @@ const HeroSection = () => {
         }}
       />
 
-      {/* Watermark logo */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <img src={medientWatermark} alt="" className="w-[600px] md:w-[800px] opacity-[0.03] invert" />
       </div>
 
-      {/* Static ambient */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(74,237,196,0.03)_0%,transparent_50%)]" />
 
-      {/* Scan line */}
       <motion.div
         initial={{ y: "-100%" }}
         animate={{ y: "200%" }}
@@ -42,7 +38,6 @@ const HeroSection = () => {
         className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/10 to-transparent pointer-events-none"
       />
 
-      {/* Vertical accent */}
       <motion.div
         initial={{ scaleY: 0 }}
         animate={{ scaleY: 1 }}
@@ -58,26 +53,20 @@ const HeroSection = () => {
             transition={{ duration: 1.2, delay: 0.3 }}
             className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-mono font-light leading-[1.08] tracking-[-0.03em]"
           >
-            The Bridge Between
-            <br />
-            <span className="text-white">AI</span> and{" "}
-            <span className="text-accent">Evidence-Based</span>
-            <br />
-            Healthcare
+            The Bridge Between <span className="text-white">AI</span> and{" "}
+            <span className="text-accent">Evidence-Based</span> Healthcare
           </motion.h1>
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
-            className="mt-10 md:mt-14 max-w-2xl space-y-6"
+            className="mt-10 md:mt-14 max-w-2xl space-y-4"
           >
             <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed">
               Medical knowledge has never been more advanced.
-            </p>
-            <p className="text-gray-400 text-lg md:text-xl font-light leading-relaxed">
-              That knowledge is trapped in medical guidelines that clinicians
-              are unable to apply in practice.
+              <span className="text-gray-500"> That knowledge is trapped in medical guidelines that clinicians
+              are unable to apply in practice.</span>
             </p>
             <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed">
               We've built an AI-enabled pipeline that converts medical guidelines
@@ -89,7 +78,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.4 }}
-            className="mt-12 md:mt-16 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
+            className="mt-10 md:mt-14 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
           >
             <a
               href="#contact"
