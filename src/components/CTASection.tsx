@@ -14,16 +14,6 @@ const DRIFT_PARTICLES = Array.from({ length: 20 }, (_, i) => ({
 const CTASection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const crownRef = useRef(null);
-  const crownInView = useInView(crownRef, { once: true, margin: "-50px" });
-  const [assembled, setAssembled] = useState(false);
-
-  useEffect(() => {
-    if (crownInView) {
-      const t = setTimeout(() => setAssembled(true), 2200);
-      return () => clearTimeout(t);
-    }
-  }, [crownInView]);
 
   return (
     <section id="contact" ref={ref} className="relative py-24 md:py-32 overflow-hidden">
