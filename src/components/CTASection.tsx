@@ -13,11 +13,11 @@ const CTASection = () => {
         <img src={medientWatermark} alt="" className="w-[500px] opacity-[0.02] invert translate-x-1/4" />
       </div>
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="max-w-3xl">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}>
           <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] mb-4">
-            Unlocking the <span className="text-accent">proactive healthcare</span> patients deserve.
+            Unlocking the proactive healthcare patients deserve.
           </h2>
-          <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed mb-6 max-w-xl">
+          <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed mb-6">
             The healthcare system wasn't built for prevention. We're changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it's too late.
           </p>
           <div className="flex flex-col sm:flex-row items-start gap-4">
