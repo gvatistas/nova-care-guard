@@ -26,7 +26,7 @@ const ProjectBetaSection = () => {
   }, [inView]);
 
   return (
-    <section id="project-beta" ref={ref} className="relative py-14 md:py-20 texture-crosshatch">
+    <section id="project-alpha" ref={ref} className="relative py-14 md:py-20 texture-crosshatch">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(74,237,196,0.03)_0%,transparent_50%)] pointer-events-none" />
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         {/* Header */}

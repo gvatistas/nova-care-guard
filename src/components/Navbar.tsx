@@ -24,8 +24,8 @@ const Navbar = () => {
           <a href="#pipeline" className="hidden md:block font-mono text-gray-400 text-sm tracking-[0.15em] uppercase hover:text-white transition-colors duration-300">
             Architecture
           </a>
-          <a href="#project-beta" className="hidden md:block font-mono text-gray-400 text-sm tracking-[0.15em] uppercase hover:text-white transition-colors duration-300">
-            Project Beta
+          <a href="#project-alpha" className="hidden md:block font-mono text-gray-400 text-sm tracking-[0.15em] uppercase hover:text-white transition-colors duration-300">
+            Project Alpha
           </a>
           <a href="#contact" className="font-mono text-xs md:text-sm tracking-[0.15em] uppercase text-white border border-white/20 px-4 md:px-6 py-2 md:py-2.5 hover:bg-white hover:text-black transition-all duration-300">
             Get Started
