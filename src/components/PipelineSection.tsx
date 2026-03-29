@@ -10,46 +10,94 @@ const stages = [
   { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. On-premises or cloud. Air-gapped network support. Zero inference at runtime.", badge: "Full audit trail", badgeType: "lock" as const },
 ];
 
-/* Geometric wireframe shapes for each stage */
+/* Faceted crystal wireframe shapes for each stage */
 const STAGE_GEOMETRIES = [
-  // INGEST - downward funnel/intake shape
-  [
-    "M 60,20 L 140,20 L 120,80 L 80,80 Z",
-    "M 70,30 L 130,30 L 115,70 L 85,70 Z",
-    "M 100,80 L 100,120",
-    "M 85,100 L 115,100",
-    "M 90,110 L 110,110",
-  ],
-  // NORMALIZE - grid/lattice structure
-  [
-    "M 60,30 L 140,30 L 140,110 L 60,110 Z",
-    "M 80,30 L 80,110", "M 100,30 L 100,110", "M 120,30 L 120,110",
-    "M 60,50 L 140,50", "M 60,70 L 140,70", "M 60,90 L 140,90",
-    "M 60,30 L 100,10 L 140,30",
-  ],
-  // COMPILE - diamond/crystal verification
-  [
-    "M 100,10 L 150,60 L 100,110 L 50,60 Z",
-    "M 100,10 L 100,110", "M 50,60 L 150,60",
-    "M 75,35 L 125,85", "M 125,35 L 75,85",
-    "M 100,35 L 125,60 L 100,85 L 75,60 Z",
-  ],
-  // VERIFY - checkmark circuit
-  [
-    "M 55,60 L 85,90 L 145,25",
-    "M 55,60 L 55,30 L 145,30 L 145,25",
-    "M 55,60 L 55,100 L 145,100 L 145,90",
-    "M 85,90 L 85,100",
-    "M 70,45 L 100,75", "M 100,75 L 130,40",
-  ],
-  // DEPLOY - rocket/arrow outbound
-  [
-    "M 60,100 L 100,20 L 140,100",
-    "M 75,80 L 100,40 L 125,80",
-    "M 60,100 L 80,90 L 100,110 L 120,90 L 140,100",
-    "M 100,110 L 100,130",
-    "M 85,125 L 100,135 L 115,125",
-  ],
+  // INGEST - Faceted hexagonal prism with triangular subdivisions
+  {
+    paths: [
+      "M 100,20 L 145,40 L 145,85 L 100,105 L 55,85 L 55,40 Z",
+      "M 100,20 L 100,105",
+      "M 145,40 L 55,85", "M 55,40 L 145,85",
+      "M 100,20 L 55,85", "M 100,20 L 145,85",
+      "M 55,40 L 100,105", "M 145,40 L 100,105",
+    ],
+    fills: [
+      { points: "100,20 145,40 100,62", opacity: 0.15 },
+      { points: "100,20 55,40 100,62", opacity: 0.1 },
+      { points: "55,40 55,85 100,62", opacity: 0.2 },
+      { points: "145,40 145,85 100,62", opacity: 0.12 },
+    ],
+  },
+  // NORMALIZE - Faceted octahedron (diamond)
+  {
+    paths: [
+      "M 100,10 L 160,62 L 100,115 L 40,62 Z",
+      "M 100,10 L 100,115", "M 40,62 L 160,62",
+      "M 70,36 L 130,88", "M 130,36 L 70,88",
+      "M 100,36 L 130,62 L 100,88 L 70,62 Z",
+      "M 70,36 L 100,10", "M 130,36 L 100,10",
+      "M 70,88 L 100,115", "M 130,88 L 100,115",
+    ],
+    fills: [
+      { points: "100,10 160,62 100,62", opacity: 0.12 },
+      { points: "100,10 40,62 100,62", opacity: 0.18 },
+      { points: "40,62 100,115 100,62", opacity: 0.15 },
+      { points: "160,62 100,115 100,62", opacity: 0.1 },
+    ],
+  },
+  // COMPILE - Angular crystal cluster (3 overlapping shards)
+  {
+    paths: [
+      "M 70,15 L 110,60 L 70,110 L 40,60 Z",
+      "M 100,25 L 140,65 L 100,115 L 65,65 Z",
+      "M 130,10 L 165,55 L 130,105 L 95,55 Z",
+      "M 70,15 L 70,110", "M 100,25 L 100,115", "M 130,10 L 130,105",
+      "M 40,60 L 110,60", "M 65,65 L 140,65", "M 95,55 L 165,55",
+    ],
+    fills: [
+      { points: "70,15 110,60 70,60", opacity: 0.1 },
+      { points: "100,25 140,65 100,65", opacity: 0.15 },
+      { points: "130,10 165,55 130,55", opacity: 0.12 },
+    ],
+  },
+  // VERIFY - Faceted geodesic sphere (triangular mesh)
+  {
+    paths: [
+      "M 100,15 L 150,42 L 155,90 L 120,118 L 80,118 L 45,90 L 50,42 Z",
+      "M 100,15 L 100,118", "M 50,42 L 155,90", "M 150,42 L 45,90",
+      "M 100,15 L 45,90", "M 100,15 L 155,90",
+      "M 50,42 L 120,118", "M 150,42 L 80,118",
+      "M 100,66 L 50,42", "M 100,66 L 150,42",
+      "M 100,66 L 45,90", "M 100,66 L 155,90",
+      "M 100,66 L 80,118", "M 100,66 L 120,118",
+    ],
+    fills: [
+      { points: "100,15 150,42 100,66", opacity: 0.12 },
+      { points: "100,15 50,42 100,66", opacity: 0.18 },
+      { points: "50,42 45,90 100,66", opacity: 0.1 },
+      { points: "150,42 155,90 100,66", opacity: 0.15 },
+      { points: "45,90 80,118 100,66", opacity: 0.2 },
+      { points: "155,90 120,118 100,66", opacity: 0.08 },
+    ],
+  },
+  // DEPLOY - Crown silhouette matching the logo
+  {
+    paths: [
+      "M 30,110 L 52,55 L 72,38 L 100,25 L 128,38 L 148,55 L 170,110 Z",
+      "M 52,55 L 52,110", "M 72,38 L 72,110", "M 100,25 L 100,110",
+      "M 128,38 L 128,110", "M 148,55 L 148,110",
+      "M 36,85 L 164,85", "M 42,68 L 158,68", "M 48,55 L 152,55",
+      "M 30,110 L 170,110",
+    ],
+    fills: [
+      { points: "52,55 30,110 52,110", opacity: 0.12 },
+      { points: "72,38 52,110 72,110", opacity: 0.18 },
+      { points: "100,25 72,110 100,110", opacity: 0.22 },
+      { points: "100,25 128,110 100,110", opacity: 0.15 },
+      { points: "128,38 148,110 128,110", opacity: 0.18 },
+      { points: "148,55 170,110 148,110", opacity: 0.12 },
+    ],
+  },
 ];
 
 const GeometricWireframe = ({ stageIdx, isActive }: { stageIdx: number; isActive: boolean }) => {
