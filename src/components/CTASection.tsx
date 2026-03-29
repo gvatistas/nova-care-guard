@@ -1,15 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import FacetedCrownLogo from "@/components/FacetedCrownLogo";
-// Post-assembly drifting particles
-const DRIFT_PARTICLES = Array.from({ length: 20 }, (_, i) => ({
-  startX: CROWN.tips[i % 5]!.x + (Math.random() - 0.5) * 30,
-  startY: CROWN.tips[i % 5]!.y + Math.random() * 30,
-  endX: CROWN.tips[i % 5]!.x + (Math.random() - 0.5) * 200,
-  endY: CROWN.tips[i % 5]!.y - 20 - Math.random() * 60,
-  size: 0.5 + Math.random() * 1,
-  delay: 2.5 + i * 0.08,
-}));
 
 const CTASection = () => {
   const ref = useRef(null);
@@ -42,121 +33,21 @@ const CTASection = () => {
         </motion.div>
       </div>
 
-      {/* Crown assembly animation */}
-      <div ref={crownRef} className="mt-24 flex flex-col items-center px-8">
-        <svg viewBox="0 0 540 80" className="w-full max-w-[600px]" preserveAspectRatio="xMidYMid meet">
-          <defs>
-            <filter id="crownAssemblyGlow">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="particleDrift">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
-
-          {/* Particles converging to crown vertices */}
-          {PARTICLES.map((p, i) => (
-            <motion.circle
-              key={`p-${i}`}
-              cx={p.scatter.x}
-              cy={p.scatter.y}
-              r={p.size}
-              fill="white"
-              initial={{ cx: p.scatter.x, cy: p.scatter.y, opacity: 0 }}
-              animate={crownInView ? {
-                cx: p.target.x,
-                cy: p.target.y,
-                opacity: [0, 0.6, 0.8, 0.4],
-              } : {}}
-              transition={{
-                duration: 1.8,
-                delay: p.delay,
-                ease: [0.25, 0.46, 0.45, 0.94],
-              }}
-            />
-          ))}
-
-          {/* Crown outline - draws after particles arrive */}
-          <motion.path
-            d={buildCrownOutline()}
-            fill="none"
-            stroke="white"
-            strokeWidth="1.5"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={crownInView ? { pathLength: 1, opacity: [0, 0, 0.5, 0.5, 0.3] } : {}}
-            transition={{ duration: 2, delay: 1.5, ease: [0.42, 0, 0.58, 1] }}
-            filter="url(#crownAssemblyGlow)"
-          />
-
-          {/* Base line */}
-          <motion.line
-            x1={CROWN.baseLeft} y1={CROWN.baseY}
-            x2={CROWN.baseRight} y2={CROWN.baseY}
-            stroke="white" strokeWidth="1.8"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={crownInView ? { pathLength: 1, opacity: [0, 0, 0.35, 0.35, 0.2] } : {}}
-            transition={{ duration: 1.5, delay: 1.8, ease: [0.42, 0, 0.58, 1] }}
-          />
-
-          {/* Faceted inner triangles */}
-          {CROWN.tips.map((tip, i) => {
-            const leftBase = i === 0 ? { x: CROWN.baseLeft, y: CROWN.baseY } : CROWN.valleys[i - 1]!;
-            const rightBase = i === CROWN.tips.length - 1 ? { x: CROWN.baseRight, y: CROWN.baseY } : CROWN.valleys[i]!;
-            return (
-              <g key={`facet-${i}`}>
-                <motion.polygon
-                  points={`${tip.x},${tip.y} ${leftBase.x},${leftBase.y} ${tip.x},${CROWN.baseY}`}
-                  fill="white"
-                  initial={{ opacity: 0 }}
-                  animate={crownInView ? { opacity: [0, 0, 0.06, 0.03] } : {}}
-                  transition={{ duration: 1.5, delay: 2.2 + i * 0.1 }}
-                />
-                <motion.polygon
-                  points={`${tip.x},${tip.y} ${rightBase.x},${rightBase.y} ${tip.x},${CROWN.baseY}`}
-                  fill="white"
-                  initial={{ opacity: 0 }}
-                  animate={crownInView ? { opacity: [0, 0, 0.09, 0.05] } : {}}
-                  transition={{ duration: 1.5, delay: 2.2 + i * 0.1 }}
-                />
-                {/* Sharp tip marker */}
-                <motion.circle
-                  cx={tip.x} cy={tip.y} r="1.5"
-                  fill="white"
-                  initial={{ opacity: 0 }}
-                  animate={crownInView ? { opacity: [0, 0, 0.7, 0.25] } : {}}
-                  transition={{ duration: 2, delay: 2 + i * 0.08 }}
-                  filter="url(#crownAssemblyGlow)"
-                />
-              </g>
-            );
-          })}
-
-          {/* Drifting particles post-assembly */}
-          {assembled && DRIFT_PARTICLES.map((dp, i) => (
-            <motion.circle
-              key={`drift-${i}`}
-              r={dp.size}
-              fill="white"
-              initial={{ cx: dp.startX, cy: dp.startY, opacity: 0.4 }}
-              animate={{ cx: dp.endX, cy: dp.endY, opacity: 0 }}
-              transition={{ duration: 3, delay: i * 0.1, ease: "easeOut" }}
-              filter="url(#particleDrift)"
-            />
-          ))}
-        </svg>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={crownInView ? { opacity: 1 } : {}}
-          transition={{ delay: 3.2, duration: 1.2 }}
+      {/* Static faceted crown logo */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ delay: 0.8, duration: 1.2 }}
+        className="mt-24 flex flex-col items-center px-8"
+      >
+        <FacetedCrownLogo size={160} color="rgba(255,255,255,0.5)" />
+        <div
           className="mt-5 font-mono tracking-[0.3em] uppercase"
           style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.25)" }}
         >
           Medient Health
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
 
       {/* Footer */}
       <motion.footer initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
