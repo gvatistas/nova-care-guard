@@ -1,14 +1,22 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
-import pixelWithout from "@/assets/pixel-without-medient.png";
-import pixelWith from "@/assets/pixel-with-medient.png";
+import journeyWithout from "@/assets/journey-without.png";
+import journeyWith from "@/assets/journey-with.png";
 
-const comparisonPoints = [
-  { without: "Doctor relies on memory to recall screening criteria", with: "Verified decision artifact queried in 14 milliseconds" },
-  { without: "Guideline PDF last opened 14 months ago by any staff", with: "Every guideline compiled, current, and auto-deployed" },
-  { without: "3 eligible cancer screenings silently missed", with: "All 3 screenings surfaced and scheduled — zero missed" },
-  { without: "Patient waits 4.2 hours due to unstructured workflows", with: "Deterministic care pathway eliminates bottlenecks" },
-  { without: "54% average guideline adherence across the network", with: "Near-100% verified adherence with full audit trail" },
+const withoutSteps = [
+  { step: "01", title: "Patient visits clinic", desc: "Sarah, 52, visits her primary care physician for a routine checkup. She's a 30-pack-year smoker.", icon: "→" },
+  { step: "02", title: "Doctor relies on memory", desc: "The physician is busy. He remembers some screening guidelines but can't recall the exact USPSTF criteria for lung cancer screening eligibility.", icon: "?" },
+  { step: "03", title: "Screening not ordered", desc: "No low-dose CT scan is ordered. The visit ends with routine bloodwork. The screening that could have saved her life was never even considered.", icon: "✕" },
+  { step: "04", title: "18 months later", desc: "Sarah returns with persistent cough and weight loss. Imaging reveals stage IIIB non-small cell lung cancer. 5-year survival rate: 8%.", icon: "▼" },
+  { step: "05", title: "Catastrophic cost", desc: "Treatment costs exceed $280,000. Sarah loses her ability to work. Her family faces financial ruin alongside the emotional devastation.", icon: "▼" },
+];
+
+const withSteps = [
+  { step: "01", title: "Patient visits clinic", desc: "Same patient. Same clinic. Same physician. But this clinic runs on Medient's compiled clinical decision artifacts.", icon: "→" },
+  { step: "02", title: "Medient flags screening", desc: "Before the physician even opens the chart, Medient's USPSTF lung cancer screening artifact has identified Sarah as eligible. Zero inference. Pure logic.", icon: "◆" },
+  { step: "03", title: "LDCT scan ordered", desc: "The physician sees the verified recommendation with full guideline traceability. Orders the low-dose CT in under 30 seconds. No ambiguity.", icon: "✓" },
+  { step: "04", title: "Early detection", desc: "The scan reveals a 9mm pulmonary nodule. Stage IA lung cancer. 5-year survival rate: 92%. Caught 18 months before symptoms would have appeared.", icon: "▲" },
+  { step: "05", title: "Physician earns more", desc: "The clinic qualifies for CMS quality bonuses. The physician's adherence score rises. Better outcomes, better reimbursement, better medicine.", icon: "$" },
 ];
 
 const Level1Section = () => {
@@ -21,149 +29,197 @@ const Level1Section = () => {
     target: containerRef,
     offset: ["start end", "end start"],
   });
-  const imageY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const imageY = useTransform(scrollYProgress, [0, 1], [20, -20]);
+
+  const steps = activeView === "without" ? withoutSteps : withSteps;
+  const isWithout = activeView === "without";
 
   return (
-    <section ref={ref} className="relative py-32 md:py-44">
-      <div className="max-w-[1400px] mx-auto px-8">
+    <section ref={ref} className="relative py-24 md:py-40">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
-          className="mb-16"
+          className="mb-16 md:mb-20"
         >
-          <div className="font-mono text-sm tracking-[0.25em] uppercase text-gray-500 mb-8">
-            The Difference
+          <div className="font-mono text-sm tracking-[0.25em] uppercase text-gray-500 mb-6">
+            Two Paths — One Patient
           </div>
-          <h2 className="text-white text-4xl md:text-6xl lg:text-7xl font-mono font-light leading-[1.1] tracking-[-0.02em] max-w-4xl">
-            Same hospital.
+          <h2 className="text-white text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-mono font-light leading-[1.1] tracking-[-0.02em] max-w-4xl">
+            Same patient. Same clinic.
             <br />
-            <span className="text-gray-500">Different infrastructure.</span>
+            <span className="text-gray-500">Different outcome.</span>
           </h2>
-          <p className="text-gray-400 text-lg md:text-xl font-light mt-8 max-w-2xl leading-relaxed">
-            Two identical emergency departments. One runs on human memory and PDF guidelines.
-            The other runs on compiled, formally verified clinical decision artifacts.
+          <p className="text-gray-400 text-base md:text-lg font-light mt-6 md:mt-8 max-w-2xl leading-relaxed">
+            Follow Sarah — a 52-year-old smoker visiting her primary care physician.
+            In one world, her doctor relies on memory. In the other, the clinic runs on
+            compiled clinical decision artifacts.
           </p>
         </motion.div>
 
         {/* Toggle */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
+          initial={{ opacity: 0, y: 10 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.3 }}
-          className="flex items-center gap-1 mb-10 bg-white/[0.03] p-1.5 w-fit"
+          className="flex items-center gap-1 mb-12 bg-white/[0.03] border border-white/[0.06] p-1.5 w-fit"
         >
           <button
             onClick={() => setActiveView("without")}
-            className={`font-mono text-sm tracking-[0.1em] uppercase px-8 py-3.5 transition-all duration-300 ${
-              activeView === "without" ? "bg-white/10 text-white" : "text-gray-500 hover:text-gray-300"
+            className={`font-mono text-sm tracking-[0.1em] uppercase px-6 md:px-8 py-3 transition-all duration-300 ${
+              activeView === "without"
+                ? "bg-red-500/10 text-red-400 border border-red-500/20"
+                : "text-gray-500 hover:text-gray-300"
             }`}
           >
             Without Medient
           </button>
           <button
             onClick={() => setActiveView("with")}
-            className={`font-mono text-sm tracking-[0.1em] uppercase px-8 py-3.5 transition-all duration-300 ${
-              activeView === "with" ? "bg-accent/20 text-accent" : "text-gray-500 hover:text-gray-300"
+            className={`font-mono text-sm tracking-[0.1em] uppercase px-6 md:px-8 py-3 transition-all duration-300 ${
+              activeView === "with"
+                ? "bg-accent/10 text-accent border border-accent/20"
+                : "text-gray-500 hover:text-gray-300"
             }`}
           >
             With Medient
           </button>
         </motion.div>
 
-        {/* Comparison */}
-        <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-white/[0.06]">
-          {/* Image */}
+        {/* Main content */}
+        <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-white/[0.06]">
+          {/* Pixel art scene */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ delay: 0.4 }}
-            className="lg:col-span-7 bg-background relative overflow-hidden"
+            className="bg-background relative overflow-hidden"
           >
-            <motion.div style={{ y: imageY }} className="relative">
+            <motion.div style={{ y: imageY }} className="relative aspect-[4/3]">
               <motion.img
-                src={pixelWithout}
-                alt="Hospital without Medient"
+                key={activeView}
+                src={isWithout ? journeyWithout : journeyWith}
+                alt={isWithout ? "Chaotic clinic without Medient" : "Efficient clinic with Medient"}
                 loading="lazy"
-                width={1920}
-                height={1080}
-                className="w-full"
-                animate={{ opacity: activeView === "without" ? 0.85 : 0, scale: activeView === "without" ? 1 : 1.05 }}
+                width={1024}
+                height={768}
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: isWithout ? 0.75 : 0.85, scale: 1 }}
                 transition={{ duration: 0.8 }}
-                style={{ position: activeView === "without" ? "relative" : "absolute", top: 0 }}
-              />
-              <motion.img
-                src={pixelWith}
-                alt="Hospital with Medient"
-                loading="lazy"
-                width={1920}
-                height={1080}
-                className="w-full"
-                animate={{ opacity: activeView === "with" ? 0.9 : 0, scale: activeView === "with" ? 1 : 1.05 }}
-                transition={{ duration: 0.8 }}
-                style={{ position: activeView === "with" ? "relative" : "absolute", top: 0 }}
+                className="w-full h-full object-cover"
               />
             </motion.div>
+
+            {/* Gradient overlays */}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 pointer-events-none" />
+
+            {/* Status badge */}
             <div className="absolute top-6 left-6">
               <motion.div
                 key={activeView}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className={`font-mono text-xs tracking-[0.15em] uppercase px-5 py-2.5 ${
-                  activeView === "without"
+                className={`font-mono text-xs tracking-[0.15em] uppercase px-4 py-2 backdrop-blur-sm ${
+                  isWithout
                     ? "bg-red-500/20 text-red-400 border border-red-500/20"
                     : "bg-accent/20 text-accent border border-accent/20"
                 }`}
               >
-                {activeView === "without" ? "● Uncompiled" : "● Compiled"}
+                {isWithout ? "● Uncompiled" : "● Compiled"}
+              </motion.div>
+            </div>
+
+            {/* Outcome badge */}
+            <div className="absolute bottom-8 left-6 right-6">
+              <motion.div
+                key={activeView + "-outcome"}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                {isWithout ? (
+                  <div className="bg-black/60 backdrop-blur-sm border border-red-500/20 p-5">
+                    <div className="font-mono text-red-400 text-3xl md:text-4xl font-light">8%</div>
+                    <div className="text-gray-400 text-sm mt-1">5-year survival — stage IIIB diagnosis</div>
+                  </div>
+                ) : (
+                  <div className="bg-black/60 backdrop-blur-sm border border-accent/20 p-5">
+                    <div className="font-mono text-accent text-3xl md:text-4xl font-light">92%</div>
+                    <div className="text-gray-400 text-sm mt-1">5-year survival — stage IA early detection</div>
+                  </div>
+                )}
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Points */}
-          <div className="lg:col-span-5 bg-background">
-            {comparisonPoints.map((point, i) => (
+          {/* Journey steps */}
+          <div className="bg-background">
+            {steps.map((step, i) => (
               <motion.div
-                key={i}
-                initial={{ opacity: 0, x: 20 }}
-                animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.5 + i * 0.1 }}
-                className="border-b border-white/[0.06] p-6 md:p-8 hover:bg-white/[0.015] transition-colors duration-300"
+                key={activeView + i}
+                initial={{ opacity: 0, x: 15 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 + i * 0.1, duration: 0.5 }}
+                className="border-b border-white/[0.06] p-5 md:p-7 hover:bg-white/[0.015] transition-colors duration-300"
               >
-                <motion.div key={activeView + i} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}>
-                  {activeView === "without" ? (
-                    <div className="flex items-start gap-3">
-                      <span className="text-red-400 text-base mt-0.5 shrink-0">✕</span>
-                      <p className="text-gray-400 text-base leading-relaxed">{point.without}</p>
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0 mt-1">
+                    <span className={`font-mono text-lg ${
+                      isWithout ? "text-red-400/70" : "text-accent/70"
+                    }`}>
+                      {step.icon}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="font-mono text-xs text-gray-600">{step.step}</span>
+                      <h4 className="font-mono text-white text-base font-light">{step.title}</h4>
                     </div>
-                  ) : (
-                    <div className="flex items-start gap-3">
-                      <span className="text-accent text-base mt-0.5 shrink-0">✓</span>
-                      <p className="text-gray-300 text-base leading-relaxed">{point.with}</p>
-                    </div>
-                  )}
-                </motion.div>
+                    <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
-
-            <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1 }} className="p-6 md:p-8">
-              <motion.div key={activeView} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-                {activeView === "without" ? (
-                  <div>
-                    <div className="font-mono text-red-400/80 text-4xl md:text-5xl font-light">54%</div>
-                    <div className="text-gray-500 text-sm mt-2">average guideline adherence</div>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="font-mono text-accent text-4xl md:text-5xl font-light">~100%</div>
-                    <div className="text-gray-500 text-sm mt-2">verified guideline adherence</div>
-                  </div>
-                )}
-              </motion.div>
-            </motion.div>
           </div>
         </div>
+
+        {/* Bottom comparison bar */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8 }}
+          className="mt-px grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]"
+        >
+          {(isWithout
+            ? [
+                { val: "$280K+", label: "Treatment cost" },
+                { val: "18 mo", label: "Delayed diagnosis" },
+                { val: "8%", label: "Survival rate" },
+                { val: "0", label: "Screenings ordered" },
+              ]
+            : [
+                { val: "$4,200", label: "Screening cost" },
+                { val: "0 days", label: "Time to screening" },
+                { val: "92%", label: "Survival rate" },
+                { val: "+$8K", label: "Physician quality bonus" },
+              ]
+          ).map((stat, i) => (
+            <motion.div
+              key={activeView + stat.label}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.08 }}
+              className="bg-background p-5 md:p-7"
+            >
+              <div className={`font-mono text-xl md:text-2xl font-light ${isWithout ? "text-red-400/80" : "text-accent"}`}>
+                {stat.val}
+              </div>
+              <div className="text-gray-500 text-xs md:text-sm mt-1">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
