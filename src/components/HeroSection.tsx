@@ -58,48 +58,26 @@ const HeroSection = () => {
     };
   }, []);
 
-  const words = ["THE", "CLINICAL", "DECISION", "COMPILER"];
-
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: "linear-gradient(to bottom, #15171b, #1a1d21)" }}>
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
-
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-24">
-        <div className="max-w-3xl flex flex-col">
-          {/* Crown logo */}
-          <motion.div
-            animate={{ opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="mb-8"
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="font-mono font-bold text-white"
+            style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1.1 }}
           >
-            <FacetedCrownLogo size={80} />
-          </motion.div>
-
-          {/* Headline — each word on its own line */}
-          <h1>
-            {words.map((word, i) => (
-              <motion.span
-                key={word}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 + i * 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="block font-mono font-bold text-white"
-                style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.1 }}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </h1>
+            Unlocking the proactive healthcare patients deserve.
+          </motion.h1>
 
           {/* Subhead */}
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.5 }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-6 font-sans text-lg text-white/50"
             style={{ maxWidth: 640, lineHeight: 1.7 }}
           >
-            Intelligent infrastructure that catches what matters before it is too late.
+            The healthcare system was not built for prevention. We are changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it is too late.
           </motion.p>
 
           {/* CTA buttons */}
