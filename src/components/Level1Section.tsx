@@ -1,7 +1,5 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import journeyWithout from "@/assets/journey-without.png";
-import journeyWith from "@/assets/journey-with.png";
 
 const withoutSteps = [
   { step: "01", title: "Patient visits clinic", desc: "Sarah, 52, visits her primary care physician for a routine checkup. She's a 30-pack-year smoker." },
