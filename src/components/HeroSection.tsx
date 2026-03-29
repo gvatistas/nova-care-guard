@@ -38,20 +38,13 @@ const HeroSection = () => {
         className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/10 to-transparent pointer-events-none"
       />
 
-      <motion.div
-        initial={{ scaleY: 0 }}
-        animate={{ scaleY: 1 }}
-        transition={{ duration: 2, delay: 1, ease: "easeOut" }}
-        className="absolute left-[10%] top-[15%] w-px h-[70%] bg-gradient-to-b from-transparent via-accent/10 to-transparent origin-top pointer-events-none"
-      />
-
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full">
         <div className="max-w-5xl">
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.3 }}
-            className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-mono font-light leading-[1.08] tracking-[-0.03em]"
+            className="text-white text-[2.5rem] sm:text-5xl md:text-7xl lg:text-[5.5rem] font-mono font-light leading-[1.08] tracking-[-0.03em]"
           >
             The Bridge Between <span className="text-white">AI</span> and{" "}
             <span className="text-accent">Evidence-Based</span> Healthcare
@@ -63,12 +56,12 @@ const HeroSection = () => {
             transition={{ duration: 1, delay: 0.8 }}
             className="mt-10 md:mt-14 max-w-2xl space-y-4"
           >
-            <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed">
+            <p className="text-gray-300 text-lg md:text-[1.35rem] font-light leading-relaxed">
               Medical knowledge has never been more advanced.
               <span className="text-gray-500"> That knowledge is trapped in medical guidelines that clinicians
               are unable to apply in practice.</span>
             </p>
-            <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed">
+            <p className="text-gray-300 text-lg md:text-[1.35rem] font-light leading-relaxed">
               We've built an AI-enabled pipeline that converts medical guidelines
               into <span className="text-accent font-normal">deterministic clinical logic</span>.
             </p>
