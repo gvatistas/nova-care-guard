@@ -1,85 +1,166 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
-/* ── Screening cards data ── */
-const withScreenings = [
-  {
-    urgency: "CRITICAL",
-    urgencyColor: "hsl(0, 72%, 60%)",
-    grade: "USPSTF Grade B",
-    name: "Low-Dose CT Lung Screening",
-    detail: "30 pack-year history, age 50-80, active smoker",
-    status: "ORDERED → EARLY DETECTION",
-  },
-  {
-    urgency: "HIGH",
-    urgencyColor: "hsl(35, 80%, 55%)",
-    grade: "USPSTF Grade A",
-    name: "Colorectal Cancer Screening",
-    detail: "Age 52, no prior colonoscopy on record",
-    status: "SCHEDULED",
-  },
-  {
-    urgency: "MODERATE",
-    urgencyColor: "hsl(160, 82%, 61%)",
-    grade: "ACC/AHA Stage 1",
-    name: "Hypertension Management",
-    detail: "BP 138/88 — lifestyle intervention threshold",
-    status: "FLAGGED",
-  },
-];
+/* ── Animated counter ── */
+const Counter = ({ value, active }: { value: number; active: boolean }) => {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let start = 0;
+    const end = value;
+    const duration = 1200;
+    const startTime = Date.now();
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(start + (end - start) * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    tick();
+  }, [value, active]);
+  return <>{display}</>;
+};
 
-const withoutScreenings = [
-  {
-    urgency: "MISSED",
-    urgencyColor: "hsl(0, 0%, 35%)",
-    grade: "USPSTF Grade B",
-    name: "Low-Dose CT Lung Screening",
-    detail: "Eligible but not considered during visit",
-    status: "NOT ORDERED",
-  },
-  {
-    urgency: "MISSED",
-    urgencyColor: "hsl(0, 0%, 35%)",
-    grade: "USPSTF Grade A",
-    name: "Colorectal Cancer Screening",
-    detail: "Eligible but not flagged in workflow",
-    status: "NOT ORDERED",
-  },
-  {
-    urgency: "MISSED",
-    urgencyColor: "hsl(0, 0%, 35%)",
-    grade: "ACC/AHA Stage 1",
-    name: "Hypertension Management",
-    detail: "BP recorded but threshold not evaluated",
-    status: "OVERLOOKED",
-  },
-];
+/* ── Patient body SVG ── */
+const PatientVisual = ({ isWithout, hoveredCard }: { isWithout: boolean; hoveredCard: number | null }) => {
+  const bodyColor = isWithout ? "#555" : "#fff";
+  const screeningZones = [
+    { cx: 0, cy: -50, r: 18, label: "LUNG", color: isWithout ? "#444" : "#FF5555" },
+    { cx: 0, cy: 10, r: 22, label: "COLON", color: isWithout ? "#444" : "#F5A623" },
+    { cx: 20, cy: -20, r: 14, label: "BP", color: isWithout ? "#444" : "#4AEDC4" },
+  ];
 
-const withSteps = [
-  { step: "01", title: "Patient visits clinic", desc: "Same patient. Same clinic. Medient runs silently in the background." },
-  { step: "02", title: "Instant eligibility analysis", desc: "All applicable guidelines evaluated in <1 second. Zero clinician effort." },
-  { step: "03", title: "Screenings prioritized & ordered", desc: "LDCT flagged as critical. Ordered with full traceability." },
-  { step: "04", title: "Early detection", desc: "9mm pulmonary nodule found. Stage IA. 5-year survival: 92%." },
-  { step: "05", title: "System-wide benefit", desc: "CMS quality bonuses. Higher adherence. Better reimbursement." },
-];
+  return (
+    <svg viewBox="-80 -120 160 280" className="w-full max-w-[200px] mx-auto">
+      {/* Body */}
+      <circle cx="0" cy="-70" r="20" fill="none" stroke={bodyColor} strokeWidth="1.5" opacity={0.7} />
+      <line x1="0" y1="-50" x2="0" y2="30" stroke={bodyColor} strokeWidth="1.5" opacity={0.7} />
+      <line x1="0" y1="-30" x2="-28" y2="5" stroke={bodyColor} strokeWidth="1.2" opacity={0.6} />
+      <line x1="0" y1="-30" x2="28" y2="5" stroke={bodyColor} strokeWidth="1.2" opacity={0.6} />
+      <line x1="0" y1="30" x2="-18" y2="70" stroke={bodyColor} strokeWidth="1.2" opacity={0.6} />
+      <line x1="0" y1="30" x2="18" y2="70" stroke={bodyColor} strokeWidth="1.2" opacity={0.6} />
 
-const withoutSteps = [
-  { step: "01", title: "Patient visits clinic", desc: "Sarah, 52, sees her PCP for a routine checkup. 30-pack-year smoker." },
-  { step: "02", title: "Doctor relies on memory", desc: "The physician can't recall exact USPSTF lung screening criteria." },
-  { step: "03", title: "Screening not ordered", desc: "No LDCT scan ordered. Visit ends with routine bloodwork only." },
-  { step: "04", title: "18 months later", desc: "Stage IIIB non-small cell lung cancer. 5-year survival: 8%." },
-  { step: "05", title: "Catastrophic cost", desc: "Treatment exceeds $280,000. Preventable tragedy." },
-];
+      {/* Screening zones */}
+      {screeningZones.map((zone, i) => {
+        const isHovered = hoveredCard === i;
+        const isActive = !isWithout;
+        return (
+          <g key={i}>
+            <circle cx={zone.cx} cy={zone.cy} r={zone.r} fill="none"
+              stroke={zone.color} strokeWidth={isHovered ? 2 : 0.8}
+              strokeDasharray={isActive ? "none" : "3 3"}
+              opacity={isActive ? (isHovered ? 0.9 : 0.5) : 0.2}>
+              {isActive && (
+                <animate attributeName="r" values={`${zone.r};${zone.r + 3};${zone.r}`} dur="2s" repeatCount="indefinite" />
+              )}
+            </circle>
+            {isActive && isHovered && (
+              <circle cx={zone.cx} cy={zone.cy} r={zone.r + 8} fill="none"
+                stroke={zone.color} strokeWidth="0.4" opacity={0.3}>
+                <animate attributeName="r" values={`${zone.r + 8};${zone.r + 14};${zone.r + 8}`} dur="2s" repeatCount="indefinite" />
+              </circle>
+            )}
+            {/* X mark for without */}
+            {isWithout && (
+              <>
+                <line x1={zone.cx - 6} y1={zone.cy - 6} x2={zone.cx + 6} y2={zone.cy + 6}
+                  stroke="#FF5555" strokeWidth="1.5" opacity={0.5} />
+                <line x1={zone.cx + 6} y1={zone.cy - 6} x2={zone.cx - 6} y2={zone.cy + 6}
+                  stroke="#FF5555" strokeWidth="1.5" opacity={0.5} />
+              </>
+            )}
+            {/* Check for with */}
+            {isActive && (
+              <g opacity={0.8}>
+                <circle cx={zone.cx + zone.r - 2} cy={zone.cy - zone.r + 2} r="5" fill={zone.color} />
+                <polyline points={`${zone.cx + zone.r - 5},${zone.cy - zone.r + 2} ${zone.cx + zone.r - 2},${zone.cy - zone.r + 5} ${zone.cx + zone.r + 2},${zone.cy - zone.r - 2}`}
+                  fill="none" stroke="#000" strokeWidth="1.5" />
+              </g>
+            )}
+          </g>
+        );
+      })}
 
+      {/* Scan beam for WITH */}
+      {!isWithout && (
+        <rect x="-60" y="-100" width="120" height="3" fill="#4AEDC4" opacity={0.15}>
+          <animate attributeName="y" values="-100;80;-100" dur="3s" repeatCount="indefinite" />
+        </rect>
+      )}
+    </svg>
+  );
+};
+
+/* ── Screening card ── */
+const ScreeningCard = ({ urgency, urgencyColor, name, status, isWithout, index, onHover }: {
+  urgency: string; urgencyColor: string; name: string; status: string;
+  isWithout: boolean; index: number; onHover: (i: number | null) => void;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, x: isWithout ? -20 : 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ delay: 0.1 + index * 0.12, type: "spring", damping: 20 }}
+    className="flex items-center gap-4 py-3 px-4 border border-white/[0.04] hover:border-white/[0.1] transition-all duration-300 group cursor-default"
+    style={{ background: isWithout ? "rgba(255,255,255,0.01)" : `${urgencyColor}08` }}
+    onMouseEnter={() => onHover(index)}
+    onMouseLeave={() => onHover(null)}
+  >
+    {/* Color bar */}
+    <div className="w-1 h-10 rounded-full transition-all duration-500 group-hover:h-12"
+      style={{ backgroundColor: urgencyColor, opacity: isWithout ? 0.3 : 0.8 }} />
+    <div className="flex-1 min-w-0">
+      <div className="flex items-center gap-2 mb-0.5">
+        <span className="font-mono text-[10px] tracking-[0.15em] uppercase px-1.5 py-0.5 border rounded-sm"
+          style={{ color: urgencyColor, borderColor: `${urgencyColor}44`, backgroundColor: `${urgencyColor}11` }}>
+          {urgency}
+        </span>
+      </div>
+      <h4 className={`font-mono text-base font-light transition-colors duration-300 ${
+        isWithout ? "text-gray-600 line-through decoration-gray-700" : "text-white"
+      }`}>{name}</h4>
+    </div>
+    {/* Status */}
+    <div className="flex items-center gap-1.5 shrink-0">
+      {!isWithout && (
+        <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: urgencyColor }} />
+      )}
+      <span className="font-mono text-[11px] tracking-[0.1em] uppercase" style={{ color: isWithout ? "#555" : urgencyColor }}>
+        {status}
+      </span>
+    </div>
+  </motion.div>
+);
+
+/* ── Metric pill ── */
+const MetricPill = ({ val, label, color, delay }: { val: string; label: string; color: string; delay: number }) => (
+  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+    transition={{ delay, type: "spring", damping: 15 }}
+    className="text-center p-4 border border-white/[0.06] bg-white/[0.015] panel-3d">
+    <div className="font-mono text-3xl md:text-4xl font-light" style={{ color }}>{val}</div>
+    <div className="text-gray-500 text-xs font-mono tracking-[0.1em] uppercase mt-1">{label}</div>
+  </motion.div>
+);
+
+/* ── Main section ── */
 const Level1Section = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const [activeView, setActiveView] = useState<"without" | "with">("without");
-
-  const steps = activeView === "without" ? withoutSteps : withSteps;
-  const screenings = activeView === "with" ? withScreenings : withoutScreenings;
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const isWithout = activeView === "without";
+
+  const screenings = isWithout
+    ? [
+        { urgency: "MISSED", urgencyColor: "#666", name: "Low-Dose CT Lung Screening", status: "NOT ORDERED" },
+        { urgency: "MISSED", urgencyColor: "#666", name: "Colorectal Cancer Screening", status: "NOT ORDERED" },
+        { urgency: "MISSED", urgencyColor: "#666", name: "Hypertension Management", status: "OVERLOOKED" },
+      ]
+    : [
+        { urgency: "CRITICAL", urgencyColor: "#FF5555", name: "Low-Dose CT Lung Screening", status: "ORDERED" },
+        { urgency: "HIGH", urgencyColor: "#F5A623", name: "Colorectal Cancer Screening", status: "SCHEDULED" },
+        { urgency: "MODERATE", urgencyColor: "#4AEDC4", name: "Hypertension Management", status: "FLAGGED" },
+      ];
 
   return (
     <section ref={ref} className="relative py-14 md:py-20 texture-diamonds">
@@ -87,221 +168,103 @@ const Level1Section = () => {
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-6">
           <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-3">Two Paths — One Patient</div>
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-4xl">
+          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">
             Same patient. Same clinic. <span className="text-gray-500">Different outcome.</span>
           </h2>
         </motion.div>
 
         {/* Toggle */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.3 }}
-          className="flex items-center gap-1 mb-6 bg-white/[0.03] border border-white/[0.06] p-1.5 w-fit">
-          <button onClick={() => setActiveView("without")}
-            className={`font-mono text-sm tracking-[0.1em] uppercase px-6 md:px-8 py-3 transition-all duration-300 ${
-              activeView === "without"
-                ? "bg-[hsl(0,72%,60%)]/10 text-[hsl(0,72%,60%)] border border-[hsl(0,72%,60%)]/20"
-                : "text-gray-500 hover:text-gray-300 border border-transparent"
-            }`}>Without Medient</button>
-          <button onClick={() => setActiveView("with")}
-            className={`font-mono text-sm tracking-[0.1em] uppercase px-6 md:px-8 py-3 transition-all duration-300 ${
-              activeView === "with"
-                ? "bg-accent/10 text-accent border border-accent/20"
-                : "text-gray-500 hover:text-gray-300 border border-transparent"
-            }`}>With Medient</button>
+          className="flex items-center gap-1 mb-8 bg-white/[0.03] border border-white/[0.06] p-1.5 w-fit">
+          {(["without", "with"] as const).map((v) => (
+            <button key={v} onClick={() => setActiveView(v)}
+              className={`font-mono text-sm tracking-[0.1em] uppercase px-6 md:px-8 py-3 transition-all duration-500 border ${
+                activeView === v
+                  ? v === "without"
+                    ? "bg-[hsl(0,72%,60%)]/10 text-[hsl(0,72%,60%)] border-[hsl(0,72%,60%)]/20 shadow-[0_0_20px_rgba(200,50,50,0.1)]"
+                    : "bg-accent/10 text-accent border-accent/20 shadow-[0_0_20px_rgba(74,237,196,0.1)]"
+                  : "text-gray-500 hover:text-gray-300 border-transparent"
+              }`}>
+              {v === "without" ? "Without Medient" : "With Medient"}
+            </button>
+          ))}
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
-          {/* LEFT: Screening illustration card */}
-          <div className="lg:col-span-5">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeView}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="border border-white/[0.06] bg-white/[0.01] panel-3d overflow-hidden"
-                style={{
-                  borderColor: isWithout ? "hsl(0, 0%, 15%)" : "hsl(160, 82%, 61%, 0.15)",
-                }}>
-                {/* Card header */}
-                <div className="px-6 py-4 border-b border-white/[0.06]"
-                  style={{
-                    background: isWithout
-                      ? "linear-gradient(135deg, rgba(255,255,255,0.02), transparent 60%)"
-                      : "linear-gradient(135deg, rgba(74,237,196,0.06), transparent 60%)",
-                  }}>
-                  <div className="font-mono text-xs tracking-[0.25em] uppercase text-gray-500 mb-1">
-                    {isWithout ? "Screenings: Not Evaluated" : "Eligible Screenings"}
+        <AnimatePresence mode="wait">
+          <motion.div key={activeView} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* LEFT: Patient visual + outcome */}
+              <div className="lg:col-span-4 flex flex-col items-center justify-center gap-6">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", damping: 20 }}
+                  className="w-full border border-white/[0.06] bg-white/[0.01] p-6 panel-3d"
+                  style={{ borderColor: isWithout ? "hsl(0,72%,60%,0.12)" : "hsl(160,82%,61%,0.12)" }}>
+                  <PatientVisual isWithout={isWithout} hoveredCard={hoveredCard} />
+                  <div className="text-center mt-4">
+                    <div className="font-mono text-xs tracking-[0.2em] text-gray-500 uppercase">Sarah Mitchell, 52</div>
                   </div>
-                  <h3 className={`font-mono text-xl md:text-2xl font-light ${isWithout ? "text-gray-500" : "text-white"}`}>
-                    {isWithout ? "No decision support active" : "Prioritized by clinical urgency"}
-                  </h3>
-                </div>
-
-                {/* Screening items */}
-                <div className="divide-y divide-white/[0.04]">
-                  {screenings.map((s, i) => (
-                    <motion.div
-                      key={activeView + i}
-                      initial={{ opacity: 0, x: isWithout ? 0 : 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.15 + i * 0.12, duration: 0.4 }}
-                      className={`px-6 py-5 transition-all duration-500 ${
-                        isWithout ? "opacity-50" : "hover:bg-white/[0.015]"
-                      }`}>
-                      {/* Urgency + Grade */}
-                      <div className="flex items-center gap-3 mb-2">
-                        <span
-                          className="font-mono text-[11px] tracking-[0.15em] uppercase px-2 py-0.5 border"
-                          style={{
-                            color: s.urgencyColor,
-                            borderColor: `${s.urgencyColor}44`,
-                            backgroundColor: `${s.urgencyColor}11`,
-                          }}>
-                          {s.urgency}
-                        </span>
-                        <span className="font-mono text-xs tracking-[0.1em] text-gray-600">{s.grade}</span>
-                      </div>
-
-                      {/* Name */}
-                      <h4 className={`font-mono text-lg md:text-xl font-light mb-1 transition-colors duration-300 ${
-                        isWithout ? "text-gray-600" : "text-white"
-                      }`}>{s.name}</h4>
-
-                      {/* Detail */}
-                      <p className="text-gray-500 text-sm leading-relaxed">{s.detail}</p>
-
-                      {/* Status indicator (WITH only) */}
-                      {!isWithout && (
-                        <motion.div
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "auto" }}
-                          transition={{ delay: 0.4 + i * 0.12 }}
-                          className="mt-3 inline-flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rotate-45 animate-pulse"
-                            style={{ backgroundColor: s.urgencyColor }} />
-                          <span className="font-mono text-xs tracking-[0.12em] uppercase"
-                            style={{ color: s.urgencyColor }}>{s.status}</span>
-                        </motion.div>
-                      )}
-
-                      {/* Strike-through line for WITHOUT */}
-                      {isWithout && (
-                        <motion.div
-                          initial={{ scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          transition={{ delay: 0.3 + i * 0.1, duration: 0.6 }}
-                          className="mt-3 h-px bg-gray-700 origin-left" />
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Bottom summary */}
-                <div className="px-6 py-4 border-t border-white/[0.06]"
-                  style={{
-                    background: isWithout
-                      ? "linear-gradient(135deg, rgba(200,50,50,0.04), transparent 60%)"
-                      : "linear-gradient(135deg, rgba(74,237,196,0.04), transparent 60%)",
-                  }}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-400 text-sm">
-                      {isWithout ? "Screenings identified" : "Screenings identified"}
-                    </span>
-                    <span className={`font-mono text-2xl font-light ${isWithout ? "text-[hsl(0,72%,60%)]" : "text-accent"}`}>
-                      {isWithout ? "0 / 3" : "3 / 3"}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Outcome stat */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeView + "-outcome"}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                className={`mt-3 border p-5 text-center panel-3d ${
-                  isWithout
-                    ? "border-[hsl(0,72%,60%)]/20 bg-[hsl(0,72%,60%)]/[0.04]"
-                    : "border-accent/20 bg-accent/[0.04]"
-                }`}>
-                <div className={`font-mono text-4xl md:text-5xl font-light ${isWithout ? "text-[hsl(0,72%,60%)]" : "text-accent"}`}>
-                  {isWithout ? "8%" : "92%"}
-                </div>
-                <div className="text-gray-400 text-sm mt-1">
-                  {isWithout ? "5-year survival — diagnosed late" : "5-year survival — caught early"}
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* RIGHT: Journey steps + metrics */}
-          <div className="lg:col-span-7">
-            <div className="border-t border-white/[0.06]">
-              <AnimatePresence mode="wait">
-                <motion.div key={activeView} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                  {steps.map((step, i) => (
-                    <motion.div key={i} initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.08 + i * 0.07, duration: 0.35 }}
-                      className="border-b border-white/[0.06] py-3.5 md:py-4 px-2 md:px-4 hover:bg-white/[0.015] transition-colors duration-300 group">
-                      <div className="grid grid-cols-12 gap-3 items-start">
-                        <div className="col-span-1">
-                          <span className={`font-mono text-sm transition-colors duration-300 ${
-                            isWithout ? "text-[hsl(0,72%,60%)]/50 group-hover:text-[hsl(0,72%,60%)]" : "text-accent/50 group-hover:text-accent"
-                          }`}>{step.step}</span>
-                        </div>
-                        <div className="col-span-3">
-                          <h4 className={`font-mono text-white text-base font-light transition-colors duration-300 ${
-                            isWithout ? "group-hover:text-[hsl(0,72%,60%)]" : "group-hover:text-accent"
-                          }`}>{step.title}</h4>
-                        </div>
-                        <div className="col-span-8">
-                          <p className="text-gray-300 text-base leading-relaxed">{step.desc}</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
                 </motion.div>
-              </AnimatePresence>
-            </div>
 
-            {/* Bottom metrics */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeView + "-metrics"}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, delay: 0.15 }}
-                className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
+                {/* Big outcome stat */}
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3, type: "spring", damping: 15 }}
+                  className={`w-full text-center py-6 border panel-3d ${
+                    isWithout
+                      ? "border-[hsl(0,72%,60%)]/20 bg-[hsl(0,72%,60%)]/[0.03]"
+                      : "border-accent/20 bg-accent/[0.03]"
+                  }`}>
+                  <div className={`font-mono text-6xl md:text-7xl font-light ${isWithout ? "text-[hsl(0,72%,60%)]" : "text-accent"}`}>
+                    <Counter value={isWithout ? 8 : 92} active={inView} />%
+                  </div>
+                  <div className="text-gray-400 text-sm mt-2 font-mono">
+                    {isWithout ? "5-year survival — late stage" : "5-year survival — caught early"}
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* CENTER: Screening cards */}
+              <div className="lg:col-span-4 flex flex-col gap-2">
+                <div className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500 mb-2 px-1">
+                  {isWithout ? "Screenings: Not Evaluated" : "Eligible Screenings — Prioritized"}
+                </div>
+                {screenings.map((s, i) => (
+                  <ScreeningCard key={activeView + i} {...s} isWithout={isWithout} index={i} onHover={setHoveredCard} />
+                ))}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+                  className="mt-2 flex items-center justify-between px-4 py-3 border border-white/[0.06] bg-white/[0.01]">
+                  <span className="text-gray-500 text-sm font-mono">Identified</span>
+                  <span className={`font-mono text-2xl font-light ${isWithout ? "text-[hsl(0,72%,60%)]" : "text-accent"}`}>
+                    {isWithout ? "0 / 3" : "3 / 3"}
+                  </span>
+                </motion.div>
+              </div>
+
+              {/* RIGHT: Metrics */}
+              <div className="lg:col-span-4 grid grid-cols-2 gap-3 content-start">
                 {(isWithout
                   ? [
-                      { val: "$280K+", label: "Treatment cost" },
-                      { val: "18 mo", label: "Delayed diagnosis" },
-                      { val: "8%", label: "Survival rate" },
-                      { val: "0", label: "Screenings ordered" },
+                      { val: "$280K+", label: "Treatment cost", color: "#FF5555" },
+                      { val: "18 mo", label: "Delayed diagnosis", color: "#FF5555" },
+                      { val: "0", label: "Screenings ordered", color: "#666" },
+                      { val: "Stage IIIB", label: "At diagnosis", color: "#FF5555" },
                     ]
                   : [
-                      { val: "$4,200", label: "Screening cost" },
-                      { val: "0 days", label: "Time to screening" },
-                      { val: "92%", label: "Survival rate" },
-                      { val: "+$8K", label: "Quality bonus" },
+                      { val: "$4,200", label: "Screening cost", color: "#4AEDC4" },
+                      { val: "0 days", label: "Time to screening", color: "#4AEDC4" },
+                      { val: "+$8K", label: "Quality bonus", color: "#4AEDC4" },
+                      { val: "Stage IA", label: "At diagnosis", color: "#4AEDC4" },
                     ]
-                ).map((stat, i) => (
-                  <motion.div key={stat.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 + i * 0.06 }} className="bg-background/80 p-4 panel-3d">
-                    <div className={`font-mono text-2xl md:text-3xl font-light ${isWithout ? "text-[hsl(0,72%,60%)]/80" : "text-accent"}`}>{stat.val}</div>
-                    <div className="text-gray-400 text-sm mt-1">{stat.label}</div>
-                  </motion.div>
+                ).map((m, i) => (
+                  <MetricPill key={m.label} {...m} delay={0.15 + i * 0.08} />
                 ))}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );
