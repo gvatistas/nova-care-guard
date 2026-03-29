@@ -34,8 +34,6 @@ const Index = () => {
         <GeoDivider />
         <GuideBenchSection />
         <GeoDivider />
-        <SecuritySection />
-        <GeoDivider />
         <CTASection />
       </div>
     </div>
