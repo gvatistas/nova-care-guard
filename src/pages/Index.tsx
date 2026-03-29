@@ -4,9 +4,12 @@ import HeroSection from "@/components/HeroSection";
 import ProblemSection from "@/components/ProblemSection";
 import Level1Section from "@/components/Level1Section";
 import PipelineSection from "@/components/PipelineSection";
+import DifferentiatorsSection from "@/components/DifferentiatorsSection";
 import SegmentsSection from "@/components/SegmentsSection";
 import ProjectBetaSection from "@/components/ProjectBetaSection";
 import GuideBenchSection from "@/components/GuideBenchSection";
+import SecuritySection from "@/components/SecuritySection";
+import TractionSection from "@/components/TractionSection";
 import CTASection from "@/components/CTASection";
 
 const GeoDivider = () => <div className="divider-geo mx-6 md:mx-8" />;
@@ -25,11 +28,17 @@ const Index = () => {
         <GeoDivider />
         <PipelineSection />
         <GeoDivider />
+        <DifferentiatorsSection />
+        <GeoDivider />
         <SegmentsSection />
         <GeoDivider />
         <ProjectBetaSection />
         <GeoDivider />
         <GuideBenchSection />
+        <GeoDivider />
+        <SecuritySection />
+        <GeoDivider />
+        <TractionSection />
         <GeoDivider />
         <CTASection />
       </div>
