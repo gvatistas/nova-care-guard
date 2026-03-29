@@ -23,7 +23,7 @@ const Navbar = () => {
     >
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
-          <FacetedCrownLogo size={36} color="white" />
+          <FacetedCrownLogo size={32} />
           <span className="font-mono text-white text-lg tracking-[0.08em] font-light">MEDIENT</span>
           <span className="font-mono text-white text-lg tracking-[0.08em] font-extralight">HEALTH</span>
         </a>

@@ -40,7 +40,7 @@ const CTASection = () => {
         transition={{ delay: 0.8, duration: 1.2 }}
         className="mt-24 flex flex-col items-center px-8"
       >
-        <FacetedCrownLogo size={160} color="rgba(255,255,255,0.5)" />
+        <FacetedCrownLogo size={120} />
         <div
           className="mt-5 font-mono tracking-[0.3em] uppercase"
           style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.25)" }}
