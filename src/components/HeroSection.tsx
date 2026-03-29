@@ -11,10 +11,6 @@ const HeroSection = () => {
         <DataMeshVisualization />
       </Suspense>
 
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.6)" }} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
-
       {/* Content */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-8 w-full grid grid-cols-1 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6">
@@ -25,7 +21,7 @@ const HeroSection = () => {
             className="text-white font-mono font-light leading-[1.1] tracking-[-0.03em]"
             style={{ fontSize: "3rem" }}
           >
-            The Bridge Between AI and <span style={{ color: "#10b981" }}>Evidence-Based</span> Healthcare
+            Unlocking the proactive healthcare patients deserve.
           </motion.h1>
 
           <motion.p
@@ -35,7 +31,7 @@ const HeroSection = () => {
             className="mt-5 font-mono max-w-2xl leading-relaxed"
             style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}
           >
-            AI-powered clinical intelligence that analyzes patient data in real-time, identifies eligible screenings, and executes evidence-based prevention at scale.
+            The healthcare system was not built for prevention. We are changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it is too late.
           </motion.p>
 
           <motion.div

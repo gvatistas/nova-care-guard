@@ -1,293 +1,196 @@
-import { useRef, useMemo, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
-const NODE_COUNT = 300;
-const EDGE_COUNT = 500;
-const PARTICLE_COUNT = 120;
-const CLUSTER_COUNT = 5;
+const N = 260, EDGE_PAIRS = 520, P = 140, C = 4;
 
-function DataMesh() {
-  const nodesRef = useRef<THREE.Points>(null);
-  const edgesRef = useRef<THREE.LineSegments>(null);
-  const particlesRef = useRef<THREE.Points>(null);
-  const rippleRef = useRef({ time: 0, cluster: 0, active: false });
-  const amberRef = useRef({ time: 0, node: -1 });
-  const lastEventRef = useRef(0);
+function Mesh() {
+  const data = useMemo(() => {
+    const pos = new Float32Array(N * 3);
+    const base = new Float32Array(N * 3);
+    const vel = new Float32Array(N * 3);
+    const colors = new Float32Array(N * 3).fill(0.75);
+    const clusters = Array.from({ length: C }, () =>
+      new THREE.Vector3((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 6 - 2)
+    );
 
-  const { nodePositions, nodeVelocities, edgePairs, clusters, nodeDepths } = useMemo(() => {
-    const pos = new Float32Array(NODE_COUNT * 3);
-    const vel = new Float32Array(NODE_COUNT * 3);
-    const depths = new Float32Array(NODE_COUNT);
-    
-    // Create clusters
-    const cls: number[][] = [];
-    for (let c = 0; c < CLUSTER_COUNT; c++) {
-      cls.push([]);
+    for (let i = 0; i < N; i++) {
+      const c = clusters[i % C];
+      const x = c.x + (Math.random() - 0.5) * 3;
+      const y = c.y + (Math.random() - 0.5) * 2;
+      const z = c.z + (Math.random() - 0.5) * 3;
+      pos.set([x, y, z], i * 3);
+      base.set([x, y, z], i * 3);
+      vel.set([(Math.random() - 0.5) * 0.002, (Math.random() - 0.5) * 0.002, (Math.random() - 0.5) * 0.001], i * 3);
     }
 
-    for (let i = 0; i < NODE_COUNT; i++) {
-      const cluster = i < CLUSTER_COUNT * 8 ? Math.floor(i / 8) : -1;
-      const cx = cluster >= 0 ? (cluster - 2) * 3 + (Math.random() - 0.5) * 2 : (Math.random() - 0.5) * 18;
-      const cy = cluster >= 0 ? (Math.random() - 0.5) * 3 : (Math.random() - 0.5) * 10;
-      const cz = cluster >= 0 ? (Math.random() - 0.5) * 2 - 2 : (Math.random() - 0.5) * 8 - 4;
-      
-      pos[i * 3] = cx;
-      pos[i * 3 + 1] = cy;
-      pos[i * 3 + 2] = cz;
-      vel[i * 3] = (Math.random() - 0.5) * 0.003;
-      vel[i * 3 + 1] = (Math.random() - 0.5) * 0.002;
-      vel[i * 3 + 2] = (Math.random() - 0.5) * 0.001;
-      depths[i] = cz;
-      
-      if (cluster >= 0) cls[cluster].push(i);
-    }
-
-    // Build edges connecting nearby nodes
-    const edges: [number, number][] = [];
-    const maxDist = 2.8;
-    for (let i = 0; i < NODE_COUNT && edges.length < EDGE_COUNT; i++) {
-      for (let j = i + 1; j < NODE_COUNT && edges.length < EDGE_COUNT; j++) {
-        const dx = pos[i * 3] - pos[j * 3];
-        const dy = pos[i * 3 + 1] - pos[j * 3 + 1];
-        const dz = pos[i * 3 + 2] - pos[j * 3 + 2];
-        const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        if (d < maxDist && Math.random() < 0.3) {
-          edges.push([i, j]);
+    const edges: number[] = [];
+    for (let i = 0; i < N && edges.length / 2 < EDGE_PAIRS; i++) {
+      for (let j = i + 1; j < N && edges.length / 2 < EDGE_PAIRS; j++) {
+        const dx = pos[i * 3] - pos[j * 3], dy = pos[i * 3 + 1] - pos[j * 3 + 1], dz = pos[i * 3 + 2] - pos[j * 3 + 2];
+        if (Math.sqrt(dx * dx + dy * dy + dz * dz) < 2.5 && Math.random() < 0.25) {
+          edges.push(i, j);
         }
       }
     }
 
-    return { nodePositions: pos, nodeVelocities: vel, edgePairs: edges, clusters: cls, nodeDepths: depths };
-  }, []);
-
-  // Particle state: each particle travels along an edge
-  const particleState = useMemo(() => {
-    const pos = new Float32Array(PARTICLE_COUNT * 3);
-    const progress = new Float32Array(PARTICLE_COUNT);
-    const edgeIdx = new Int32Array(PARTICLE_COUNT);
-    const speed = new Float32Array(PARTICLE_COUNT);
-    
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      edgeIdx[i] = Math.floor(Math.random() * edgePairs.length);
-      progress[i] = Math.random();
-      speed[i] = 0.002 + Math.random() * 0.004;
-    }
-    return { pos, progress, edgeIdx, speed };
-  }, [edgePairs]);
-
-  // Node colors for ripple/amber effects
-  const nodeColors = useMemo(() => {
-    const c = new Float32Array(NODE_COUNT * 3);
-    for (let i = 0; i < NODE_COUNT; i++) {
-      c[i * 3] = 0.85; c[i * 3 + 1] = 0.85; c[i * 3 + 2] = 0.85;
-    }
-    return c;
-  }, []);
-
-  const nodeSizes = useMemo(() => {
-    const s = new Float32Array(NODE_COUNT);
-    for (let i = 0; i < NODE_COUNT; i++) {
-      const depth = nodeDepths[i];
-      s[i] = Math.max(0.8, 3.0 + depth * 0.4);
-    }
-    return s;
-  }, [nodeDepths]);
-
-  // Geometries
-  const nodeGeo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(nodePositions, 3));
-    g.setAttribute("color", new THREE.Float32BufferAttribute(nodeColors, 3));
-    g.setAttribute("size", new THREE.Float32BufferAttribute(nodeSizes, 1));
-    return g;
-  }, [nodePositions, nodeColors, nodeSizes]);
-
-  const edgeGeo = useMemo(() => {
-    const pos: number[] = [];
-    edgePairs.forEach(([a, b]) => {
-      pos.push(nodePositions[a * 3], nodePositions[a * 3 + 1], nodePositions[a * 3 + 2]);
-      pos.push(nodePositions[b * 3], nodePositions[b * 3 + 1], nodePositions[b * 3 + 2]);
+    const epos = new Float32Array(edges.length * 3);
+    const ppos = new Float32Array(P * 3);
+    const pmeta = Array.from({ length: P }, () => {
+      const k = ((Math.random() * edges.length / 2) | 0) * 2;
+      return { e: k, t: Math.random(), s: 0.002 + Math.random() * 0.004 };
     });
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-    return g;
-  }, [nodePositions, edgePairs]);
 
-  const particleGeo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(particleState.pos, 3));
-    return g;
-  }, [particleState.pos]);
+    return { pos, base, vel, colors, edges, epos, ppos, pmeta, clusters, pulse: { t: -10, c: 0 }, risk: { t: -10, i: 0 } };
+  }, []);
+
+  const nodesRef = useRef<THREE.Points>(null);
+  const linesRef = useRef<THREE.LineSegments>(null);
+  const partsRef = useRef<THREE.Points>(null);
+  const lastEvent = useRef(0);
 
   useFrame(({ clock, camera }) => {
     const t = clock.elapsedTime;
-    
-    // Camera slow drift forward
+
+    // Trigger events every 3-4s
+    if (t - lastEvent.current > 3 + Math.random()) {
+      lastEvent.current = t;
+      if (Math.random() > 0.2) {
+        data.pulse = { t, c: (Math.random() * C) | 0 };
+      } else {
+        data.risk = { t, i: (Math.random() * N) | 0 };
+      }
+    }
+
+    // Camera drift
     camera.position.z = 8 - Math.sin(t * 0.05) * 0.5;
     camera.position.x = Math.sin(t * 0.03) * 0.3;
     camera.position.y = Math.cos(t * 0.04) * 0.2;
 
-    // Move nodes (breathing)
-    const nPos = nodeGeo.attributes.position as THREE.BufferAttribute;
-    const nArr = nPos.array as Float32Array;
-    for (let i = 0; i < NODE_COUNT; i++) {
-      nArr[i * 3] += nodeVelocities[i * 3] + Math.sin(t * 0.5 + i) * 0.0005;
-      nArr[i * 3 + 1] += nodeVelocities[i * 3 + 1] + Math.cos(t * 0.4 + i * 0.7) * 0.0004;
-      nArr[i * 3 + 2] += nodeVelocities[i * 3 + 2];
-    }
-    nPos.needsUpdate = true;
-
-    // Update edge positions
-    const ePos = edgeGeo.attributes.position as THREE.BufferAttribute;
-    const eArr = ePos.array as Float32Array;
-    edgePairs.forEach(([a, b], idx) => {
-      eArr[idx * 6] = nArr[a * 3];
-      eArr[idx * 6 + 1] = nArr[a * 3 + 1];
-      eArr[idx * 6 + 2] = nArr[a * 3 + 2];
-      eArr[idx * 6 + 3] = nArr[b * 3];
-      eArr[idx * 6 + 4] = nArr[b * 3 + 1];
-      eArr[idx * 6 + 5] = nArr[b * 3 + 2];
-    });
-    ePos.needsUpdate = true;
-
-    // Move particles along edges
-    const pPos = particleGeo.attributes.position as THREE.BufferAttribute;
-    const pArr = pPos.array as Float32Array;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particleState.progress[i] += particleState.speed[i];
-      if (particleState.progress[i] > 1) {
-        particleState.progress[i] = 0;
-        particleState.edgeIdx[i] = Math.floor(Math.random() * edgePairs.length);
+    // Breathing node movement
+    for (let i = 0; i < N; i++) {
+      const j = i * 3;
+      data.pos[j] += data.vel[j] + Math.sin(t + i) * 0.0007;
+      data.pos[j + 1] += data.vel[j + 1] + Math.cos(t * 1.2 + i) * 0.0007;
+      data.pos[j + 2] += data.vel[j + 2];
+      for (let k = 0; k < 3; k++) {
+        if (Math.abs(data.pos[j + k] - data.base[j + k]) > 1.2) data.vel[j + k] *= -1;
       }
-      const [a, b] = edgePairs[particleState.edgeIdx[i]];
-      const p = particleState.progress[i];
-      pArr[i * 3] = nArr[a * 3] + (nArr[b * 3] - nArr[a * 3]) * p;
-      pArr[i * 3 + 1] = nArr[a * 3 + 1] + (nArr[b * 3 + 1] - nArr[a * 3 + 1]) * p;
-      pArr[i * 3 + 2] = nArr[a * 3 + 2] + (nArr[b * 3 + 2] - nArr[a * 3 + 2]) * p;
-    }
-    pPos.needsUpdate = true;
-
-    // Emerald ripple every 3-4s
-    const colors = nodeGeo.attributes.color as THREE.BufferAttribute;
-    const cArr = colors.array as Float32Array;
-    
-    // Reset colors
-    for (let i = 0; i < NODE_COUNT; i++) {
-      const depth = nArr[i * 3 + 2];
-      const brightness = Math.max(0.2, Math.min(0.9, 0.6 + depth * 0.08));
-      cArr[i * 3] = brightness;
-      cArr[i * 3 + 1] = brightness;
-      cArr[i * 3 + 2] = brightness;
     }
 
-    if (t - lastEventRef.current > 3.5) {
-      lastEventRef.current = t;
-      // 80% emerald ripple, 20% amber flash
-      if (Math.random() > 0.2) {
-        rippleRef.current = { time: t, cluster: Math.floor(Math.random() * CLUSTER_COUNT), active: true };
+    // Node colors: depth-based brightness + pulse + risk
+    const nc = data.colors;
+    const pulseCenter = data.clusters[data.pulse.c];
+    for (let i = 0; i < N; i++) {
+      const j = i * 3;
+      const depth = Math.max(0.15, 1 - (data.pos[j + 2] + 6) / 12);
+      const brightness = 0.5 + 0.4 * depth;
+
+      // Emerald pulse
+      const dx = data.pos[j] - pulseCenter.x, dy = data.pos[j + 1] - pulseCenter.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const pulseElapsed = t - data.pulse.t;
+      const pulseWave = Math.max(0, 1 - Math.abs(pulseElapsed * 3 - dist) / 2);
+      const pulseStrength = pulseElapsed < 2 ? pulseWave * Math.max(0, 1 - pulseElapsed / 2) : 0;
+
+      // Amber risk
+      const isRisk = i === data.risk.i && t - data.risk.t < 0.4;
+      const riskStrength = isRisk ? Math.max(0, 1 - (t - data.risk.t) / 0.4) : 0;
+
+      if (riskStrength > 0.01) {
+        nc[j] = 0.96; nc[j + 1] = 0.62; nc[j + 2] = 0.04;
+      } else if (pulseStrength > 0.01) {
+        const ps = pulseStrength;
+        nc[j] = brightness * (1 - ps) + 0.063 * ps;
+        nc[j + 1] = brightness * (1 - ps) + 0.725 * ps;
+        nc[j + 2] = brightness * (1 - ps) + 0.506 * ps;
       } else {
-        amberRef.current = { time: t, node: Math.floor(Math.random() * NODE_COUNT) };
+        nc[j] = brightness; nc[j + 1] = brightness; nc[j + 2] = brightness;
       }
     }
 
-    // Apply emerald ripple
-    if (rippleRef.current.active) {
-      const elapsed = t - rippleRef.current.time;
-      if (elapsed < 1.5) {
-        const ci = rippleRef.current.cluster;
-        const clusterNodes = clusters[ci];
-        const rippleRadius = elapsed * 4;
-        const cx = clusterNodes.length > 0 ? nArr[clusterNodes[0] * 3] : 0;
-        const cy = clusterNodes.length > 0 ? nArr[clusterNodes[0] * 3 + 1] : 0;
-        
-        for (let i = 0; i < NODE_COUNT; i++) {
-          const dx = nArr[i * 3] - cx;
-          const dy = nArr[i * 3 + 1] - cy;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < rippleRadius) {
-            const intensity = Math.max(0, 1 - elapsed / 1.5) * Math.max(0, 1 - dist / rippleRadius);
-            // Emerald: rgb(16, 185, 129) = #10b981
-            cArr[i * 3] = cArr[i * 3] * (1 - intensity) + 0.063 * intensity;
-            cArr[i * 3 + 1] = cArr[i * 3 + 1] * (1 - intensity) + 0.725 * intensity;
-            cArr[i * 3 + 2] = cArr[i * 3 + 2] * (1 - intensity) + 0.506 * intensity;
-          }
-        }
-      } else {
-        rippleRef.current.active = false;
-      }
+    // Edge positions
+    for (let i = 0; i < data.edges.length; i += 2) {
+      const a = data.edges[i] * 3, b = data.edges[i + 1] * 3, o = i * 3;
+      data.epos[o] = data.pos[a]; data.epos[o + 1] = data.pos[a + 1]; data.epos[o + 2] = data.pos[a + 2];
+      data.epos[o + 3] = data.pos[b]; data.epos[o + 4] = data.pos[b + 1]; data.epos[o + 5] = data.pos[b + 2];
     }
 
-    // Amber flash
-    if (amberRef.current.node >= 0) {
-      const elapsed = t - amberRef.current.time;
-      if (elapsed < 0.8) {
-        const ni = amberRef.current.node;
-        const intensity = Math.max(0, 1 - elapsed / 0.8);
-        // Amber: #f59e0b
-        cArr[ni * 3] = 0.96 * intensity + cArr[ni * 3] * (1 - intensity);
-        cArr[ni * 3 + 1] = 0.62 * intensity + cArr[ni * 3 + 1] * (1 - intensity);
-        cArr[ni * 3 + 2] = 0.04 * intensity + cArr[ni * 3 + 2] * (1 - intensity);
-      } else {
-        amberRef.current.node = -1;
-      }
+    // Particle flow along edges
+    for (let i = 0; i < P; i++) {
+      const m = data.pmeta[i];
+      if (m.e >= data.edges.length) m.e = 0;
+      const a = data.edges[m.e] * 3, b = data.edges[m.e + 1] * 3;
+      m.t = (m.t + m.s) % 1;
+      data.ppos[i * 3] = THREE.MathUtils.lerp(data.pos[a], data.pos[b], m.t);
+      data.ppos[i * 3 + 1] = THREE.MathUtils.lerp(data.pos[a + 1], data.pos[b + 1], m.t);
+      data.ppos[i * 3 + 2] = THREE.MathUtils.lerp(data.pos[a + 2], data.pos[b + 2], m.t);
     }
 
-    colors.needsUpdate = true;
+    // Flag updates
+    if (nodesRef.current) {
+      const g = nodesRef.current.geometry;
+      (g.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+      (g.attributes.color as THREE.BufferAttribute).needsUpdate = true;
+    }
+    if (linesRef.current) {
+      (linesRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+    }
+    if (partsRef.current) {
+      (partsRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+    }
   });
 
   return (
     <>
-      <points ref={nodesRef} geometry={nodeGeo}>
-        <pointsMaterial vertexColors size={2} sizeAttenuation transparent opacity={0.7} depthWrite={false} />
+      <points ref={nodesRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[data.pos, 3]} />
+          <bufferAttribute attach="attributes-color" args={[data.colors, 3]} />
+        </bufferGeometry>
+        <pointsMaterial size={0.03} sizeAttenuation transparent opacity={0.9} vertexColors depthWrite={false} />
       </points>
-      <lineSegments ref={edgesRef} geometry={edgeGeo}>
-        <lineBasicMaterial color={0x444444} transparent opacity={0.12} depthWrite={false} />
+      <lineSegments ref={linesRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[data.epos, 3]} />
+        </bufferGeometry>
+        <lineBasicMaterial color="#94a3b8" transparent opacity={0.12} depthWrite={false} />
       </lineSegments>
-      <points ref={particlesRef} geometry={particleGeo}>
-        <pointsMaterial color={0xffffff} size={1.5} sizeAttenuation transparent opacity={0.5} depthWrite={false} />
+      <points ref={partsRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[data.ppos, 3]} />
+        </bufferGeometry>
+        <pointsMaterial color="#ffffff" size={0.018} sizeAttenuation transparent opacity={0.85} depthWrite={false} />
       </points>
     </>
   );
 }
 
-function BackgroundGrid() {
+function Grid() {
   const geo = useMemo(() => {
-    const positions: number[] = [];
-    const range = 20;
-    const step = 1;
-    for (let x = -range; x <= range; x += step) {
-      positions.push(x, -range, -8, x, range, -8);
-    }
-    for (let y = -range; y <= range; y += step) {
-      positions.push(-range, y, -8, range, y, -8);
-    }
+    const p: number[] = [];
+    for (let x = -20; x <= 20; x += 1) { p.push(x, -20, -8, x, 20, -8); }
+    for (let y = -20; y <= 20; y += 1) { p.push(-20, y, -8, 20, y, -8); }
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    g.setAttribute("position", new THREE.Float32BufferAttribute(p, 3));
     return g;
   }, []);
-
-  return (
-    <lineSegments geometry={geo}>
-      <lineBasicMaterial color={0xffffff} transparent opacity={0.025} />
-    </lineSegments>
-  );
+  return <lineSegments geometry={geo}><lineBasicMaterial color="#ffffff" transparent opacity={0.02} /></lineSegments>;
 }
 
-const DataMeshVisualization = () => {
+export default function DataMeshVisualization() {
   return (
-    <div className="absolute inset-0" style={{ background: "#000000" }}>
+    <div className="absolute inset-0">
       <Canvas
-        camera={{ position: [0, 0, 8], fov: 60 }}
+        camera={{ position: [0, 0, 8], fov: 50 }}
         gl={{ antialias: true, alpha: false }}
+        onCreated={({ scene }) => { scene.background = new THREE.Color("#000000"); }}
         dpr={[1, 1.5]}
-        style={{ background: "#000000" }}
       >
-        <BackgroundGrid />
-        <DataMesh />
+        <Grid />
+        <Mesh />
       </Canvas>
+      <div className="absolute inset-0 bg-black/60" />
     </div>
   );
-};
-
-export default DataMeshVisualization;
+}
