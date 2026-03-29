@@ -101,7 +101,8 @@ const STAGE_GEOMETRIES = [
 ];
 
 const GeometricWireframe = ({ stageIdx, isActive }: { stageIdx: number; isActive: boolean }) => {
-  const paths = STAGE_GEOMETRIES[stageIdx] || [];
+  const stage = STAGE_GEOMETRIES[stageIdx];
+  if (!stage) return null;
   return (
     <svg viewBox="0 0 200 140" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       {/* Subtle grid */}
@@ -112,30 +113,44 @@ const GeometricWireframe = ({ stageIdx, isActive }: { stageIdx: number; isActive
         <line key={`h${i}`} x1="0" y1={i * 28} x2="200" y2={i * 28} stroke="white" strokeWidth="0.3" opacity="0.03" />
       ))}
 
-      {paths.map((d, i) => (
-        <motion.path
-          key={i}
-          d={d}
-          fill="none"
-          stroke="white"
-          strokeWidth={isActive ? (i === 0 ? 1.2 : 0.8) : 0.4}
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{
-            pathLength: isActive ? 1 : 0.6,
-            opacity: isActive ? (i === 0 ? 0.6 : 0.35) : 0.1,
-          }}
-          transition={{ duration: 0.6, delay: i * 0.08, ease: "easeInOut" }}
+      {/* Faceted fill triangles */}
+      {stage.fills.map((f, i) => (
+        <motion.polygon
+          key={`f${i}`}
+          points={f.points}
+          fill="white"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isActive ? f.opacity : f.opacity * 0.3 }}
+          transition={{ duration: 0.6, delay: i * 0.05, ease: "easeInOut" }}
         />
       ))}
 
-      {/* Pulse nodes at key vertices */}
+      {/* Wireframe paths */}
+      {stage.paths.map((d, i) => (
+        <motion.path
+          key={`p${i}`}
+          d={d}
+          fill="none"
+          stroke="white"
+          strokeWidth={isActive ? (i === 0 ? 1.2 : 0.7) : 0.4}
+          strokeLinejoin="miter"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{
+            pathLength: isActive ? 1 : 0.6,
+            opacity: isActive ? (i === 0 ? 0.6 : 0.4) : 0.1,
+          }}
+          transition={{ duration: 0.6, delay: i * 0.06, ease: "easeInOut" }}
+        />
+      ))}
+
+      {/* Pulse node at center */}
       {isActive && (
         <>
-          <circle cx="100" cy="60" r="3" fill="white" opacity="0.5">
+          <circle cx="100" cy="62" r="3" fill="white" opacity="0.5">
             <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite" />
             <animate attributeName="opacity" values="0.5;0.2;0.5" dur="2s" repeatCount="indefinite" />
           </circle>
-          <circle cx="100" cy="60" r="12" fill="none" stroke="white" strokeWidth="0.5" opacity="0.15">
+          <circle cx="100" cy="62" r="12" fill="none" stroke="white" strokeWidth="0.5" opacity="0.15">
             <animate attributeName="r" values="8;16;8" dur="3s" repeatCount="indefinite" />
             <animate attributeName="opacity" values="0.15;0.03;0.15" dur="3s" repeatCount="indefinite" />
           </circle>
