@@ -28,7 +28,7 @@ const Navbar = () => {
           <span className="font-heading text-white text-lg tracking-[0.08em] font-light">HEALTH</span>
         </a>
         <div className="flex items-center gap-6 md:gap-10">
-          <a href="#pipeline" className="hidden md:block font-mono text-base tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <a href="#pipeline" className="hidden md:block font-heading text-sm font-medium tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
             Architecture
           </a>
           <a href="#project-alpha" className="hidden md:block font-mono text-base tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
