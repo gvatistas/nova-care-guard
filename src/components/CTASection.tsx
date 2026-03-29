@@ -1,65 +1,6 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState, useCallback } from "react";
-
-// Crown geometry - sharp angular 5-point crown
-const CROWN = {
-  tips: [
-    { x: 120, y: 18 }, { x: 195, y: 8 }, { x: 270, y: 4 }, { x: 345, y: 8 }, { x: 420, y: 18 },
-  ],
-  valleys: [
-    { x: 157, y: 48 }, { x: 232, y: 42 }, { x: 308, y: 42 }, { x: 383, y: 48 },
-  ],
-  baseY: 58,
-  baseLeft: 85,
-  baseRight: 455,
-};
-
-function buildCrownOutline() {
-  const pts = [{ x: CROWN.baseLeft, y: CROWN.baseY }];
-  for (let i = 0; i < CROWN.tips.length; i++) {
-    pts.push(CROWN.tips[i]!);
-    if (i < CROWN.valleys.length) pts.push(CROWN.valleys[i]!);
-  }
-  pts.push({ x: CROWN.baseRight, y: CROWN.baseY });
-  return pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x},${p.y}`).join(" ");
-}
-
-// Scattered particle positions (will converge to crown vertices)
-function generateParticles() {
-  const crownPts: { x: number; y: number }[] = [];
-  // Add all crown geometry points
-  CROWN.tips.forEach(p => crownPts.push(p));
-  CROWN.valleys.forEach(p => crownPts.push(p));
-  crownPts.push({ x: CROWN.baseLeft, y: CROWN.baseY });
-  crownPts.push({ x: CROWN.baseRight, y: CROWN.baseY });
-  // Add midpoints along edges for more particles
-  for (let i = 0; i < CROWN.tips.length; i++) {
-    const tip = CROWN.tips[i]!;
-    if (i > 0) {
-      const valley = CROWN.valleys[i - 1]!;
-      crownPts.push({ x: (tip.x + valley.x) / 2, y: (tip.y + valley.y) / 2 });
-    }
-    if (i < CROWN.valleys.length) {
-      const valley = CROWN.valleys[i]!;
-      crownPts.push({ x: (tip.x + valley.x) / 2, y: (tip.y + valley.y) / 2 });
-    }
-    crownPts.push({ x: tip.x, y: CROWN.baseY });
-  }
-
-  return crownPts.map((target, i) => ({
-    target,
-    scatter: {
-      x: target.x + (Math.random() - 0.5) * 400,
-      y: target.y + (Math.random() - 0.5) * 200,
-    },
-    delay: 0.1 + i * 0.04,
-    size: 1 + Math.random() * 1.5,
-    driftAngle: Math.random() * Math.PI * 2,
-  }));
-}
-
-const PARTICLES = generateParticles();
-
+import { useRef } from "react";
+import FacetedCrownLogo from "@/components/FacetedCrownLogo";
 // Post-assembly drifting particles
 const DRIFT_PARTICLES = Array.from({ length: 20 }, (_, i) => ({
   startX: CROWN.tips[i % 5]!.x + (Math.random() - 0.5) * 30,
