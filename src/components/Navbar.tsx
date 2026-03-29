@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import medientLogo from "@/assets/medient-logo.jpg";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -18,20 +19,20 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
-        <div className="font-mono text-white text-sm tracking-[0.2em] uppercase font-light">
-          [Classified]
-        </div>
+        <a href="#" className="flex items-center gap-3">
+          <img src={medientLogo} alt="Medient Health" className="h-8 w-8 object-contain rounded-sm invert brightness-200" />
+          <span className="font-mono text-white text-sm tracking-[0.15em] uppercase font-light">
+            Medient
+          </span>
+        </a>
         <div className="flex items-center gap-10">
-          <a
-            href="#"
-            className="font-mono text-gray-500 text-[11px] tracking-[0.2em] uppercase hover:text-white transition-colors duration-300"
-          >
-            Whitepaper
+          <a href="#pipeline" className="hidden md:block font-mono text-gray-500 text-[11px] tracking-[0.2em] uppercase hover:text-white transition-colors duration-300">
+            Architecture
           </a>
-          <a
-            href="#contact"
-            className="font-mono text-[11px] tracking-[0.2em] uppercase text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300"
-          >
+          <a href="#project-beta" className="hidden md:block font-mono text-gray-500 text-[11px] tracking-[0.2em] uppercase hover:text-white transition-colors duration-300">
+            Project Beta
+          </a>
+          <a href="#contact" className="font-mono text-[11px] tracking-[0.2em] uppercase text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300">
             Get Started
           </a>
         </div>

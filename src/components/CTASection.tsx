@@ -1,19 +1,29 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import medientWatermark from "@/assets/medient-watermark.png";
 
 const CTASection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="contact" ref={ref} className="relative py-40 md:py-56">
-      <div className="max-w-[1400px] mx-auto px-8">
+    <section id="contact" ref={ref} className="relative py-40 md:py-56 overflow-hidden">
+      {/* Background watermark */}
+      <div className="absolute inset-0 flex items-center justify-end pointer-events-none">
+        <img
+          src={medientWatermark}
+          alt=""
+          className="w-[500px] opacity-[0.02] invert translate-x-1/4"
+        />
+      </div>
+
+      <div className="relative max-w-[1400px] mx-auto px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           className="max-w-3xl"
         >
-          <h2 className="text-white text-3xl md:text-5xl lg:text-6xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-10">
+          <h2 className="text-white text-3xl md:text-5xl lg:text-[4rem] font-mono font-light leading-[1.1] tracking-[-0.02em] mb-10">
             Probabilistic once.
             <br />
             <span className="text-gray-600">Deterministic forever.</span>
@@ -28,9 +38,9 @@ const CTASection = () => {
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <a
               href="#"
-              className="font-mono text-[11px] tracking-[0.15em] uppercase bg-white text-black px-10 py-4 hover:bg-gray-200 transition-colors duration-300"
+              className="group font-mono text-[11px] tracking-[0.15em] uppercase bg-white text-black px-10 py-4 hover:bg-gray-200 transition-all duration-300 relative overflow-hidden"
             >
-              Request Early Access
+              <span className="relative z-10">Request Early Access</span>
             </a>
             <a
               href="#"
@@ -51,7 +61,7 @@ const CTASection = () => {
       >
         <div className="max-w-[1400px] mx-auto px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="font-mono text-gray-600 text-xs">
-            © 2026 [Company Name TBD]. All rights reserved.
+            © 2026 Medient Health. All rights reserved.
           </div>
           <div className="flex items-center gap-8 font-mono text-gray-600 text-[11px] tracking-[0.15em] uppercase">
             <a href="#" className="hover:text-white transition-colors duration-300">Whitepaper</a>

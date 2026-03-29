@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import ParticleGrid from "@/components/ParticleGrid";
 import HeroSection from "@/components/HeroSection";
 import ProblemSection from "@/components/ProblemSection";
 import Level1Section from "@/components/Level1Section";
@@ -10,16 +11,19 @@ import CTASection from "@/components/CTASection";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <HeroSection />
-      <ProblemSection />
-      <Level1Section />
-      <PipelineSection />
-      <SegmentsSection />
-      <ProjectBetaSection />
-      <GuideBenchSection />
-      <CTASection />
+    <div className="min-h-screen bg-background relative">
+      <ParticleGrid />
+      <div className="relative z-10">
+        <Navbar />
+        <HeroSection />
+        <ProblemSection />
+        <Level1Section />
+        <PipelineSection />
+        <SegmentsSection />
+        <ProjectBetaSection />
+        <GuideBenchSection />
+        <CTASection />
+      </div>
     </div>
   );
 };
