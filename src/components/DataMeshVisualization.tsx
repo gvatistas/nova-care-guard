@@ -204,6 +204,14 @@ function Mesh() {
         </bufferGeometry>
         <pointsMaterial color="#ffffff" size={0.035} sizeAttenuation transparent opacity={0.8} depthWrite={false} />
       </points>
+      {data.triIndices.length > 0 && (
+        <mesh ref={trisRef}>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position" args={[data.triPos, 3]} />
+          </bufferGeometry>
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.03} side={THREE.DoubleSide} depthWrite={false} />
+        </mesh>
+      )}
     </>
   );
 }
