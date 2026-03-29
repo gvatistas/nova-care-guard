@@ -56,7 +56,10 @@ const differentiators = [
   },
 ];
 
-const CROWN_TIPS = [
+const TEAL = "hsl(160, 82%, 61%)";
+const TEAL_RGB = "74,237,196";
+
+
   { x: 150, y: 60 },
   { x: 375, y: 40 },
   { x: 600, y: 20 },
