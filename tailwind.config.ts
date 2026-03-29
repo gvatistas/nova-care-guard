@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         mono: ["JetBrains Mono", "monospace"],
         sans: ["Inter", "sans-serif"],
+        pixel: ["'Press Start 2P'", "cursive"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -60,6 +61,7 @@ export default {
         "warm-gray": "hsl(var(--warm-gray))",
         coral: "hsl(var(--coral))",
         gold: "hsl(var(--gold))",
+        "glow-green": "hsl(var(--glow-green))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

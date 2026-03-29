@@ -22,11 +22,8 @@ const Navbar = () => {
           <span className="text-teal">]</span>
         </div>
         <div className="flex items-center gap-8">
-          <a href="#project-beta" className="font-mono text-warm-gray text-xs tracking-[0.15em] uppercase hover:text-teal transition-colors">
-            Project Beta
-          </a>
-          <a href="#pipeline" className="font-mono text-warm-gray text-xs tracking-[0.15em] uppercase hover:text-teal transition-colors">
-            Architecture
+          <a href="#" className="font-mono text-warm-gray text-xs tracking-[0.15em] uppercase hover:text-teal transition-colors">
+            Whitepaper
           </a>
           <a href="#contact" className="font-mono text-warm-gray text-xs tracking-[0.15em] uppercase hover:text-teal transition-colors">
             Contact
