@@ -17,8 +17,8 @@ const HeroSection = () => {
       {/* Video background */}
       <div className="absolute inset-0">
         <video src="/medient-hero.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ opacity: 0.75 }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-background/20" />
       </div>
 
       {/* Crosshatch texture */}
