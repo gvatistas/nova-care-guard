@@ -30,12 +30,12 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full">
-        <div className="max-w-4xl">
+        <div className="max-w-5xl">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="text-white text-[2.2rem] sm:text-5xl md:text-6xl lg:text-7xl font-mono font-light leading-[1.05] tracking-[-0.03em]"
+            className="text-white text-[2.5rem] sm:text-5xl md:text-[4.2rem] lg:text-[5.5rem] font-mono font-light leading-[1.05] tracking-[-0.03em]"
           >
             The Bridge Between AI and <span className="text-accent">Evidence-Based</span> Healthcare
           </motion.h1>
