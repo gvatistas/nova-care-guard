@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
+
+const HeroVisualization = lazy(() => import("./HeroVisualization"));
 
 const HeroSection = () => {
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
@@ -29,7 +31,7 @@ const HeroSection = () => {
         style={{ background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, rgba(74,237,196,0.04), transparent 50%)` }} />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full grid grid-cols-1 lg:grid-cols-12">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full grid grid-cols-1 lg:grid-cols-12 items-center">
         <div className="lg:col-span-5">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
@@ -63,6 +65,13 @@ const HeroSection = () => {
               <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 2, repeat: Infinity }} className="text-lg">↓</motion.span>
             </a>
           </motion.div>
+        </div>
+
+        {/* Right: 3D Visualization */}
+        <div className="hidden lg:block lg:col-span-7 h-[600px]">
+          <Suspense fallback={null}>
+            <HeroVisualization />
+          </Suspense>
         </div>
       </div>
 
