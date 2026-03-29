@@ -6,7 +6,7 @@ import PatientNarrativeSection from "@/components/PatientNarrativeSection";
 import Level1Section from "@/components/Level1Section";
 import PipelineSection from "@/components/PipelineSection";
 import SegmentsSection from "@/components/SegmentsSection";
-import ProjectBetaSection from "@/components/ProjectBetaSection";
+import ProjectAlphaSection from "@/components/ProjectAlphaSection";
 import GuideBenchSection from "@/components/GuideBenchSection";
 import CTASection from "@/components/CTASection";
 
@@ -48,7 +48,7 @@ const Index = () => {
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
-          <ProjectBetaSection />
+          <ProjectAlphaSection />
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
