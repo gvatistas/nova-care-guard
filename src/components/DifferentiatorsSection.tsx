@@ -73,7 +73,6 @@ const DifferentiatorsSection = () => {
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-6">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-7">
-            <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-3">Why Medient</div>
             <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">
               Not another AI wrapper. <span className="text-gray-500">A compiler.</span>
             </h2>

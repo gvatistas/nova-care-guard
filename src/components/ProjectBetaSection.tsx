@@ -22,12 +22,6 @@ const ProjectBetaSection = () => {
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-6">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-7">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-2 h-2 bg-accent rotate-45">
-                <div className="w-full h-full bg-accent animate-ping rounded-none" />
-              </div>
-              <span className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70">Live Deployment</span>
-            </div>
             <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">Project Beta</h2>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="lg:col-span-5 flex items-end">

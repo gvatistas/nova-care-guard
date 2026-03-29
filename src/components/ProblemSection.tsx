@@ -24,13 +24,9 @@ const ProblemSection = () => {
     <section ref={ref} className="relative py-14 md:py-20 texture-crosshatch">
       <div className="absolute top-0 left-0 w-96 h-96 bg-[radial-gradient(ellipse,rgba(74,237,196,0.03),transparent_70%)] pointer-events-none" />
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
-          className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-3">
-          The Problem
-        </motion.div>
         <motion.h2 initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2 }}
-          className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-4xl whitespace-nowrap sm:whitespace-normal">
-          Healthcare has an <span className="text-accent">interoperability problem.</span>
+          className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-4xl">
+          Healthcare has an <span className="text-[hsl(0,72%,60%)]">interoperability problem.</span>
         </motion.h2>
         <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
           className="text-gray-300 text-lg md:text-xl font-light mt-4 max-w-2xl leading-relaxed">
