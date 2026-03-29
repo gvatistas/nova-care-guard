@@ -128,13 +128,13 @@ function Mesh() {
       const rs = isRisk ? Math.max(0, 1 - (t - data.risk.t) / 0.5) : 0;
 
       if (rs > 0.01) {
-        nc[j] = b * (1 - rs) + 0.96 * rs;
-        nc[j + 1] = b * (1 - rs) + 0.62 * rs;
-        nc[j + 2] = b * (1 - rs) + 0.04 * rs;
+        nc[j] = b * (1 - rs) + 0.5 * rs;
+        nc[j + 1] = b * (1 - rs) + 0.5 * rs;
+        nc[j + 2] = b * (1 - rs) + 0.5 * rs;
       } else if (wave > 0.01) {
-        nc[j] = b * (1 - wave) + 0.063 * wave;
-        nc[j + 1] = b * (1 - wave) + 0.725 * wave;
-        nc[j + 2] = b * (1 - wave) + 0.506 * wave;
+        nc[j] = b * (1 - wave) + 1.0 * wave;
+        nc[j + 1] = b * (1 - wave) + 1.0 * wave;
+        nc[j + 2] = b * (1 - wave) + 0.9 * wave;
       } else {
         nc[j] = b; nc[j + 1] = b; nc[j + 2] = b;
       }

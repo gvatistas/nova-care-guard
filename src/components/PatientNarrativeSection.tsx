@@ -182,7 +182,7 @@ const PatientNarrativeSection = () => {
             className="border border-white/[0.08] bg-background/50 p-6 md:p-8"
           >
             <h3 className="font-mono tracking-[0.18em] uppercase mb-6 flex items-center gap-2" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)" }}>
-              <span className="w-1.5 h-1.5 rounded-full opacity-80" style={{ backgroundColor: "#10b981" }} />
+              <span className="w-1.5 h-1.5 rounded-full opacity-80" style={{ backgroundColor: "#e5e5e5" }} />
               With Medient
             </h3>
             <p className="font-mono tracking-[0.1em] uppercase mb-4" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
@@ -203,7 +203,7 @@ const PatientNarrativeSection = () => {
                     transition={{ delay: 0.6 + i * 0.25, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     className="mt-0.5 w-4 h-4 flex-shrink-0 border border-white/20 bg-white/5 flex items-center justify-center"
                   >
-                    <span style={{ color: "#10b981", fontSize: "0.875rem" }}>✓</span>
+                    <span style={{ color: "#e5e5e5", fontSize: "0.875rem" }}>✓</span>
                   </motion.span>
                   <div>
                     <div className="font-mono text-white/90" style={{ fontSize: "1rem" }}>{s.name}</div>

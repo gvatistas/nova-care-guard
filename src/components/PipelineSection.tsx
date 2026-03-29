@@ -163,7 +163,7 @@ const GeometricWireframe = ({ stageIdx, isActive }: { stageIdx: number; isActive
 const StageBadge = ({ stage }: { stage: typeof stages[0] }) => (
   <span className="inline-flex items-center gap-1.5 font-mono" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
     {stage.badgeType === "pulse" && (
-      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#10b981" }} />
+      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "rgba(255,255,255,0.7)" }} />
     )}
     {stage.badgeType === "check" && (
       <Check size={14} strokeWidth={2.5} style={{ color: "rgba(255,255,255,0.5)" }} />
@@ -382,10 +382,10 @@ const PipelineSection = () => {
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}
           className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
           {[
-            { name: "SOC 2 Type II", status: "In Progress", color: "#f59e0b" },
-            { name: "HIPAA", status: "Compliant", color: "#10b981" },
-            { name: "FHIR R4", status: "Native", color: "#10b981" },
-            { name: "FDA SaMD", status: "Pathway Active", color: "#f59e0b" },
+            { name: "SOC 2 Type II", status: "In Progress", color: "#999999" },
+            { name: "HIPAA", status: "Compliant", color: "#e5e5e5" },
+            { name: "FHIR R4", status: "Native", color: "#e5e5e5" },
+            { name: "FDA SaMD", status: "Pathway Active", color: "#999999" },
           ].map((cert, i) => (
             <div key={i} className="bg-black p-4 md:p-5 group hover:bg-white/[0.015] transition-all duration-300 flex items-center justify-between">
               <h4 className="font-mono text-white font-light transition-colors duration-300" style={{ fontSize: "1.125rem" }}>{cert.name}</h4>
