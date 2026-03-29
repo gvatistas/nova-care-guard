@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import ParticleGrid from "@/components/ParticleGrid";
 import HeroSection from "@/components/HeroSection";
 import PatientNarrativeSection from "@/components/PatientNarrativeSection";
+import DecisionTreeSection from "@/components/DecisionTreeSection";
 import Level1Section from "@/components/Level1Section";
 import PipelineSection from "@/components/PipelineSection";
 import SegmentsSection from "@/components/SegmentsSection";
@@ -33,6 +34,10 @@ const Index = () => {
         <GeoDivider />
         <ScrollReveal>
           <PatientNarrativeSection />
+        </ScrollReveal>
+        <GeoDivider />
+        <ScrollReveal>
+          <DecisionTreeSection />
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>

@@ -58,7 +58,20 @@ const HeroSection = () => {
     };
   }, []);
 
-          {/* Headline */}
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: "linear-gradient(to bottom, #15171b, #1a1d21)" }}>
+      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-24">
+        <div className="max-w-3xl flex flex-col">
+          <motion.div
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="mb-8"
+          >
+            <FacetedCrownLogo size={80} />
+          </motion.div>
+
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -69,7 +82,6 @@ const HeroSection = () => {
             Unlocking the proactive healthcare patients deserve.
           </motion.h1>
 
-          {/* Subhead */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -80,11 +92,10 @@ const HeroSection = () => {
             The healthcare system was not built for prevention. We are changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it is too late.
           </motion.p>
 
-          {/* CTA buttons */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.8 }}
+            transition={{ duration: 0.8, delay: 1 }}
             className="mt-8 flex flex-row gap-4"
           >
             <a
@@ -103,7 +114,6 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
