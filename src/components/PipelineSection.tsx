@@ -1,5 +1,6 @@
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { Check, Lock } from "lucide-react";
 
 const stages = [
   { num: "01", name: "INGEST", short: "Parse & Structure", desc: "Clinical guidelines deconstructed from unstructured knowledge into atomic logical components.", icon: "↓" },
