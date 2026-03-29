@@ -18,25 +18,34 @@ const HeroSection = () => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       onMouseMove={handleMouse}
     >
+      {/* Background video */}
+      <div className="absolute inset-0">
+        <video
+          src="/medient-hero.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+          style={{ opacity: 0.4 }}
+        />
+        {/* Gradient overlays for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/60" />
+      </div>
+
+      {/* Mouse-following glow */}
       <div
         className="absolute inset-0 pointer-events-none transition-none"
         style={{
-          background: `radial-gradient(800px circle at ${mousePos.x}% ${mousePos.y}%, rgba(74,237,196,0.06), transparent 50%)`,
+          background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, rgba(74,237,196,0.04), transparent 50%)`,
         }}
       />
 
+      {/* Watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <img src={medientWatermark} alt="" className="w-[600px] md:w-[800px] opacity-[0.03] invert" />
+        <img src={medientWatermark} alt="" className="w-[600px] md:w-[800px] opacity-[0.02] invert" />
       </div>
-
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(74,237,196,0.03)_0%,transparent_50%)]" />
-
-      <motion.div
-        initial={{ y: "-100%" }}
-        animate={{ y: "200%" }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/10 to-transparent pointer-events-none"
-      />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full">
         <div className="max-w-5xl">
