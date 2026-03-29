@@ -13,58 +13,39 @@ const GuideBenchSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="relative py-40 md:py-56">
+    <section ref={ref} className="relative py-32 md:py-44">
       <div className="max-w-[1400px] mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          {/* Left */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            className="lg:col-span-5"
-          >
-            <div className="font-mono text-[11px] tracking-[0.3em] uppercase text-gray-600 mb-8">
-              Open Source
-            </div>
-            <h2 className="text-white text-3xl md:text-5xl font-mono font-light leading-[1.1] tracking-[-0.02em] mb-8">
+          <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-5">
+            <div className="font-mono text-sm tracking-[0.25em] uppercase text-gray-500 mb-8">Open Source</div>
+            <h2 className="text-white text-4xl md:text-6xl font-mono font-light leading-[1.1] tracking-[-0.02em] mb-8">
               GuideBench
             </h2>
-            <p className="text-gray-500 text-base font-light leading-relaxed mb-10">
+            <p className="text-gray-400 text-lg leading-relaxed mb-8">
               The open-source clinical decision logic evaluation framework.
               10 representative guidelines. 50–100 synthetic patients each.
               4 fidelity metrics.
             </p>
-            <p className="text-white text-lg font-light mb-8">
+            <p className="text-white text-xl font-light mb-8">
               We wrote the test. Then we open-sourced it.
             </p>
 
-            {/* Overall score */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.5 }}
               className="bg-white/[0.02] border border-white/[0.06] p-8 mb-10"
             >
-              <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-3">
-                Aggregate Score
-              </div>
-              <div className="font-mono text-accent text-4xl md:text-5xl font-light tracking-tight">
-                98.8%
-              </div>
-              <div className="text-gray-600 text-xs font-light mt-2">
-                across 10 guidelines, 750+ synthetic patients
-              </div>
+              <div className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500 mb-3">Aggregate Score</div>
+              <div className="font-mono text-accent text-5xl md:text-6xl font-light tracking-tight">98.8%</div>
+              <div className="text-gray-500 text-sm mt-3">across 10 guidelines, 750+ synthetic patients</div>
             </motion.div>
 
-            <a
-              href="#"
-              className="font-mono text-[11px] tracking-[0.15em] uppercase text-gray-400 hover:text-white transition-colors duration-300 border-b border-gray-700 pb-1 inline-flex items-center gap-2"
-            >
-              Explore GuideBench
-              <span className="text-sm">→</span>
+            <a href="#" className="font-mono text-sm tracking-[0.1em] uppercase text-gray-400 hover:text-white transition-colors duration-300 border-b border-gray-700 pb-1 inline-flex items-center gap-2">
+              Explore GuideBench <span className="text-base">→</span>
             </a>
           </motion.div>
 
-          {/* Right — metrics with visual bars */}
           <div className="lg:col-span-7">
             <div className="border-t border-white/[0.06]">
               {metrics.map((metric, i) => (
@@ -73,18 +54,16 @@ const GuideBenchSection = () => {
                   initial={{ opacity: 0 }}
                   animate={inView ? { opacity: 1 } : {}}
                   transition={{ delay: 0.3 + i * 0.15 }}
-                  className="border-b border-white/[0.06] py-10 px-2 hover:bg-white/[0.01] transition-colors duration-300"
+                  className="border-b border-white/[0.06] py-10 px-4 hover:bg-white/[0.015] transition-colors duration-300"
                 >
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-accent text-sm">✓</span>
-                      <h3 className="font-mono text-white text-sm font-light">{metric.name}</h3>
+                      <span className="font-mono text-accent text-base">✓</span>
+                      <h3 className="font-mono text-white text-base md:text-lg font-light">{metric.name}</h3>
                     </div>
-                    <span className="font-mono text-accent text-sm">{metric.score}</span>
+                    <span className="font-mono text-accent text-base md:text-lg">{metric.score}</span>
                   </div>
-
-                  {/* Progress bar */}
-                  <div className="h-px bg-white/[0.06] mb-4 overflow-hidden">
+                  <div className="h-px bg-white/[0.06] mb-5 overflow-hidden">
                     <motion.div
                       initial={{ scaleX: 0 }}
                       animate={inView ? { scaleX: parseFloat(metric.score) / 100 } : {}}
@@ -92,8 +71,7 @@ const GuideBenchSection = () => {
                       className="h-full bg-accent/30 origin-left"
                     />
                   </div>
-
-                  <p className="text-gray-500 text-sm font-light leading-relaxed">{metric.desc}</p>
+                  <p className="text-gray-400 text-base leading-relaxed">{metric.desc}</p>
                 </motion.div>
               ))}
             </div>
