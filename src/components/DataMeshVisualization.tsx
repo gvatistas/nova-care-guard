@@ -83,6 +83,9 @@ function Mesh() {
   const nodesRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
   const partsRef = useRef<THREE.Points>(null);
+  const trisRef = useRef<THREE.Mesh>(null);
+  const lastEvent = useRef(0);
+  const partsRef = useRef<THREE.Points>(null);
   const lastEvent = useRef(0);
 
   useFrame(({ clock, camera }) => {
