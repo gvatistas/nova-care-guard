@@ -60,8 +60,8 @@ const PATHS: number[][] = [
 
 const WHITE = new THREE.Color(0xffffff);
 const WHITE_DIM = new THREE.Color(0x555555);
-const AMBER = new THREE.Color(0xf59e0b);
-const GREEN_BRIGHT = new THREE.Color(0x10b981);
+const AMBER = new THREE.Color(0x888888);
+const GREEN_BRIGHT = new THREE.Color(0xdddddd);
 
 function HumanMesh() {
   const lineRef = useRef<THREE.LineSegments>(null);
