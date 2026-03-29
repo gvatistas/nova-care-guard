@@ -31,7 +31,7 @@ const HeroSection = () => {
         style={{ background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, rgba(74,237,196,0.04), transparent 50%)` }} />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full grid grid-cols-1 lg:grid-cols-12">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full grid grid-cols-1 lg:grid-cols-12 items-center">
         <div className="lg:col-span-5">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
