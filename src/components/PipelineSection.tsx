@@ -256,6 +256,8 @@ const PipelineSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredStage, setHoveredStage] = useState<number | null>(null);
   const [autoStage, setAutoStage] = useState(0);
+  const [activeDiff, setActiveDiff] = useState(0);
+  const diff = differentiators[activeDiff]!;
 
   // Auto-cycle when not hovering
   useEffect(() => {
