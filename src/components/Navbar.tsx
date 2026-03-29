@@ -23,8 +23,9 @@ const Navbar = () => {
     >
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
-          <MedientCrownLogo size={36} />
+          <FacetedCrownLogo size={36} color="white" />
           <span className="font-mono text-white text-lg tracking-[0.08em] font-light">MEDIENT</span>
+          <span className="font-mono text-white text-lg tracking-[0.08em] font-extralight">HEALTH</span>
         </a>
         <div className="flex items-center gap-6 md:gap-10">
           <a href="#pipeline" className="hidden md:block font-mono text-base tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
