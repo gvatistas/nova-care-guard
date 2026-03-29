@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
 import medientWatermark from "@/assets/medient-watermark.png";
+import { useState } from "react";
 
 const HeroSection = () => {
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
@@ -34,26 +34,8 @@ const HeroSection = () => {
             The Bridge Between AI and{" "}<span className="text-accent">Evidence-Based</span> Healthcare
           </motion.h1>
 
-          {/* Visual stat badges instead of paragraph text */}
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-            className="mt-10 md:mt-12 flex flex-wrap gap-3">
-            {[
-              { val: "54%", label: "of recommended care delivered", color: "accent" },
-              { val: "1M+", label: "preventable deaths / year", color: "[hsl(0,72%,60%)]" },
-              { val: "20 yrs", label: "no improvement", color: "[hsl(210,70%,55%)]" },
-            ].map((s, i) => (
-              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1 + i * 0.15, type: "spring" }}
-                className="border border-white/[0.08] bg-white/[0.02] px-5 py-3 panel-3d backdrop-blur-sm">
-                <span className={`font-mono text-2xl md:text-3xl font-light text-${s.color}`}>{s.val}</span>
-                <span className="text-gray-500 text-sm ml-3">{s.label}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.4 }}
+            transition={{ duration: 0.8, delay: 1 }}
             className="mt-8 md:mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <a href="#contact" className="group font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent hover:shadow-[0_0_30px_rgba(74,237,196,0.3)] transition-all duration-500 panel-3d">Request Access</a>
             <a href="#pipeline" className="font-mono text-sm tracking-[0.1em] uppercase text-gray-400 hover:text-white transition-colors duration-300 flex items-center gap-2">
