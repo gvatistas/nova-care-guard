@@ -59,8 +59,7 @@ const differentiators = [
 const TEAL = "hsl(160, 82%, 61%)";
 const TEAL_RGB = "74,237,196";
 
-
-  { x: 150, y: 60 },
+const CROWN_TIPS = [
   { x: 375, y: 40 },
   { x: 600, y: 20 },
   { x: 825, y: 40 },
