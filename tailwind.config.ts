@@ -15,8 +15,7 @@ export default {
     extend: {
       fontFamily: {
         mono: ["JetBrains Mono", "monospace"],
-        sans: ["Inter", "sans-serif"],
-        pixel: ["'Press Start 2P'", "cursive"],
+        sans: ["Inter", "-apple-system", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -52,16 +51,18 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        void: "hsl(var(--void))",
-        "deep-field": "hsl(var(--deep-field))",
-        "grid-line": "hsl(var(--grid-line))",
+        gray: {
+          950: "hsl(var(--gray-950))",
+          900: "hsl(var(--gray-900))",
+          800: "hsl(var(--gray-800))",
+          700: "hsl(var(--gray-700))",
+          600: "hsl(var(--gray-600))",
+          500: "hsl(var(--gray-500))",
+          400: "hsl(var(--gray-400))",
+          300: "hsl(var(--gray-300))",
+          200: "hsl(var(--gray-200))",
+        },
         teal: "hsl(var(--teal))",
-        lilac: "hsl(var(--lilac))",
-        pearl: "hsl(var(--pearl))",
-        "warm-gray": "hsl(var(--warm-gray))",
-        coral: "hsl(var(--coral))",
-        gold: "hsl(var(--gold))",
-        "glow-green": "hsl(var(--glow-green))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

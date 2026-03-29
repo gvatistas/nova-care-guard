@@ -1,80 +1,81 @@
 import { motion } from "framer-motion";
-import Orb from "./Orb";
 import arcadeCabinet from "@/assets/pixel-arcade-cabinet.png";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-      {/* CRT overlay */}
-      <div className="absolute inset-0 crt-overlay z-10" />
-
-      {/* Vignette */}
-      <div className="absolute inset-0 z-[5]" style={{
-        background: "radial-gradient(ellipse at center, transparent 50%, hsl(var(--void) / 0.6) 100%)"
-      }} />
-
-      {/* Pixel dust particles */}
-      {Array.from({ length: 20 }).map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-px h-px bg-pearl/20 z-[2]"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animation: `pixel-dust ${4 + Math.random() * 4}s ease-in-out infinite`,
-            animationDelay: `${Math.random() * 6}s`,
-          }}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background — the arcade cabinet as a cinematic backdrop */}
+      <div className="absolute inset-0">
+        <img
+          src={arcadeCabinet}
+          alt=""
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] opacity-[0.08] blur-[1px]"
         />
-      ))}
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
+      </div>
 
-      <div className="relative z-20 flex flex-col items-center text-center px-6">
-        {/* Arcade cabinet image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="relative mb-8"
-        >
-          {/* The Orb floating above the cabinet */}
+      <div className="relative z-10 max-w-[1400px] mx-auto px-8 w-full">
+        <div className="max-w-4xl">
+          {/* Overline */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 1 }}
-            className="absolute -top-20 left-1/2 -translate-x-1/2 z-30"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="font-mono text-[11px] tracking-[0.3em] uppercase text-gray-500 mb-8"
           >
-            <Orb size={100} />
+            Clinical Decision Infrastructure
           </motion.div>
 
-          <img
-            src={arcadeCabinet}
-            alt="Isometric pixel art arcade cabinet displaying The Clinical Decision Compiler"
-            width={480}
-            height={480}
-            className="pixel-render max-w-[320px] md:max-w-[420px] lg:max-w-[480px]"
-          />
-        </motion.div>
+          {/* Headline — massive, confident */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="text-white text-[clamp(2.5rem,7vw,6rem)] font-mono font-light leading-[1.05] tracking-[-0.03em]"
+          >
+            The Clinical
+            <br />
+            Decision Compiler
+          </motion.h1>
 
-        {/* INSERT COIN prompt */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4 }}
-          className="flex flex-col items-center gap-3"
-        >
-          <span
-            className="font-pixel text-gold text-sm md:text-base tracking-wider"
-            style={{ animation: "coin-blink 1.2s ease-in-out infinite" }}
+          {/* Sub — restrained */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="text-gray-500 text-lg md:text-xl font-light mt-10 max-w-xl leading-relaxed"
           >
-            INSERT COIN ▼
-          </span>
-          <div
-            className="text-gold/60 text-lg"
-            style={{ animation: "bounce-arrow 1s ease-in-out infinite" }}
+            We compile clinical guidelines into formally verified,
+            deterministic decision artifacts. No inference at runtime.
+          </motion.p>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.2 }}
+            className="mt-14 flex items-center gap-6"
           >
-            ⌄
-          </div>
-        </motion.div>
+            <a
+              href="#contact"
+              className="font-mono text-[11px] tracking-[0.15em] uppercase bg-white text-black px-8 py-4 hover:bg-gray-200 transition-colors duration-300"
+            >
+              Request Access
+            </a>
+            <a
+              href="#pipeline"
+              className="font-mono text-[11px] tracking-[0.15em] uppercase text-gray-400 hover:text-white transition-colors duration-300 flex items-center gap-2"
+            >
+              How it works
+              <span className="text-lg">↓</span>
+            </a>
+          </motion.div>
+        </div>
       </div>
+
+      {/* Bottom line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </section>
   );
 };
