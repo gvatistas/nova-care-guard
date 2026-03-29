@@ -34,7 +34,7 @@ const ProblemSection = () => {
         </motion.h2>
         <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
           className="text-gray-300 text-lg md:text-xl font-light mt-4 max-w-2xl leading-relaxed">
-          Clinical guidelines exist as unstructured PDFs — opened once, then forgotten.
+          Every clinical decision requires a human to interpret, recall, and apply complex guidelines in real-time.
           <span className="text-white font-normal"> The result is systemic failure at population scale.</span>
         </motion.p>
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.06]">
