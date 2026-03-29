@@ -18,9 +18,12 @@ const browser = await openBrowser("chrome", {
   chromeMode: "chrome-for-testing",
 });
 
+const compositionId = process.argv[2] || "hero";
+const outputPath = process.argv[3] || "/mnt/documents/medient-hero.mp4";
+
 const composition = await selectComposition({
   serveUrl: bundled,
-  id: "main",
+  id: compositionId,
   puppeteerInstance: browser,
 });
 
@@ -28,11 +31,11 @@ await renderMedia({
   composition,
   serveUrl: bundled,
   codec: "h264",
-  outputLocation: "/mnt/documents/medient-patient-journey.mp4",
+  outputLocation: outputPath,
   puppeteerInstance: browser,
   muted: true,
   concurrency: 1,
 });
 
 await browser.close({ silent: false });
-console.log("Render complete: /mnt/documents/medient-patient-journey.mp4");
+console.log(`Render complete: ${outputPath}`);
