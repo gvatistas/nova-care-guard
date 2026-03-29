@@ -18,7 +18,7 @@ const Navbar = () => {
       style={{
         backdropFilter: scrolled ? "blur(12px)" : "none",
         WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
-        backgroundColor: scrolled ? "rgba(0,0,0,0.8)" : "transparent",
+        backgroundColor: scrolled ? "rgba(26,29,33,0.9)" : "transparent",
       }}
     >
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">

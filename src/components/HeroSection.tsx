@@ -1,57 +1,148 @@
-import { lazy, Suspense } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-
-const DataMeshVisualization = lazy(() => import("./DataMeshVisualization"));
+import FacetedCrownLogo from "./FacetedCrownLogo";
 
 const HeroSection = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationId: number;
+    const particles: { x: number; y: number; vy: number; size: number; opacity: number }[] = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    const init = () => {
+      resize();
+      particles.length = 0;
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vy: -(Math.random() * 0.3 + 0.1),
+          size: Math.random() * 1.5 + 0.5,
+          opacity: Math.random() * 0.2 + 0.1,
+        });
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.y += p.vy;
+        if (p.y < -5) {
+          p.y = canvas.height + 5;
+          p.x = Math.random() * canvas.width;
+        }
+        ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      animationId = requestAnimationFrame(draw);
+    };
+
+    init();
+    draw();
+    window.addEventListener("resize", resize);
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  const words = ["THE", "CLINICAL", "DECISION", "COMPILER"];
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div className="absolute inset-0 bg-black" />}>
-          <DataMeshVisualization />
-        </Suspense>
-      </div>
-      <div className="absolute inset-0 z-10 bg-black/60" />
-      <div className="relative z-20 mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-24">
-        <div className="max-w-3xl">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "4rem", fontWeight: 700, lineHeight: 1.1, color: "#ffffff" }}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: "linear-gradient(to bottom, #15171b, #1a1d21)" }}>
+      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-24">
+        <div className="max-w-3xl flex flex-col">
+          {/* Crown logo */}
+          <motion.div
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="mb-8"
           >
-            Unlocking the proactive healthcare patients deserve.
-          </motion.h1>
+            <FacetedCrownLogo size={80} />
+          </motion.div>
+
+          {/* Headline — each word on its own line */}
+          <h1>
+            {words.map((word, i) => (
+              <motion.span
+                key={word}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 + i * 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="block font-mono font-bold text-white"
+                style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.1 }}
+              >
+                {word}
+              </motion.span>
+            ))}
+          </h1>
+
+          {/* Subhead */}
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.125rem", color: "rgba(255,255,255,0.7)", maxWidth: 640, marginTop: "1.5rem", lineHeight: 1.7 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+            className="mt-6 font-sans text-lg text-white/50"
+            style={{ maxWidth: 640, lineHeight: 1.7 }}
           >
-            The healthcare system was not built for prevention. We are changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it is too late.
+            Intelligent infrastructure that catches what matters before it is too late.
           </motion.p>
+
+          {/* CTA buttons */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
+            transition={{ duration: 0.8, delay: 1.8 }}
             className="mt-8 flex flex-row gap-4"
           >
             <a
               href="#contact"
-              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.875rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, backgroundColor: "#ffffff", color: "#000000", padding: "14px 32px" }}
+              className="font-mono text-xs uppercase tracking-[0.15em] text-white border border-white/40 bg-transparent px-8 py-3.5 transition-all duration-300 hover:bg-white hover:text-[#1a1d21]"
             >
               Request Demo
             </a>
             <a
               href="#pipeline"
-              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.875rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, backgroundColor: "transparent", color: "#ffffff", border: "1px solid rgba(255,255,255,0.4)", padding: "14px 32px" }}
+              className="font-mono text-xs uppercase tracking-[0.15em] text-white border border-white/40 bg-transparent px-8 py-3.5 transition-all duration-300 hover:bg-white hover:text-[#1a1d21]"
             >
               Read White Paper
             </a>
           </motion.div>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent z-20" />
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.5, duration: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+      >
+        <span className="font-mono text-[10px] tracking-[0.3em] text-white/20 uppercase">
+          Scroll to explore
+        </span>
+        <motion.span
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="text-white/20 text-sm"
+        >
+          ▾
+        </motion.span>
+      </motion.div>
     </section>
   );
 };
