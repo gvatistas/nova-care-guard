@@ -163,7 +163,7 @@ const GeometricWireframe = ({ stageIdx, isActive }: { stageIdx: number; isActive
 const StageBadge = ({ stage }: { stage: typeof stages[0] }) => (
   <span className="inline-flex items-center gap-1.5 font-mono" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
     {stage.badgeType === "pulse" && (
-      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#10b981" }} />
+      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "rgba(255,255,255,0.7)" }} />
     )}
     {stage.badgeType === "check" && (
       <Check size={14} strokeWidth={2.5} style={{ color: "rgba(255,255,255,0.5)" }} />
