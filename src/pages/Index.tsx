@@ -32,7 +32,7 @@ const Index = () => {
         <HeroSection />
         <GeoDivider />
         <ScrollReveal>
-          <ProblemSection />
+          <PatientNarrativeSection />
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
