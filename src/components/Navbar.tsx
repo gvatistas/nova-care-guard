@@ -31,7 +31,7 @@ const Navbar = () => {
           <a href="#pipeline" className="hidden md:block font-heading text-sm font-medium tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
             Architecture
           </a>
-          <a href="#project-alpha" className="hidden md:block font-mono text-base tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <a href="#project-alpha" className="hidden md:block font-heading text-sm font-medium tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
             Project Alpha
           </a>
           <a href="#contact" className="font-mono text-base tracking-[0.1em] uppercase text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300">
