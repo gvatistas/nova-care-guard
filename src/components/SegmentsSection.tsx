@@ -195,7 +195,7 @@ const SegmentsSection = () => {
         style={{ background: `radial-gradient(ellipse at 70% 30%, hsl(${seg.accentHsl} / 0.03), transparent 60%)` }} />
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-6">
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-3xl">
+          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">
             One artifact. <span className="text-gray-500">Six markets.</span>
           </h2>
         </motion.div>
