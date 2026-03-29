@@ -113,7 +113,7 @@ const MedicareIcon = ({ color, size = 48, hsl }: { color: string; size?: number;
     <line x1="20" y1="37" x2="36" y2="37" stroke={color} strokeWidth="1" opacity="0.3" />
     <line x1="20" y1="42" x2="30" y2="42" stroke={color} strokeWidth="1" opacity="0.2" />
     {/* Star seal — glowing */}
-    <circle cx="38" cy="44" r="5" fill={color} opacity="0.15" stroke={color} strokeWidth="0.8" opacity="0.5" />
+    <circle cx="38" cy="44" r="5" fill={color} opacity="0.15" stroke={color} strokeWidth="0.8" />
     <text x="38" y="46.5" textAnchor="middle" fontSize="7" fill={color} opacity="0.8" fontFamily="monospace" filter="url(#med-glow)">★</text>
     {/* Ground shadow */}
     <ellipse cx="31" cy="55" rx="15" ry="2" fill={color} opacity="0.05" />
