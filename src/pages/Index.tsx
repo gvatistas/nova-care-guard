@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import ParticleGrid from "@/components/ParticleGrid";
 import HeroSection from "@/components/HeroSection";
-import DecisionTreeSection from "@/components/DecisionTreeSection";
 import PatientNarrativeSection from "@/components/PatientNarrativeSection";
 import PipelineSection from "@/components/PipelineSection";
 import SegmentsSection from "@/components/SegmentsSection";
@@ -30,10 +29,6 @@ const Index = () => {
       <div className="relative z-10">
         <Navbar />
         <HeroSection />
-        <GeoDivider />
-        <ScrollReveal>
-          <DecisionTreeSection />
-        </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
           <PatientNarrativeSection />
