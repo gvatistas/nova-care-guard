@@ -86,6 +86,83 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
+/* === Geometric textures inspired by Medient crown logo === */
+
+/* Angular crosshatch pattern */
+.texture-crosshatch {
+  background-image:
+    linear-gradient(30deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(150deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(-30deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px, 80px 80px;
+}
+
+/* Diamond grid — Medient crown facets */
+.texture-diamonds {
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 20px, 20px -20px, -20px 0;
+}
+
+/* Triangular facets */
+.texture-facets {
+  background-image:
+    linear-gradient(60deg, transparent 48%, rgba(255,255,255,0.018) 48%, rgba(255,255,255,0.018) 52%, transparent 52%),
+    linear-gradient(-60deg, transparent 48%, rgba(255,255,255,0.018) 48%, rgba(255,255,255,0.018) 52%, transparent 52%);
+  background-size: 80px 140px;
+}
+
+/* Fine angular lines */
+.texture-angular {
+  background-image:
+    linear-gradient(135deg, rgba(74,237,196,0.02) 1px, transparent 1px),
+    linear-gradient(-135deg, rgba(74,237,196,0.015) 1px, transparent 1px);
+  background-size: 100px 100px;
+}
+
+/* Noise grain overlay */
+.texture-noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 3D tilt panel */
+.panel-3d {
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+}
+.panel-3d:hover {
+  transform: perspective(1000px) rotateX(-1deg) rotateY(1deg) translateY(-2px);
+  box-shadow: 0 20px 60px -20px rgba(74,237,196,0.08), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* Geometric section divider */
+.divider-geo {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(74,237,196,0.15) 50%, rgba(255,255,255,0.06) 80%, transparent);
+}
+.divider-geo::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  background: hsl(var(--accent));
+  transform: translateX(-50%) rotate(45deg);
+  opacity: 0.4;
+}
+
 /* Scrollbar — minimal */
 ::-webkit-scrollbar {
   width: 2px;

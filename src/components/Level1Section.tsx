@@ -26,18 +26,18 @@ const Level1Section = () => {
   const isWithout = activeView === "without";
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28">
-      <div className="absolute top-0 left-6 md:left-8 right-6 md:right-8 h-px bg-white/[0.06]" />
+    <section ref={ref} className="relative py-16 md:py-24 texture-diamonds">
+      {/* Background accent */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(74,237,196,0.02),transparent_60%)] pointer-events-none" />
 
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-10">
-          <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-4">Two Paths — One Patient</div>
+        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-8">
+          <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-3">Two Paths — One Patient</div>
           <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-4xl">
             Same patient. Same clinic. <span className="text-gray-500">Different outcome.</span>
           </h2>
-          <p className="text-gray-300 text-lg md:text-xl font-light mt-5 max-w-2xl leading-relaxed">
+          <p className="text-gray-300 text-lg md:text-xl font-light mt-4 max-w-2xl leading-relaxed">
             Follow Sarah — a 52-year-old smoker visiting her primary care physician.
-            In one world, her doctor relies on memory. In the other, the clinic runs on compiled clinical decision artifacts.
           </p>
         </motion.div>
 
@@ -46,7 +46,7 @@ const Level1Section = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.3 }}
-          className="flex items-center gap-1 mb-8 bg-white/[0.03] border border-white/[0.06] p-1.5 w-fit"
+          className="flex items-center gap-1 mb-6 bg-white/[0.03] border border-white/[0.06] p-1.5 w-fit"
         >
           <button
             onClick={() => setActiveView("without")}
@@ -75,22 +75,22 @@ const Level1Section = () => {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="mb-8 relative overflow-hidden border border-white/[0.06]"
+          className="mb-6 relative overflow-hidden border border-white/[0.06] panel-3d"
         >
           <video src="/medient-patient-journey.mp4" autoPlay loop muted playsInline className="w-full" style={{ aspectRatio: "16/9" }} />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
           {/* Outcome card */}
           <motion.div
             key={activeView}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-4 flex flex-col items-center justify-start pt-2"
+            className="lg:col-span-4 flex flex-col items-center justify-start"
           >
-            <div className={`w-full max-w-[300px] border p-8 text-center ${
+            <div className={`w-full max-w-[300px] border p-8 text-center panel-3d ${
               isWithout ? "border-red-500/20 bg-red-500/[0.04]" : "border-accent/20 bg-accent/[0.04]"
             }`}>
               <div className={`font-mono text-5xl font-light ${isWithout ? "text-red-400" : "text-accent"}`}>
@@ -111,7 +111,7 @@ const Level1Section = () => {
                   initial={{ opacity: 0, x: 15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
-                  className="border-b border-white/[0.06] py-5 md:py-6 px-2 md:px-4 hover:bg-white/[0.015] transition-colors duration-300 group"
+                  className="border-b border-white/[0.06] py-4 md:py-5 px-2 md:px-4 hover:bg-white/[0.015] transition-colors duration-300 group"
                 >
                   <div className="grid grid-cols-12 gap-4 items-start">
                     <div className="col-span-1">
@@ -133,7 +133,7 @@ const Level1Section = () => {
         </div>
 
         {/* Bottom metrics */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
           {(isWithout
             ? [
                 { val: "$280K+", label: "Treatment cost" },
@@ -153,7 +153,7 @@ const Level1Section = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 + i * 0.06 }}
-              className="bg-background p-5 md:p-6"
+              className="bg-background/80 p-4 md:p-5 panel-3d"
             >
               <div className={`font-mono text-2xl md:text-3xl font-light ${isWithout ? "text-red-400/80" : "text-accent"}`}>{stat.val}</div>
               <div className="text-gray-400 text-sm md:text-base mt-1">{stat.label}</div>

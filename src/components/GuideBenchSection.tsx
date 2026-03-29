@@ -14,25 +14,23 @@ const GuideBenchSection = () => {
   const [hoveredMetric, setHoveredMetric] = useState<number | null>(null);
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28">
-      <div className="absolute top-0 left-6 md:left-8 right-6 md:right-8 h-px bg-white/[0.06]" />
+    <section ref={ref} className="relative py-16 md:py-24 texture-facets">
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[radial-gradient(ellipse,rgba(74,237,196,0.025),transparent_70%)] pointer-events-none" />
 
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-5">
-            <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-4">Open Source</div>
-            <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-5">GuideBench</h2>
+            <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-3">Open Source</div>
+            <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-4">GuideBench</h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-4">
               The open-source clinical decision logic evaluation framework.
               <span className="text-white font-normal"> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
             </p>
-            <p className="text-white text-xl font-light mb-6">
+            <p className="text-white text-xl font-light mb-5">
               We wrote the test. Then we open-sourced it.
             </p>
 
-            <div
-              className="border border-accent/20 bg-accent/[0.04] p-6 mb-6"
-            >
+            <div className="border border-accent/20 bg-accent/[0.04] p-5 mb-5 panel-3d">
               <div className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500 mb-2">Aggregate Score</div>
               <div className="font-mono text-accent text-5xl font-light tracking-tight">98.8%</div>
               <div className="text-gray-400 text-base mt-2">across all guidelines and synthetic patients</div>
@@ -51,21 +49,21 @@ const GuideBenchSection = () => {
                   initial={{ opacity: 0 }}
                   animate={inView ? { opacity: 1 } : {}}
                   transition={{ delay: 0.3 + i * 0.15 }}
-                  className="border-b border-white/[0.06] py-6 px-4 transition-all duration-500 cursor-default"
+                  className="border-b border-white/[0.06] py-5 px-4 transition-all duration-500 cursor-default"
                   style={{
                     background: hoveredMetric === i ? "linear-gradient(135deg, rgba(74,237,196,0.04), transparent 60%)" : "transparent",
                   }}
                   onMouseEnter={() => setHoveredMetric(i)}
                   onMouseLeave={() => setHoveredMetric(null)}
                 >
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <span className={`font-mono text-base transition-all duration-300 ${hoveredMetric === i ? "text-accent" : "text-accent/50"}`}>✓</span>
                       <h3 className={`font-mono text-base md:text-lg font-light transition-colors duration-300 ${hoveredMetric === i ? "text-accent" : "text-white"}`}>{metric.name}</h3>
                     </div>
                     <span className="font-mono text-accent text-lg md:text-xl">{metric.score}</span>
                   </div>
-                  <div className="h-px bg-white/[0.06] mb-3 overflow-hidden">
+                  <div className="h-px bg-white/[0.06] mb-2 overflow-hidden">
                     <motion.div
                       initial={{ scaleX: 0 }}
                       animate={inView ? { scaleX: parseFloat(metric.score) / 100 } : {}}
