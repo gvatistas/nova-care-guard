@@ -167,7 +167,6 @@ const Level1Section = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(74,237,196,0.02),transparent_60%)] pointer-events-none" />
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-6">
-          <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-3">Two Paths — One Patient</div>
           <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">
             Same patient. Same clinic. <span className="text-gray-500">Different outcome.</span>
           </h2>
