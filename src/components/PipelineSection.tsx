@@ -4,9 +4,9 @@ import { useRef, useState, useEffect } from "react";
 const stages = [
   { num: "01", name: "INGEST", short: "Parse & Structure", desc: "Clinical guidelines deconstructed from unstructured knowledge into atomic logical components.", icon: "↓" },
   { num: "02", name: "MODEL", short: "Type & Constrain", desc: "Decision schema with explicit constraints, typed branches, and deterministic pathways.", icon: "◇" },
-  { num: "03", name: "VERIFY", short: "Prove Correctness", desc: "Formal verification proves exhaustiveness and determinism across the entire input space.", icon: "✓" },
-  { num: "04", name: "ANALYZE", short: "Validate Topology", desc: "Graph analysis confirms no orphan nodes, unreachable states, or infinite loops.", icon: "△" },
-  { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. Deterministic at runtime. Zero inference.", icon: "→" },
+  { num: "03", name: "VERIFY", short: "Prove Correctness", desc: "Formal verification via SMT solver proves exhaustiveness, determinism, and safety properties across the entire input space.", icon: "✓" },
+  { num: "04", name: "ANALYZE", short: "Validate & Audit", desc: "Graph analysis confirms no orphan nodes or unreachable states. Complete decision provenance from input to source guideline paragraph.", icon: "△" },
+  { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. On-premises or cloud. Air-gapped network support. Zero inference at runtime.", icon: "→" },
 ];
 
 const differentiators = [
