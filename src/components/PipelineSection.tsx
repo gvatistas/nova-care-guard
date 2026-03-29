@@ -311,11 +311,11 @@ const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
 
         {/* Input / Output labels */}
         <g opacity="0.25">
-          <polygon points="52,{CROWN_BASE_Y} 68,{CROWN_BASE_Y - 6} 68,{CROWN_BASE_Y + 6}" fill="#2dd4bf" />
+          <polygon points={`52,${CROWN_BASE_Y} 68,${CROWN_BASE_Y - 6} 68,${CROWN_BASE_Y + 6}`} fill="#2dd4bf" />
           <text x="85" y={CROWN_BASE_Y + 4} fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">GUIDELINE</text>
         </g>
         <g opacity="0.25">
-          <polygon points="1148,{CROWN_BASE_Y} 1132,{CROWN_BASE_Y - 6} 1132,{CROWN_BASE_Y + 6}" fill="#2dd4bf" />
+          <polygon points={`1148,${CROWN_BASE_Y} 1132,${CROWN_BASE_Y - 6} 1132,${CROWN_BASE_Y + 6}`} fill="#2dd4bf" />
           <text x="1115" y={CROWN_BASE_Y + 4} textAnchor="end" fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">ARTIFACT</text>
         </g>
       </svg>
