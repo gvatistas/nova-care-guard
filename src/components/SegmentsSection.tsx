@@ -1,143 +1,267 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
-/* ── 3D Isometric Icon Components ── */
-const HealthSystemsIcon = ({ color, size = 48 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-    {/* Isometric building base */}
-    <path d="M24 38L8 29V15L24 24V38Z" fill={color} opacity="0.15" />
-    <path d="M24 38L40 29V15L24 24V38Z" fill={color} opacity="0.25" />
-    <path d="M8 15L24 6L40 15L24 24L8 15Z" fill={color} opacity="0.1" />
+/* ── Rich 3D Icon Components with multi-color gradients ── */
+const HealthSystemsIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="hs-face1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.35" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.08" />
+      </linearGradient>
+      <linearGradient id="hs-face2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.2" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.05" />
+      </linearGradient>
+      <linearGradient id="hs-top" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stopColor={color} stopOpacity="0.45" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.15" />
+      </linearGradient>
+      <filter id="hs-glow">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+    {/* Building — isometric 3D with proper shading */}
+    <path d="M32 50L10 38V18L32 30V50Z" fill="url(#hs-face2)" />
+    <path d="M32 50L54 38V18L32 30V50Z" fill="url(#hs-face1)" />
+    <path d="M10 18L32 6L54 18L32 30L10 18Z" fill="url(#hs-top)" />
     {/* Edges */}
-    <path d="M24 38L8 29V15L24 24V38Z" stroke={color} strokeWidth="1" fill="none" opacity="0.6" />
-    <path d="M24 38L40 29V15L24 24V38Z" stroke={color} strokeWidth="1" fill="none" opacity="0.6" />
-    <path d="M8 15L24 6L40 15L24 24L8 15Z" stroke={color} strokeWidth="1" fill="none" opacity="0.6" />
-    {/* Cross on front face */}
-    <line x1="24" y1="28" x2="24" y2="35" stroke={color} strokeWidth="1.5" opacity="0.8" />
-    <line x1="21" y1="31.5" x2="27" y2="31.5" stroke={color} strokeWidth="1.5" opacity="0.8" />
-    {/* Inner windows grid */}
-    <rect x="28" y="19" width="3" height="3" fill={color} opacity="0.3" transform="skewY(-26)" />
-    <rect x="33" y="19" width="3" height="3" fill={color} opacity="0.2" transform="skewY(-26)" />
-    <rect x="28" y="24" width="3" height="3" fill={color} opacity="0.2" transform="skewY(-26)" />
-    {/* Glow dot */}
-    <circle cx="24" cy="6" r="2" fill={color} opacity="0.5" />
+    <path d="M32 50L10 38V18L32 30V50Z" stroke={color} strokeWidth="0.8" fill="none" opacity="0.7" />
+    <path d="M32 50L54 38V18L32 30V50Z" stroke={color} strokeWidth="0.8" fill="none" opacity="0.7" />
+    <path d="M10 18L32 6L54 18L32 30L10 18Z" stroke={color} strokeWidth="0.8" fill="none" opacity="0.7" />
+    {/* Glowing cross on front */}
+    <line x1="32" y1="35" x2="32" y2="46" stroke={color} strokeWidth="2.5" opacity="0.9" filter="url(#hs-glow)" />
+    <line x1="27" y1="40.5" x2="37" y2="40.5" stroke={color} strokeWidth="2.5" opacity="0.9" filter="url(#hs-glow)" />
+    {/* Windows — right face */}
+    {[0, 6, 12].map((dy, i) => (
+      <rect key={i} x={37} y={22 + dy} width="4" height="3" rx="0.5" fill={color} opacity={0.4 - i * 0.08} transform="skewY(-26)" />
+    ))}
+    {/* Accent corners */}
+    <circle cx="32" cy="6" r="2.5" fill={color} opacity="0.6" filter="url(#hs-glow)" />
+    <circle cx="10" cy="18" r="1.5" fill={color} opacity="0.25" />
+    <circle cx="54" cy="18" r="1.5" fill={color} opacity="0.25" />
+    {/* Ambient glow */}
+    <ellipse cx="32" cy="52" rx="18" ry="3" fill={color} opacity="0.06" />
   </svg>
 );
 
-const GovernmentIcon = ({ color, size = 48 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-    {/* Shield shape — 3D extruded */}
-    <path d="M24 6L38 12V24C38 32 32 38 24 42C16 38 10 32 10 24V12L24 6Z" fill={color} opacity="0.1" />
-    <path d="M24 6L38 12V24C38 32 32 38 24 42C16 38 10 32 10 24V12L24 6Z" stroke={color} strokeWidth="1.2" opacity="0.6" />
-    {/* Inner shield */}
-    <path d="M24 11L34 15V24C34 30 29 35 24 38C19 35 14 30 14 24V15L24 11Z" fill={color} opacity="0.08" />
-    <path d="M24 11L34 15V24C34 30 29 35 24 38C19 35 14 30 14 24V15L24 11Z" stroke={color} strokeWidth="0.6" opacity="0.4" />
-    {/* Check mark */}
-    <polyline points="18,24 22,28 30,18" stroke={color} strokeWidth="2" fill="none" opacity="0.8" strokeLinecap="round" strokeLinejoin="round" />
-    {/* Corner accents */}
-    <circle cx="24" cy="6" r="1.5" fill={color} opacity="0.4" />
-    <circle cx="10" cy="12" r="1" fill={color} opacity="0.2" />
-    <circle cx="38" cy="12" r="1" fill={color} opacity="0.2" />
+const GovernmentIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="gov-fill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.05" />
+      </linearGradient>
+      <linearGradient id="gov-inner" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.2" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.02" />
+      </linearGradient>
+      <filter id="gov-glow">
+        <feGaussianBlur stdDeviation="2.5" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+    {/* Outer shield with gradient fill */}
+    <path d="M32 6L52 14V30C52 42 43 51 32 56C21 51 12 42 12 30V14L32 6Z" fill="url(#gov-fill)" />
+    <path d="M32 6L52 14V30C52 42 43 51 32 56C21 51 12 42 12 30V14L32 6Z" stroke={color} strokeWidth="1.2" opacity="0.7" />
+    {/* Inner shield layer */}
+    <path d="M32 12L46 18V30C46 39 39 46 32 50C25 46 18 39 18 30V18L32 12Z" fill="url(#gov-inner)" />
+    <path d="M32 12L46 18V30C46 39 39 46 32 50C25 46 18 39 18 30V18L32 12Z" stroke={color} strokeWidth="0.6" opacity="0.35" />
+    {/* Glowing checkmark */}
+    <polyline points="24,30 29,36 40,22" stroke={color} strokeWidth="3" fill="none" opacity="0.9"
+      strokeLinecap="round" strokeLinejoin="round" filter="url(#gov-glow)" />
+    {/* Accent dots along shield edge */}
+    {[0, 1, 2, 3, 4].map((i) => {
+      const angle = (-0.8 + i * 0.4);
+      const r = 23;
+      return <circle key={i} cx={32 + Math.sin(angle) * r} cy={28 - Math.cos(angle) * r + 4}
+        r="1" fill={color} opacity={0.2 + i * 0.05} />;
+    })}
+    {/* Ground glow */}
+    <ellipse cx="32" cy="58" rx="16" ry="2.5" fill={color} opacity="0.06" />
   </svg>
 );
 
-const MedicareIcon = ({ color, size = 48 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-    {/* 3D document stack */}
-    <path d="M12 10H32L36 14V38H12V10Z" fill={color} opacity="0.1" />
-    <path d="M12 10H32L36 14V38H12V10Z" stroke={color} strokeWidth="1" opacity="0.5" />
-    {/* Folded corner */}
-    <path d="M32 10V14H36L32 10Z" fill={color} opacity="0.25" />
-    <path d="M32 10V14H36" stroke={color} strokeWidth="0.8" opacity="0.5" />
+const MedicareIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="med-doc" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.04" />
+      </linearGradient>
+      <linearGradient id="med-fold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.45" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.15" />
+      </linearGradient>
+      <filter id="med-glow">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
     {/* Back document shadow */}
-    <path d="M14 8H34L37 11V36" stroke={color} strokeWidth="0.5" opacity="0.2" strokeDasharray="2 2" />
-    {/* Text lines */}
-    <line x1="17" y1="20" x2="31" y2="20" stroke={color} strokeWidth="1" opacity="0.5" />
-    <line x1="17" y1="24" x2="28" y2="24" stroke={color} strokeWidth="1" opacity="0.35" />
-    <line x1="17" y1="28" x2="30" y2="28" stroke={color} strokeWidth="1" opacity="0.35" />
-    {/* Star badge */}
-    <circle cx="28" cy="33" r="4" fill={color} opacity="0.15" stroke={color} strokeWidth="0.8" />
-    <text x="28" y="35" textAnchor="middle" fontSize="6" fill={color} opacity="0.7" fontFamily="monospace">★</text>
+    <rect x="18" y="8" width="30" height="40" rx="2" fill={color} opacity="0.04" stroke={color} strokeWidth="0.4" opacity="0.15" />
+    {/* Main document */}
+    <path d="M14 12H40L48 20V52H14V12Z" fill="url(#med-doc)" />
+    <path d="M14 12H40L48 20V52H14V12Z" stroke={color} strokeWidth="1" opacity="0.6" />
+    {/* Folded corner with gradient */}
+    <path d="M40 12V20H48L40 12Z" fill="url(#med-fold)" />
+    <path d="M40 12V20H48" stroke={color} strokeWidth="0.8" opacity="0.5" />
+    {/* Content lines with varying opacity */}
+    <line x1="20" y1="27" x2="38" y2="27" stroke={color} strokeWidth="1.5" opacity="0.5" />
+    <line x1="20" y1="32" x2="34" y2="32" stroke={color} strokeWidth="1" opacity="0.35" />
+    <line x1="20" y1="37" x2="36" y2="37" stroke={color} strokeWidth="1" opacity="0.3" />
+    <line x1="20" y1="42" x2="30" y2="42" stroke={color} strokeWidth="1" opacity="0.2" />
+    {/* Star seal — glowing */}
+    <circle cx="38" cy="44" r="5" fill={color} opacity="0.15" stroke={color} strokeWidth="0.8" opacity="0.5" />
+    <text x="38" y="46.5" textAnchor="middle" fontSize="7" fill={color} opacity="0.8" fontFamily="monospace" filter="url(#med-glow)">★</text>
+    {/* Ground shadow */}
+    <ellipse cx="31" cy="55" rx="15" ry="2" fill={color} opacity="0.05" />
   </svg>
 );
 
-const PayersIcon = ({ color, size = 48 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-    {/* Isometric coin stack */}
-    {[0, 4, 8].map((offset, i) => (
+const PayersIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="pay-coin" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.35" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.08" />
+      </linearGradient>
+      <filter id="pay-glow">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+    {/* Stacked coins with depth */}
+    {[0, 6, 12].map((offset, i) => (
       <g key={i}>
-        <ellipse cx="24" cy={30 - offset} rx="14" ry="5" fill={color} opacity={0.06 + i * 0.04} />
-        <ellipse cx="24" cy={30 - offset} rx="14" ry="5" stroke={color} strokeWidth="0.8" fill="none" opacity={0.3 + i * 0.1} />
+        {/* Coin side */}
         {i < 2 && (
-          <>
-            <line x1="10" y1={30 - offset} x2="10" y2={30 - offset - 4} stroke={color} strokeWidth="0.6" opacity="0.2" />
-            <line x1="38" y1={30 - offset} x2="38" y2={30 - offset - 4} stroke={color} strokeWidth="0.6" opacity="0.2" />
-          </>
+          <path d={`M12,${40 - offset} L12,${34 - offset} A20,7 0 0,0 52,${34 - offset} L52,${40 - offset}`}
+            fill={color} opacity={0.05 + i * 0.03} />
+        )}
+        {/* Coin face */}
+        <ellipse cx="32" cy={34 - offset} rx="20" ry="7" fill="url(#pay-coin)" opacity={0.6 + i * 0.15} />
+        <ellipse cx="32" cy={34 - offset} rx="20" ry="7" stroke={color} strokeWidth={0.6 + i * 0.2} fill="none" opacity={0.4 + i * 0.15} />
+        {/* Inner ring on top coin */}
+        {i === 2 && (
+          <ellipse cx="32" cy={34 - offset} rx="14" ry="5" stroke={color} strokeWidth="0.4" fill="none" opacity="0.25" />
         )}
       </g>
     ))}
-    {/* Dollar sign on top */}
-    <text x="24" y="24" textAnchor="middle" fontSize="10" fill={color} opacity="0.7" fontFamily="monospace" fontWeight="300">$</text>
-    {/* Arrow up */}
-    <path d="M36 16L40 12L44 16" stroke={color} strokeWidth="1" opacity="0.4" fill="none" />
-    <line x1="40" y1="12" x2="40" y2="20" stroke={color} strokeWidth="1" opacity="0.4" />
+    {/* Dollar sign — glowing */}
+    <text x="32" y="26" textAnchor="middle" fontSize="14" fill={color} opacity="0.85" fontFamily="monospace" fontWeight="300" filter="url(#pay-glow)">$</text>
+    {/* Rising arrow */}
+    <path d="M48 18L52 12L56 18" stroke={color} strokeWidth="1.5" opacity="0.5" fill="none" strokeLinecap="round" />
+    <line x1="52" y1="12" x2="52" y2="24" stroke={color} strokeWidth="1.5" opacity="0.5" strokeLinecap="round" />
+    {/* Sparkle dots */}
+    <circle cx="48" cy="10" r="1" fill={color} opacity="0.3" />
+    <circle cx="56" cy="14" r="0.8" fill={color} opacity="0.2" />
+    {/* Ground shadow */}
+    <ellipse cx="32" cy="44" rx="18" ry="3" fill={color} opacity="0.06" />
   </svg>
 );
 
-const ClinicalAIIcon = ({ color, size = 48 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-    {/* Neural network nodes */}
-    {/* Layer 1 */}
-    {[14, 24, 34].map((y, i) => (
-      <circle key={`l1-${i}`} cx="10" cy={y} r="3" fill={color} opacity={0.15} stroke={color} strokeWidth="0.8" />
-    ))}
-    {/* Layer 2 */}
-    {[17, 27, 37].map((y, i) => (
-      <circle key={`l2-${i}`} cx="24" cy={y - 3} r="3.5" fill={color} opacity={0.2} stroke={color} strokeWidth="0.8" />
-    ))}
-    {/* Layer 3 */}
-    <circle cx="38" cy="24" r="4" fill={color} opacity={0.25} stroke={color} strokeWidth="1" />
-    {/* Connections */}
-    {[14, 24, 34].map((y1) =>
-      [14, 24, 34].map((y2, j) => (
-        <line key={`c1-${y1}-${j}`} x1="13" y1={y1} x2="21" y2={y2} stroke={color} strokeWidth="0.4" opacity="0.2" />
+const ClinicalAIIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="ai-node" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.4" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.1" />
+      </linearGradient>
+      <filter id="ai-glow">
+        <feGaussianBlur stdDeviation="2.5" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+    {/* Connection lines first (behind nodes) */}
+    {[16, 32, 48].map((y1) =>
+      [20, 32, 44].map((y2, j) => (
+        <line key={`c1-${y1}-${j}`} x1="14" y1={y1} x2="28" y2={y2}
+          stroke={color} strokeWidth="0.5" opacity="0.15" />
       ))
     )}
-    {[14, 24, 34].map((y, i) => (
-      <line key={`c2-${i}`} x1="27" y1={y} x2="35" y2="24" stroke={color} strokeWidth="0.5" opacity="0.3" />
+    {[20, 32, 44].map((y, i) => (
+      <line key={`c2-${i}`} x1="36" y1={y} x2="50" y2="32"
+        stroke={color} strokeWidth="0.6" opacity="0.25" />
     ))}
-    {/* Pulse on output */}
-    <circle cx="38" cy="24" r="6" fill="none" stroke={color} strokeWidth="0.5" opacity="0.3">
-      <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.3;0.05;0.3" dur="2s" repeatCount="indefinite" />
+    {/* Layer 1 nodes */}
+    {[16, 32, 48].map((y, i) => (
+      <g key={`l1-${i}`}>
+        <circle cx="12" cy={y} r="5" fill="url(#ai-node)" stroke={color} strokeWidth="0.8" opacity="0.7" />
+        <circle cx="12" cy={y} r="2" fill={color} opacity="0.5" />
+      </g>
+    ))}
+    {/* Layer 2 nodes */}
+    {[20, 32, 44].map((y, i) => (
+      <g key={`l2-${i}`}>
+        <circle cx="32" cy={y} r="5.5" fill="url(#ai-node)" stroke={color} strokeWidth="0.8" opacity="0.8" />
+        <circle cx="32" cy={y} r="2.5" fill={color} opacity="0.6" />
+      </g>
+    ))}
+    {/* Output node — largest, glowing */}
+    <circle cx="52" cy="32" r="7" fill="url(#ai-node)" stroke={color} strokeWidth="1.2" opacity="0.9" />
+    <circle cx="52" cy="32" r="3.5" fill={color} opacity="0.7" filter="url(#ai-glow)" />
+    {/* Pulse rings */}
+    <circle cx="52" cy="32" r="10" fill="none" stroke={color} strokeWidth="0.6" opacity="0.2">
+      <animate attributeName="r" values="10;16;10" dur="2.5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.2;0.02;0.2" dur="2.5s" repeatCount="indefinite" />
     </circle>
-    {/* Brain outline hint */}
-    <path d="M38 20C40 18 42 20 42 22C43 24 42 26 40 27C41 28 40 30 38 28" stroke={color} strokeWidth="0.5" opacity="0.25" fill="none" />
+    <circle cx="52" cy="32" r="14" fill="none" stroke={color} strokeWidth="0.3" opacity="0.1">
+      <animate attributeName="r" values="14;20;14" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.1;0.01;0.1" dur="3s" repeatCount="indefinite" />
+    </circle>
+    {/* Data flow particles */}
+    {[0, 1, 2].map((i) => (
+      <circle key={`p${i}`} r="1.5" fill={color} opacity="0.5">
+        <animate attributeName="cx" values={`12;32;52`} dur={`${1.8 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.5}s`} />
+        <animate attributeName="cy" values={`${16 + i * 16};${20 + i * 12};32`} dur={`${1.8 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.5}s`} />
+        <animate attributeName="opacity" values="0;0.6;0" dur={`${1.8 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.5}s`} />
+      </circle>
+    ))}
   </svg>
 );
 
-const GuidelineIcon = ({ color, size = 48 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-    {/* Open book — 3D perspective */}
-    <path d="M24 12V40" stroke={color} strokeWidth="1" opacity="0.5" />
-    {/* Left page */}
-    <path d="M24 12C20 10 14 9 8 10V38C14 37 20 38 24 40" fill={color} opacity="0.08" />
-    <path d="M24 12C20 10 14 9 8 10V38C14 37 20 38 24 40" stroke={color} strokeWidth="0.8" opacity="0.5" />
-    {/* Right page */}
-    <path d="M24 12C28 10 34 9 40 10V38C34 37 28 38 24 40" fill={color} opacity="0.12" />
-    <path d="M24 12C28 10 34 9 40 10V38C34 37 28 38 24 40" stroke={color} strokeWidth="0.8" opacity="0.5" />
-    {/* Text lines left */}
-    <line x1="12" y1="18" x2="21" y2="19" stroke={color} strokeWidth="0.6" opacity="0.3" />
-    <line x1="12" y1="22" x2="20" y2="23" stroke={color} strokeWidth="0.6" opacity="0.25" />
-    <line x1="12" y1="26" x2="21" y2="27" stroke={color} strokeWidth="0.6" opacity="0.3" />
-    <line x1="12" y1="30" x2="19" y2="31" stroke={color} strokeWidth="0.6" opacity="0.2" />
-    {/* Text lines right */}
-    <line x1="27" y1="19" x2="36" y2="18" stroke={color} strokeWidth="0.6" opacity="0.3" />
-    <line x1="27" y1="23" x2="35" y2="22" stroke={color} strokeWidth="0.6" opacity="0.25" />
-    <line x1="27" y1="27" x2="36" y2="26" stroke={color} strokeWidth="0.6" opacity="0.3" />
-    {/* Glow on spine */}
-    <line x1="24" y1="10" x2="24" y2="8" stroke={color} strokeWidth="1.5" opacity="0.4" />
-    <circle cx="24" cy="8" r="1.5" fill={color} opacity="0.3" />
+const GuidelineIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="guide-left" x1="1" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.2" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.04" />
+      </linearGradient>
+      <linearGradient id="guide-right" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.06" />
+      </linearGradient>
+      <filter id="guide-glow">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+    {/* Spine */}
+    <line x1="32" y1="12" x2="32" y2="52" stroke={color} strokeWidth="1.5" opacity="0.5" />
+    {/* Left page with gradient */}
+    <path d="M32 14C26 12 18 11 8 12V50C18 49 26 50 32 52" fill="url(#guide-left)" />
+    <path d="M32 14C26 12 18 11 8 12V50C18 49 26 50 32 52" stroke={color} strokeWidth="0.8" opacity="0.5" />
+    {/* Right page with gradient */}
+    <path d="M32 14C38 12 46 11 56 12V50C46 49 38 50 32 52" fill="url(#guide-right)" />
+    <path d="M32 14C38 12 46 11 56 12V50C46 49 38 50 32 52" stroke={color} strokeWidth="0.8" opacity="0.5" />
+    {/* Text lines — left page */}
+    {[22, 27, 32, 37, 42].map((y, i) => (
+      <line key={`l${i}`} x1={14} y1={y} x2={28 - i} y2={y + 1} stroke={color} strokeWidth="0.8" opacity={0.4 - i * 0.05} />
+    ))}
+    {/* Text lines — right page */}
+    {[22, 27, 32, 37, 42].map((y, i) => (
+      <line key={`r${i}`} x1={36 + i} y1={y + 1} x2={50} y2={y} stroke={color} strokeWidth="0.8" opacity={0.4 - i * 0.05} />
+    ))}
+    {/* Glowing spine beacon */}
+    <circle cx="32" cy="10" r="3" fill={color} opacity="0.5" filter="url(#guide-glow)" />
+    <circle cx="32" cy="10" r="5" fill="none" stroke={color} strokeWidth="0.4" opacity="0.2">
+      <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite" />
+    </circle>
+    {/* Ground shadow */}
+    <ellipse cx="32" cy="54" rx="20" ry="2.5" fill={color} opacity="0.05" />
   </svg>
 );
 
@@ -200,7 +324,7 @@ const SegmentsSection = () => {
           </h2>
         </motion.div>
 
-        {/* Segment tabs — card-style with 3D icons */}
+        {/* Segment tabs — rich 3D cards */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.2 }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-6">
           {segments.map((s, i) => {
@@ -209,22 +333,30 @@ const SegmentsSection = () => {
             const accentColor = `hsl(${s.accentHsl})`;
             return (
               <button key={s.name} onClick={() => setActiveSegment(i)}
-                className="relative text-left p-3 md:p-4 border transition-all duration-400 panel-3d group overflow-hidden"
+                className="relative text-left p-4 md:p-5 border transition-all duration-400 group overflow-hidden"
                 style={{
                   borderColor: isActive ? `hsl(${s.accentHsl} / 0.4)` : "rgba(255,255,255,0.06)",
                   background: isActive
-                    ? `linear-gradient(145deg, hsl(${s.accentHsl} / 0.12), hsl(${s.accentHsl} / 0.03))`
-                    : "rgba(255,255,255,0.01)",
-                  boxShadow: isActive ? `0 4px 24px hsl(${s.accentHsl} / 0.1), inset 0 1px 0 hsl(${s.accentHsl} / 0.1)` : "none",
+                    ? `linear-gradient(145deg, hsl(${s.accentHsl} / 0.14), hsl(${s.accentHsl} / 0.03), rgba(0,0,0,0.3))`
+                    : "linear-gradient(145deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2))",
+                  boxShadow: isActive
+                    ? `0 8px 32px hsl(${s.accentHsl} / 0.12), inset 0 1px 0 hsl(${s.accentHsl} / 0.15), 0 1px 0 hsl(${s.accentHsl} / 0.1)`
+                    : "inset 0 1px 0 rgba(255,255,255,0.03), 0 2px 8px rgba(0,0,0,0.2)",
                 }}>
-                {/* Background glow on active */}
+                {/* Multi-layer glow on active */}
                 {isActive && (
-                  <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full pointer-events-none"
-                    style={{ background: `radial-gradient(circle, hsl(${s.accentHsl} / 0.15), transparent 70%)` }} />
+                  <>
+                    <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full pointer-events-none"
+                      style={{ background: `radial-gradient(circle, hsl(${s.accentHsl} / 0.2), transparent 65%)` }} />
+                    <div className="absolute -bottom-6 -left-6 w-20 h-20 rounded-full pointer-events-none"
+                      style={{ background: `radial-gradient(circle, hsl(${s.accentHsl} / 0.08), transparent 70%)` }} />
+                  </>
                 )}
-                <div className="relative">
-                  <TabIcon color={isActive ? accentColor : "#666"} size={40} />
-                  <div className={`font-mono text-xs md:text-sm tracking-wide mt-2 transition-colors duration-300 ${
+                <div className="relative flex flex-col items-center text-center gap-2">
+                  <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
+                    <TabIcon color={isActive ? accentColor : "#555"} size={isActive ? 64 : 56} hsl={s.accentHsl} />
+                  </div>
+                  <div className={`font-mono text-xs md:text-sm tracking-wide transition-colors duration-300 ${
                     isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300"
                   }`}>
                     {s.name}
@@ -238,19 +370,22 @@ const SegmentsSection = () => {
         {/* Active segment detail card */}
         <motion.div key={activeSegment} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="border border-white/[0.06] overflow-hidden panel-3d"
-          style={{ borderColor: `hsl(${seg.accentHsl} / 0.15)` }}>
+          className="border border-white/[0.06] overflow-hidden"
+          style={{
+            borderColor: `hsl(${seg.accentHsl} / 0.15)`,
+            boxShadow: `0 4px 24px hsl(${seg.accentHsl} / 0.05)`,
+          }}>
 
           {/* Header */}
           <div className="px-6 md:px-8 py-6 flex items-center gap-6"
-            style={{ background: `linear-gradient(135deg, hsl(${seg.accentHsl} / 0.08), transparent 60%)` }}>
+            style={{ background: `linear-gradient(135deg, hsl(${seg.accentHsl} / 0.1), hsl(${seg.accentHsl} / 0.02) 50%, transparent)` }}>
             <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center border rounded-lg shrink-0 relative"
               style={{
                 borderColor: `hsl(${seg.accentHsl} / 0.3)`,
-                backgroundColor: `hsl(${seg.accentHsl} / 0.06)`,
-                boxShadow: `0 0 20px hsl(${seg.accentHsl} / 0.08), inset 0 0 12px hsl(${seg.accentHsl} / 0.04)`,
+                background: `linear-gradient(145deg, hsl(${seg.accentHsl} / 0.1), hsl(${seg.accentHsl} / 0.02))`,
+                boxShadow: `0 0 24px hsl(${seg.accentHsl} / 0.1), inset 0 0 16px hsl(${seg.accentHsl} / 0.05)`,
               }}>
-              <ActiveIcon color={`hsl(${seg.accentHsl})`} size={52} />
+              <ActiveIcon color={`hsl(${seg.accentHsl})`} size={60} hsl={seg.accentHsl} />
             </div>
             <div>
               <h3 className="font-mono text-2xl md:text-3xl font-light" style={{ color: `hsl(${seg.accentHsl})` }}>{seg.name}</h3>
