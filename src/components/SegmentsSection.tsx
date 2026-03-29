@@ -100,7 +100,7 @@ const MedicareIcon = ({ color, size = 48, hsl }: { color: string; size?: number;
       </filter>
     </defs>
     {/* Back document shadow */}
-    <rect x="18" y="8" width="30" height="40" rx="2" fill={color} opacity="0.04" stroke={color} strokeWidth="0.4" opacity="0.15" />
+    <rect x="18" y="8" width="30" height="40" rx="2" fill={color} opacity="0.04" stroke={color} strokeWidth="0.4" />
     {/* Main document */}
     <path d="M14 12H40L48 20V52H14V12Z" fill="url(#med-doc)" />
     <path d="M14 12H40L48 20V52H14V12Z" stroke={color} strokeWidth="1" opacity="0.6" />
