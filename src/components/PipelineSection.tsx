@@ -379,11 +379,15 @@ const PipelineSection = () => {
           {stages.map((stage, i) => (
             <motion.div key={stage.num} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
               transition={{ delay: 0.3 + i * 0.1 }}
-              className="border-b border-white/[0.06] py-4 px-2">
+              className="border border-[rgba(45,212,191,0.15)] py-4 px-4 mb-2 hover:bg-white/[0.02] transition-all duration-300"
+              style={{ boxShadow: "0 0 0 0 rgba(45,212,191,0)" }}>
               <div className="flex items-center gap-3 mb-1.5">
                 <span className="font-mono text-accent/50 text-sm">{stage.num}</span>
                 <h3 className="font-mono text-white text-base font-light">{stage.name}</h3>
                 <span className="font-mono text-gray-600 text-xs">— {stage.short}</span>
+              </div>
+              <div className="pl-9 mb-1">
+                <StageBadge stage={stage} />
               </div>
               <p className="text-gray-400 text-sm leading-relaxed pl-9">{stage.desc}</p>
             </motion.div>
