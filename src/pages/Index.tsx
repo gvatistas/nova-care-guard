@@ -8,7 +8,7 @@ import PipelineSection from "@/components/PipelineSection";
 import SegmentsSection from "@/components/SegmentsSection";
 import ProjectBetaSection from "@/components/ProjectBetaSection";
 import GuideBenchSection from "@/components/GuideBenchSection";
-import SecuritySection from "@/components/SecuritySection";
+
 
 import CTASection from "@/components/CTASection";
 
