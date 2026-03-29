@@ -278,7 +278,7 @@ const segments = [
     name: "Government", accentHsl: "210 70% 55%",
     tagline: "The prevention mandate is funded. The tools aren't built.",
     stats: [{ value: "$2.1B", label: "RHTP funding" }, { value: "100%", label: "audit traceability" }, { value: "200+", label: "deployable CHCs" }],
-    features: ["Complete audit trail", "Classified-grade security", "Population-scale deployment"],
+    features: ["Complete audit trail", "Enterprise-grade security", "Population-scale deployment"],
   },
   {
     name: "Medicare / Medicaid", accentHsl: "270 50% 60%",
