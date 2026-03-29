@@ -56,19 +56,29 @@ const differentiators = [
   },
 ];
 
-const nodePositions = [
-  { x: 120, y: 380 },
-  { x: 360, y: 200 },
-  { x: 600, y: 80 },
-  { x: 840, y: 200 },
-  { x: 1080, y: 380 },
+const CROWN_TIPS = [
+  { x: 150, y: 60 },
+  { x: 375, y: 40 },
+  { x: 600, y: 20 },
+  { x: 825, y: 40 },
+  { x: 1050, y: 60 },
+];
+const CROWN_BASE_Y = 240;
+const CROWN_VALLEYS = [
+  { x: 262, y: 190 },
+  { x: 487, y: 170 },
+  { x: 713, y: 170 },
+  { x: 938, y: 190 },
 ];
 
-const crownPath = "M 120,380 L 360,200 L 480,300 L 600,80 L 720,300 L 840,200 L 1080,380";
-
-const TEAL = "hsl(160, 82%, 61%)";
-const TEAL_RGB = "74,237,196";
-const BLUE = "hsl(210, 70%, 55%)";
+// Card anchor positions (below the crown)
+const CARD_TOPS = [
+  { x: 150, y: 340 },
+  { x: 375, y: 340 },
+  { x: 600, y: 340 },
+  { x: 825, y: 340 },
+  { x: 1050, y: 340 },
+];
 
 const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
   hoveredStage: number | null;
@@ -76,6 +86,32 @@ const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
   autoStage: number;
 }) => {
   const activeIdx = hoveredStage ?? autoStage;
+
+  // Build faceted crown triangles
+  const crownFacets: { points: string; side: "left" | "right" | "center"; tipIdx: number }[] = [];
+  CROWN_TIPS.forEach((tip, i) => {
+    // Left base of this point
+    const leftBase = i === 0
+      ? { x: 50, y: CROWN_BASE_Y }
+      : CROWN_VALLEYS[i - 1]!;
+    // Right base of this point
+    const rightBase = i === CROWN_TIPS.length - 1
+      ? { x: 1150, y: CROWN_BASE_Y }
+      : CROWN_VALLEYS[i]!;
+
+    // Left facet triangle
+    crownFacets.push({
+      points: `${tip.x},${tip.y} ${leftBase.x},${leftBase.y} ${(tip.x + leftBase.x) / 2},${CROWN_BASE_Y}`,
+      side: "left",
+      tipIdx: i,
+    });
+    // Right facet triangle
+    crownFacets.push({
+      points: `${tip.x},${tip.y} ${rightBase.x},${rightBase.y} ${(tip.x + rightBase.x) / 2},${CROWN_BASE_Y}`,
+      side: "right",
+      tipIdx: i,
+    });
+  });
 
   return (
     <div className="relative w-full" style={{ aspectRatio: "2.4/1" }}>
@@ -86,21 +122,28 @@ const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
             <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="glowSoft">
-            <feGaussianBlur stdDeviation="12" result="coloredBlur" />
+            <feGaussianBlur stdDeviation="14" result="coloredBlur" />
             <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          <linearGradient id="crownGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={TEAL} stopOpacity="0.15" />
-            <stop offset="50%" stopColor={TEAL} stopOpacity="0.4" />
-            <stop offset="100%" stopColor={TEAL} stopOpacity="0.15" />
+          <linearGradient id="crownGradL" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0d9488" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0.08" />
           </linearGradient>
-          <radialGradient id="nodeGlow">
-            <stop offset="0%" stopColor={TEAL} stopOpacity="0.12" />
-            <stop offset="100%" stopColor={TEAL} stopOpacity="0" />
+          <linearGradient id="crownGradR" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#2dd4bf" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#0d9488" stopOpacity="0.10" />
+          </linearGradient>
+          <linearGradient id="crownGradActive" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#2dd4bf" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#0d9488" stopOpacity="0.15" />
+          </linearGradient>
+          <radialGradient id="tipGlow">
+            <stop offset="0%" stopColor="#2dd4bf" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Fine grid */}
+        {/* Fine grid background */}
         {Array.from({ length: 25 }).map((_, i) => (
           <line key={`v${i}`} x1={i * 50} y1="0" x2={i * 50} y2="500" stroke="white" strokeWidth="0.3" opacity="0.02" />
         ))}
@@ -108,143 +151,170 @@ const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
           <line key={`h${i}`} x1="0" y1={i * 50} x2="1200" y2={i * 50} stroke="white" strokeWidth="0.3" opacity="0.02" />
         ))}
 
-        {/* Crown silhouette — ghost outline */}
-        <path d={crownPath} fill="none" stroke="url(#crownGrad)" strokeWidth="0.8" opacity="0.2" />
-        <path d={`${crownPath} Z`} fill={TEAL} opacity="0.008" />
+        {/* Crown base band */}
+        <rect x="50" y={CROWN_BASE_Y - 2} width="1100" height="4" fill="#2dd4bf" opacity="0.12" rx="1" />
+        <rect x="50" y={CROWN_BASE_Y - 1} width="1100" height="2" fill="#2dd4bf" opacity="0.25" rx="0.5" />
 
-        {/* Inner struts */}
-        {[[360,200,480,300],[600,80,480,300],[600,80,720,300],[840,200,720,300]].map(([x1,y1,x2,y2], i) => (
-          <line key={`s${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="white" strokeWidth="0.4" opacity="0.04" />
-        ))}
+        {/* Faceted triangles */}
+        {crownFacets.map((facet, i) => {
+          const isActive = facet.tipIdx === activeIdx;
+          const fillId = isActive
+            ? "url(#crownGradActive)"
+            : facet.side === "left"
+            ? "url(#crownGradL)"
+            : "url(#crownGradR)";
 
-        {/* Flow particles — two streams */}
-        {[0, -120].map((offset, fi) => (
-          <path key={fi} d={crownPath} fill="none" stroke={TEAL} strokeWidth={fi === 0 ? 1.5 : 1} opacity={fi === 0 ? 0.35 : 0.15}
-            strokeDasharray={fi === 0 ? "30 170" : "15 185"} strokeDashoffset={offset}>
-            <animate attributeName="stroke-dashoffset" values={`${offset};${offset - 200}`} dur="4s" repeatCount="indefinite" />
-          </path>
-        ))}
-
-        {/* Connection lines — lit progressively to active node */}
-        {nodePositions.map((pos, i) => {
-          if (i === 0) return null;
-          const prev = nodePositions[i - 1]!;
-          const isLit = i <= activeIdx;
           return (
-            <line key={`c${i}`} x1={prev.x} y1={prev.y} x2={pos.x} y2={pos.y}
-              stroke={isLit ? TEAL : "white"}
-              strokeWidth={isLit ? 1.2 : 0.5}
-              opacity={isLit ? 0.4 : 0.06}
-              style={{ transition: "all 0.6s ease" }} />
+            <polygon
+              key={i}
+              points={facet.points}
+              fill={fillId}
+              stroke="#2dd4bf"
+              strokeWidth={isActive ? 0.8 : 0.3}
+              opacity={isActive ? 1 : 0.6}
+              style={{ transition: "all 0.5s ease" }}
+            />
           );
         })}
 
-        {/* Nodes */}
-        {nodePositions.map((pos, i) => {
-          const stage = stages[i]!;
+        {/* White edge highlights on facet edges */}
+        {CROWN_TIPS.map((tip, i) => {
+          const leftBase = i === 0 ? { x: 50, y: CROWN_BASE_Y } : CROWN_VALLEYS[i - 1]!;
+          const rightBase = i === CROWN_TIPS.length - 1 ? { x: 1150, y: CROWN_BASE_Y } : CROWN_VALLEYS[i]!;
           const isActive = i === activeIdx;
-          const isCompleted = i < activeIdx;
-
           return (
-            <g key={i}
-              onMouseEnter={() => setHoveredStage(i)}
-              onMouseLeave={() => setHoveredStage(null)}
-              className="cursor-pointer">
-
-              {/* Ambient glow */}
-              {isActive && (
-                <circle cx={pos.x} cy={pos.y} r="60" fill="url(#nodeGlow)" filter="url(#glowSoft)">
-                  <animate attributeName="r" values="55;70;55" dur="3s" repeatCount="indefinite" />
-                </circle>
-              )}
-
-              {/* Outer orbit ring */}
-              <circle cx={pos.x} cy={pos.y} r={isActive ? 38 : 28}
-                fill="none" stroke={isActive ? TEAL : "white"}
-                strokeWidth={isActive ? 0.8 : 0.3}
-                opacity={isActive ? 0.5 : 0.08}
-                strokeDasharray={isActive ? "5 5" : "3 9"}
-                style={{ transition: "all 0.6s ease" }}>
-                <animateTransform attributeName="transform" type="rotate"
-                  from={`0 ${pos.x} ${pos.y}`} to={`360 ${pos.x} ${pos.y}`}
-                  dur={isActive ? "8s" : "30s"} repeatCount="indefinite" />
-              </circle>
-
-              {/* Second orbit */}
-              {isActive && (
-                <circle cx={pos.x} cy={pos.y} r="46" fill="none" stroke={TEAL}
-                  strokeWidth="0.4" opacity="0.2" strokeDasharray="2 10">
-                  <animateTransform attributeName="transform" type="rotate"
-                    from={`360 ${pos.x} ${pos.y}`} to={`0 ${pos.x} ${pos.y}`}
-                    dur="12s" repeatCount="indefinite" />
-                </circle>
-              )}
-
-              {/* Diamond node */}
-              <rect x={pos.x - 16} y={pos.y - 16} width="32" height="32" rx="2"
-                transform={`rotate(45 ${pos.x} ${pos.y})`}
-                fill={isActive ? `rgba(${TEAL_RGB}, 0.08)` : "hsl(0, 0%, 3%)"}
-                stroke={isActive ? TEAL : isCompleted ? TEAL : "white"}
-                strokeWidth={isActive ? 1.5 : isCompleted ? 0.8 : 0.4}
-                opacity={isActive ? 1 : isCompleted ? 0.6 : 0.3}
-                filter={isActive ? "url(#glow)" : undefined}
-                style={{ transition: "all 0.5s ease" }} />
-
-              {/* Number */}
-              <text x={pos.x} y={pos.y + 5} textAnchor="middle"
-                fontFamily="monospace" fontSize="12" fontWeight="300"
-                fill={isActive ? TEAL : isCompleted ? TEAL : "#666"}
-                opacity={isActive ? 1 : 0.7}
-                style={{ transition: "fill 0.5s ease" }}>
-                {stage.num}
-              </text>
-
-              {/* Name */}
-              <text x={pos.x} y={pos.y + 56} textAnchor="middle"
-                fontFamily="monospace" fontSize="12" letterSpacing="3"
-                fill={isActive ? TEAL : isCompleted ? `rgba(${TEAL_RGB}, 0.6)` : "#555"}
-                style={{ transition: "fill 0.5s ease" }}>
-                {stage.name}
-              </text>
-
-              {/* Subtitle on active */}
-              {isActive && (
-                <text x={pos.x} y={pos.y + 72} textAnchor="middle"
-                  fontFamily="monospace" fontSize="9" letterSpacing="1.5"
-                  fill="#888" opacity="0.7">
-                  {stage.short}
-                </text>
-              )}
-
-              {/* Pulse dot */}
-              {isActive && (
-                <circle cx={pos.x} cy={pos.y} r="2.5" fill={TEAL} opacity="0.9" filter="url(#glow)">
-                  <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite" />
-                  <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite" />
-                </circle>
-              )}
-
-              {/* Completed check */}
-              {isCompleted && !isActive && (
-                <circle cx={pos.x + 14} cy={pos.y - 14} r="4" fill={TEAL} opacity="0.5" />
-              )}
-
-              {/* Hit area */}
-              <circle cx={pos.x} cy={pos.y} r="55" fill="transparent" />
+            <g key={`edges-${i}`}>
+              {/* Left edge */}
+              <line x1={tip.x} y1={tip.y} x2={leftBase.x} y2={leftBase.y}
+                stroke="white" strokeWidth="0.6" opacity={isActive ? 0.15 : 0.06}
+                style={{ transition: "opacity 0.5s ease" }} />
+              {/* Right edge */}
+              <line x1={tip.x} y1={tip.y} x2={rightBase.x} y2={rightBase.y}
+                stroke="white" strokeWidth="0.6" opacity={isActive ? 0.2 : 0.08}
+                style={{ transition: "opacity 0.5s ease" }} />
+              {/* Center line (facet seam) */}
+              <line x1={tip.x} y1={tip.y} x2={tip.x} y2={CROWN_BASE_Y}
+                stroke="white" strokeWidth="0.4" opacity={isActive ? 0.12 : 0.04}
+                style={{ transition: "opacity 0.5s ease" }} />
             </g>
           );
         })}
 
+        {/* Tip glows & interactive areas */}
+        {CROWN_TIPS.map((tip, i) => {
+          const isActive = i === activeIdx;
+          const stage = stages[i]!;
+          return (
+            <g key={`tip-${i}`}
+              onMouseEnter={() => setHoveredStage(i)}
+              onMouseLeave={() => setHoveredStage(null)}
+              className="cursor-pointer"
+            >
+              {/* Ambient glow on active */}
+              {isActive && (
+                <circle cx={tip.x} cy={tip.y} r="50" fill="url(#tipGlow)" filter="url(#glowSoft)">
+                  <animate attributeName="r" values="45;60;45" dur="3s" repeatCount="indefinite" />
+                </circle>
+              )}
+
+              {/* Tip diamond marker */}
+              <rect
+                x={tip.x - 10} y={tip.y - 10} width="20" height="20" rx="1"
+                transform={`rotate(45 ${tip.x} ${tip.y})`}
+                fill={isActive ? "rgba(45,212,191,0.15)" : "rgba(45,212,191,0.03)"}
+                stroke="#2dd4bf"
+                strokeWidth={isActive ? 1.2 : 0.5}
+                opacity={isActive ? 1 : 0.4}
+                filter={isActive ? "url(#glow)" : undefined}
+                style={{ transition: "all 0.5s ease" }}
+              />
+
+              {/* Stage number inside diamond */}
+              <text x={tip.x} y={tip.y + 4} textAnchor="middle"
+                fontFamily="monospace" fontSize="10" fontWeight="300"
+                fill={isActive ? "#2dd4bf" : "#666"}
+                style={{ transition: "fill 0.5s ease" }}>
+                {stage.num}
+              </text>
+
+              {/* Stage name below tip */}
+              <text x={tip.x} y={tip.y - 22} textAnchor="middle"
+                fontFamily="monospace" fontSize="11" letterSpacing="3"
+                fill={isActive ? "#2dd4bf" : "#555"}
+                opacity={isActive ? 1 : 0.6}
+                style={{ transition: "all 0.5s ease" }}>
+                {stage.name}
+              </text>
+
+              {/* Pulse on active tip */}
+              {isActive && (
+                <circle cx={tip.x} cy={tip.y} r="2" fill="#2dd4bf" opacity="0.9" filter="url(#glow)">
+                  <animate attributeName="r" values="2;5;2" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite" />
+                </circle>
+              )}
+
+              {/* Hit area */}
+              <circle cx={tip.x} cy={tip.y} r="50" fill="transparent" />
+            </g>
+          );
+        })}
+
+        {/* Connecting lines from crown tips down to card positions */}
+        {CROWN_TIPS.map((tip, i) => {
+          const card = CARD_TOPS[i]!;
+          const isActive = i === activeIdx;
+          return (
+            <g key={`conn-${i}`}>
+              <line
+                x1={tip.x} y1={CROWN_BASE_Y + 2}
+                x2={card.x} y2={card.y}
+                stroke="#2dd4bf"
+                strokeWidth={isActive ? 1 : 0.4}
+                opacity={isActive ? 0.4 : 0.08}
+                strokeDasharray={isActive ? "none" : "3 6"}
+                style={{ transition: "all 0.5s ease" }}
+              />
+              {/* Small terminal dot */}
+              <circle cx={card.x} cy={card.y} r={isActive ? 3 : 1.5}
+                fill={isActive ? "#2dd4bf" : "#555"}
+                opacity={isActive ? 0.7 : 0.3}
+                style={{ transition: "all 0.5s ease" }}
+              />
+            </g>
+          );
+        })}
+
+        {/* Animated flow particles along crown outline */}
+        {(() => {
+          // Build crown outline path
+          const pts = [{ x: 50, y: CROWN_BASE_Y }];
+          for (let i = 0; i < CROWN_TIPS.length; i++) {
+            pts.push(CROWN_TIPS[i]!);
+            if (i < CROWN_VALLEYS.length) pts.push(CROWN_VALLEYS[i]!);
+          }
+          pts.push({ x: 1150, y: CROWN_BASE_Y });
+          const d = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x},${p.y}`).join(" ");
+
+          return [0, -100, -200].map((offset, fi) => (
+            <path key={fi} d={d} fill="none" stroke="#2dd4bf"
+              strokeWidth={fi === 0 ? 1.5 : 0.8}
+              opacity={fi === 0 ? 0.4 : 0.15}
+              strokeDasharray={fi === 0 ? "20 180" : "10 190"}
+              strokeDashoffset={offset}>
+              <animate attributeName="stroke-dashoffset" values={`${offset};${offset - 200}`} dur="5s" repeatCount="indefinite" />
+            </path>
+          ));
+        })()}
+
         {/* Input / Output labels */}
         <g opacity="0.25">
-          <polygon points="52,380 68,374 68,386" fill={TEAL} />
-          <line x1="58" y1="380" x2="88" y2="380" stroke={TEAL} strokeWidth="0.6" />
-          <text x="120" y="430" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">GUIDELINE</text>
+          <polygon points="52,{CROWN_BASE_Y} 68,{CROWN_BASE_Y - 6} 68,{CROWN_BASE_Y + 6}" fill="#2dd4bf" />
+          <text x="85" y={CROWN_BASE_Y + 4} fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">GUIDELINE</text>
         </g>
         <g opacity="0.25">
-          <polygon points="1148,380 1132,374 1132,386" fill={TEAL} />
-          <line x1="1112" y1="380" x2="1142" y2="380" stroke={TEAL} strokeWidth="0.6" />
-          <text x="1080" y="430" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">ARTIFACT</text>
+          <polygon points="1148,{CROWN_BASE_Y} 1132,{CROWN_BASE_Y - 6} 1132,{CROWN_BASE_Y + 6}" fill="#2dd4bf" />
+          <text x="1115" y={CROWN_BASE_Y + 4} textAnchor="end" fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">ARTIFACT</text>
         </g>
       </svg>
     </div>
