@@ -280,13 +280,26 @@ const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
   );
 };
 
+const StageBadge = ({ stage }: { stage: typeof stages[0] }) => (
+  <span className="inline-flex items-center gap-1.5 font-mono text-[0.7rem]" style={{ color: "rgba(255,255,255,0.5)" }}>
+    {stage.badgeType === "pulse" && (
+      <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+    )}
+    {stage.badgeType === "check" && (
+      <Check size={11} strokeWidth={2.5} className="text-accent/70" />
+    )}
+    {stage.badgeType === "lock" && (
+      <Lock size={11} strokeWidth={2} className="text-accent/70" />
+    )}
+    {stage.badge}
+  </span>
+);
+
 const PipelineSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredStage, setHoveredStage] = useState<number | null>(null);
   const [autoStage, setAutoStage] = useState(0);
-  const [activeDiff, setActiveDiff] = useState(0);
-  const diff = differentiators[activeDiff]!;
 
   // Auto-cycle when not hovering
   useEffect(() => {
@@ -325,7 +338,7 @@ const PipelineSection = () => {
           </div>
 
           {/* Detail panel */}
-          <div className="px-6 md:px-8 py-5 border-t border-white/[0.06]"
+          <div className="px-6 md:px-8 py-5 border-t border-[rgba(45,212,191,0.15)]"
             style={{
               background: `linear-gradient(135deg, rgba(${TEAL_RGB}, 0.03), transparent 60%)`,
               transition: "background 0.5s ease",
@@ -336,9 +349,12 @@ const PipelineSection = () => {
                 <span className="w-8 h-8 flex items-center justify-center border border-accent/30 rotate-45">
                   <span className="-rotate-45 font-mono text-accent text-sm">{activeStage.num}</span>
                 </span>
-                <div>
-                  <span className="font-mono text-white text-lg md:text-xl font-light tracking-wide">{activeStage.name}</span>
-                  <span className="font-mono text-gray-600 text-xs ml-3 tracking-[0.15em]">{activeStage.short}</span>
+                <div className="flex flex-col">
+                  <div>
+                    <span className="font-mono text-white text-lg md:text-xl font-light tracking-wide">{activeStage.name}</span>
+                    <span className="font-mono text-gray-600 text-xs ml-3 tracking-[0.15em]">{activeStage.short}</span>
+                  </div>
+                  <StageBadge stage={activeStage} />
                 </div>
               </div>
               <div className="hidden md:block w-px h-10 bg-white/[0.06]" />
@@ -357,57 +373,6 @@ const PipelineSection = () => {
           </div>
         </motion.div>
 
-        {/* Differentiators — integrated below pipeline */}
-        <div className="mt-8">
-          <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
-            className="flex flex-wrap gap-1.5 mb-5">
-            {differentiators.map((d, i) => (
-              <button key={d.id} onClick={() => setActiveDiff(i)}
-                className={`font-mono text-sm tracking-wide px-4 py-2.5 border transition-all duration-400 panel-3d ${
-                  activeDiff === i ? "border-current bg-current/10" : "border-white/[0.08] text-gray-500 hover:text-gray-300 hover:border-white/20"
-                }`}
-                style={activeDiff === i ? { color: `hsl(${d.accentHsl})`, borderColor: `hsl(${d.accentHsl} / 0.3)`, backgroundColor: `hsl(${d.accentHsl} / 0.08)` } : undefined}>
-                <span className="mr-2 text-xs">{d.icon}</span>{d.label}
-              </button>
-            ))}
-          </motion.div>
-
-          <AnimatePresence mode="wait">
-            <motion.div key={activeDiff} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
-              className="border border-white/[0.06] overflow-hidden panel-3d"
-              style={{ borderColor: `hsl(${diff.accentHsl} / 0.15)` }}>
-              <div className="grid grid-cols-1 lg:grid-cols-2">
-                <div className="px-6 md:px-8 py-5 border-b lg:border-b-0 lg:border-r border-white/[0.06]"
-                  style={{ background: `linear-gradient(135deg, hsl(${diff.accentHsl} / 0.05), transparent 60%)` }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xl" style={{ color: `hsl(${diff.accentHsl})` }}>{diff.icon}</span>
-                    <h3 className="font-mono text-xl md:text-2xl font-light" style={{ color: `hsl(${diff.accentHsl})` }}>{diff.headline}</h3>
-                  </div>
-                  <p className="text-gray-300 text-base leading-[1.7]">{diff.description}</p>
-                </div>
-                <div className="grid grid-cols-1 divide-y divide-white/[0.06]">
-                  <div className="px-6 md:px-8 py-3 flex items-center justify-between">
-                    <span className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500">Metric</span>
-                    <div className="flex items-center gap-8">
-                      <span className="font-mono text-xs tracking-[0.15em] uppercase" style={{ color: `hsl(${diff.accentHsl})` }}>Medient</span>
-                      <span className="font-mono text-xs tracking-[0.15em] uppercase text-gray-600 w-20 text-right">Others</span>
-                    </div>
-                  </div>
-                  {diff.comparison.map((row, ri) => (
-                    <div key={ri} className="px-6 md:px-8 py-3.5 flex items-center justify-between hover:bg-white/[0.015] transition-colors duration-300">
-                      <span className="text-gray-300 text-base">{row.metric}</span>
-                      <div className="flex items-center gap-8">
-                        <span className="font-mono text-lg font-light" style={{ color: `hsl(${diff.accentHsl})` }}>{row.medient}</span>
-                        <span className="font-mono text-base text-gray-600 w-20 text-right">{row.others}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
 
         {/* Mobile fallback */}
         <div className="md:hidden mt-4 border-t border-white/[0.06]">
