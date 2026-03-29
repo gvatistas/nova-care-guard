@@ -1,419 +1,270 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
-/* ── Rich 3D Icon Components with multi-color gradients ── */
-const HealthSystemsIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
-  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-    <defs>
-      <linearGradient id="hs-face1" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.35" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.08" />
-      </linearGradient>
-      <linearGradient id="hs-face2" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.2" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.05" />
-      </linearGradient>
-      <linearGradient id="hs-top" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stopColor={color} stopOpacity="0.45" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.15" />
-      </linearGradient>
-      <filter id="hs-glow">
-        <feGaussianBlur stdDeviation="2" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
-    {/* Building — isometric 3D with proper shading */}
-    <path d="M32 50L10 38V18L32 30V50Z" fill="url(#hs-face2)" />
-    <path d="M32 50L54 38V18L32 30V50Z" fill="url(#hs-face1)" />
-    <path d="M10 18L32 6L54 18L32 30L10 18Z" fill="url(#hs-top)" />
-    {/* Edges */}
-    <path d="M32 50L10 38V18L32 30V50Z" stroke={color} strokeWidth="0.8" fill="none" opacity="0.7" />
-    <path d="M32 50L54 38V18L32 30V50Z" stroke={color} strokeWidth="0.8" fill="none" opacity="0.7" />
-    <path d="M10 18L32 6L54 18L32 30L10 18Z" stroke={color} strokeWidth="0.8" fill="none" opacity="0.7" />
-    {/* Glowing cross on front */}
-    <line x1="32" y1="35" x2="32" y2="46" stroke={color} strokeWidth="2.5" opacity="0.9" filter="url(#hs-glow)" />
-    <line x1="27" y1="40.5" x2="37" y2="40.5" stroke={color} strokeWidth="2.5" opacity="0.9" filter="url(#hs-glow)" />
-    {/* Windows — right face */}
-    {[0, 6, 12].map((dy, i) => (
-      <rect key={i} x={37} y={22 + dy} width="4" height="3" rx="0.5" fill={color} opacity={0.4 - i * 0.08} transform="skewY(-26)" />
-    ))}
-    {/* Accent corners */}
-    <circle cx="32" cy="6" r="2.5" fill={color} opacity="0.6" filter="url(#hs-glow)" />
-    <circle cx="10" cy="18" r="1.5" fill={color} opacity="0.25" />
-    <circle cx="54" cy="18" r="1.5" fill={color} opacity="0.25" />
-    {/* Ambient glow */}
-    <ellipse cx="32" cy="52" rx="18" ry="3" fill={color} opacity="0.06" />
-  </svg>
-);
-
-const GovernmentIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
-  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-    <defs>
-      <linearGradient id="gov-fill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.05" />
-      </linearGradient>
-      <linearGradient id="gov-inner" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.2" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.02" />
-      </linearGradient>
-      <filter id="gov-glow">
-        <feGaussianBlur stdDeviation="2.5" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
-    {/* Outer shield with gradient fill */}
-    <path d="M32 6L52 14V30C52 42 43 51 32 56C21 51 12 42 12 30V14L32 6Z" fill="url(#gov-fill)" />
-    <path d="M32 6L52 14V30C52 42 43 51 32 56C21 51 12 42 12 30V14L32 6Z" stroke={color} strokeWidth="1.2" opacity="0.7" />
-    {/* Inner shield layer */}
-    <path d="M32 12L46 18V30C46 39 39 46 32 50C25 46 18 39 18 30V18L32 12Z" fill="url(#gov-inner)" />
-    <path d="M32 12L46 18V30C46 39 39 46 32 50C25 46 18 39 18 30V18L32 12Z" stroke={color} strokeWidth="0.6" opacity="0.35" />
-    {/* Glowing checkmark */}
-    <polyline points="24,30 29,36 40,22" stroke={color} strokeWidth="3" fill="none" opacity="0.9"
-      strokeLinecap="round" strokeLinejoin="round" filter="url(#gov-glow)" />
-    {/* Accent dots along shield edge */}
-    {[0, 1, 2, 3, 4].map((i) => {
-      const angle = (-0.8 + i * 0.4);
-      const r = 23;
-      return <circle key={i} cx={32 + Math.sin(angle) * r} cy={28 - Math.cos(angle) * r + 4}
-        r="1" fill={color} opacity={0.2 + i * 0.05} />;
-    })}
-    {/* Ground glow */}
-    <ellipse cx="32" cy="58" rx="16" ry="2.5" fill={color} opacity="0.06" />
-  </svg>
-);
-
-const MedicareIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
-  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-    <defs>
-      <linearGradient id="med-doc" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.25" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.04" />
-      </linearGradient>
-      <linearGradient id="med-fold" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.45" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.15" />
-      </linearGradient>
-      <filter id="med-glow">
-        <feGaussianBlur stdDeviation="2" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
-    {/* Back document shadow */}
-    <rect x="18" y="8" width="30" height="40" rx="2" fill={color} opacity="0.04" stroke={color} strokeWidth="0.4" />
-    {/* Main document */}
-    <path d="M14 12H40L48 20V52H14V12Z" fill="url(#med-doc)" />
-    <path d="M14 12H40L48 20V52H14V12Z" stroke={color} strokeWidth="1" opacity="0.6" />
-    {/* Folded corner with gradient */}
-    <path d="M40 12V20H48L40 12Z" fill="url(#med-fold)" />
-    <path d="M40 12V20H48" stroke={color} strokeWidth="0.8" opacity="0.5" />
-    {/* Content lines with varying opacity */}
-    <line x1="20" y1="27" x2="38" y2="27" stroke={color} strokeWidth="1.5" opacity="0.5" />
-    <line x1="20" y1="32" x2="34" y2="32" stroke={color} strokeWidth="1" opacity="0.35" />
-    <line x1="20" y1="37" x2="36" y2="37" stroke={color} strokeWidth="1" opacity="0.3" />
-    <line x1="20" y1="42" x2="30" y2="42" stroke={color} strokeWidth="1" opacity="0.2" />
-    {/* Star seal — glowing */}
-    <circle cx="38" cy="44" r="5" fill={color} opacity="0.15" stroke={color} strokeWidth="0.8" />
-    <text x="38" y="46.5" textAnchor="middle" fontSize="7" fill={color} opacity="0.8" fontFamily="monospace" filter="url(#med-glow)">★</text>
-    {/* Ground shadow */}
-    <ellipse cx="31" cy="55" rx="15" ry="2" fill={color} opacity="0.05" />
-  </svg>
-);
-
-const PayersIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
-  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-    <defs>
-      <linearGradient id="pay-coin" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.35" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.08" />
-      </linearGradient>
-      <filter id="pay-glow">
-        <feGaussianBlur stdDeviation="2" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
-    {/* Stacked coins with depth */}
-    {[0, 6, 12].map((offset, i) => (
-      <g key={i}>
-        {/* Coin side */}
-        {i < 2 && (
-          <path d={`M12,${40 - offset} L12,${34 - offset} A20,7 0 0,0 52,${34 - offset} L52,${40 - offset}`}
-            fill={color} opacity={0.05 + i * 0.03} />
-        )}
-        {/* Coin face */}
-        <ellipse cx="32" cy={34 - offset} rx="20" ry="7" fill="url(#pay-coin)" opacity={0.6 + i * 0.15} />
-        <ellipse cx="32" cy={34 - offset} rx="20" ry="7" stroke={color} strokeWidth={0.6 + i * 0.2} fill="none" opacity={0.4 + i * 0.15} />
-        {/* Inner ring on top coin */}
-        {i === 2 && (
-          <ellipse cx="32" cy={34 - offset} rx="14" ry="5" stroke={color} strokeWidth="0.4" fill="none" opacity="0.25" />
-        )}
-      </g>
-    ))}
-    {/* Dollar sign — glowing */}
-    <text x="32" y="26" textAnchor="middle" fontSize="14" fill={color} opacity="0.85" fontFamily="monospace" fontWeight="300" filter="url(#pay-glow)">$</text>
-    {/* Rising arrow */}
-    <path d="M48 18L52 12L56 18" stroke={color} strokeWidth="1.5" opacity="0.5" fill="none" strokeLinecap="round" />
-    <line x1="52" y1="12" x2="52" y2="24" stroke={color} strokeWidth="1.5" opacity="0.5" strokeLinecap="round" />
-    {/* Sparkle dots */}
-    <circle cx="48" cy="10" r="1" fill={color} opacity="0.3" />
-    <circle cx="56" cy="14" r="0.8" fill={color} opacity="0.2" />
-    {/* Ground shadow */}
-    <ellipse cx="32" cy="44" rx="18" ry="3" fill={color} opacity="0.06" />
-  </svg>
-);
-
-const ClinicalAIIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
-  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-    <defs>
-      <linearGradient id="ai-node" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.4" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.1" />
-      </linearGradient>
-      <filter id="ai-glow">
-        <feGaussianBlur stdDeviation="2.5" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
-    {/* Connection lines first (behind nodes) */}
-    {[16, 32, 48].map((y1) =>
-      [20, 32, 44].map((y2, j) => (
-        <line key={`c1-${y1}-${j}`} x1="14" y1={y1} x2="28" y2={y2}
-          stroke={color} strokeWidth="0.5" opacity="0.15" />
-      ))
-    )}
-    {[20, 32, 44].map((y, i) => (
-      <line key={`c2-${i}`} x1="36" y1={y} x2="50" y2="32"
-        stroke={color} strokeWidth="0.6" opacity="0.25" />
-    ))}
-    {/* Layer 1 nodes */}
-    {[16, 32, 48].map((y, i) => (
-      <g key={`l1-${i}`}>
-        <circle cx="12" cy={y} r="5" fill="url(#ai-node)" stroke={color} strokeWidth="0.8" opacity="0.7" />
-        <circle cx="12" cy={y} r="2" fill={color} opacity="0.5" />
-      </g>
-    ))}
-    {/* Layer 2 nodes */}
-    {[20, 32, 44].map((y, i) => (
-      <g key={`l2-${i}`}>
-        <circle cx="32" cy={y} r="5.5" fill="url(#ai-node)" stroke={color} strokeWidth="0.8" opacity="0.8" />
-        <circle cx="32" cy={y} r="2.5" fill={color} opacity="0.6" />
-      </g>
-    ))}
-    {/* Output node — largest, glowing */}
-    <circle cx="52" cy="32" r="7" fill="url(#ai-node)" stroke={color} strokeWidth="1.2" opacity="0.9" />
-    <circle cx="52" cy="32" r="3.5" fill={color} opacity="0.7" filter="url(#ai-glow)" />
-    {/* Pulse rings */}
-    <circle cx="52" cy="32" r="10" fill="none" stroke={color} strokeWidth="0.6" opacity="0.2">
-      <animate attributeName="r" values="10;16;10" dur="2.5s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.2;0.02;0.2" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="52" cy="32" r="14" fill="none" stroke={color} strokeWidth="0.3" opacity="0.1">
-      <animate attributeName="r" values="14;20;14" dur="3s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.1;0.01;0.1" dur="3s" repeatCount="indefinite" />
-    </circle>
-    {/* Data flow particles */}
-    {[0, 1, 2].map((i) => (
-      <circle key={`p${i}`} r="1.5" fill={color} opacity="0.5">
-        <animate attributeName="cx" values={`12;32;52`} dur={`${1.8 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.5}s`} />
-        <animate attributeName="cy" values={`${16 + i * 16};${20 + i * 12};32`} dur={`${1.8 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.5}s`} />
-        <animate attributeName="opacity" values="0;0.6;0" dur={`${1.8 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.5}s`} />
-      </circle>
-    ))}
-  </svg>
-);
-
-const GuidelineIcon = ({ color, size = 48, hsl }: { color: string; size?: number; hsl: string }) => (
-  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-    <defs>
-      <linearGradient id="guide-left" x1="1" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.2" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.04" />
-      </linearGradient>
-      <linearGradient id="guide-right" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.06" />
-      </linearGradient>
-      <filter id="guide-glow">
-        <feGaussianBlur stdDeviation="2" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
-    {/* Spine */}
-    <line x1="32" y1="12" x2="32" y2="52" stroke={color} strokeWidth="1.5" opacity="0.5" />
-    {/* Left page with gradient */}
-    <path d="M32 14C26 12 18 11 8 12V50C18 49 26 50 32 52" fill="url(#guide-left)" />
-    <path d="M32 14C26 12 18 11 8 12V50C18 49 26 50 32 52" stroke={color} strokeWidth="0.8" opacity="0.5" />
-    {/* Right page with gradient */}
-    <path d="M32 14C38 12 46 11 56 12V50C46 49 38 50 32 52" fill="url(#guide-right)" />
-    <path d="M32 14C38 12 46 11 56 12V50C46 49 38 50 32 52" stroke={color} strokeWidth="0.8" opacity="0.5" />
-    {/* Text lines — left page */}
-    {[22, 27, 32, 37, 42].map((y, i) => (
-      <line key={`l${i}`} x1={14} y1={y} x2={28 - i} y2={y + 1} stroke={color} strokeWidth="0.8" opacity={0.4 - i * 0.05} />
-    ))}
-    {/* Text lines — right page */}
-    {[22, 27, 32, 37, 42].map((y, i) => (
-      <line key={`r${i}`} x1={36 + i} y1={y + 1} x2={50} y2={y} stroke={color} strokeWidth="0.8" opacity={0.4 - i * 0.05} />
-    ))}
-    {/* Glowing spine beacon */}
-    <circle cx="32" cy="10" r="3" fill={color} opacity="0.5" filter="url(#guide-glow)" />
-    <circle cx="32" cy="10" r="5" fill="none" stroke={color} strokeWidth="0.4" opacity="0.2">
-      <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite" />
-    </circle>
-    {/* Ground shadow */}
-    <ellipse cx="32" cy="54" rx="20" ry="2.5" fill={color} opacity="0.05" />
-  </svg>
-);
-
-const iconComponents = [HealthSystemsIcon, GovernmentIcon, MedicareIcon, PayersIcon, ClinicalAIIcon, GuidelineIcon];
-
+/* ─── Segment data ─── */
 const segments = [
   {
-    name: "Health Systems", accentHsl: "160 82% 61%",
-    tagline: "Deploy once. Cover your whole population.",
-    stats: [{ value: "45%", label: "↓ missed screenings" }, { value: "$0", label: "marginal cost/encounter" }, { value: "<30s", label: "to recommendation" }],
-    features: ["FHIR-native EHR integration", "Multi-facility deployment", "Real-time eligibility flagging"],
+    name: "Federally Qualified Health Centers",
+    abbr: "FQHCs",
+    stat: "1,400+ eligible facilities",
+    desc: "Deploy verified clinical decision artifacts across the FQHC network — the largest safety-net infrastructure in the U.S.",
   },
   {
-    name: "Government", accentHsl: "210 70% 55%",
-    tagline: "The prevention mandate is funded. The tools aren't built.",
-    stats: [{ value: "$2.1B", label: "RHTP funding" }, { value: "100%", label: "audit traceability" }, { value: "200+", label: "deployable CHCs" }],
-    features: ["Complete audit trail", "Enterprise-grade security", "Population-scale deployment"],
+    name: "Rural Health Clinics",
+    abbr: "RHCs",
+    stat: "4,700+ eligible facilities",
+    desc: "Air-gapped, low-bandwidth deployment for clinics operating in connectivity-constrained environments.",
   },
   {
-    name: "Medicare / Medicaid", accentHsl: "270 50% 60%",
-    tagline: "Artifacts mapped directly to CMS quality measures.",
-    stats: [{ value: "100%", label: "CMS alignment" }, { value: "80%", label: "↓ manual abstraction" }, { value: "5-star", label: "quality impact" }],
-    features: ["HEDIS measure automation", "Star rating optimization", "Automated quality reporting"],
+    name: "Tribal Health Programs",
+    abbr: "IHS / Tribal",
+    stat: "574 federally recognized tribes",
+    desc: "Culturally-aligned clinical intelligence for Indian Health Service and tribal health organizations.",
   },
   {
-    name: "Payers & Insurance", accentHsl: "35 50% 60%",
-    tagline: "Early detection is cheaper than late treatment. Always.",
-    stats: [{ value: "$100K+", label: "saved per case" }, { value: "38%", label: "screening uplift" }, { value: "PMPM", label: "pricing model" }],
-    features: ["Per-member-per-month pricing", "Population risk stratification", "Claims reduction analytics"],
-  },
-  {
-    name: "Clinical AI", accentHsl: "340 60% 60%",
-    tagline: "Clinical reasoning without the liability.",
-    stats: [{ value: "0ms", label: "inference latency" }, { value: "0%", label: "hallucination rate" }, { value: "API", label: "MCP-native" }],
-    features: ["MCP API access", "Deterministic outputs", "Liability-safe clinical logic"],
-  },
-  {
-    name: "Guideline Societies", accentHsl: "160 82% 61%",
-    tagline: "Your guidelines, actually followed.",
-    stats: [{ value: "~100%", label: "adherence rate" }, { value: "10x", label: "faster adoption" }, { value: "Full", label: "provenance tracing" }],
-    features: ["Narrative-to-logic compilation", "Source fidelity verification", "Deployment analytics"],
+    name: "Community Health Centers",
+    abbr: "CHCs",
+    stat: "31M+ patients served annually",
+    desc: "Network-wide screening adherence across multi-site community health organizations.",
   },
 ];
+
+/* ─── Angular SVG Icons ─── */
+
+const FQHCIcon = ({ active }: { active: boolean }) => (
+  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="fqhc-l" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#2dd4bf" stopOpacity={active ? 0.35 : 0.12} />
+        <stop offset="100%" stopColor="#0d9488" stopOpacity={active ? 0.15 : 0.04} />
+      </linearGradient>
+      <linearGradient id="fqhc-r" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#2dd4bf" stopOpacity={active ? 0.5 : 0.18} />
+        <stop offset="100%" stopColor="#0d9488" stopOpacity={active ? 0.2 : 0.06} />
+      </linearGradient>
+    </defs>
+    {/* Shield base */}
+    <path d="M32 6L52 16V34C52 44 43 52 32 58C21 52 12 44 12 34V16L32 6Z" fill="url(#fqhc-l)" />
+    <path d="M32 6L52 16V34C52 44 43 52 32 58C21 52 12 44 12 34V16L32 6Z" stroke="#2dd4bf" strokeWidth={active ? 1.2 : 0.6} opacity={active ? 0.8 : 0.3} />
+    {/* Faceted inner triangles */}
+    <path d="M32 6L42 12L32 20Z" fill="#2dd4bf" opacity={active ? 0.2 : 0.06} />
+    <path d="M32 6L22 12L32 20Z" fill="#0d9488" opacity={active ? 0.15 : 0.04} />
+    <path d="M32 20L42 12L52 16L48 28Z" fill="#2dd4bf" opacity={active ? 0.12 : 0.04} />
+    <path d="M32 20L22 12L12 16L16 28Z" fill="#0d9488" opacity={active ? 0.08 : 0.03} />
+    {/* Building silhouette inside */}
+    <rect x="26" y="28" width="12" height="18" fill="#2dd4bf" opacity={active ? 0.15 : 0.06} />
+    <rect x="26" y="28" width="12" height="18" stroke="#2dd4bf" strokeWidth="0.5" opacity={active ? 0.4 : 0.15} fill="none" />
+    <line x1="32" y1="28" x2="32" y2="46" stroke="#2dd4bf" strokeWidth="0.4" opacity={active ? 0.3 : 0.1} />
+    <line x1="26" y1="36" x2="38" y2="36" stroke="#2dd4bf" strokeWidth="0.4" opacity={active ? 0.3 : 0.1} />
+    {/* Cross on building */}
+    <line x1="32" y1="31" x2="32" y2="41" stroke="#2dd4bf" strokeWidth="1.5" opacity={active ? 0.7 : 0.25} />
+    <line x1="28" y1="36" x2="36" y2="36" stroke="#2dd4bf" strokeWidth="1.5" opacity={active ? 0.7 : 0.25} />
+  </svg>
+);
+
+const RuralIcon = ({ active }: { active: boolean }) => (
+  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="rural-pin" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#2dd4bf" stopOpacity={active ? 0.45 : 0.15} />
+        <stop offset="100%" stopColor="#0d9488" stopOpacity={active ? 0.1 : 0.03} />
+      </linearGradient>
+    </defs>
+    {/* Terrain lines */}
+    {[44, 48, 52, 56].map((y, i) => (
+      <path key={i}
+        d={`M${6 + i * 2},${y} L${18 - i},${y - 3 + i} L${28 + i * 2},${y + 1} L${40 - i},${y - 2} L${50 + i},${y + 2} L${58 - i * 2},${y}`}
+        stroke="#2dd4bf" strokeWidth="0.5" opacity={active ? 0.2 - i * 0.03 : 0.06} fill="none" />
+    ))}
+    {/* Pin — angular diamond shape */}
+    <path d="M32 8L42 22L32 50L22 22Z" fill="url(#rural-pin)" />
+    <path d="M32 8L42 22L32 50L22 22Z" stroke="#2dd4bf" strokeWidth={active ? 1 : 0.5} opacity={active ? 0.7 : 0.25} fill="none" />
+    {/* Faceted left/right */}
+    <path d="M32 8L22 22L32 28Z" fill="#0d9488" opacity={active ? 0.15 : 0.05} />
+    <path d="M32 8L42 22L32 28Z" fill="#2dd4bf" opacity={active ? 0.25 : 0.08} />
+    {/* Inner diamond */}
+    <path d="M32 16L37 22L32 30L27 22Z" stroke="#2dd4bf" strokeWidth="0.6" opacity={active ? 0.5 : 0.15} fill="none" />
+    {/* Center dot */}
+    <circle cx="32" cy="22" r="3" fill="#2dd4bf" opacity={active ? 0.6 : 0.2} />
+    <circle cx="32" cy="22" r="1.5" fill="#2dd4bf" opacity={active ? 0.9 : 0.3} />
+  </svg>
+);
+
+const TribalIcon = ({ active }: { active: boolean }) => (
+  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
+    {/* Outer circle */}
+    <circle cx="32" cy="32" r="24" stroke="#2dd4bf" strokeWidth={active ? 1 : 0.5} opacity={active ? 0.5 : 0.15} fill="none" />
+    <circle cx="32" cy="32" r="24" fill="#2dd4bf" opacity={active ? 0.04 : 0.01} />
+    {/* Inner circle */}
+    <circle cx="32" cy="32" r="14" stroke="#2dd4bf" strokeWidth={active ? 0.8 : 0.4} opacity={active ? 0.4 : 0.12} fill="none" />
+    {/* Cross lines (medicine wheel) */}
+    <line x1="32" y1="8" x2="32" y2="56" stroke="#2dd4bf" strokeWidth={active ? 0.8 : 0.4} opacity={active ? 0.35 : 0.1} />
+    <line x1="8" y1="32" x2="56" y2="32" stroke="#2dd4bf" strokeWidth={active ? 0.8 : 0.4} opacity={active ? 0.35 : 0.1} />
+    {/* Faceted quadrants */}
+    <path d="M32 8L32 32L56 32A24 24 0 0 0 32 8Z" fill="#2dd4bf" opacity={active ? 0.12 : 0.03} />
+    <path d="M32 56L32 32L8 32A24 24 0 0 0 32 56Z" fill="#2dd4bf" opacity={active ? 0.12 : 0.03} />
+    <path d="M8 32L32 32L32 8A24 24 0 0 0 8 32Z" fill="#0d9488" opacity={active ? 0.08 : 0.02} />
+    <path d="M56 32L32 32L32 56A24 24 0 0 0 56 32Z" fill="#0d9488" opacity={active ? 0.08 : 0.02} />
+    {/* Cardinal diamonds */}
+    {[
+      [32, 10], [32, 54], [10, 32], [54, 32],
+    ].map(([cx, cy], i) => (
+      <rect key={i} x={(cx ?? 0) - 3} y={(cy ?? 0) - 3} width="6" height="6"
+        transform={`rotate(45 ${cx} ${cy})`}
+        fill="#2dd4bf" opacity={active ? 0.5 : 0.15} />
+    ))}
+    {/* Center */}
+    <circle cx="32" cy="32" r="4" fill="#2dd4bf" opacity={active ? 0.5 : 0.15} />
+    <circle cx="32" cy="32" r="2" fill="#2dd4bf" opacity={active ? 0.8 : 0.25} />
+  </svg>
+);
+
+const CommunityIcon = ({ active }: { active: boolean }) => (
+  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
+    {/* Connection lines */}
+    {[
+      [16, 16, 48, 16], [48, 16, 48, 48], [48, 48, 16, 48], [16, 48, 16, 16],
+      [16, 16, 48, 48], [48, 16, 16, 48],
+      [32, 8, 16, 16], [32, 8, 48, 16],
+      [32, 56, 16, 48], [32, 56, 48, 48],
+      [32, 32, 16, 16], [32, 32, 48, 16], [32, 32, 16, 48], [32, 32, 48, 48],
+    ].map(([x1, y1, x2, y2], i) => (
+      <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+        stroke="#2dd4bf" strokeWidth="0.4" opacity={active ? 0.2 : 0.06} />
+    ))}
+    {/* Corner nodes — angular diamonds */}
+    {[
+      [16, 16], [48, 16], [48, 48], [16, 48],
+    ].map(([cx, cy], i) => (
+      <g key={i}>
+        <rect x={(cx ?? 0) - 6} y={(cy ?? 0) - 6} width="12" height="12"
+          transform={`rotate(45 ${cx} ${cy})`}
+          fill="#2dd4bf" opacity={active ? 0.12 : 0.04}
+          stroke="#2dd4bf" strokeWidth={active ? 0.8 : 0.4} />
+        <circle cx={cx} cy={cy} r="2.5" fill="#2dd4bf" opacity={active ? 0.6 : 0.2} />
+      </g>
+    ))}
+    {/* Top and bottom nodes */}
+    {[[32, 8], [32, 56]].map(([cx, cy], i) => (
+      <g key={`tb-${i}`}>
+        <rect x={(cx ?? 0) - 4} y={(cy ?? 0) - 4} width="8" height="8"
+          transform={`rotate(45 ${cx} ${cy})`}
+          fill="#0d9488" opacity={active ? 0.15 : 0.05}
+          stroke="#2dd4bf" strokeWidth={active ? 0.6 : 0.3} />
+        <circle cx={cx} cy={cy} r="2" fill="#2dd4bf" opacity={active ? 0.5 : 0.15} />
+      </g>
+    ))}
+    {/* Center hub */}
+    <rect x="25" y="25" width="14" height="14" transform="rotate(45 32 32)"
+      fill="#2dd4bf" opacity={active ? 0.15 : 0.05}
+      stroke="#2dd4bf" strokeWidth={active ? 1 : 0.5} />
+    <circle cx="32" cy="32" r="4" fill="#2dd4bf" opacity={active ? 0.5 : 0.15} />
+    <circle cx="32" cy="32" r="2" fill="#2dd4bf" opacity={active ? 0.8 : 0.3} />
+    {/* Pulse on center when active */}
+    {active && (
+      <circle cx="32" cy="32" r="8" fill="none" stroke="#2dd4bf" strokeWidth="0.5" opacity="0.3">
+        <animate attributeName="r" values="8;16;8" dur="2.5s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.3;0.02;0.3" dur="2.5s" repeatCount="indefinite" />
+      </circle>
+    )}
+  </svg>
+);
+
+const ICONS = [FQHCIcon, RuralIcon, TribalIcon, CommunityIcon];
 
 const SegmentsSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [activeSegment, setActiveSegment] = useState(0);
-  const seg = segments[activeSegment]!;
-  const ActiveIcon = iconComponents[activeSegment]!;
+  const [hovered, setHovered] = useState<number | null>(null);
 
   return (
     <section ref={ref} className="relative py-14 md:py-20 texture-angular">
-      <div className="absolute inset-0 transition-all duration-700 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at 70% 30%, hsl(${seg.accentHsl} / 0.03), transparent 60%)` }} />
-      <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-6">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(45,212,191,0.03),transparent_70%)] pointer-events-none" />
+      <div className="relative max-w-[1200px] mx-auto px-6 md:px-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="mb-8">
           <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">
-            One artifact. <span className="text-gray-500">Six markets.</span>
+            Deployment targets. <span className="text-gray-500">Select sector.</span>
           </h2>
+          <p className="text-gray-400 text-lg font-light mt-3 max-w-2xl">
+            One compiled artifact. Multiple deployment surfaces across the U.S. safety-net healthcare infrastructure.
+          </p>
         </motion.div>
 
-        {/* Segment tabs — rich 3D cards */}
-        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.2 }}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-6">
-          {segments.map((s, i) => {
-            const TabIcon = iconComponents[i]!;
-            const isActive = activeSegment === i;
-            const accentColor = `hsl(${s.accentHsl})`;
+        {/* 2x2 tactical grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {segments.map((seg, i) => {
+            const Icon = ICONS[i]!;
+            const isHovered = hovered === i;
             return (
-              <button key={s.name} onClick={() => setActiveSegment(i)}
-                className="relative text-left p-4 md:p-5 border transition-all duration-400 group overflow-hidden"
+              <motion.div
+                key={seg.abbr}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+                className="relative group cursor-default"
+                onMouseEnter={() => setHovered(i)}
+                onMouseLeave={() => setHovered(null)}
                 style={{
-                  borderColor: isActive ? `hsl(${s.accentHsl} / 0.4)` : "rgba(255,255,255,0.06)",
-                  background: isActive
-                    ? `linear-gradient(145deg, hsl(${s.accentHsl} / 0.14), hsl(${s.accentHsl} / 0.03), rgba(0,0,0,0.3))`
-                    : "linear-gradient(145deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2))",
-                  boxShadow: isActive
-                    ? `0 8px 32px hsl(${s.accentHsl} / 0.12), inset 0 1px 0 hsl(${s.accentHsl} / 0.15), 0 1px 0 hsl(${s.accentHsl} / 0.1)`
-                    : "inset 0 1px 0 rgba(255,255,255,0.03), 0 2px 8px rgba(0,0,0,0.2)",
-                }}>
-                {/* Multi-layer glow on active */}
-                {isActive && (
-                  <>
-                    <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full pointer-events-none"
-                      style={{ background: `radial-gradient(circle, hsl(${s.accentHsl} / 0.2), transparent 65%)` }} />
-                    <div className="absolute -bottom-6 -left-6 w-20 h-20 rounded-full pointer-events-none"
-                      style={{ background: `radial-gradient(circle, hsl(${s.accentHsl} / 0.08), transparent 70%)` }} />
-                  </>
-                )}
-                <div className="relative flex flex-col items-center text-center gap-2">
-                  <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
-                    <TabIcon color={isActive ? accentColor : "#555"} size={isActive ? 64 : 56} hsl={s.accentHsl} />
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(45,212,191,0.1)",
+                  transition: "all 300ms ease",
+                  boxShadow: isHovered ? "0 0 30px rgba(45,212,191,0.08), inset 0 0 20px rgba(45,212,191,0.03)" : "none",
+                  borderColor: isHovered ? "rgba(45,212,191,0.35)" : "rgba(45,212,191,0.1)",
+                }}
+              >
+                <div className="p-6 md:p-8 flex items-start gap-5">
+                  {/* Icon with 3D tilt on hover */}
+                  <div
+                    className="shrink-0 mt-1"
+                    style={{
+                      transition: "transform 300ms ease",
+                      transform: isHovered
+                        ? "perspective(800px) rotateY(5deg) rotateX(-2deg)"
+                        : "perspective(800px) rotateY(0deg) rotateX(0deg)",
+                    }}
+                  >
+                    <Icon active={isHovered} />
                   </div>
-                  <div className={`font-mono text-xs md:text-sm tracking-wide transition-colors duration-300 ${
-                    isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300"
-                  }`}>
-                    {s.name}
+
+                  {/* Text content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-3 mb-1.5">
+                      <h3
+                        className="font-mono text-base md:text-lg font-light tracking-wide"
+                        style={{
+                          color: isHovered ? "#2dd4bf" : "rgba(255,255,255,0.85)",
+                          transition: "color 300ms ease",
+                        }}
+                      >
+                        {seg.name}
+                      </h3>
+                      <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase"
+                        style={{ color: "rgba(255,255,255,0.25)" }}>
+                        {seg.abbr}
+                      </span>
+                    </div>
+
+                    <p className="text-gray-400 text-sm leading-relaxed mb-3">{seg.desc}</p>
+
+                    {/* Stat readout — revealed on hover */}
+                    <div
+                      className="font-mono text-[0.65rem] tracking-[0.1em] flex items-center gap-2"
+                      style={{
+                        color: "rgba(45,212,191,0.6)",
+                        opacity: isHovered ? 1 : 0,
+                        transform: isHovered ? "translateY(0)" : "translateY(4px)",
+                        transition: "all 300ms ease",
+                      }}
+                    >
+                      <span className="w-1 h-1 rounded-full bg-accent animate-pulse" />
+                      {seg.stat}
+                    </div>
                   </div>
                 </div>
-              </button>
+              </motion.div>
             );
           })}
-        </motion.div>
-
-        {/* Active segment detail card */}
-        <motion.div key={activeSegment} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="border border-white/[0.06] overflow-hidden"
-          style={{
-            borderColor: `hsl(${seg.accentHsl} / 0.15)`,
-            boxShadow: `0 4px 24px hsl(${seg.accentHsl} / 0.05)`,
-          }}>
-
-          {/* Header */}
-          <div className="px-6 md:px-8 py-6 flex items-center gap-6"
-            style={{ background: `linear-gradient(135deg, hsl(${seg.accentHsl} / 0.1), hsl(${seg.accentHsl} / 0.02) 50%, transparent)` }}>
-            <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center border rounded-lg shrink-0 relative"
-              style={{
-                borderColor: `hsl(${seg.accentHsl} / 0.3)`,
-                background: `linear-gradient(145deg, hsl(${seg.accentHsl} / 0.1), hsl(${seg.accentHsl} / 0.02))`,
-                boxShadow: `0 0 24px hsl(${seg.accentHsl} / 0.1), inset 0 0 16px hsl(${seg.accentHsl} / 0.05)`,
-              }}>
-              <ActiveIcon color={`hsl(${seg.accentHsl})`} size={60} hsl={seg.accentHsl} />
-            </div>
-            <div>
-              <h3 className="font-mono text-2xl md:text-3xl font-light" style={{ color: `hsl(${seg.accentHsl})` }}>{seg.name}</h3>
-              <p className="text-gray-300 text-lg mt-1">{seg.tagline}</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-5">
-            <div className="lg:col-span-2 px-6 md:px-8 py-5 border-b lg:border-b-0 lg:border-r border-white/[0.06]">
-              <div className="space-y-3">
-                {seg.features.map((f, fi) => (
-                  <div key={fi} className="flex items-center gap-3">
-                    <div className="w-2 h-2 rotate-45" style={{ backgroundColor: `hsl(${seg.accentHsl})` }} />
-                    <span className="text-white text-base font-light">{f}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="lg:col-span-3 grid grid-cols-3 divide-x divide-white/[0.06]">
-              {seg.stats.map((stat, si) => (
-                <div key={si} className="px-4 md:px-6 py-6 md:py-8 text-center">
-                  <div className="font-mono text-3xl md:text-4xl font-light" style={{ color: `hsl(${seg.accentHsl})` }}>{stat.value}</div>
-                  <div className="text-gray-500 text-sm mt-2">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
