@@ -11,55 +11,55 @@ const HeroSection = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationId: number;
-    const particles: { x: number; y: number; vy: number; size: number; opacity: number }[] = [];
+    let raf = 0;
+    const particles: { x: number; y: number; vy: number; r: number; a: number }[] = [];
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-    };
-
-    const init = () => {
-      resize();
-      particles.length = 0;
-      for (let i = 0; i < 80; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vy: -(Math.random() * 0.3 + 0.1),
-          size: Math.random() * 1.5 + 0.5,
-          opacity: Math.random() * 0.2 + 0.1,
-        });
+      if (particles.length === 0) {
+        for (let i = 0; i < 80; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vy: -(Math.random() * 0.35 + 0.1),
+            r: Math.random() * 1.5 + 0.5,
+            a: Math.random() * 0.25 + 0.08,
+          });
+        }
       }
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
+      for (const p of particles) {
         p.y += p.vy;
         if (p.y < -5) {
           p.y = canvas.height + 5;
           p.x = Math.random() * canvas.width;
         }
-        ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.a})`;
         ctx.fill();
-      });
-      animationId = requestAnimationFrame(draw);
+      }
+      raf = requestAnimationFrame(draw);
     };
 
-    init();
+    resize();
     draw();
     window.addEventListener("resize", resize);
     return () => {
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: "linear-gradient(to bottom, #15171b, #1a1d21)" }}>
+    <section
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ background: "linear-gradient(to bottom, #15171b, #1a1d21)" }}
+    >
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
 
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-24">
@@ -89,7 +89,10 @@ const HeroSection = () => {
             className="mt-6 font-sans text-lg text-white/50"
             style={{ maxWidth: 640, lineHeight: 1.7 }}
           >
-            The healthcare system was not built for prevention. We are changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it is too late.
+            The healthcare system was not built for prevention. We are changing
+            that — replacing outdated, reactive workflows with intelligent
+            clinical infrastructure that catches what matters before it is too
+            late.
           </motion.p>
 
           <motion.div
@@ -106,7 +109,7 @@ const HeroSection = () => {
             </a>
             <a
               href="#pipeline"
-              className="font-mono text-xs uppercase tracking-[0.15em] text-white border border-white/40 bg-transparent px-8 py-3.5 transition-all duration-300 hover:bg-white hover:text-[#1a1d21]"
+              className="font-mono text-xs uppercase tracking-[0.15em] text-white border border-white/20 bg-transparent px-8 py-3.5 transition-all duration-300 hover:bg-white hover:text-[#1a1d21]"
             >
               Read White Paper
             </a>
@@ -117,7 +120,7 @@ const HeroSection = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 1 }}
+        transition={{ delay: 2, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
       >
         <span className="font-mono text-[10px] tracking-[0.3em] text-white/20 uppercase">
