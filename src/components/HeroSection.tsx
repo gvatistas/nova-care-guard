@@ -66,6 +66,13 @@ const HeroSection = () => {
             </a>
           </motion.div>
         </div>
+
+        {/* Right: 3D Visualization */}
+        <div className="hidden lg:block lg:col-span-7 h-[600px]">
+          <Suspense fallback={null}>
+            <HeroVisualization />
+          </Suspense>
+        </div>
       </div>
 
       {/* Bottom fade */}
