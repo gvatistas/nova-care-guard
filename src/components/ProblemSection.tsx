@@ -14,7 +14,7 @@ const AnimatedCounter = ({ value, inView }: { value: number; inView: boolean }) 
     return () => controls.stop();
   }, [inView, value]);
 
-  return <>{display}{suffix}</>;
+  return <>{display}</>;
 };
 
 const ProblemSection = () => {
