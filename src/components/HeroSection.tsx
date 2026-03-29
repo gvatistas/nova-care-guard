@@ -33,17 +33,25 @@ const HeroSection = () => {
             className="text-white text-[2.5rem] sm:text-5xl md:text-7xl lg:text-[5.5rem] font-mono font-light leading-[1.08] tracking-[-0.03em]">
             The Bridge Between AI and{" "}<span className="text-accent">Evidence-Based</span> Healthcare
           </motion.h1>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }}
-            className="mt-8 md:mt-10 max-w-2xl space-y-3">
-            <p className="text-gray-300 text-lg md:text-[1.35rem] font-light leading-relaxed">
-              Medical knowledge has never been more advanced.
-              <span className="text-gray-500"> That knowledge is trapped in medical guidelines that clinicians are unable to apply in practice.</span>
-            </p>
-            <p className="text-gray-300 text-lg md:text-[1.35rem] font-light leading-relaxed">
-              We've built an AI-enabled pipeline that converts medical guidelines
-              into <span className="text-accent font-normal">deterministic clinical logic</span>.
-            </p>
+
+          {/* Visual stat badges instead of paragraph text */}
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="mt-10 md:mt-12 flex flex-wrap gap-3">
+            {[
+              { val: "54%", label: "of recommended care delivered", color: "accent" },
+              { val: "1M+", label: "preventable deaths / year", color: "[hsl(0,72%,60%)]" },
+              { val: "20 yrs", label: "no improvement", color: "[hsl(210,70%,55%)]" },
+            ].map((s, i) => (
+              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1 + i * 0.15, type: "spring" }}
+                className="border border-white/[0.08] bg-white/[0.02] px-5 py-3 panel-3d backdrop-blur-sm">
+                <span className={`font-mono text-2xl md:text-3xl font-light text-${s.color}`}>{s.val}</span>
+                <span className="text-gray-500 text-sm ml-3">{s.label}</span>
+              </motion.div>
+            ))}
           </motion.div>
+
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.4 }}
             className="mt-8 md:mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
