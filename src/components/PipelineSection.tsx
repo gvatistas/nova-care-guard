@@ -1,60 +1,17 @@
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { Check, Lock } from "lucide-react";
 
 const stages = [
-  { num: "01", name: "INGEST", short: "Parse & Structure", desc: "Clinical guidelines deconstructed from unstructured knowledge into atomic logical components.", icon: "↓" },
-  { num: "02", name: "MODEL", short: "Type & Constrain", desc: "Decision schema with explicit constraints, typed branches, and deterministic pathways.", icon: "◇" },
-  { num: "03", name: "VERIFY", short: "Prove Correctness", desc: "Formal verification via SMT solver proves exhaustiveness, determinism, and safety properties across the entire input space.", icon: "✓" },
-  { num: "04", name: "ANALYZE", short: "Validate & Audit", desc: "Graph analysis confirms no orphan nodes or unreachable states. Complete decision provenance from input to source guideline paragraph.", icon: "△" },
-  { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. On-premises or cloud. Air-gapped network support. Zero inference at runtime.", icon: "→" },
+  { num: "01", name: "INGEST", short: "Parse & Structure", desc: "Clinical guidelines deconstructed from unstructured knowledge into atomic logical components.", icon: "↓", badge: "Real-time EHR sync", badgeType: "pulse" as const },
+  { num: "02", name: "MODEL", short: "Type & Constrain", desc: "Decision schema with explicit constraints, typed branches, and deterministic pathways.", icon: "◇", badge: "0.0% hallucination rate", badgeType: "mono" as const },
+  { num: "03", name: "VERIFY", short: "Prove Correctness", desc: "Formal verification via SMT solver proves exhaustiveness, determinism, and safety properties across the entire input space.", icon: "✓", badge: "100% guideline consistency", badgeType: "mono" as const },
+  { num: "04", name: "ANALYZE", short: "Validate & Audit", desc: "Graph analysis confirms no orphan nodes or unreachable states. Complete decision provenance from input to source guideline paragraph.", icon: "△", badge: "Automated order generation", badgeType: "check" as const },
+  { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. On-premises or cloud. Air-gapped network support. Zero inference at runtime.", icon: "→", badge: "Full audit trail", badgeType: "lock" as const },
 ];
 
-const differentiators = [
-  {
-    id: "deterministic", label: "Deterministic", icon: "◆", accentHsl: "160 82% 61%",
-    headline: "Zero inference. Zero hallucination.",
-    description: "Unlike LLM-based clinical tools, Medient artifacts produce identical outputs for identical inputs — every time, everywhere. No temperature. No drift. No probabilistic liability.",
-    comparison: [
-      { metric: "Hallucination rate", medient: "0.0%", others: "2–8%" },
-      { metric: "Output consistency", medient: "100%", others: "~92%" },
-      { metric: "Audit trail", medient: "Complete", others: "Partial" },
-      { metric: "Regulatory pathway", medient: "SaMD Class II", others: "Undefined" },
-    ],
-  },
-  {
-    id: "compiled", label: "Compiled", icon: "⬡", accentHsl: "210 70% 55%",
-    headline: "Not interpreted. Not prompted. Compiled.",
-    description: "Medient doesn't 'read' guidelines at query time. Each guideline is compiled once into a verified decision artifact — a typed, exhaustively tested logical structure that runs as deterministic infrastructure.",
-    comparison: [
-      { metric: "Processing model", medient: "Compile-once", others: "Query-time" },
-      { metric: "Latency", medient: "<1ms", others: "200–800ms" },
-      { metric: "Verification", medient: "SMT-proven", others: "Unit tests" },
-      { metric: "Edge case coverage", medient: "Exhaustive", others: "Sample-based" },
-    ],
-  },
-  {
-    id: "traceable", label: "Traceable", icon: "◈", accentHsl: "270 50% 60%",
-    headline: "Every recommendation has a source.",
-    description: "Full provenance tracing from output recommendation to the exact guideline paragraph, page number, and publication. No black box. Just verified clinical logic.",
-    comparison: [
-      { metric: "Source attribution", medient: "Page-level", others: "None" },
-      { metric: "Decision path", medient: "Fully visible", others: "Opaque" },
-      { metric: "Reproducibility", medient: "Guaranteed", others: "Variable" },
-      { metric: "Compliance readiness", medient: "Immediate", others: "6–12 months" },
-    ],
-  },
-  {
-    id: "scalable", label: "Scalable", icon: "◇", accentHsl: "35 50% 60%",
-    headline: "$0 marginal cost per encounter.",
-    description: "Once compiled, a Medient artifact costs nothing additional to run. No token usage. No API calls. No per-query fees. Deploy across an entire health system and the unit economics only improve.",
-    comparison: [
-      { metric: "Cost per query", medient: "$0.00", others: "$0.02–0.15" },
-      { metric: "Scaling model", medient: "Linear O(1)", others: "Linear O(n)" },
-      { metric: "Infrastructure", medient: "FHIR-native", others: "Custom API" },
-      { metric: "Deployment", medient: "Embeddable", others: "Cloud-only" },
-    ],
-  },
-];
+
+
 
 const TEAL = "hsl(160, 82%, 61%)";
 const TEAL_RGB = "74,237,196";
@@ -323,13 +280,26 @@ const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
   );
 };
 
+const StageBadge = ({ stage }: { stage: typeof stages[0] }) => (
+  <span className="inline-flex items-center gap-1.5 font-mono text-[0.7rem]" style={{ color: "rgba(255,255,255,0.5)" }}>
+    {stage.badgeType === "pulse" && (
+      <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+    )}
+    {stage.badgeType === "check" && (
+      <Check size={11} strokeWidth={2.5} className="text-accent/70" />
+    )}
+    {stage.badgeType === "lock" && (
+      <Lock size={11} strokeWidth={2} className="text-accent/70" />
+    )}
+    {stage.badge}
+  </span>
+);
+
 const PipelineSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredStage, setHoveredStage] = useState<number | null>(null);
   const [autoStage, setAutoStage] = useState(0);
-  const [activeDiff, setActiveDiff] = useState(0);
-  const diff = differentiators[activeDiff]!;
 
   // Auto-cycle when not hovering
   useEffect(() => {
@@ -368,7 +338,7 @@ const PipelineSection = () => {
           </div>
 
           {/* Detail panel */}
-          <div className="px-6 md:px-8 py-5 border-t border-white/[0.06]"
+          <div className="px-6 md:px-8 py-5 border-t border-[rgba(45,212,191,0.15)]"
             style={{
               background: `linear-gradient(135deg, rgba(${TEAL_RGB}, 0.03), transparent 60%)`,
               transition: "background 0.5s ease",
@@ -379,9 +349,12 @@ const PipelineSection = () => {
                 <span className="w-8 h-8 flex items-center justify-center border border-accent/30 rotate-45">
                   <span className="-rotate-45 font-mono text-accent text-sm">{activeStage.num}</span>
                 </span>
-                <div>
-                  <span className="font-mono text-white text-lg md:text-xl font-light tracking-wide">{activeStage.name}</span>
-                  <span className="font-mono text-gray-600 text-xs ml-3 tracking-[0.15em]">{activeStage.short}</span>
+                <div className="flex flex-col">
+                  <div>
+                    <span className="font-mono text-white text-lg md:text-xl font-light tracking-wide">{activeStage.name}</span>
+                    <span className="font-mono text-gray-600 text-xs ml-3 tracking-[0.15em]">{activeStage.short}</span>
+                  </div>
+                  <StageBadge stage={activeStage} />
                 </div>
               </div>
               <div className="hidden md:block w-px h-10 bg-white/[0.06]" />
@@ -400,68 +373,21 @@ const PipelineSection = () => {
           </div>
         </motion.div>
 
-        {/* Differentiators — integrated below pipeline */}
-        <div className="mt-8">
-          <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
-            className="flex flex-wrap gap-1.5 mb-5">
-            {differentiators.map((d, i) => (
-              <button key={d.id} onClick={() => setActiveDiff(i)}
-                className={`font-mono text-sm tracking-wide px-4 py-2.5 border transition-all duration-400 panel-3d ${
-                  activeDiff === i ? "border-current bg-current/10" : "border-white/[0.08] text-gray-500 hover:text-gray-300 hover:border-white/20"
-                }`}
-                style={activeDiff === i ? { color: `hsl(${d.accentHsl})`, borderColor: `hsl(${d.accentHsl} / 0.3)`, backgroundColor: `hsl(${d.accentHsl} / 0.08)` } : undefined}>
-                <span className="mr-2 text-xs">{d.icon}</span>{d.label}
-              </button>
-            ))}
-          </motion.div>
-
-          <AnimatePresence mode="wait">
-            <motion.div key={activeDiff} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
-              className="border border-white/[0.06] overflow-hidden panel-3d"
-              style={{ borderColor: `hsl(${diff.accentHsl} / 0.15)` }}>
-              <div className="grid grid-cols-1 lg:grid-cols-2">
-                <div className="px-6 md:px-8 py-5 border-b lg:border-b-0 lg:border-r border-white/[0.06]"
-                  style={{ background: `linear-gradient(135deg, hsl(${diff.accentHsl} / 0.05), transparent 60%)` }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xl" style={{ color: `hsl(${diff.accentHsl})` }}>{diff.icon}</span>
-                    <h3 className="font-mono text-xl md:text-2xl font-light" style={{ color: `hsl(${diff.accentHsl})` }}>{diff.headline}</h3>
-                  </div>
-                  <p className="text-gray-300 text-base leading-[1.7]">{diff.description}</p>
-                </div>
-                <div className="grid grid-cols-1 divide-y divide-white/[0.06]">
-                  <div className="px-6 md:px-8 py-3 flex items-center justify-between">
-                    <span className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500">Metric</span>
-                    <div className="flex items-center gap-8">
-                      <span className="font-mono text-xs tracking-[0.15em] uppercase" style={{ color: `hsl(${diff.accentHsl})` }}>Medient</span>
-                      <span className="font-mono text-xs tracking-[0.15em] uppercase text-gray-600 w-20 text-right">Others</span>
-                    </div>
-                  </div>
-                  {diff.comparison.map((row, ri) => (
-                    <div key={ri} className="px-6 md:px-8 py-3.5 flex items-center justify-between hover:bg-white/[0.015] transition-colors duration-300">
-                      <span className="text-gray-300 text-base">{row.metric}</span>
-                      <div className="flex items-center gap-8">
-                        <span className="font-mono text-lg font-light" style={{ color: `hsl(${diff.accentHsl})` }}>{row.medient}</span>
-                        <span className="font-mono text-base text-gray-600 w-20 text-right">{row.others}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
 
         {/* Mobile fallback */}
         <div className="md:hidden mt-4 border-t border-white/[0.06]">
           {stages.map((stage, i) => (
             <motion.div key={stage.num} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
               transition={{ delay: 0.3 + i * 0.1 }}
-              className="border-b border-white/[0.06] py-4 px-2">
+              className="border border-[rgba(45,212,191,0.15)] py-4 px-4 mb-2 hover:bg-white/[0.02] transition-all duration-300"
+              style={{ boxShadow: "0 0 0 0 rgba(45,212,191,0)" }}>
               <div className="flex items-center gap-3 mb-1.5">
                 <span className="font-mono text-accent/50 text-sm">{stage.num}</span>
                 <h3 className="font-mono text-white text-base font-light">{stage.name}</h3>
                 <span className="font-mono text-gray-600 text-xs">— {stage.short}</span>
+              </div>
+              <div className="pl-9 mb-1">
+                <StageBadge stage={stage} />
               </div>
               <p className="text-gray-400 text-sm leading-relaxed pl-9">{stage.desc}</p>
             </motion.div>
