@@ -20,7 +20,6 @@ const GuideBenchSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-5">
             <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-3">GuideBench</h2>
-            <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-3">GuideBench</h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-3">
               The open-source clinical decision logic evaluation framework.
               <span className="text-white font-normal"> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
