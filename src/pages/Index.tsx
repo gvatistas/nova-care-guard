@@ -28,8 +28,6 @@ const Index = () => {
         <GeoDivider />
         <PipelineSection />
         <GeoDivider />
-        <DifferentiatorsSection />
-        <GeoDivider />
         <SegmentsSection />
         <GeoDivider />
         <ProjectBetaSection />
