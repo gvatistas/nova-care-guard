@@ -22,14 +22,46 @@ function Mesh() {
     }
 
     const edges: number[] = [];
+    const adj: Map<number, number[]> = new Map();
     for (let i = 0; i < NODE_COUNT; i++) {
       for (let j = i + 1; j < NODE_COUNT; j++) {
         const dx = pos[i * 3] - pos[j * 3], dy = pos[i * 3 + 1] - pos[j * 3 + 1], dz = pos[i * 3 + 2] - pos[j * 3 + 2];
         if (dx * dx + dy * dy + dz * dz < 64 && Math.random() < 0.15) {
           edges.push(i, j);
+          if (!adj.has(i)) adj.set(i, []);
+          if (!adj.has(j)) adj.set(j, []);
+          adj.get(i)!.push(j);
+          adj.get(j)!.push(i);
         }
       }
     }
+
+    // Find triangular facets: triplets where all 3 pairs are connected
+    const triIndices: number[] = [];
+    const edgeSet = new Set<string>();
+    for (let e = 0; e < edges.length; e += 2) {
+      edgeSet.add(`${edges[e]}-${edges[e + 1]}`);
+      edgeSet.add(`${edges[e + 1]}-${edges[e]}`);
+    }
+    const triSeen = new Set<string>();
+    for (const [a, neighbors] of adj) {
+      for (const b of neighbors) {
+        for (const c of (adj.get(b) || [])) {
+          if (c > a && c !== a && edgeSet.has(`${a}-${c}`)) {
+            const key = [a, b, c].sort().join(",");
+            if (!triSeen.has(key)) {
+              triSeen.add(key);
+              triIndices.push(a, b, c);
+              if (triIndices.length > 300) break; // cap for perf
+            }
+          }
+        }
+        if (triIndices.length > 300) break;
+      }
+      if (triIndices.length > 300) break;
+    }
+
+    const triPos = new Float32Array(triIndices.length * 3);
 
     const epos = new Float32Array(edges.length * 3);
     const ppos = new Float32Array(PARTICLE_COUNT * 3);
@@ -45,12 +77,13 @@ function Mesh() {
       return new THREE.Vector3(pos[idx * 3], pos[idx * 3 + 1], pos[idx * 3 + 2]);
     });
 
-    return { pos, base, vel, colors, edges, epos, ppos, pmeta, pulseCenters, pulse: { t: -10, c: 0 }, risk: { t: -10, i: 0 } };
+    return { pos, base, vel, colors, edges, epos, ppos, pmeta, pulseCenters, pulse: { t: -10, c: 0 }, risk: { t: -10, i: 0 }, triIndices, triPos };
   }, []);
 
   const nodesRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
   const partsRef = useRef<THREE.Points>(null);
+  const trisRef = useRef<THREE.Mesh>(null);
   const lastEvent = useRef(0);
 
   useFrame(({ clock, camera }) => {
@@ -125,6 +158,14 @@ function Mesh() {
       }
     }
 
+    // Update triangle facet positions
+    for (let i = 0; i < data.triIndices.length; i++) {
+      const ni = data.triIndices[i] * 3;
+      data.triPos[i * 3] = data.pos[ni];
+      data.triPos[i * 3 + 1] = data.pos[ni + 1];
+      data.triPos[i * 3 + 2] = data.pos[ni + 2];
+    }
+
     if (nodesRef.current) {
       (nodesRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
       (nodesRef.current.geometry.attributes.color as THREE.BufferAttribute).needsUpdate = true;
@@ -134,6 +175,9 @@ function Mesh() {
     }
     if (partsRef.current) {
       (partsRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+    }
+    if (trisRef.current) {
+      (trisRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
     }
   });
 
@@ -158,6 +202,14 @@ function Mesh() {
         </bufferGeometry>
         <pointsMaterial color="#ffffff" size={0.035} sizeAttenuation transparent opacity={0.8} depthWrite={false} />
       </points>
+      {data.triIndices.length > 0 && (
+        <mesh ref={trisRef}>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position" args={[data.triPos, 3]} />
+          </bufferGeometry>
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.03} side={THREE.DoubleSide} depthWrite={false} />
+        </mesh>
+      )}
     </>
   );
 }
