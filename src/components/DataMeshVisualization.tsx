@@ -85,8 +85,6 @@ function Mesh() {
   const partsRef = useRef<THREE.Points>(null);
   const trisRef = useRef<THREE.Mesh>(null);
   const lastEvent = useRef(0);
-  const partsRef = useRef<THREE.Points>(null);
-  const lastEvent = useRef(0);
 
   useFrame(({ clock, camera }) => {
     const t = clock.elapsedTime;
