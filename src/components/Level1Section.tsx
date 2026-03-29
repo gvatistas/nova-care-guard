@@ -1,7 +1,5 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import journeyWithout from "@/assets/journey-without.png";
-import journeyWith from "@/assets/journey-with.png";
 
 const withoutSteps = [
   { step: "01", title: "Patient visits clinic", desc: "Sarah, 52, visits her primary care physician for a routine checkup. She's a 30-pack-year smoker." },
@@ -103,33 +101,40 @@ const Level1Section = () => {
           </button>
         </motion.div>
 
-        {/* Content */}
+        {/* Video + Journey */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="mb-12 relative overflow-hidden border border-white/[0.06]"
+        >
+          <video
+            src="/medient-patient-journey.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full"
+            style={{ aspectRatio: "16/9" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
+        </motion.div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Pixel art accent */}
+          {/* Outcome card */}
           <motion.div
             key={activeView}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, type: "spring" }}
-            className="lg:col-span-4 flex flex-col items-center justify-start pt-8"
+            className="lg:col-span-4 flex flex-col items-center justify-start pt-4"
           >
-            <motion.img
-              src={isWithout ? journeyWithout : journeyWith}
-              alt={isWithout ? "Uncompiled guidelines" : "Compiled decision artifacts"}
-              loading="lazy"
-              width={512}
-              height={512}
-              className="w-48 md:w-64 lg:w-72 drop-shadow-2xl"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            />
-
             <motion.div
               key={activeView + "-card"}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className={`mt-8 w-full max-w-[280px] border p-6 text-center ${
+              className={`w-full max-w-[280px] border p-6 text-center ${
                 isWithout
                   ? "border-red-500/20 bg-red-500/[0.03]"
                   : "border-accent/20 bg-accent/[0.03]"
