@@ -14,48 +14,35 @@ const GuideBenchSection = () => {
   const [hoveredMetric, setHoveredMetric] = useState<number | null>(null);
 
   return (
-    <section ref={ref} className="relative py-16 md:py-24 texture-facets">
+    <section ref={ref} className="relative py-14 md:py-20 texture-facets">
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[radial-gradient(ellipse,rgba(74,237,196,0.025),transparent_70%)] pointer-events-none" />
-
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-5">
             <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-3">Open Source</div>
-            <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-4">GuideBench</h2>
-            <p className="text-gray-300 text-lg leading-relaxed mb-4">
+            <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-3">GuideBench</h2>
+            <p className="text-gray-300 text-lg leading-relaxed mb-3">
               The open-source clinical decision logic evaluation framework.
               <span className="text-white font-normal"> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
             </p>
-            <p className="text-white text-xl font-light mb-5">
-              We wrote the test. Then we open-sourced it.
-            </p>
-
-            <div className="border border-accent/20 bg-accent/[0.04] p-5 mb-5 panel-3d">
-              <div className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500 mb-2">Aggregate Score</div>
+            <p className="text-white text-xl font-light mb-4">We wrote the test. Then we open-sourced it.</p>
+            <div className="border border-accent/20 bg-accent/[0.04] p-5 mb-4 panel-3d">
+              <div className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500 mb-1">Aggregate Score</div>
               <div className="font-mono text-accent text-5xl font-light tracking-tight">98.8%</div>
-              <div className="text-gray-400 text-base mt-2">across all guidelines and synthetic patients</div>
+              <div className="text-gray-400 text-base mt-1">across all guidelines and synthetic patients</div>
             </div>
-
             <a href="#" className="font-mono text-base tracking-[0.1em] uppercase text-accent hover:text-white transition-colors duration-300 inline-flex items-center gap-2">
               Explore GuideBench <span className="text-lg">→</span>
             </a>
           </motion.div>
-
           <div className="lg:col-span-7">
             <div className="border-t border-white/[0.06]">
               {metrics.map((metric, i) => (
-                <motion.div
-                  key={metric.name}
-                  initial={{ opacity: 0 }}
-                  animate={inView ? { opacity: 1 } : {}}
+                <motion.div key={metric.name} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
                   transition={{ delay: 0.3 + i * 0.15 }}
-                  className="border-b border-white/[0.06] py-5 px-4 transition-all duration-500 cursor-default"
-                  style={{
-                    background: hoveredMetric === i ? "linear-gradient(135deg, rgba(74,237,196,0.04), transparent 60%)" : "transparent",
-                  }}
-                  onMouseEnter={() => setHoveredMetric(i)}
-                  onMouseLeave={() => setHoveredMetric(null)}
-                >
+                  className="border-b border-white/[0.06] py-4 px-4 transition-all duration-500 cursor-default"
+                  style={{ background: hoveredMetric === i ? "linear-gradient(135deg, rgba(74,237,196,0.04), transparent 60%)" : "transparent" }}
+                  onMouseEnter={() => setHoveredMetric(i)} onMouseLeave={() => setHoveredMetric(null)}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <span className={`font-mono text-base transition-all duration-300 ${hoveredMetric === i ? "text-accent" : "text-accent/50"}`}>✓</span>
@@ -64,12 +51,9 @@ const GuideBenchSection = () => {
                     <span className="font-mono text-accent text-lg md:text-xl">{metric.score}</span>
                   </div>
                   <div className="h-px bg-white/[0.06] mb-2 overflow-hidden">
-                    <motion.div
-                      initial={{ scaleX: 0 }}
-                      animate={inView ? { scaleX: parseFloat(metric.score) / 100 } : {}}
+                    <motion.div initial={{ scaleX: 0 }} animate={inView ? { scaleX: parseFloat(metric.score) / 100 } : {}}
                       transition={{ delay: 0.5 + i * 0.15, duration: 1, ease: "easeOut" }}
-                      className="h-full bg-accent/30 origin-left"
-                    />
+                      className="h-full bg-accent/30 origin-left" />
                   </div>
                   <p className="text-gray-300 text-base leading-relaxed">{metric.desc}</p>
                 </motion.div>
