@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import MedientCrownLogo from "@/components/MedientCrownLogo";
+import FacetedCrownLogo from "@/components/FacetedCrownLogo";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
