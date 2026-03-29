@@ -30,8 +30,7 @@ const ProblemSection = () => {
   };
 
   return (
-    <section ref={ref} className="relative py-24 md:py-40" onMouseMove={handleMouse}>
-      {/* Ambient glow */}
+    <section ref={ref} className="relative py-20 md:py-32" onMouseMove={handleMouse}>
       <div
         className="absolute inset-0 pointer-events-none transition-opacity duration-1000"
         style={{
@@ -50,7 +49,7 @@ const ProblemSection = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
-          className="font-mono text-sm tracking-[0.25em] uppercase text-gray-500 mb-10"
+          className="font-mono text-sm tracking-[0.25em] uppercase text-gray-500 mb-6"
         >
           The Problem
         </motion.div>
@@ -59,25 +58,23 @@ const ProblemSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.2 }}
-          className="text-white text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-mono font-light leading-[1.1] tracking-[-0.02em] max-w-4xl"
+          className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-mono font-light leading-[1.1] tracking-[-0.02em] max-w-4xl"
         >
-          Healthcare has a
-          <br />
-          <span className="text-gray-500">compiler problem.</span>
+          Healthcare has a <span className="text-gray-500">compiler problem.</span>
         </motion.h2>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ delay: 0.5 }}
-          className="text-gray-400 text-lg md:text-xl font-light mt-8 md:mt-10 max-w-2xl leading-relaxed"
+          className="text-gray-400 text-base md:text-lg font-light mt-6 max-w-2xl leading-relaxed"
         >
           Clinical guidelines exist as unstructured PDFs — opened once, then forgotten.
           Every clinical decision requires a human to interpret, recall, and apply them
           in real-time. The result is systemic failure at population scale.
         </motion.p>
 
-        <div className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.06]">
+        <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.06]">
           {[
             { value: 54, suffix: "%", desc: "of guideline-recommended care is actually delivered to patients" },
             { value: 20, suffix: " yrs", desc: "without meaningful improvement in guideline adherence rates" },
@@ -88,7 +85,7 @@ const ProblemSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.6 + i * 0.2 }}
-              className="bg-background p-8 md:p-12 group transition-all duration-500 cursor-default"
+              className="bg-background p-6 md:p-10 group transition-all duration-500 cursor-default"
               style={{
                 background: hoveredStat === i
                   ? `linear-gradient(135deg, rgba(255,255,255,0.02), transparent 60%)`
@@ -101,11 +98,11 @@ const ProblemSection = () => {
               onMouseEnter={() => setHoveredStat(i)}
               onMouseLeave={() => setHoveredStat(null)}
             >
-              <div className="font-mono text-white text-5xl md:text-7xl font-light tracking-[-0.03em]">
+              <div className="font-mono text-white text-4xl md:text-6xl font-light tracking-[-0.03em]">
                 <AnimatedCounter value={stat.value} inView={inView} />
-                <span className="text-gray-500 text-2xl md:text-3xl ml-1">{stat.suffix}</span>
+                <span className="text-gray-500 text-xl md:text-2xl ml-1">{stat.suffix}</span>
               </div>
-              <div className="text-gray-400 text-sm md:text-base font-light mt-4 leading-relaxed group-hover:text-gray-300 transition-colors duration-500">
+              <div className="text-gray-400 text-sm md:text-base font-light mt-3 leading-relaxed group-hover:text-gray-300 transition-colors duration-500">
                 {stat.desc}
               </div>
             </motion.div>
