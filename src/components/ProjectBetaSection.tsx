@@ -2,11 +2,11 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const networks = [
-  { name: "Réseau Santé Montérégie", pop: "1.6M", metric: "+41%" },
-  { name: "CIUSSS de la Capitale-Nationale", pop: "740K", metric: "+38%" },
-  { name: "CISSS de Laval", pop: "440K", metric: "+52%" },
-  { name: "CIUSSS du Centre-Sud", pop: "1.1M", metric: "+47%" },
-  { name: "CISSS des Laurentides", pop: "620K", metric: "+35%" },
+  { name: "Réseau Santé Montérégie", pop: "1.6M", metric: "+41%", status: "ACTIVE" },
+  { name: "CIUSSS de la Capitale-Nationale", pop: "740K", metric: "+38%", status: "ACTIVE" },
+  { name: "CISSS de Laval", pop: "440K", metric: "+52%", status: "ACTIVE" },
+  { name: "CIUSSS du Centre-Sud", pop: "1.1M", metric: "+47%", status: "ACTIVE" },
+  { name: "CISSS des Laurentides", pop: "620K", metric: "+35%", status: "ACTIVE" },
 ];
 
 const ProjectBetaSection = () => {
@@ -15,7 +15,10 @@ const ProjectBetaSection = () => {
 
   return (
     <section id="project-beta" ref={ref} className="relative py-40 md:py-56">
-      <div className="max-w-[1400px] mx-auto px-8">
+      {/* Background texture */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(74,237,196,0.02)_0%,transparent_50%)]" />
+
+      <div className="relative max-w-[1400px] mx-auto px-8">
         {/* Header */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
           <motion.div
@@ -23,10 +26,13 @@ const ProjectBetaSection = () => {
             animate={inView ? { opacity: 1 } : {}}
             className="lg:col-span-7"
           >
-            <div className="font-mono text-[11px] tracking-[0.3em] uppercase text-gray-600 mb-8">
-              Case Study
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-2 h-2 bg-accent/60 animate-pulse" />
+              <span className="font-mono text-[11px] tracking-[0.3em] uppercase text-gray-600">
+                Case Study — Classified
+              </span>
             </div>
-            <h2 className="text-white text-3xl md:text-5xl lg:text-6xl font-mono font-light leading-[1.15] tracking-[-0.02em]">
+            <h2 className="text-white text-3xl md:text-5xl lg:text-[4rem] font-mono font-light leading-[1.1] tracking-[-0.02em]">
               Project Beta
             </h2>
           </motion.div>
@@ -37,8 +43,8 @@ const ProjectBetaSection = () => {
             className="lg:col-span-5 flex items-end"
           >
             <p className="text-gray-500 text-base font-light leading-relaxed">
-              Five health networks across Quebec. 4.5 million patients. 
-              The largest deployment of compiled clinical decision artifacts 
+              Five health networks across Quebec. 4.5 million patients.
+              The largest deployment of compiled clinical decision artifacts
               in North America.
             </p>
           </motion.div>
@@ -46,52 +52,63 @@ const ProjectBetaSection = () => {
 
         {/* Network table */}
         <div className="border-t border-white/[0.06]">
-          {/* Header row */}
           <div className="grid grid-cols-12 gap-4 py-5 px-2 border-b border-white/[0.06]">
             <div className="col-span-1 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase">#</div>
-            <div className="col-span-5 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase">Network</div>
-            <div className="col-span-3 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase">Population</div>
-            <div className="col-span-3 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase text-right">Impact</div>
+            <div className="col-span-4 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase">Network</div>
+            <div className="col-span-2 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase">Population</div>
+            <div className="col-span-3 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase">Adherence Δ</div>
+            <div className="col-span-2 font-mono text-gray-600 text-[10px] tracking-[0.2em] uppercase text-right">Status</div>
           </div>
 
           {networks.map((network, i) => (
             <motion.div
               key={network.name}
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.4 + i * 0.1 }}
-              className="grid grid-cols-12 gap-4 py-8 px-2 border-b border-white/[0.06] hover:bg-white/[0.01] transition-colors duration-300"
+              initial={{ opacity: 0, x: -10 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 0.4 + i * 0.12 }}
+              className="grid grid-cols-12 gap-4 py-8 px-2 border-b border-white/[0.06] hover:bg-white/[0.015] transition-all duration-300 group"
             >
               <div className="col-span-1 font-mono text-gray-600 text-sm">
                 {String(i + 1).padStart(2, "0")}
               </div>
-              <div className="col-span-5 font-mono text-white text-sm font-light">
+              <div className="col-span-4 font-mono text-white text-sm font-light group-hover:text-accent transition-colors duration-300">
                 {network.name}
               </div>
-              <div className="col-span-3 text-gray-500 text-sm font-light">
-                {network.pop} patients
+              <div className="col-span-2 text-gray-500 text-sm font-light">
+                {network.pop}
               </div>
-              <div className="col-span-3 font-mono text-white text-sm font-light text-right">
+              <div className="col-span-3 font-mono text-accent text-sm font-light">
                 {network.metric}
-                <span className="text-gray-600 ml-1">adherence</span>
+              </div>
+              <div className="col-span-2 text-right">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.15em] uppercase text-accent/70">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent/60 animate-pulse" />
+                  {network.status}
+                </span>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Aggregate */}
+        {/* Aggregate stats */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 1 }}
-          className="mt-20 flex items-baseline gap-4"
+          transition={{ delay: 1.2 }}
+          className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.06]"
         >
-          <span className="font-mono text-white text-6xl md:text-8xl font-light tracking-[-0.03em]">
-            4.5M
-          </span>
-          <span className="text-gray-500 text-lg font-light">
-            patients covered
-          </span>
+          {[
+            { num: "4.5M", label: "Patients covered" },
+            { num: "+42%", label: "Avg adherence increase" },
+            { num: "5", label: "Provincial networks" },
+          ].map((stat, i) => (
+            <div key={i} className="bg-background p-10 md:p-14">
+              <div className="font-mono text-white text-4xl md:text-6xl font-light tracking-[-0.03em]">
+                {stat.num}
+              </div>
+              <div className="text-gray-500 text-sm font-light mt-3">{stat.label}</div>
+            </div>
+          ))}
         </motion.div>
       </div>
     </section>

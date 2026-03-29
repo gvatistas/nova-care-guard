@@ -3,7 +3,7 @@
 ## Core
 Palantir × Shield AI aesthetic. Pure monochrome: black bg, white text, gray body. Teal used ONLY as surgical accent.
 JetBrains Mono 300 headings, Inter 300 body. Healthcare clinical decision compiler startup.
-Company name TBD — use [CLASSIFIED] placeholder. Government/defense-grade messaging tone.
+Company name: Medient Health. Logo: geometric crown/M mark. Government/defense-grade messaging tone.
 NO orb/sphere concept. NO terminal/code block boxes. NO pixel fonts. Design must be mature Palantir-grade.
 Grid separators use 1px white/[0.06] lines. Sections use massive negative space (py-40 md:py-56).
 
