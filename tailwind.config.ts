@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         mono: ["JetBrains Mono", "monospace"],
         sans: ["Inter", "sans-serif"],
+        pixel: ["'Press Start 2P'", "cursive"],
       },
       colors: {
         border: "hsl(var(--border))",
