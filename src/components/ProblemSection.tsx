@@ -29,8 +29,8 @@ const ProblemSection = () => {
           The Problem
         </motion.div>
         <motion.h2 initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2 }}
-          className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-4xl">
-          Healthcare has a <span className="text-accent">compiler problem.</span>
+          className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-4xl whitespace-nowrap sm:whitespace-normal">
+          Healthcare has an <span className="text-accent">interoperability problem.</span>
         </motion.h2>
         <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
           className="text-gray-300 text-lg md:text-xl font-light mt-4 max-w-2xl leading-relaxed">
@@ -39,8 +39,8 @@ const ProblemSection = () => {
         </motion.p>
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.06]">
           {[
-            { value: 54, suffix: "%", desc: "of guideline-recommended care is actually delivered to patients", color: "text-accent" },
-            { value: 20, suffix: " yrs", desc: "without meaningful improvement in guideline adherence rates", color: "text-[hsl(210,70%,55%)]" },
+            { value: 54, suffix: "%", desc: "of guideline-recommended care is actually delivered to patients", color: "text-[hsl(0,72%,60%)]" },
+            { value: 20, suffix: " yrs", desc: "without meaningful improvement in guideline adherence rates", color: "text-[hsl(0,72%,60%)]" },
             { value: 1, suffix: "M+", desc: "preventable deaths per year in North America alone", color: "text-[hsl(0,72%,60%)]" },
           ].map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
