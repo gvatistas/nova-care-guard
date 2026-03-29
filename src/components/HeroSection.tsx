@@ -55,10 +55,10 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 1 }}
             className="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
           >
-            <a href="#contact" className="group font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent hover:shadow-[0_0_30px_rgba(74,237,196,0.3)] transition-all duration-500 panel-3d">
+            <a href="#contact" className="group font-mono text-[0.75rem] tracking-[0.15em] uppercase border border-white/30 text-white px-10 py-4 hover:border-accent hover:text-accent hover:shadow-[0_0_30px_rgba(74,237,196,0.15)] transition-all duration-500">
               Request Access
             </a>
-            <a href="#pipeline" className="font-mono text-sm tracking-[0.1em] uppercase text-gray-400 hover:text-white transition-colors duration-300 flex items-center gap-2">
+            <a href="#pipeline" className="font-mono text-[0.75rem] tracking-[0.15em] uppercase text-gray-400 hover:text-white transition-colors duration-300 flex items-center gap-2">
               How it works
               <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 2, repeat: Infinity }} className="text-lg">↓</motion.span>
             </a>
