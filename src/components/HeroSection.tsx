@@ -35,7 +35,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="text-white text-[2.5rem] sm:text-5xl md:text-[4.2rem] lg:text-[5.5rem] font-mono font-light leading-[1.05] tracking-[-0.03em]"
+            className="text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem] font-mono font-light leading-[1.1] tracking-[-0.03em]"
           >
             The Bridge Between AI and <span className="text-accent">Evidence-Based</span> Healthcare
           </motion.h1>
