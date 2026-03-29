@@ -160,6 +160,14 @@ function Mesh() {
       }
     }
 
+    // Update triangle facet positions
+    for (let i = 0; i < data.triIndices.length; i++) {
+      const ni = data.triIndices[i] * 3;
+      data.triPos[i * 3] = data.pos[ni];
+      data.triPos[i * 3 + 1] = data.pos[ni + 1];
+      data.triPos[i * 3 + 2] = data.pos[ni + 2];
+    }
+
     if (nodesRef.current) {
       (nodesRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
       (nodesRef.current.geometry.attributes.color as THREE.BufferAttribute).needsUpdate = true;
@@ -169,6 +177,9 @@ function Mesh() {
     }
     if (partsRef.current) {
       (partsRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+    }
+    if (trisRef.current) {
+      (trisRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
     }
   });
 
