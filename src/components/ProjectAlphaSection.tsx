@@ -40,6 +40,7 @@ const ProjectAlphaSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [greenCount, setGreenCount] = useState(0);
   const [counterDisplay, setCounterDisplay] = useState(0);
+  const [cycle, setCycle] = useState(0);
   const totalClinics = 20;
 
   const allClinics = useMemo(() => regions.map((r, i) => generateClinics(r, (i + 1) * 7919)), []);
@@ -53,12 +54,17 @@ const ProjectAlphaSection = () => {
 
   useEffect(() => {
     if (!inView) return;
+    setGreenCount(0);
+    setCounterDisplay(0);
     const timers: ReturnType<typeof setTimeout>[] = [];
     flatClinics.forEach((clinic, i) => {
       timers.push(setTimeout(() => setGreenCount(i + 1), clinic.transitionDelay * 1000));
     });
+    // After all deployed, wait 5s then restart
+    const maxDelay = flatClinics[flatClinics.length - 1]?.transitionDelay ?? 5;
+    timers.push(setTimeout(() => setCycle(c => c + 1), (maxDelay + 5) * 1000));
     return () => timers.forEach(clearTimeout);
-  }, [inView, flatClinics]);
+  }, [inView, flatClinics, cycle]);
 
   // Animate counter display
   useEffect(() => {

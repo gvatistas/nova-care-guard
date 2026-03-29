@@ -44,7 +44,7 @@ const SCREENINGS = [
 ];
 
 const MACRO_STATS = [
-  { value: 136, suffix: "M", desc: "Americans missing preventive screenings" },
+  { value: 136, suffix: "M", desc: "North Americans missing preventive screenings" },
   { value: 260, suffix: "B", desc: "in preventable healthcare costs", prefix: "$" },
   { value: 45, suffix: "%", desc: "guideline adherence gap nationwide" },
 ];
