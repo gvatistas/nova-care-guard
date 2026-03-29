@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
-import { useState, lazy, Suspense } from "react";
+import { useState, useRef, lazy, Suspense } from "react";
 
 const HeroVisualization = lazy(() => import("./HeroVisualization"));
 
 const HeroSection = () => {
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoFailed, setVideoFailed] = useState(false);
 
   const handleMouse = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -18,9 +20,26 @@ const HeroSection = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden" onMouseMove={handleMouse}>
       {/* Video background */}
       <div className="absolute inset-0">
-        <video src="/medient-hero.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ opacity: 0.75 }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/35 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-background/20" />
+        {!videoFailed && (
+          <video
+            ref={videoRef}
+            src="/hero-mesh.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.6 }}
+            onError={() => setVideoFailed(true)}
+          />
+        )}
+        {/* Dark overlay for readability - always present */}
+        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.6)" }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+        {/* Fallback gradient if video fails */}
+        {videoFailed && (
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
+        )}
       </div>
 
       {/* Crosshatch texture */}
@@ -60,11 +79,11 @@ const HeroSection = () => {
             className="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
           >
             <a href="#contact" className="group font-mono tracking-[0.15em] uppercase bg-white text-black px-10 py-4 hover:bg-gray-200 transition-all duration-300" style={{ fontSize: "1rem" }}>
-              Request Access
+              Request Demo
             </a>
-            <a href="#pipeline" className="font-mono tracking-[0.15em] uppercase hover:text-white transition-colors duration-300 flex items-center gap-2 border border-white/20 text-white px-10 py-4" style={{ fontSize: "1rem" }}>
+            <a href="#pipeline" className="font-mono tracking-[0.15em] uppercase hover:text-white transition-colors duration-300 flex items-center gap-2 border border-white/30 text-white px-10 py-4" style={{ fontSize: "1rem" }}>
               How it works
-              <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 2, repeat: Infinity }} className="text-lg">↓</motion.span>
+              <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} className="text-lg">↓</motion.span>
             </a>
           </motion.div>
         </div>
@@ -78,7 +97,7 @@ const HeroSection = () => {
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent" />
     </section>
   );
 };

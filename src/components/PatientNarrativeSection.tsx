@@ -3,15 +3,23 @@ import { useRef, useEffect, useState } from "react";
 
 const AnimatedCounter = ({ value, suffix, inView }: { value: number; suffix: string; inView: boolean }) => {
   const [display, setDisplay] = useState("0");
+  const [cycle, setCycle] = useState(0);
   useEffect(() => {
     if (!inView) return;
     const controls = animate(0, value, {
       duration: 2.2,
       ease: "easeOut",
       onUpdate: (v) => setDisplay(Math.round(v).toString()),
+      onComplete: () => {
+        const t = setTimeout(() => {
+          setDisplay("0");
+          setCycle(c => c + 1);
+        }, 5000);
+        return () => clearTimeout(t);
+      },
     });
     return () => controls.stop();
-  }, [inView, value]);
+  }, [inView, value, cycle]);
   return (
     <span className="font-mono">
       {display}
@@ -36,7 +44,7 @@ const SCREENINGS = [
 ];
 
 const MACRO_STATS = [
-  { value: 136, suffix: "M", desc: "Americans missing preventive screenings" },
+  { value: 136, suffix: "M", desc: "North Americans missing preventive screenings" },
   { value: 260, suffix: "B", desc: "in preventable healthcare costs", prefix: "$" },
   { value: 45, suffix: "%", desc: "guideline adherence gap nationwide" },
 ];
