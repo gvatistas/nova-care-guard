@@ -1,7 +1,6 @@
 import { motion, useInView, animate } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
-/* ─── Animated counter ─── */
 const AnimatedCounter = ({ value, suffix, inView }: { value: number; suffix: string; inView: boolean }) => {
   const [display, setDisplay] = useState("0");
   useEffect(() => {
@@ -16,12 +15,11 @@ const AnimatedCounter = ({ value, suffix, inView }: { value: number; suffix: str
   return (
     <span className="font-mono">
       {display}
-      <span className="text-xl md:text-2xl ml-0.5 opacity-60">{suffix}</span>
+      <span className="ml-0.5 opacity-60" style={{ fontSize: "1.5rem" }}>{suffix}</span>
     </span>
   );
 };
 
-/* ─── Patient profile data points ─── */
 const PATIENT_DATA = [
   { label: "AGE", value: "62", x: "8%", y: "18%" },
   { label: "BMI", value: "31.4", x: "78%", y: "14%" },
@@ -31,14 +29,12 @@ const PATIENT_DATA = [
   { label: "LAST SCREEN", value: "2019", x: "10%", y: "82%" },
 ];
 
-/* ─── Screening checklist items ─── */
 const SCREENINGS = [
   { name: "Colonoscopy", detail: "USPSTF Grade A · Age 45–75" },
   { name: "Low-dose CT Lung", detail: "USPSTF Grade B · ≥20 pack-yr" },
   { name: "Diabetes Prevention", detail: "USPSTF Grade B · BMI ≥25, A1C 5.7–6.4" },
 ];
 
-/* ─── Macro stats ─── */
 const MACRO_STATS = [
   { value: 136, suffix: "M", desc: "Americans missing preventive screenings" },
   { value: 260, suffix: "B", desc: "in preventable healthcare costs", prefix: "$" },
@@ -54,71 +50,66 @@ const PatientNarrativeSection = () => {
   const macroInView = useInView(macroRef, { once: true, margin: "-60px" });
 
   return (
-    <section ref={sectionRef} className="relative py-16 md:py-24 overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(ellipse,rgba(74,237,196,0.03),transparent_70%)] pointer-events-none" />
+    <section ref={sectionRef} className="relative py-24 md:py-32 overflow-hidden">
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(ellipse,rgba(255,255,255,0.02),transparent_70%)] pointer-events-none" />
 
-      <div className="relative max-w-[1200px] mx-auto px-6 md:px-8">
+      <div className="relative max-w-[1440px] mx-auto px-8">
 
-        {/* ═══════════ TOP: Patient Scan Card ═══════════ */}
+        {/* TOP: Patient Scan Card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative mx-auto max-w-lg"
         >
-          {/* Card frame */}
           <div className="relative border border-white/[0.08] bg-background/60 backdrop-blur-sm p-8 md:p-10">
-            {/* Scan line */}
             <motion.div
               initial={{ top: 0 }}
               animate={inView ? { top: ["0%", "100%", "0%"] } : {}}
               transition={{ duration: 3, ease: "linear", repeat: Infinity, repeatDelay: 1 }}
-              className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-60"
+              className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-60"
               style={{ zIndex: 10 }}
             />
 
-            {/* Silhouette */}
             <div className="flex justify-center mb-2">
               <svg width="64" height="100" viewBox="0 0 64 100" fill="none" className="opacity-30">
-                <ellipse cx="32" cy="16" rx="12" ry="14" stroke="currentColor" strokeWidth="1" className="text-accent" />
-                <path d="M12 44 C12 30 52 30 52 44 L56 90 H8 L12 44Z" stroke="currentColor" strokeWidth="1" className="text-accent" fill="none" />
+                <ellipse cx="32" cy="16" rx="12" ry="14" stroke="white" strokeWidth="1" />
+                <path d="M12 44 C12 30 52 30 52 44 L56 90 H8 L12 44Z" stroke="white" strokeWidth="1" fill="none" />
               </svg>
             </div>
 
             <div className="text-center mb-1">
-              <span className="font-mono text-[0.65rem] tracking-[0.2em] uppercase text-gray-500">Patient Profile · Scanning</span>
+              <span className="font-mono tracking-[0.2em] uppercase" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)" }}>Patient Profile · Scanning</span>
             </div>
 
-            {/* Floating data points */}
             {PATIENT_DATA.map((pt, i) => (
               <motion.div
                 key={pt.label}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={inView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: 0.8 + i * 0.25, duration: 0.4 }}
-                className="absolute font-mono text-[0.6rem] md:text-[0.65rem]"
-                style={{ left: pt.x, top: pt.y }}
+                className="absolute font-mono"
+                style={{ left: pt.x, top: pt.y, fontSize: "0.875rem" }}
               >
-                <span className="text-gray-600 tracking-[0.12em] uppercase">{pt.label}</span>
+                <span className="tracking-[0.12em] uppercase" style={{ color: "rgba(255,255,255,0.35)" }}>{pt.label}</span>
                 <br />
-                <span className="text-accent/80">{pt.value}</span>
+                <span style={{ color: "rgba(255,255,255,0.7)" }}>{pt.value}</span>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* ═══════════ Connecting line down ═══════════ */}
+        {/* Connecting line down */}
         <div className="flex justify-center">
           <motion.div
             initial={{ scaleY: 0 }}
             animate={inView ? { scaleY: 1 } : {}}
             transition={{ delay: 2, duration: 0.6, ease: "easeOut" }}
-            className="w-px h-16 bg-gradient-to-b from-accent/30 to-white/[0.06] origin-top"
+            className="w-px h-16 bg-gradient-to-b from-white/20 to-white/[0.06] origin-top"
           />
         </div>
 
-        {/* ═══════════ Fork indicator ═══════════ */}
+        {/* Fork indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
@@ -131,7 +122,7 @@ const PatientNarrativeSection = () => {
           </svg>
         </motion.div>
 
-        {/* ═══════════ MIDDLE: Two-track comparison ═══════════ */}
+        {/* Two-track comparison */}
         <div ref={forkRef} className="grid grid-cols-1 md:grid-cols-2 gap-px mt-2">
           {/* WITHOUT MEDIENT */}
           <motion.div
@@ -140,11 +131,11 @@ const PatientNarrativeSection = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="border border-white/[0.06] bg-background/50 p-6 md:p-8"
           >
-            <h3 className="font-mono text-[0.7rem] tracking-[0.18em] uppercase text-gray-500 mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[hsl(0,60%,50%)] opacity-70" />
+            <h3 className="font-mono tracking-[0.18em] uppercase mb-6 flex items-center gap-2" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)" }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 opacity-70" />
               Without Medient
             </h3>
-            <p className="font-mono text-[0.65rem] tracking-[0.1em] uppercase text-gray-600 mb-4">
+            <p className="font-mono tracking-[0.1em] uppercase mb-4" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.35)" }}>
               Screenings identified: 1 of 3
             </p>
             <ul className="space-y-4">
@@ -158,16 +149,15 @@ const PatientNarrativeSection = () => {
                     transition={{ delay: 0.4 + i * 0.2 }}
                     className="flex items-start gap-3"
                   >
-                    {/* Status indicator */}
                     <span className={`mt-0.5 w-4 h-4 flex-shrink-0 border ${found ? "border-gray-500 bg-gray-500/20" : "border-white/[0.08] bg-transparent"} flex items-center justify-center`}>
-                      {found && <span className="text-gray-400 text-[0.6rem]">✓</span>}
-                      {!found && <span className="text-[hsl(0,60%,50%)]/40 text-[0.5rem]">✕</span>}
+                      {found && <span className="text-gray-400" style={{ fontSize: "0.875rem" }}>✓</span>}
+                      {!found && <span className="text-red-500/40" style={{ fontSize: "0.75rem" }}>✕</span>}
                     </span>
                     <div className={found ? "opacity-50" : "opacity-25"}>
-                      <div className={`font-mono text-sm ${found ? "text-gray-400" : "text-gray-600 line-through"}`}>{s.name}</div>
-                      <div className="text-[0.65rem] text-gray-600 mt-0.5">{s.detail}</div>
+                      <div className={`font-mono ${found ? "text-gray-400" : "text-gray-600 line-through"}`} style={{ fontSize: "1rem" }}>{s.name}</div>
+                      <div className="text-gray-600 mt-0.5" style={{ fontSize: "0.875rem" }}>{s.detail}</div>
                       {!found && (
-                        <span className="inline-block mt-1 font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[hsl(0,60%,50%)]/50">missed</span>
+                        <span className="inline-block mt-1 font-mono tracking-[0.15em] uppercase text-red-500/50" style={{ fontSize: "0.75rem" }}>missed</span>
                       )}
                     </div>
                   </motion.li>
@@ -181,13 +171,13 @@ const PatientNarrativeSection = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={forkInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="border border-accent/[0.12] bg-background/50 p-6 md:p-8"
+            className="border border-white/[0.08] bg-background/50 p-6 md:p-8"
           >
-            <h3 className="font-mono text-[0.7rem] tracking-[0.18em] uppercase text-accent/80 mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent opacity-80" />
+            <h3 className="font-mono tracking-[0.18em] uppercase mb-6 flex items-center gap-2" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)" }}>
+              <span className="w-1.5 h-1.5 rounded-full opacity-80" style={{ backgroundColor: "#10b981" }} />
               With Medient
             </h3>
-            <p className="font-mono text-[0.65rem] tracking-[0.1em] uppercase text-accent/50 mb-4">
+            <p className="font-mono tracking-[0.1em] uppercase mb-4" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
               Screenings identified: 3 of 3
             </p>
             <ul className="space-y-4">
@@ -203,18 +193,18 @@ const PatientNarrativeSection = () => {
                     initial={{ scale: 0 }}
                     animate={forkInView ? { scale: 1 } : {}}
                     transition={{ delay: 0.6 + i * 0.25, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="mt-0.5 w-4 h-4 flex-shrink-0 border border-accent/40 bg-accent/10 flex items-center justify-center"
+                    className="mt-0.5 w-4 h-4 flex-shrink-0 border border-white/20 bg-white/5 flex items-center justify-center"
                   >
-                    <span className="text-accent text-[0.6rem]">✓</span>
+                    <span style={{ color: "#10b981", fontSize: "0.875rem" }}>✓</span>
                   </motion.span>
                   <div>
-                    <div className="font-mono text-sm text-white/90">{s.name}</div>
-                    <div className="text-[0.65rem] text-gray-500 mt-0.5">{s.detail}</div>
+                    <div className="font-mono text-white/90" style={{ fontSize: "1rem" }}>{s.name}</div>
+                    <div className="text-gray-500 mt-0.5" style={{ fontSize: "0.875rem" }}>{s.detail}</div>
                     <motion.span
                       initial={{ width: 0 }}
                       animate={forkInView ? { width: "100%" } : {}}
                       transition={{ delay: 0.8 + i * 0.25, duration: 0.6 }}
-                      className="inline-block mt-1.5 h-px bg-gradient-to-r from-accent/30 to-transparent"
+                      className="inline-block mt-1.5 h-px bg-gradient-to-r from-white/20 to-transparent"
                       style={{ maxWidth: 120 }}
                     />
                   </div>
@@ -224,20 +214,19 @@ const PatientNarrativeSection = () => {
           </motion.div>
         </div>
 
-        {/* ═══════════ Connecting line to macro ═══════════ */}
+        {/* Connecting line to macro */}
         <div className="flex justify-center">
           <motion.div
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="w-px h-20 bg-gradient-to-b from-white/[0.06] to-accent/20 origin-top"
+            className="w-px h-20 bg-gradient-to-b from-white/[0.06] to-white/20 origin-top"
           />
         </div>
 
-        {/* ═══════════ BOTTOM: Zoom-out to macro stats ═══════════ */}
+        {/* BOTTOM: Zoom-out to macro stats */}
         <div ref={macroRef}>
-          {/* Zoom-out metaphor: patient cards multiplying */}
           <motion.div
             initial={{ opacity: 0, scale: 1 }}
             animate={macroInView ? { opacity: 1, scale: 1 } : {}}
@@ -259,7 +248,8 @@ const PatientNarrativeSection = () => {
             initial={{ opacity: 0 }}
             animate={macroInView ? { opacity: 1 } : {}}
             transition={{ delay: 0.8 }}
-            className="text-center font-mono text-[0.6rem] tracking-[0.2em] uppercase text-gray-600 mb-8"
+            className="text-center font-mono tracking-[0.2em] uppercase mb-8"
+            style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.35)" }}
           >
             One patient → Population scale
           </motion.p>
@@ -274,11 +264,11 @@ const PatientNarrativeSection = () => {
                 transition={{ delay: 1 + i * 0.2, duration: 0.6 }}
                 className="bg-background/80 p-6 md:p-8 text-center md:text-left"
               >
-                <div className="text-accent text-3xl md:text-4xl font-mono font-light tracking-[-0.03em]">
+                <div className="text-white font-mono font-light tracking-[-0.03em]" style={{ fontSize: "3rem" }}>
                   {stat.prefix || ""}
                   <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={macroInView} />
                 </div>
-                <div className="text-gray-400 text-sm font-light mt-2 leading-relaxed">{stat.desc}</div>
+                <div className="font-light mt-2 leading-relaxed" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}>{stat.desc}</div>
               </motion.div>
             ))}
           </div>

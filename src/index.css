@@ -6,61 +6,60 @@
 
 @layer base {
   :root {
-    --background: 0 0% 2%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 5%;
+    --card: 0 0% 3%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 5%;
+    --popover: 0 0% 3%;
     --popover-foreground: 0 0% 100%;
 
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
 
-    --secondary: 0 0% 10%;
+    --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 10%;
+    --muted: 0 0% 8%;
     --muted-foreground: 0 0% 55%;
 
-    --accent: 160 82% 61%;
+    --accent: 0 0% 100%;
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 12%;
-    --input: 0 0% 12%;
+    --border: 0 0% 8%;
+    --input: 0 0% 8%;
     --ring: 0 0% 100%;
 
     --radius: 0rem;
 
     --black: 0 0% 0%;
-    --gray-950: 0 0% 4%;
-    --gray-900: 0 0% 7%;
-    --gray-800: 0 0% 12%;
-    --gray-700: 0 0% 18%;
-    --gray-600: 0 0% 35%;
-    --gray-500: 0 0% 50%;
-    --gray-400: 0 0% 65%;
-    --gray-300: 0 0% 78%;
+    --gray-950: 0 0% 3%;
+    --gray-900: 0 0% 6%;
+    --gray-800: 0 0% 10%;
+    --gray-700: 0 0% 16%;
+    --gray-600: 0 0% 30%;
+    --gray-500: 0 0% 45%;
+    --gray-400: 0 0% 60%;
+    --gray-300: 0 0% 75%;
     --gray-200: 0 0% 85%;
     --white: 0 0% 100%;
 
-    /* Surgical accents */
-    --teal: 160 82% 61%;
-    --blue: 210 70% 55%;
-    --warm: 35 30% 55%;
-    --coral: 0 72% 60%;
+    /* Signal accents — used sparingly */
+    --emerald: 160 84% 39%;
+    --amber: 38 92% 50%;
+    --coral: 0 84% 60%;
 
-    --sidebar-background: 0 0% 2%;
+    --sidebar-background: 0 0% 0%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
     --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 7%;
+    --sidebar-accent: 0 0% 6%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 12%;
+    --sidebar-border: 0 0% 8%;
     --sidebar-ring: 0 0% 100%;
   }
 }
@@ -73,7 +72,7 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', -apple-system, sans-serif;
     font-weight: 400;
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.7;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -86,9 +85,8 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* === Geometric textures inspired by Medient crown logo === */
+/* === Geometric textures === */
 
-/* Angular crosshatch pattern */
 .texture-crosshatch {
   background-image:
     linear-gradient(30deg, rgba(255,255,255,0.015) 1px, transparent 1px),
@@ -97,7 +95,6 @@
   background-size: 60px 60px, 60px 60px, 80px 80px;
 }
 
-/* Diamond grid — Medient crown facets */
 .texture-diamonds {
   background-image:
     linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
@@ -108,7 +105,6 @@
   background-position: 0 0, 0 20px, 20px -20px, -20px 0;
 }
 
-/* Triangular facets */
 .texture-facets {
   background-image:
     linear-gradient(60deg, transparent 48%, rgba(255,255,255,0.018) 48%, rgba(255,255,255,0.018) 52%, transparent 52%),
@@ -116,15 +112,13 @@
   background-size: 80px 140px;
 }
 
-/* Fine angular lines */
 .texture-angular {
   background-image:
-    linear-gradient(135deg, rgba(74,237,196,0.02) 1px, transparent 1px),
-    linear-gradient(-135deg, rgba(74,237,196,0.015) 1px, transparent 1px);
+    linear-gradient(135deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(-135deg, rgba(255,255,255,0.015) 1px, transparent 1px);
   background-size: 100px 100px;
 }
 
-/* Noise grain overlay */
 .texture-noise::before {
   content: '';
   position: absolute;
@@ -142,14 +136,14 @@
 }
 .panel-3d:hover {
   transform: perspective(1000px) rotateX(-1deg) rotateY(1deg) translateY(-2px);
-  box-shadow: 0 20px 60px -20px rgba(74,237,196,0.08), 0 0 0 1px rgba(255,255,255,0.06);
+  box-shadow: 0 20px 60px -20px rgba(255,255,255,0.05), 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 /* Geometric section divider */
 .divider-geo {
   position: relative;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(74,237,196,0.15) 50%, rgba(255,255,255,0.06) 80%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 80%, transparent);
 }
 .divider-geo::before {
   content: '';
@@ -158,9 +152,9 @@
   top: -3px;
   width: 7px;
   height: 7px;
-  background: hsl(var(--accent));
+  background: hsl(var(--white));
   transform: translateX(-50%) rotate(45deg);
-  opacity: 0.4;
+  opacity: 0.2;
 }
 
 /* Scrollbar — minimal */
@@ -176,7 +170,7 @@
 
 /* Selection */
 ::selection {
-  background: hsl(var(--accent) / 0.2);
+  background: rgba(255,255,255,0.15);
   color: hsl(var(--white));
 }
 
