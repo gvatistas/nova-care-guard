@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import medientLogo from "@/assets/medient-logo-new.jpg";
+import medientLogo from "@/assets/medient-logo.jpg";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
