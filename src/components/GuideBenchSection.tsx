@@ -13,59 +13,62 @@ const GuideBenchSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="relative py-40">
-      <div className="relative max-w-[1400px] mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          className="mb-16"
-        >
-          <div className="font-mono text-xs tracking-[0.2em] uppercase text-teal mb-4">
-            ▸ Evaluation Protocol
-          </div>
-          <h2 className="font-mono text-3xl md:text-4xl font-light text-pearl tracking-[-0.02em]">
-            GuideBench
-          </h2>
-          <p className="font-mono text-warm-gray text-sm font-light mt-4 max-w-xl">
-            The open-source clinical decision logic evaluation framework.
-            10 representative guidelines. 50–100 synthetic patients each. 4 fidelity metrics.
-          </p>
-        </motion.div>
-
-        {/* Metrics grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-          {metrics.map((metric, i) => (
-            <motion.div
-              key={metric.name}
-              initial={{ opacity: 0, y: 16 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.3 + i * 0.15 }}
-              className="bg-deep-field border border-grid-line p-6 rounded-lg hover:border-teal/30 transition-colors"
+    <section ref={ref} className="relative py-40 md:py-56">
+      <div className="max-w-[1400px] mx-auto px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          {/* Left — headline */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            className="lg:col-span-5"
+          >
+            <div className="font-mono text-[11px] tracking-[0.3em] uppercase text-gray-600 mb-8">
+              Open Source
+            </div>
+            <h2 className="text-white text-3xl md:text-5xl font-mono font-light leading-[1.15] tracking-[-0.02em] mb-8">
+              GuideBench
+            </h2>
+            <p className="text-gray-500 text-base font-light leading-relaxed mb-10">
+              The open-source clinical decision logic evaluation framework.
+              10 representative guidelines. 50–100 synthetic patients each.
+              4 fidelity metrics.
+            </p>
+            <p className="text-white text-lg font-light mb-6">
+              We wrote the test. Then we open-sourced it.
+            </p>
+            <a
+              href="#"
+              className="font-mono text-[11px] tracking-[0.15em] uppercase text-gray-400 hover:text-white transition-colors duration-300 border-b border-gray-700 pb-1"
             >
-              <div className="flex items-start gap-3">
-                <span className="text-teal font-mono text-sm mt-0.5">✓</span>
-                <div>
-                  <h3 className="font-mono text-pearl text-sm font-light mb-2">{metric.name}</h3>
-                  <p className="text-warm-gray text-xs font-light leading-relaxed">{metric.desc}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              Explore GuideBench →
+            </a>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 1 }}
-          className="text-center space-y-4"
-        >
-          <p className="font-mono text-pearl text-xl md:text-2xl font-light">
-            We wrote the test. Then we open-sourced it.
-          </p>
-          <a href="#" className="inline-block font-mono text-teal text-sm hover:underline transition-all">
-            Explore GuideBench →
-          </a>
-        </motion.div>
+          {/* Right — metrics */}
+          <div className="lg:col-span-7">
+            <div className="border-t border-white/[0.06]">
+              {metrics.map((metric, i) => (
+                <motion.div
+                  key={metric.name}
+                  initial={{ opacity: 0 }}
+                  animate={inView ? { opacity: 1 } : {}}
+                  transition={{ delay: 0.3 + i * 0.15 }}
+                  className="border-b border-white/[0.06] py-10 grid grid-cols-12 gap-6 hover:bg-white/[0.01] transition-colors duration-300 px-2"
+                >
+                  <div className="col-span-1">
+                    <span className="font-mono text-teal text-sm">✓</span>
+                  </div>
+                  <div className="col-span-4">
+                    <h3 className="font-mono text-white text-sm font-light">{metric.name}</h3>
+                  </div>
+                  <div className="col-span-7">
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">{metric.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
