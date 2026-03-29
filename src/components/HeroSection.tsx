@@ -30,7 +30,7 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full">
-        <div className="max-w-4xl">
+        <div className="max-w-5xl">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
