@@ -400,15 +400,14 @@ const PipelineSection = () => {
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}
           className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
           {[
-            { name: "SOC 2 Type II", status: "In Progress", desc: "Enterprise security controls", color: "hsl(35,50%,60%)" },
-            { name: "HIPAA", status: "Compliant", desc: "Full PHI protection with BAA", color: "hsl(160,82%,61%)" },
-            { name: "FHIR R4", status: "Native", desc: "Standard clinical data interchange", color: "hsl(160,82%,61%)" },
-            { name: "FDA SaMD", status: "Pathway Active", desc: "Class II Medical Device clearance", color: "hsl(35,50%,60%)" },
+            { name: "SOC 2 Type II", status: "In Progress", color: "hsl(35,50%,60%)" },
+            { name: "HIPAA", status: "Compliant", color: "hsl(160,82%,61%)" },
+            { name: "FHIR R4", status: "Native", color: "hsl(160,82%,61%)" },
+            { name: "FDA SaMD", status: "Pathway Active", color: "hsl(35,50%,60%)" },
           ].map((cert, i) => (
-            <div key={i} className="bg-background/80 p-4 md:p-5 panel-3d group hover:bg-white/[0.015] transition-all duration-500">
-              <h4 className="font-mono text-base md:text-lg text-white font-light group-hover:text-accent transition-colors duration-300">{cert.name}</h4>
-              <p className="text-gray-500 text-sm mt-1">{cert.desc}</p>
-              <div className="mt-2 flex items-center gap-2">
+            <div key={i} className="bg-background/80 p-4 md:p-5 panel-3d group hover:bg-white/[0.015] transition-all duration-500 flex items-center justify-between">
+              <h4 className="font-mono text-base text-white font-light group-hover:text-accent transition-colors duration-300">{cert.name}</h4>
+              <div className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rotate-45" style={{ backgroundColor: cert.color, opacity: 0.7 }} />
                 <span className="font-mono text-xs tracking-[0.15em] uppercase" style={{ color: cert.color, opacity: 0.7 }}>{cert.status}</span>
               </div>
