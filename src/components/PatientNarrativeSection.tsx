@@ -202,7 +202,7 @@ const PatientNarrativeSection = () => {
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={forkInView ? { scale: 1 } : {}}
-                    transition={{ delay: 0.6 + i * 0.25, type: "spring", stiffness: 300, damping: 20 }}
+                    transition={{ delay: 0.6 + i * 0.25, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     className="mt-0.5 w-4 h-4 flex-shrink-0 border border-accent/40 bg-accent/10 flex items-center justify-center"
                   >
                     <span className="text-accent text-[0.6rem]">✓</span>
