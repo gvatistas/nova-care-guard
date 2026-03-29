@@ -183,7 +183,7 @@ const GuideBenchSection = () => {
                       <text
                         x={pos.x + offsetX * 1.8} y={pos.y + offsetY * 1.5 + (i === 0 ? -18 : i === 2 ? 22 : 4)}
                         textAnchor="middle"
-                        fontFamily="'JetBrains Mono', monospace" fontSize="8" letterSpacing="2" fill="white" opacity="0.3">
+                        fontFamily="'Montserrat', sans-serif" fontSize="8" letterSpacing="2" fill="white" opacity="0.3">
                         {pos.label.label.toUpperCase()}
                       </text>
                     </g>
