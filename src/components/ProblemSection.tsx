@@ -18,10 +18,27 @@ const AnimatedCounter = ({ value, inView }: { value: number; inView: boolean }) 
 const ProblemSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [hoveredStat, setHoveredStat] = useState<number | null>(null);
+
+  const handleMouse = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
 
   return (
-    <section ref={ref} className="relative py-24 md:py-40">
-      {/* Accent line */}
+    <section ref={ref} className="relative py-24 md:py-40" onMouseMove={handleMouse}>
+      {/* Ambient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-1000"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.015), transparent 50%)`,
+        }}
+      />
+
       <motion.div
         initial={{ scaleY: 0 }}
         animate={inView ? { scaleY: 1 } : {}}
@@ -29,7 +46,7 @@ const ProblemSection = () => {
         className="absolute left-0 top-1/4 w-px h-1/2 bg-gradient-to-b from-transparent via-accent/15 to-transparent origin-top"
       />
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-8">
+      <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
@@ -71,7 +88,18 @@ const ProblemSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.6 + i * 0.2 }}
-              className="bg-background p-8 md:p-12 group hover:bg-white/[0.015] transition-colors duration-500"
+              className="bg-background p-8 md:p-12 group transition-all duration-500 cursor-default"
+              style={{
+                background: hoveredStat === i
+                  ? `linear-gradient(135deg, rgba(255,255,255,0.02), transparent 60%)`
+                  : undefined,
+                boxShadow: hoveredStat === i
+                  ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 30px rgba(0,0,0,0.3)"
+                  : undefined,
+                transform: hoveredStat === i ? "translateY(-2px)" : undefined,
+              }}
+              onMouseEnter={() => setHoveredStat(i)}
+              onMouseLeave={() => setHoveredStat(null)}
             >
               <div className="font-mono text-white text-5xl md:text-7xl font-light tracking-[-0.03em]">
                 <AnimatedCounter value={stat.value} inView={inView} />
