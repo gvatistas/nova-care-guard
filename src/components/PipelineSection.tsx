@@ -1,215 +1,204 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const stages = [
-  { num: "01", name: "Ingest", short: "Parse & structure", desc: "Unstructured clinical knowledge transformed into structured logic with full source fidelity." },
-  { num: "02", name: "Model", short: "Type & constrain", desc: "Decision schema with explicit constraints, typed branches, and deterministic pathways." },
-  { num: "03", name: "Verify", short: "Prove correctness", desc: "Formal verification proves exhaustiveness and determinism across the entire input space." },
-  { num: "04", name: "Analyze", short: "Validate topology", desc: "Graph analysis confirms no orphan nodes, unreachable states, or infinite loops." },
-  { num: "05", name: "Deploy", short: "Ship as infrastructure", desc: "Compiled into a FHIR-native artifact. Deterministic at runtime. Zero inference." },
+  { num: "01", name: "INGEST", short: "Parse & Structure", desc: "Clinical guidelines deconstructed from unstructured knowledge into atomic logical components.", icon: "↓" },
+  { num: "02", name: "MODEL", short: "Type & Constrain", desc: "Decision schema with explicit constraints, typed branches, and deterministic pathways.", icon: "◇" },
+  { num: "03", name: "VERIFY", short: "Prove Correctness", desc: "Formal verification proves exhaustiveness and determinism across the entire input space.", icon: "✓" },
+  { num: "04", name: "ANALYZE", short: "Validate Topology", desc: "Graph analysis confirms no orphan nodes, unreachable states, or infinite loops.", icon: "△" },
+  { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. Deterministic at runtime. Zero inference.", icon: "→" },
 ];
 
-/* Crown-inspired node positions for the SVG pipeline (viewBox 0 0 1200 500) */
 const nodePositions = [
-  { x: 120, y: 380 },  // Ingest — left base
-  { x: 360, y: 200 },  // Model — left peak
-  { x: 600, y: 80 },   // Verify — crown apex
-  { x: 840, y: 200 },  // Analyze — right peak
-  { x: 1080, y: 380 }, // Deploy — right base
+  { x: 120, y: 380 },
+  { x: 360, y: 200 },
+  { x: 600, y: 80 },
+  { x: 840, y: 200 },
+  { x: 1080, y: 380 },
 ];
 
-/* Crown outline vertices (matches Medient crown shape) */
 const crownPath = "M 120,380 L 360,200 L 480,300 L 600,80 L 720,300 L 840,200 L 1080,380";
 
-const PipelineVisual = ({ hoveredStage, setHoveredStage, inView }: {
+const TEAL = "hsl(160, 82%, 61%)";
+const TEAL_RGB = "74,237,196";
+const BLUE = "hsl(210, 70%, 55%)";
+
+const PipelineVisual = ({ hoveredStage, setHoveredStage, autoStage }: {
   hoveredStage: number | null;
   setHoveredStage: (i: number | null) => void;
-  inView: boolean;
+  autoStage: number;
 }) => {
+  const activeIdx = hoveredStage ?? autoStage;
+
   return (
-    <div className="relative w-full" style={{ aspectRatio: "12/5" }}>
+    <div className="relative w-full" style={{ aspectRatio: "2.4/1" }}>
       <svg viewBox="0 0 1200 500" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
         <defs>
-          {/* Glow filter */}
           <filter id="glow">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+            <feGaussianBlur stdDeviation="6" result="coloredBlur" />
             <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          <filter id="glowStrong">
-            <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+          <filter id="glowSoft">
+            <feGaussianBlur stdDeviation="12" result="coloredBlur" />
             <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          {/* Gradient for the crown path */}
           <linearGradient id="crownGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="hsl(160, 82%, 61%)" stopOpacity="0.4" />
-            <stop offset="50%" stopColor="hsl(210, 70%, 55%)" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="hsl(160, 82%, 61%)" stopOpacity="0.4" />
+            <stop offset="0%" stopColor={TEAL} stopOpacity="0.15" />
+            <stop offset="50%" stopColor={TEAL} stopOpacity="0.4" />
+            <stop offset="100%" stopColor={TEAL} stopOpacity="0.15" />
           </linearGradient>
-          {/* Animated dash */}
-          <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="hsl(160, 82%, 61%)" stopOpacity="0" />
-            <stop offset="50%" stopColor="hsl(160, 82%, 61%)" stopOpacity="1" />
-            <stop offset="100%" stopColor="hsl(160, 82%, 61%)" stopOpacity="0" />
-          </linearGradient>
+          <radialGradient id="nodeGlow">
+            <stop offset="0%" stopColor={TEAL} stopOpacity="0.12" />
+            <stop offset="100%" stopColor={TEAL} stopOpacity="0" />
+          </radialGradient>
         </defs>
 
-        {/* Background grid — subtle angular */}
-        {Array.from({ length: 13 }).map((_, i) => (
-          <line key={`v${i}`} x1={i * 100} y1="0" x2={i * 100} y2="500" stroke="white" strokeWidth="0.5" opacity="0.03" />
+        {/* Fine grid */}
+        {Array.from({ length: 25 }).map((_, i) => (
+          <line key={`v${i}`} x1={i * 50} y1="0" x2={i * 50} y2="500" stroke="white" strokeWidth="0.3" opacity="0.02" />
         ))}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <line key={`h${i}`} x1="0" y1={i * 100} x2="1200" y2={i * 100} stroke="white" strokeWidth="0.5" opacity="0.03" />
+        {Array.from({ length: 11 }).map((_, i) => (
+          <line key={`h${i}`} x1="0" y1={i * 50} x2="1200" y2={i * 50} stroke="white" strokeWidth="0.3" opacity="0.02" />
         ))}
 
-        {/* Crown silhouette — very faint */}
-        <path d={crownPath} fill="none" stroke="url(#crownGrad)" strokeWidth="1" opacity="0.15" />
-        {/* Crown fill — barely visible */}
-        <path d={`${crownPath} Z`} fill="hsl(160, 82%, 61%)" opacity="0.01" />
+        {/* Crown silhouette — ghost outline */}
+        <path d={crownPath} fill="none" stroke="url(#crownGrad)" strokeWidth="0.8" opacity="0.2" />
+        <path d={`${crownPath} Z`} fill={TEAL} opacity="0.008" />
 
-        {/* Animated flow particles along the crown path */}
-        <path d={crownPath} fill="none" stroke="url(#flowGrad)" strokeWidth="2" opacity="0.3"
-          strokeDasharray="40 160" strokeDashoffset="0">
-          <animate attributeName="stroke-dashoffset" values="0;-200" dur="3s" repeatCount="indefinite" />
-        </path>
-        <path d={crownPath} fill="none" stroke="url(#flowGrad)" strokeWidth="1.5" opacity="0.2"
-          strokeDasharray="20 180" strokeDashoffset="-100">
-          <animate attributeName="stroke-dashoffset" values="-100;-300" dur="3s" repeatCount="indefinite" />
-        </path>
+        {/* Inner struts */}
+        {[[360,200,480,300],[600,80,480,300],[600,80,720,300],[840,200,720,300]].map(([x1,y1,x2,y2], i) => (
+          <line key={`s${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="white" strokeWidth="0.4" opacity="0.04" />
+        ))}
 
-        {/* Connection lines between consecutive nodes */}
+        {/* Flow particles — two streams */}
+        {[0, -120].map((offset, fi) => (
+          <path key={fi} d={crownPath} fill="none" stroke={TEAL} strokeWidth={fi === 0 ? 1.5 : 1} opacity={fi === 0 ? 0.35 : 0.15}
+            strokeDasharray={fi === 0 ? "30 170" : "15 185"} strokeDashoffset={offset}>
+            <animate attributeName="stroke-dashoffset" values={`${offset};${offset - 200}`} dur="4s" repeatCount="indefinite" />
+          </path>
+        ))}
+
+        {/* Connection lines — lit progressively to active node */}
         {nodePositions.map((pos, i) => {
           if (i === 0) return null;
-          const prev = nodePositions[i - 1];
-          const isAdjacentHovered = hoveredStage === i || hoveredStage === i - 1;
+          const prev = nodePositions[i - 1]!;
+          const isLit = i <= activeIdx;
           return (
-            <line key={`conn${i}`} x1={prev.x} y1={prev.y} x2={pos.x} y2={pos.y}
-              stroke={isAdjacentHovered ? "hsl(160, 82%, 61%)" : "white"}
-              strokeWidth={isAdjacentHovered ? 1.5 : 0.8}
-              opacity={isAdjacentHovered ? 0.5 : 0.08}
-              style={{ transition: "all 0.5s ease" }} />
+            <line key={`c${i}`} x1={prev.x} y1={prev.y} x2={pos.x} y2={pos.y}
+              stroke={isLit ? TEAL : "white"}
+              strokeWidth={isLit ? 1.2 : 0.5}
+              opacity={isLit ? 0.4 : 0.06}
+              style={{ transition: "all 0.6s ease" }} />
           );
-        })}
-
-        {/* Inner crown struts — the V shapes */}
-        <line x1="360" y1="200" x2="480" y2="300" stroke="white" strokeWidth="0.5" opacity="0.06" />
-        <line x1="600" y1="80" x2="480" y2="300" stroke="white" strokeWidth="0.5" opacity="0.06" />
-        <line x1="600" y1="80" x2="720" y2="300" stroke="white" strokeWidth="0.5" opacity="0.06" />
-        <line x1="840" y1="200" x2="720" y2="300" stroke="white" strokeWidth="0.5" opacity="0.06" />
-
-        {/* Radial burst lines from each node */}
-        {nodePositions.map((pos, i) => {
-          const isHovered = hoveredStage === i;
-          const burstCount = 6;
-          return Array.from({ length: burstCount }).map((_, bi) => {
-            const angle = (bi / burstCount) * Math.PI * 2;
-            const len = isHovered ? 45 : 25;
-            return (
-              <line key={`burst${i}-${bi}`}
-                x1={pos.x} y1={pos.y}
-                x2={pos.x + Math.cos(angle) * len} y2={pos.y + Math.sin(angle) * len}
-                stroke="hsl(160, 82%, 61%)"
-                strokeWidth={isHovered ? 0.8 : 0.3}
-                opacity={isHovered ? 0.3 : 0.06}
-                style={{ transition: "all 0.5s ease" }} />
-            );
-          });
         })}
 
         {/* Nodes */}
         {nodePositions.map((pos, i) => {
-          const stage = stages[i];
-          const isHovered = hoveredStage === i;
+          const stage = stages[i]!;
+          const isActive = i === activeIdx;
+          const isCompleted = i < activeIdx;
+
           return (
             <g key={i}
               onMouseEnter={() => setHoveredStage(i)}
               onMouseLeave={() => setHoveredStage(null)}
-              className="cursor-pointer"
-              style={{ transition: "all 0.5s ease" }}>
-              {/* Outer ring — pulsing */}
-              <circle cx={pos.x} cy={pos.y} r={isHovered ? 42 : 32}
-                fill="none" stroke="hsl(160, 82%, 61%)"
-                strokeWidth={isHovered ? 1 : 0.4}
-                opacity={isHovered ? 0.5 : 0.12}
-                strokeDasharray={isHovered ? "6 4" : "4 8"}
-                style={{ transition: "all 0.5s ease" }}>
+              className="cursor-pointer">
+
+              {/* Ambient glow */}
+              {isActive && (
+                <circle cx={pos.x} cy={pos.y} r="60" fill="url(#nodeGlow)" filter="url(#glowSoft)">
+                  <animate attributeName="r" values="55;70;55" dur="3s" repeatCount="indefinite" />
+                </circle>
+              )}
+
+              {/* Outer orbit ring */}
+              <circle cx={pos.x} cy={pos.y} r={isActive ? 38 : 28}
+                fill="none" stroke={isActive ? TEAL : "white"}
+                strokeWidth={isActive ? 0.8 : 0.3}
+                opacity={isActive ? 0.5 : 0.08}
+                strokeDasharray={isActive ? "5 5" : "3 9"}
+                style={{ transition: "all 0.6s ease" }}>
                 <animateTransform attributeName="transform" type="rotate"
                   from={`0 ${pos.x} ${pos.y}`} to={`360 ${pos.x} ${pos.y}`}
-                  dur={isHovered ? "6s" : "20s"} repeatCount="indefinite" />
+                  dur={isActive ? "8s" : "30s"} repeatCount="indefinite" />
               </circle>
 
-              {/* Middle ring */}
-              <circle cx={pos.x} cy={pos.y} r={isHovered ? 30 : 24}
-                fill="none" stroke={isHovered ? "hsl(160, 82%, 61%)" : "white"}
-                strokeWidth={isHovered ? 1.2 : 0.5}
-                opacity={isHovered ? 0.6 : 0.1}
-                style={{ transition: "all 0.5s ease" }}>
-                <animateTransform attributeName="transform" type="rotate"
-                  from={`360 ${pos.x} ${pos.y}`} to={`0 ${pos.x} ${pos.y}`}
-                  dur="12s" repeatCount="indefinite" />
-              </circle>
+              {/* Second orbit */}
+              {isActive && (
+                <circle cx={pos.x} cy={pos.y} r="46" fill="none" stroke={TEAL}
+                  strokeWidth="0.4" opacity="0.2" strokeDasharray="2 10">
+                  <animateTransform attributeName="transform" type="rotate"
+                    from={`360 ${pos.x} ${pos.y}`} to={`0 ${pos.x} ${pos.y}`}
+                    dur="12s" repeatCount="indefinite" />
+                </circle>
+              )}
 
-              {/* Inner diamond — the node itself */}
-              <rect x={pos.x - 14} y={pos.y - 14} width="28" height="28"
-                rx="2"
+              {/* Diamond node */}
+              <rect x={pos.x - 16} y={pos.y - 16} width="32" height="32" rx="2"
                 transform={`rotate(45 ${pos.x} ${pos.y})`}
-                fill={isHovered ? "hsl(160, 82%, 61%)" : "hsl(0, 0%, 4%)"}
-                fillOpacity={isHovered ? 0.15 : 0.8}
-                stroke={isHovered ? "hsl(160, 82%, 61%)" : "white"}
-                strokeWidth={isHovered ? 1.5 : 0.6}
-                opacity={isHovered ? 1 : 0.4}
-                filter={isHovered ? "url(#glow)" : undefined}
-                style={{ transition: "all 0.4s ease" }} />
+                fill={isActive ? `rgba(${TEAL_RGB}, 0.08)` : "hsl(0, 0%, 3%)"}
+                stroke={isActive ? TEAL : isCompleted ? TEAL : "white"}
+                strokeWidth={isActive ? 1.5 : isCompleted ? 0.8 : 0.4}
+                opacity={isActive ? 1 : isCompleted ? 0.6 : 0.3}
+                filter={isActive ? "url(#glow)" : undefined}
+                style={{ transition: "all 0.5s ease" }} />
 
-              {/* Number inside diamond */}
-              <text x={pos.x} y={pos.y + 4} textAnchor="middle"
-                fontFamily="monospace" fontSize="11"
-                fill={isHovered ? "hsl(160, 82%, 61%)" : "#888"}
-                fontWeight="400"
-                style={{ transition: "fill 0.4s ease" }}>
+              {/* Number */}
+              <text x={pos.x} y={pos.y + 5} textAnchor="middle"
+                fontFamily="monospace" fontSize="12" fontWeight="300"
+                fill={isActive ? TEAL : isCompleted ? TEAL : "#666"}
+                opacity={isActive ? 1 : 0.7}
+                style={{ transition: "fill 0.5s ease" }}>
                 {stage.num}
               </text>
 
-              {/* Stage name below */}
-              <text x={pos.x} y={pos.y + 58} textAnchor="middle"
-                fontFamily="monospace" fontSize="13"
-                fill={isHovered ? "hsl(160, 82%, 61%)" : "#666"}
-                letterSpacing="2"
-                style={{ transition: "fill 0.4s ease", textTransform: "uppercase" }}>
+              {/* Name */}
+              <text x={pos.x} y={pos.y + 56} textAnchor="middle"
+                fontFamily="monospace" fontSize="12" letterSpacing="3"
+                fill={isActive ? TEAL : isCompleted ? `rgba(${TEAL_RGB}, 0.6)` : "#555"}
+                style={{ transition: "fill 0.5s ease" }}>
                 {stage.name}
               </text>
 
-              {/* Short descriptor — visible on hover */}
-              {isHovered && (
-                <text x={pos.x} y={pos.y + 76} textAnchor="middle"
-                  fontFamily="monospace" fontSize="10"
-                  fill="#999" letterSpacing="1" opacity="0.7">
+              {/* Subtitle on active */}
+              {isActive && (
+                <text x={pos.x} y={pos.y + 72} textAnchor="middle"
+                  fontFamily="monospace" fontSize="9" letterSpacing="1.5"
+                  fill="#888" opacity="0.7">
                   {stage.short}
                 </text>
               )}
 
-              {/* Glow dot at center */}
-              {isHovered && (
-                <circle cx={pos.x} cy={pos.y} r="3"
-                  fill="hsl(160, 82%, 61%)" opacity="0.8" filter="url(#glowStrong)">
-                  <animate attributeName="r" values="3;5;3" dur="1.5s" repeatCount="indefinite" />
+              {/* Pulse dot */}
+              {isActive && (
+                <circle cx={pos.x} cy={pos.y} r="2.5" fill={TEAL} opacity="0.9" filter="url(#glow)">
+                  <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite" />
                 </circle>
               )}
 
-              {/* Hover hit area */}
-              <circle cx={pos.x} cy={pos.y} r="50" fill="transparent" />
+              {/* Completed check */}
+              {isCompleted && !isActive && (
+                <circle cx={pos.x + 14} cy={pos.y - 14} r="4" fill={TEAL} opacity="0.5" />
+              )}
+
+              {/* Hit area */}
+              <circle cx={pos.x} cy={pos.y} r="55" fill="transparent" />
             </g>
           );
         })}
 
-        {/* "INPUT" and "OUTPUT" labels */}
-        <text x="120" y="440" textAnchor="middle" fontFamily="monospace" fontSize="10" fill="#444" letterSpacing="3">GUIDELINE</text>
-        <text x="1080" y="440" textAnchor="middle" fontFamily="monospace" fontSize="10" fill="#444" letterSpacing="3">ARTIFACT</text>
-
-        {/* Arrow indicators */}
-        <polygon points="55,380 70,375 70,385" fill="hsl(160, 82%, 61%)" opacity="0.2" />
-        <polygon points="1145,380 1130,375 1130,385" fill="hsl(160, 82%, 61%)" opacity="0.2" />
-        <line x1="60" y1="380" x2="85" y2="380" stroke="hsl(160, 82%, 61%)" strokeWidth="0.5" opacity="0.2" />
-        <line x1="1115" y1="380" x2="1140" y2="380" stroke="hsl(160, 82%, 61%)" strokeWidth="0.5" opacity="0.2" />
+        {/* Input / Output labels */}
+        <g opacity="0.25">
+          <polygon points="52,380 68,374 68,386" fill={TEAL} />
+          <line x1="58" y1="380" x2="88" y2="380" stroke={TEAL} strokeWidth="0.6" />
+          <text x="120" y="430" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">GUIDELINE</text>
+        </g>
+        <g opacity="0.25">
+          <polygon points="1148,380 1132,374 1132,386" fill={TEAL} />
+          <line x1="1112" y1="380" x2="1142" y2="380" stroke={TEAL} strokeWidth="0.6" />
+          <text x="1080" y="430" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#555" letterSpacing="4">ARTIFACT</text>
+        </g>
       </svg>
     </div>
   );
@@ -219,8 +208,19 @@ const PipelineSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredStage, setHoveredStage] = useState<number | null>(null);
+  const [autoStage, setAutoStage] = useState(0);
 
-  const activeStage = hoveredStage !== null ? stages[hoveredStage] : null;
+  // Auto-cycle when not hovering
+  useEffect(() => {
+    if (hoveredStage !== null || !inView) return;
+    const interval = setInterval(() => {
+      setAutoStage((prev) => (prev + 1) % 5);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [hoveredStage, inView]);
+
+  const activeIdx = hoveredStage ?? autoStage;
+  const activeStage = stages[activeIdx]!;
 
   return (
     <section id="pipeline" ref={ref} className="relative py-14 md:py-20 texture-facets">
@@ -235,44 +235,52 @@ const PipelineSection = () => {
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="lg:col-span-5 flex items-end">
             <p className="text-gray-300 text-lg font-light leading-relaxed">
-              No inference at runtime. Compiled once, verified exhaustively, deployed as <span className="text-white">deterministic infrastructure</span>.
+              No inference at runtime. Compiled once, verified exhaustively, deployed as <span className="text-white font-normal">deterministic infrastructure</span>.
             </p>
           </motion.div>
         </div>
 
-        {/* Visual pipeline */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.4, duration: 0.8 }}
           className="border border-white/[0.06] bg-white/[0.01] panel-3d overflow-hidden">
           <div className="hidden md:block">
-            <PipelineVisual hoveredStage={hoveredStage} setHoveredStage={setHoveredStage} inView={inView} />
+            <PipelineVisual hoveredStage={hoveredStage} setHoveredStage={setHoveredStage} autoStage={autoStage} />
           </div>
 
-          {/* Detail panel — appears on hover */}
-          <div className="px-6 md:px-8 py-4 border-t border-white/[0.06] min-h-[80px] flex items-center"
+          {/* Detail panel */}
+          <div className="px-6 md:px-8 py-5 border-t border-white/[0.06]"
             style={{
-              background: activeStage
-                ? "linear-gradient(135deg, rgba(74,237,196,0.04), transparent 60%)"
-                : "transparent",
+              background: `linear-gradient(135deg, rgba(${TEAL_RGB}, 0.03), transparent 60%)`,
               transition: "background 0.5s ease",
             }}>
-            {activeStage ? (
-              <motion.div key={activeStage.num} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.25 }} className="flex items-center gap-6 w-full">
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="font-mono text-accent text-lg">{activeStage.num}</span>
-                  <span className="font-mono text-white text-lg md:text-xl font-light">{activeStage.name}</span>
+            <motion.div key={activeIdx} initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }} className="flex items-start md:items-center gap-5 md:gap-8 flex-col md:flex-row">
+              <div className="flex items-center gap-4 shrink-0">
+                <span className="w-8 h-8 flex items-center justify-center border border-accent/30 rotate-45">
+                  <span className="-rotate-45 font-mono text-accent text-sm">{activeStage.num}</span>
+                </span>
+                <div>
+                  <span className="font-mono text-white text-lg md:text-xl font-light tracking-wide">{activeStage.name}</span>
+                  <span className="font-mono text-gray-600 text-xs ml-3 tracking-[0.15em]">{activeStage.short}</span>
                 </div>
-                <div className="w-px h-8 bg-white/[0.08] hidden md:block" />
-                <p className="text-gray-300 text-base leading-relaxed">{activeStage.desc}</p>
-              </motion.div>
-            ) : (
-              <p className="text-gray-500 text-sm font-mono tracking-wide">Hover a node to explore each stage</p>
-            )}
+              </div>
+              <div className="hidden md:block w-px h-10 bg-white/[0.06]" />
+              <p className="text-gray-300 text-base leading-relaxed flex-1">{activeStage.desc}</p>
+              {/* Progress dots */}
+              <div className="flex items-center gap-2 shrink-0">
+                {stages.map((_, i) => (
+                  <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-500"
+                    style={{
+                      backgroundColor: i === activeIdx ? TEAL : i < activeIdx ? `rgba(${TEAL_RGB}, 0.4)` : "#333",
+                      transform: i === activeIdx ? "scale(1.5)" : "scale(1)",
+                    }} />
+                ))}
+              </div>
+            </motion.div>
           </div>
         </motion.div>
 
-        {/* Mobile fallback — compact list */}
+        {/* Mobile fallback */}
         <div className="md:hidden mt-4 border-t border-white/[0.06]">
           {stages.map((stage, i) => (
             <motion.div key={stage.num} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
