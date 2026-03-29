@@ -15,13 +15,13 @@ const CTASection = () => {
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="max-w-3xl">
           <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] mb-4">
-            Probabilistic once. <span className="text-accent">Deterministic forever.</span>
+            Unlocking the <span className="text-accent">proactive healthcare</span> patients deserve.
           </h2>
           <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed mb-6 max-w-xl">
-            Now accepting government and enterprise inquiries. Defense-grade clinical infrastructure for organizations that protect lives.
+            The healthcare system wasn't built for prevention. We're changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it's too late.
           </p>
           <div className="flex flex-col sm:flex-row items-start gap-4">
-            <a href="#" className="font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent transition-all duration-500 panel-3d">Request Early Access</a>
+            <a href="#" className="font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent transition-all duration-500 panel-3d">Request a Demo</a>
             <a href="#" className="font-mono text-sm tracking-[0.1em] uppercase text-gray-400 border border-white/20 px-10 py-4 hover:bg-white/[0.04] transition-colors duration-300">Read the Whitepaper</a>
           </div>
         </motion.div>
