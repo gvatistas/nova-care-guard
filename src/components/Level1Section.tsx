@@ -23,13 +23,36 @@ const Level1Section = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const [activeView, setActiveView] = useState<"without" | "with">("without");
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   const steps = activeView === "without" ? withoutSteps : withSteps;
   const isWithout = activeView === "without";
 
+  const handleSectionMouse = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
+
   return (
-    <section ref={ref} className="relative py-24 md:py-40">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-8">
+    <section
+      ref={ref}
+      className="relative py-24 md:py-40"
+      onMouseMove={handleSectionMouse}
+    >
+      {/* Mouse-following ambient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-40 transition-opacity duration-700"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, ${
+            isWithout ? "rgba(239,68,68,0.04)" : "rgba(74,237,196,0.04)"
+          }, transparent 60%)`,
+        }}
+      />
+
+      <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -80,9 +103,9 @@ const Level1Section = () => {
           </button>
         </motion.div>
 
-        {/* Content: Pixel accent + Journey steps side by side */}
+        {/* Content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Pixel art accent — clean, sparse, Vega-style */}
+          {/* Pixel art accent */}
           <motion.div
             key={activeView}
             initial={{ opacity: 0, scale: 0.9 }}
@@ -101,7 +124,6 @@ const Level1Section = () => {
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             />
 
-            {/* Outcome card below the pixel art */}
             <motion.div
               key={activeView + "-card"}
               initial={{ opacity: 0, y: 10 }}
@@ -156,7 +178,7 @@ const Level1Section = () => {
           </div>
         </div>
 
-        {/* Bottom metrics bar */}
+        {/* Bottom metrics */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}

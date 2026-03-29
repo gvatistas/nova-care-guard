@@ -1,19 +1,40 @@
 import { motion } from "framer-motion";
-import medientLogo from "@/assets/medient-watermark.png";
+import { useState } from "react";
+import medientWatermark from "@/assets/medient-watermark.png";
 
 const HeroSection = () => {
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
+  const handleMouse = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      onMouseMove={handleMouse}
+    >
+      {/* Mouse-following primary glow */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-none"
+        style={{
+          background: `radial-gradient(800px circle at ${mousePos.x}% ${mousePos.y}%, rgba(74,237,196,0.06), transparent 50%)`,
+        }}
+      />
+
       {/* Watermark logo */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <img src={medientLogo} alt="" className="w-[600px] md:w-[800px] opacity-[0.03] invert" />
+        <img src={medientWatermark} alt="" className="w-[600px] md:w-[800px] opacity-[0.03] invert" />
       </div>
 
-      {/* Ambient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(74,237,196,0.04)_0%,transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(74,237,196,0.02)_0%,transparent_50%)]" />
+      {/* Static ambient */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(74,237,196,0.03)_0%,transparent_50%)]" />
 
-      {/* Horizontal scan line */}
+      {/* Scan line */}
       <motion.div
         initial={{ y: "-100%" }}
         animate={{ y: "200%" }}
@@ -21,7 +42,7 @@ const HeroSection = () => {
         className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/10 to-transparent pointer-events-none"
       />
 
-      {/* Vertical accent line */}
+      {/* Vertical accent */}
       <motion.div
         initial={{ scaleY: 0 }}
         animate={{ scaleY: 1 }}
@@ -31,7 +52,6 @@ const HeroSection = () => {
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full">
         <div className="max-w-5xl">
-          {/* Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -46,7 +66,6 @@ const HeroSection = () => {
             Healthcare
           </motion.h1>
 
-          {/* Subtext — the new messaging */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -66,7 +85,6 @@ const HeroSection = () => {
             </p>
           </motion.div>
 
-          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -75,9 +93,9 @@ const HeroSection = () => {
           >
             <a
               href="#contact"
-              className="group font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent hover:text-black transition-all duration-500 relative overflow-hidden"
+              className="group font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent hover:shadow-[0_0_30px_rgba(74,237,196,0.3)] transition-all duration-500"
             >
-              <span className="relative z-10">Request Access</span>
+              Request Access
             </a>
             <a
               href="#pipeline"

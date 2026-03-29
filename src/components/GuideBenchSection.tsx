@@ -1,5 +1,5 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const metrics = [
   { name: "Exact outcome match", score: "98.7%", desc: "Does the artifact produce the guideline-intended recommendation for every synthetic patient?" },
@@ -11,10 +11,28 @@ const metrics = [
 const GuideBenchSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [hoveredMetric, setHoveredMetric] = useState<number | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
+  const handleMouse = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
 
   return (
-    <section ref={ref} className="relative py-24 md:py-40">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-8">
+    <section ref={ref} className="relative py-24 md:py-40" onMouseMove={handleMouse}>
+      {/* Ambient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-700"
+        style={{
+          background: `radial-gradient(500px circle at ${mousePos.x}% ${mousePos.y}%, rgba(74,237,196,0.03), transparent 50%)`,
+        }}
+      />
+
+      <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-5">
             <div className="font-mono text-sm tracking-[0.25em] uppercase text-gray-500 mb-6 md:mb-8">Open Source</div>
@@ -34,7 +52,7 @@ const GuideBenchSection = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.5 }}
-              className="bg-white/[0.02] border border-white/[0.06] p-6 md:p-8 mb-8"
+              className="bg-white/[0.02] border border-white/[0.06] p-6 md:p-8 mb-8 hover:border-accent/20 hover:shadow-[0_0_40px_rgba(74,237,196,0.05)] transition-all duration-500"
             >
               <div className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500 mb-3">Aggregate Score</div>
               <div className="font-mono text-accent text-4xl md:text-5xl font-light tracking-tight">98.8%</div>
@@ -54,12 +72,26 @@ const GuideBenchSection = () => {
                   initial={{ opacity: 0 }}
                   animate={inView ? { opacity: 1 } : {}}
                   transition={{ delay: 0.3 + i * 0.15 }}
-                  className="border-b border-white/[0.06] py-8 md:py-9 px-3 md:px-4 hover:bg-white/[0.015] transition-colors duration-300"
+                  className="border-b border-white/[0.06] py-8 md:py-9 px-3 md:px-4 transition-all duration-500 cursor-default"
+                  style={{
+                    background: hoveredMetric === i
+                      ? "linear-gradient(135deg, rgba(74,237,196,0.03), transparent 60%)"
+                      : "transparent",
+                    boxShadow: hoveredMetric === i
+                      ? "inset 0 0 60px rgba(74,237,196,0.02)"
+                      : "none",
+                  }}
+                  onMouseEnter={() => setHoveredMetric(i)}
+                  onMouseLeave={() => setHoveredMetric(null)}
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-accent text-sm">✓</span>
-                      <h3 className="font-mono text-white text-sm md:text-base font-light">{metric.name}</h3>
+                      <span className={`font-mono text-sm transition-all duration-300 ${
+                        hoveredMetric === i ? "text-accent scale-110" : "text-accent/60"
+                      }`}>✓</span>
+                      <h3 className={`font-mono text-sm md:text-base font-light transition-colors duration-300 ${
+                        hoveredMetric === i ? "text-accent" : "text-white"
+                      }`}>{metric.name}</h3>
                     </div>
                     <span className="font-mono text-accent text-sm md:text-base">{metric.score}</span>
                   </div>
