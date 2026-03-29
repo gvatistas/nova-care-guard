@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
+
+const HeroVisualization = lazy(() => import("./HeroVisualization"));
 
 const HeroSection = () => {
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
