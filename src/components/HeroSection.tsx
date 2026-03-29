@@ -40,13 +40,13 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
-            className="text-white text-5xl md:text-7xl lg:text-8xl font-mono font-light leading-[1.02] tracking-[-0.03em]"
+            className="text-white text-5xl md:text-7xl lg:text-[5.5rem] font-mono font-light leading-[1.08] tracking-[-0.03em]"
           >
-            The Clinical
+            The Bridge Between
             <br />
-            Decision
+            <span className="text-accent">AI</span> and Evidence-Based
             <br />
-            <span className="text-gray-500">Compiler</span>
+            Healthcare
           </motion.h1>
 
           {/* Sub */}
@@ -57,8 +57,8 @@ const HeroSection = () => {
             className="text-gray-400 text-xl md:text-2xl font-light mt-12 max-w-2xl leading-relaxed"
           >
             We compile clinical guidelines into formally verified,
-            deterministic decision artifacts. No inference at runtime.
-            No hallucination. Ever.
+            deterministic decision artifacts — so every AI-driven
+            recommendation is anchored in evidence. No hallucination. Ever.
           </motion.p>
 
           {/* CTAs */}
