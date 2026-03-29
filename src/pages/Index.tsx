@@ -2,9 +2,8 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import ParticleGrid from "@/components/ParticleGrid";
 import HeroSection from "@/components/HeroSection";
-import PatientNarrativeSection from "@/components/PatientNarrativeSection";
 import DecisionTreeSection from "@/components/DecisionTreeSection";
-import Level1Section from "@/components/Level1Section";
+import PatientNarrativeSection from "@/components/PatientNarrativeSection";
 import PipelineSection from "@/components/PipelineSection";
 import SegmentsSection from "@/components/SegmentsSection";
 import ProjectAlphaSection from "@/components/ProjectAlphaSection";
@@ -33,15 +32,11 @@ const Index = () => {
         <HeroSection />
         <GeoDivider />
         <ScrollReveal>
-          <PatientNarrativeSection />
-        </ScrollReveal>
-        <GeoDivider />
-        <ScrollReveal>
           <DecisionTreeSection />
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
-          <Level1Section />
+          <PatientNarrativeSection />
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
