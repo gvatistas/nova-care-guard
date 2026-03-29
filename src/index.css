@@ -44,7 +44,7 @@
     --gray-600: 0 0% 35%;
     --gray-500: 0 0% 50%;
     --gray-400: 0 0% 65%;
-    --gray-300: 0 0% 75%;
+    --gray-300: 0 0% 78%;
     --gray-200: 0 0% 85%;
     --white: 0 0% 100%;
 
@@ -52,6 +52,7 @@
     --teal: 160 82% 61%;
     --blue: 210 70% 55%;
     --warm: 35 30% 55%;
+    --coral: 0 72% 60%;
 
     --sidebar-background: 0 0% 2%;
     --sidebar-foreground: 0 0% 100%;
@@ -72,7 +73,7 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', -apple-system, sans-serif;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.7;
   }
   h1, h2, h3, h4, h5, h6 {

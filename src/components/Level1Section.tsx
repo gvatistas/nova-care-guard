@@ -21,45 +21,23 @@ const Level1Section = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const [activeView, setActiveView] = useState<"without" | "with">("without");
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   const steps = activeView === "without" ? withoutSteps : withSteps;
   const isWithout = activeView === "without";
 
-  const handleSectionMouse = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePos({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-    });
-  };
-
   return (
-    <section ref={ref} className="relative py-20 md:py-32" onMouseMove={handleSectionMouse}>
-      {/* Thin top separator */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-      <div
-        className="absolute inset-0 pointer-events-none opacity-40 transition-opacity duration-700"
-        style={{
-          background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, ${
-            isWithout ? "rgba(239,68,68,0.04)" : "rgba(74,237,196,0.04)"
-          }, transparent 60%)`,
-        }}
-      />
+    <section ref={ref} className="relative py-20 md:py-28">
+      <div className="absolute top-0 left-6 md:left-8 right-6 md:right-8 h-px bg-white/[0.06]" />
 
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-10 md:mb-14">
-          <div className="font-mono text-sm tracking-[0.25em] uppercase text-gray-500 mb-4">
-            Two Paths — One Patient
-          </div>
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-mono font-light leading-[1.1] tracking-[-0.02em] max-w-4xl">
+        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-10">
+          <div className="font-mono text-sm tracking-[0.25em] uppercase text-accent/70 mb-4">Two Paths — One Patient</div>
+          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] max-w-4xl">
             Same patient. Same clinic. <span className="text-gray-500">Different outcome.</span>
           </h2>
-          <p className="text-gray-400 text-base md:text-lg font-light mt-5 max-w-2xl leading-relaxed">
+          <p className="text-gray-300 text-lg md:text-xl font-light mt-5 max-w-2xl leading-relaxed">
             Follow Sarah — a 52-year-old smoker visiting her primary care physician.
-            In one world, her doctor relies on memory. In the other, the clinic runs on
-            compiled clinical decision artifacts.
+            In one world, her doctor relies on memory. In the other, the clinic runs on compiled clinical decision artifacts.
           </p>
         </motion.div>
 
@@ -107,27 +85,21 @@ const Level1Section = () => {
           {/* Outcome card */}
           <motion.div
             key={activeView}
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, type: "spring" }}
+            transition={{ duration: 0.5 }}
             className="lg:col-span-4 flex flex-col items-center justify-start pt-2"
           >
-            <motion.div
-              key={activeView + "-card"}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className={`w-full max-w-[280px] border p-6 text-center ${
-                isWithout ? "border-red-500/20 bg-red-500/[0.03]" : "border-accent/20 bg-accent/[0.03]"
-              }`}
-            >
-              <div className={`font-mono text-4xl font-light ${isWithout ? "text-red-400" : "text-accent"}`}>
+            <div className={`w-full max-w-[300px] border p-8 text-center ${
+              isWithout ? "border-red-500/20 bg-red-500/[0.04]" : "border-accent/20 bg-accent/[0.04]"
+            }`}>
+              <div className={`font-mono text-5xl font-light ${isWithout ? "text-red-400" : "text-accent"}`}>
                 {isWithout ? "8%" : "92%"}
               </div>
-              <div className="text-gray-500 text-sm mt-2">
+              <div className="text-gray-400 text-base mt-3">
                 {isWithout ? "5-year survival — late-stage" : "5-year survival — early detection"}
               </div>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* Journey steps */}
@@ -143,15 +115,15 @@ const Level1Section = () => {
                 >
                   <div className="grid grid-cols-12 gap-4 items-start">
                     <div className="col-span-1">
-                      <span className={`font-mono text-sm transition-colors duration-300 ${
+                      <span className={`font-mono text-base transition-colors duration-300 ${
                         isWithout ? "text-red-400/50 group-hover:text-red-400" : "text-accent/50 group-hover:text-accent"
                       }`}>{step.step}</span>
                     </div>
                     <div className="col-span-3">
-                      <h4 className="font-mono text-white text-sm md:text-base font-light group-hover:text-accent transition-colors duration-300">{step.title}</h4>
+                      <h4 className="font-mono text-white text-base md:text-lg font-light group-hover:text-accent transition-colors duration-300">{step.title}</h4>
                     </div>
                     <div className="col-span-8">
-                      <p className="text-gray-400 text-sm md:text-base leading-relaxed">{step.desc}</p>
+                      <p className="text-gray-300 text-base leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -161,12 +133,7 @@ const Level1Section = () => {
         </div>
 
         {/* Bottom metrics */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.8 }}
-          className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]"
-        >
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
           {(isWithout
             ? [
                 { val: "$280K+", label: "Treatment cost" },
@@ -183,16 +150,16 @@ const Level1Section = () => {
           ).map((stat, i) => (
             <motion.div
               key={activeView + stat.label}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + i * 0.08 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1 + i * 0.06 }}
               className="bg-background p-5 md:p-6"
             >
-              <div className={`font-mono text-xl md:text-2xl font-light ${isWithout ? "text-red-400/80" : "text-accent"}`}>{stat.val}</div>
-              <div className="text-gray-500 text-xs md:text-sm mt-1">{stat.label}</div>
+              <div className={`font-mono text-2xl md:text-3xl font-light ${isWithout ? "text-red-400/80" : "text-accent"}`}>{stat.val}</div>
+              <div className="text-gray-400 text-sm md:text-base mt-1">{stat.label}</div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
