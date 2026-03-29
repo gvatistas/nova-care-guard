@@ -4,7 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import ProblemSection from "@/components/ProblemSection";
 import Level1Section from "@/components/Level1Section";
 import PipelineSection from "@/components/PipelineSection";
-import DifferentiatorsSection from "@/components/DifferentiatorsSection";
+
 import SegmentsSection from "@/components/SegmentsSection";
 import ProjectBetaSection from "@/components/ProjectBetaSection";
 import GuideBenchSection from "@/components/GuideBenchSection";
@@ -27,8 +27,6 @@ const Index = () => {
         <Level1Section />
         <GeoDivider />
         <PipelineSection />
-        <GeoDivider />
-        <DifferentiatorsSection />
         <GeoDivider />
         <SegmentsSection />
         <GeoDivider />
