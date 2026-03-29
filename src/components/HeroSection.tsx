@@ -29,13 +29,13 @@ const HeroSection = () => {
         style={{ background: `radial-gradient(600px circle at ${mousePos.x}% ${mousePos.y}%, rgba(74,237,196,0.04), transparent 50%)` }} />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full">
-        <div className="max-w-5xl">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-8 w-full grid grid-cols-1 lg:grid-cols-12">
+        <div className="lg:col-span-5">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="text-white text-[2.5rem] sm:text-5xl md:text-[4.2rem] lg:text-[5.5rem] font-mono font-light leading-[1.05] tracking-[-0.03em]"
+            className="text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem] font-mono font-light leading-[1.1] tracking-[-0.03em]"
           >
             The Bridge Between AI and <span className="text-accent">Evidence-Based</span> Healthcare
           </motion.h1>
