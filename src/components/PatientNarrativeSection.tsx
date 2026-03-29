@@ -182,7 +182,7 @@ const PatientNarrativeSection = () => {
             className="border border-white/[0.08] bg-background/50 p-6 md:p-8"
           >
             <h3 className="font-mono tracking-[0.18em] uppercase mb-6 flex items-center gap-2" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)" }}>
-              <span className="w-1.5 h-1.5 rounded-full opacity-80" style={{ backgroundColor: "#10b981" }} />
+              <span className="w-1.5 h-1.5 rounded-full opacity-80" style={{ backgroundColor: "#e5e5e5" }} />
               With Medient
             </h3>
             <p className="font-mono tracking-[0.1em] uppercase mb-4" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
