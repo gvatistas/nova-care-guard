@@ -9,6 +9,8 @@ import ProjectBetaSection from "@/components/ProjectBetaSection";
 import GuideBenchSection from "@/components/GuideBenchSection";
 import CTASection from "@/components/CTASection";
 
+const GeoDivider = () => <div className="divider-geo mx-6 md:mx-8" />;
+
 const Index = () => {
   return (
     <div className="min-h-screen bg-background relative">
@@ -16,12 +18,19 @@ const Index = () => {
       <div className="relative z-10">
         <Navbar />
         <HeroSection />
+        <GeoDivider />
         <ProblemSection />
+        <GeoDivider />
         <Level1Section />
+        <GeoDivider />
         <PipelineSection />
+        <GeoDivider />
         <SegmentsSection />
+        <GeoDivider />
         <ProjectBetaSection />
+        <GeoDivider />
         <GuideBenchSection />
+        <GeoDivider />
         <CTASection />
       </div>
     </div>

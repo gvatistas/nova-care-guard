@@ -29,10 +29,12 @@ const HeroSection = () => {
           className="w-full h-full object-cover"
           style={{ opacity: 0.4 }}
         />
-        {/* Gradient overlays for text readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/60" />
       </div>
+
+      {/* Texture overlay on hero */}
+      <div className="absolute inset-0 texture-crosshatch pointer-events-none" />
 
       {/* Mouse-following glow */}
       <div
@@ -63,7 +65,7 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
-            className="mt-10 md:mt-14 max-w-2xl space-y-4"
+            className="mt-8 md:mt-12 max-w-2xl space-y-4"
           >
             <p className="text-gray-300 text-lg md:text-[1.35rem] font-light leading-relaxed">
               Medical knowledge has never been more advanced.
@@ -80,11 +82,11 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.4 }}
-            className="mt-10 md:mt-14 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
+            className="mt-8 md:mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
           >
             <a
               href="#contact"
-              className="group font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent hover:shadow-[0_0_30px_rgba(74,237,196,0.3)] transition-all duration-500"
+              className="group font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent hover:shadow-[0_0_30px_rgba(74,237,196,0.3)] transition-all duration-500 panel-3d"
             >
               Request Access
             </a>

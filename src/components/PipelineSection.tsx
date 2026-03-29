@@ -15,13 +15,14 @@ const PipelineSection = () => {
   const [hoveredStage, setHoveredStage] = useState<number | null>(null);
 
   return (
-    <section id="pipeline" ref={ref} className="relative py-20 md:py-28">
-      <div className="absolute top-0 left-6 md:left-8 right-6 md:right-8 h-px bg-white/[0.06]" />
+    <section id="pipeline" ref={ref} className="relative py-16 md:py-24 texture-facets">
+      {/* Angular accent glow */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(ellipse,rgba(74,237,196,0.025),transparent_70%)] pointer-events-none" />
 
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-12 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 mb-10">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-7">
-            <div className="font-mono text-sm tracking-[0.25em] uppercase text-blue-400/70 mb-4">Architecture</div>
+            <div className="font-mono text-sm tracking-[0.25em] uppercase text-blue-400/70 mb-3">Architecture</div>
             <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em]">
               Five stages. <span className="text-gray-500">Verified at every gate.</span>
             </h2>
@@ -39,7 +40,7 @@ const PipelineSection = () => {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ delay: 0.3 }}
-          className="hidden md:flex items-center justify-between mb-10 relative"
+          className="hidden md:flex items-center justify-between mb-8 relative"
         >
           <motion.div
             initial={{ scaleX: 0 }}
@@ -57,14 +58,15 @@ const PipelineSection = () => {
               onMouseEnter={() => setHoveredStage(i)}
               onMouseLeave={() => setHoveredStage(null)}
             >
-              <div className={`w-14 h-14 border flex items-center justify-center transition-all duration-500 ${
+              {/* Diamond node instead of square */}
+              <div className={`w-12 h-12 rotate-45 border flex items-center justify-center transition-all duration-500 ${
                 hoveredStage === i
                   ? "border-accent bg-accent/10 shadow-[0_0_30px_rgba(74,237,196,0.2)] scale-110"
                   : "border-white/10 bg-background hover:border-white/20"
               }`}>
-                <span className={`font-mono text-sm transition-colors duration-300 ${hoveredStage === i ? "text-accent" : "text-gray-500"}`}>{stage.num}</span>
+                <span className={`-rotate-45 font-mono text-xs transition-colors duration-300 ${hoveredStage === i ? "text-accent" : "text-gray-500"}`}>{stage.num}</span>
               </div>
-              <span className={`font-mono text-xs mt-2 tracking-wide transition-colors duration-300 ${hoveredStage === i ? "text-accent" : "text-gray-400"}`}>{stage.name}</span>
+              <span className={`font-mono text-xs mt-4 tracking-wide transition-colors duration-300 ${hoveredStage === i ? "text-accent" : "text-gray-400"}`}>{stage.name}</span>
             </motion.div>
           ))}
         </motion.div>
@@ -79,7 +81,7 @@ const PipelineSection = () => {
               transition={{ delay: 0.4 + i * 0.12 }}
               onMouseEnter={() => setHoveredStage(i)}
               onMouseLeave={() => setHoveredStage(null)}
-              className={`group border-b border-white/[0.06] py-6 md:py-7 grid grid-cols-12 gap-4 md:gap-8 items-start px-2 md:px-4 cursor-default transition-all duration-500 ${
+              className={`group border-b border-white/[0.06] py-5 md:py-6 grid grid-cols-12 gap-4 md:gap-8 items-start px-2 md:px-4 cursor-default transition-all duration-500 ${
                 hoveredStage === i ? "bg-accent/[0.02]" : "hover:bg-white/[0.01]"
               }`}
             >

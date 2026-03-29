@@ -7,8 +7,9 @@ const CTASection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="contact" ref={ref} className="relative py-20 md:py-28 overflow-hidden">
-      <div className="absolute top-0 left-6 md:left-8 right-6 md:right-8 h-px bg-white/[0.06]" />
+    <section id="contact" ref={ref} className="relative py-16 md:py-24 overflow-hidden texture-diamonds">
+      {/* Angular glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(74,237,196,0.04),transparent_60%)] pointer-events-none" />
 
       <div className="absolute inset-0 flex items-center justify-end pointer-events-none">
         <img src={medientWatermark} alt="" className="w-[500px] opacity-[0.02] invert translate-x-1/4" />
@@ -16,7 +17,7 @@ const CTASection = () => {
 
       <div className="relative max-w-[1400px] mx-auto px-6 md:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="max-w-3xl">
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] mb-6">
+          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-mono font-light leading-[1.15] tracking-[-0.02em] mb-5">
             Probabilistic once. <span className="text-accent">Deterministic forever.</span>
           </h2>
 
@@ -25,7 +26,7 @@ const CTASection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-start gap-4">
-            <a href="#" className="font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent transition-all duration-500">
+            <a href="#" className="font-mono text-sm tracking-[0.1em] uppercase bg-white text-black px-10 py-4 hover:bg-accent transition-all duration-500 panel-3d">
               Request Early Access
             </a>
             <a href="#" className="font-mono text-sm tracking-[0.1em] uppercase text-gray-400 border border-white/20 px-10 py-4 hover:bg-white/[0.04] transition-colors duration-300">
@@ -35,8 +36,8 @@ const CTASection = () => {
         </motion.div>
       </div>
 
-      <motion.footer initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }} className="mt-20 border-t border-white/[0.06]">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <motion.footer initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }} className="mt-16 border-t border-white/[0.06]">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="font-mono text-gray-500 text-sm">© 2026 Medient Health. All rights reserved.</div>
           <div className="flex items-center gap-8 font-mono text-gray-500 text-sm tracking-[0.1em] uppercase">
             <a href="#" className="hover:text-white transition-colors duration-300">Whitepaper</a>
