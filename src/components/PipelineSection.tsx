@@ -10,52 +10,8 @@ const stages = [
   { num: "05", name: "DEPLOY", short: "Ship as Infrastructure", desc: "Compiled into a FHIR-native artifact. On-premises or cloud. Air-gapped network support. Zero inference at runtime.", icon: "→", badge: "Full audit trail", badgeType: "lock" as const },
 ];
 
-const differentiators = [
-  {
-    id: "deterministic", label: "Deterministic", icon: "◆", accentHsl: "160 82% 61%",
-    headline: "Zero inference. Zero hallucination.",
-    description: "Unlike LLM-based clinical tools, Medient artifacts produce identical outputs for identical inputs — every time, everywhere. No temperature. No drift. No probabilistic liability.",
-    comparison: [
-      { metric: "Hallucination rate", medient: "0.0%", others: "2–8%" },
-      { metric: "Output consistency", medient: "100%", others: "~92%" },
-      { metric: "Audit trail", medient: "Complete", others: "Partial" },
-      { metric: "Regulatory pathway", medient: "SaMD Class II", others: "Undefined" },
-    ],
-  },
-  {
-    id: "compiled", label: "Compiled", icon: "⬡", accentHsl: "210 70% 55%",
-    headline: "Not interpreted. Not prompted. Compiled.",
-    description: "Medient doesn't 'read' guidelines at query time. Each guideline is compiled once into a verified decision artifact — a typed, exhaustively tested logical structure that runs as deterministic infrastructure.",
-    comparison: [
-      { metric: "Processing model", medient: "Compile-once", others: "Query-time" },
-      { metric: "Latency", medient: "<1ms", others: "200–800ms" },
-      { metric: "Verification", medient: "SMT-proven", others: "Unit tests" },
-      { metric: "Edge case coverage", medient: "Exhaustive", others: "Sample-based" },
-    ],
-  },
-  {
-    id: "traceable", label: "Traceable", icon: "◈", accentHsl: "270 50% 60%",
-    headline: "Every recommendation has a source.",
-    description: "Full provenance tracing from output recommendation to the exact guideline paragraph, page number, and publication. No black box. Just verified clinical logic.",
-    comparison: [
-      { metric: "Source attribution", medient: "Page-level", others: "None" },
-      { metric: "Decision path", medient: "Fully visible", others: "Opaque" },
-      { metric: "Reproducibility", medient: "Guaranteed", others: "Variable" },
-      { metric: "Compliance readiness", medient: "Immediate", others: "6–12 months" },
-    ],
-  },
-  {
-    id: "scalable", label: "Scalable", icon: "◇", accentHsl: "35 50% 60%",
-    headline: "$0 marginal cost per encounter.",
-    description: "Once compiled, a Medient artifact costs nothing additional to run. No token usage. No API calls. No per-query fees. Deploy across an entire health system and the unit economics only improve.",
-    comparison: [
-      { metric: "Cost per query", medient: "$0.00", others: "$0.02–0.15" },
-      { metric: "Scaling model", medient: "Linear O(1)", others: "Linear O(n)" },
-      { metric: "Infrastructure", medient: "FHIR-native", others: "Custom API" },
-      { metric: "Deployment", medient: "Embeddable", others: "Cloud-only" },
-    ],
-  },
-];
+
+
 
 const TEAL = "hsl(160, 82%, 61%)";
 const TEAL_RGB = "74,237,196";
