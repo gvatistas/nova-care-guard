@@ -173,7 +173,7 @@ const GuideBenchSection = () => {
                       <motion.text
                         x={pos.x + offsetX} y={pos.y + offsetY + (i === 0 ? -4 : i === 2 ? 8 : 4)}
                         textAnchor="middle"
-                        fontFamily="'JetBrains Mono', monospace" fontSize="13" fontWeight="300"
+                        fontFamily="'Montserrat', sans-serif" fontSize="13" fontWeight="600"
                         fill="white"
                         initial={{ opacity: 0 }}
                         animate={inView ? { opacity: 0.85 } : {}}
