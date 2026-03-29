@@ -37,6 +37,9 @@ const Index = () => {
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
+          <DecisionTreeSection />
+        </ScrollReveal>
+        <GeoDivider />
           <Level1Section />
         </ScrollReveal>
         <GeoDivider />
