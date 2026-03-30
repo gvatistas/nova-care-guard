@@ -81,7 +81,7 @@ const ProjectAlphaSection = () => {
     return "pending";
   }, [flatClinics, greenCount]);
 
-  const adherence = Math.round(45 + (greenCount / totalClinics) * 45);
+  const adherence = Math.round(45 + (greenCount / totalClinics) * 49);
 
   return (
     <section id="project-alpha" ref={ref} className="relative py-24 md:py-32">
