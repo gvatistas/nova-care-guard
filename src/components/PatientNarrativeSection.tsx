@@ -310,12 +310,18 @@ const PatientNarrativeSection = () => {
               initial={{ opacity: 0, scale: 0.97 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 1.0 }}
-              className="border p-6 text-center w-full max-w-sm"
+              className="border p-6 text-center w-full max-w-sm relative overflow-hidden"
               style={{ borderColor: `${RED}30`, background: `${RED}08` }}
             >
-              <p className="text-[10px] uppercase tracking-[0.12em] mb-2" style={{ color: RED }}>Patient Outcome</p>
-              <p className="text-white text-3xl font-light" style={{ letterSpacing: "-0.02em" }}>Stage IIIB</p>
-              <p className="text-white/35 text-sm mt-1.5">Late-stage diagnosis · 23% survival</p>
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{ opacity: [0, 0.06, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                style={{ background: `radial-gradient(circle at 50% 50%, ${RED}40, transparent 70%)` }}
+              />
+              <p className="text-[10px] uppercase tracking-[0.12em] mb-2 relative" style={{ color: RED }}>Patient Outcome</p>
+              <p className="text-white text-3xl font-light relative" style={{ letterSpacing: "-0.02em" }}>Stage IIIB</p>
+              <p className="text-white/35 text-sm mt-1.5 relative">Late-stage diagnosis · 23% survival</p>
             </motion.div>
 
             <Connector color={RED} height={28} />
