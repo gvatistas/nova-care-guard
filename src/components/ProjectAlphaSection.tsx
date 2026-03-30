@@ -158,7 +158,7 @@ const ProjectAlphaSection = () => {
               {/* Clinic dots */}
               {allClinics.map((regionClinics, ri) => regionClinics.map((clinic, ci) => {
                 const state = getClinicState(ri, ci);
-                const color = state === "active" ? GREEN : state === "deploying" ? AMBER : "rgba(255,255,255,0.5)";
+                const color = state === "active" ? GREEN : state === "deploying" ? AMBER : RED;
                 return (
                   <g key={`c-${ri}-${ci}`}>
                     {state === "active" && (
