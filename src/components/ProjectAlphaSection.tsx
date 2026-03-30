@@ -1,7 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 
-const GREEN = "#4ade80";
+const GREEN = "#00d4aa";
 const RED = "#ef4444";
 const AMBER = "#9ca3af";
 
@@ -254,7 +254,7 @@ const ProjectAlphaSection = () => {
                 <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.5rem", color: GREEN }}>90% INTAKE TIME REDUCTION</div>
               </div>
               <div>
-                <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.5rem", color: GREEN }}>2,400+ CLINICAL RECOMMENDATIONS / DAY</div>
+                <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.5rem", color: GREEN }}>1,000s ACTION PLANS ISSUED / DAY</div>
               </div>
             </div>
           </motion.div>
