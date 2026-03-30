@@ -176,19 +176,18 @@ const HeroSection = () => {
         const node: PathNode = { gx, gz, y, outcome, depth };
         activeNodes.set(key, node);
 
-        // Branch count decreases with depth
         const branches = depth < 2 ? 3 : (seeded(seed + depth * 7) % 3 === 0 ? 3 : 2);
         for (let b = 0; b < branches; b++) {
           const s = seeded(seed * 31 + b * 97 + depth * 13);
-          // Move forward (deeper Z) with lateral spread
           const dz = 2 + (s % 3);
-          const dx = ((s >> 4) % 5) - 2; // -2 to +2
+          const dx = ((s >> 4) % 5) - 2;
           const ngx = gx + dx;
           const ngz = gz + dz;
           if (ngx < -HALF_W || ngx > HALF_W || ngz > GRID_D) continue;
 
-          // Outcome worsens with depth and randomness
-          const childOutcome = Math.min(1.0, outcome + (depth / 10) * 0.15 + (s % 100) / 300);
+          // outcome: 0 = resolved/green, 1 = alert/red — most resolve, few stay red
+          const rng = (s % 100) / 100;
+          const childOutcome = rng > 0.82 ? 0.9 + rng * 0.1 : Math.max(0, outcome * 0.5 - depth * 0.03);
           const childNode: PathNode = { gx: ngx, gz: ngz, y, outcome: childOutcome, depth: depth + 1 };
           const childKey = nodeKey(ngx, ngz, y);
           activeNodes.set(childKey, childNode);
@@ -196,7 +195,8 @@ const HeroSection = () => {
           buildBranch(ngx, ngz, y, depth + 1, childOutcome, s);
         }
       };
-      buildBranch(root.gx, root.gz, root.y, 0, 0.05 + (ri % 3) * 0.1, ri * 1337 + 42);
+      // Start mostly neutral/slightly alert
+      buildBranch(root.gx, root.gz, root.y, 0, 0.3 + (ri % 3) * 0.15, ri * 1337 + 42);
     });
 
     // ─── Edge lines connecting grid dots (decision paths) ───
