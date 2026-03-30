@@ -660,7 +660,7 @@ const HeroSection = () => {
               className="group relative text-[13px] font-medium uppercase text-white/80 px-8 py-3.5 transition-all duration-500 overflow-hidden"
               style={{ letterSpacing: "0.08em" }}
             >
-              <span className="absolute inset-0 border border-[#00d4aa]/[0.15] bg-gradient-to-b from-[#00d4aa]/[0.06] to-[#00d4aa]/[0.02] transition-all duration-500 group-hover:border-[#00d4aa]/30 group-hover:from-[#00d4aa]/[0.12] group-hover:to-[#00d4aa]/[0.04]" />
+              <span className="absolute inset-0 border border-[#00d4aa]/[0.30] bg-gradient-to-b from-[#00d4aa]/[0.12] to-[#00d4aa]/[0.04] transition-all duration-500 group-hover:border-[#00d4aa]/50 group-hover:from-[#00d4aa]/[0.20] group-hover:to-[#00d4aa]/[0.08]" style={{ boxShadow: '0 0 20px rgba(0,212,170,0.08)' }} />
               <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Request Demo</span>
             </a>
