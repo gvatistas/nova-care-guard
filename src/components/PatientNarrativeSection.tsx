@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, type FC } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
-const POSITIVE = "#c8d6e5";
+const POSITIVE = "#4ade80";
 const RED = "#ef4444";
 const ORANGE = "#e8922a";
 const GREEN = "#8fbc8f";
