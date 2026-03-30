@@ -68,7 +68,7 @@ const HeroSection = () => {
         fragmentShader: `
           varying float vFade;
           void main() {
-            gl_FragColor = vec4(0.55, 0.65, 0.75, vFade * 0.07);
+            gl_FragColor = vec4(0.4, 0.35, 0.32, vFade * 0.06);
           }
         `,
       });
