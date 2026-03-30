@@ -439,8 +439,8 @@ const PatientNarrativeSection = () => {
               <motion.div className="absolute inset-0 pointer-events-none"
                 animate={{ opacity: [0, 0.10, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                style={{ background: `radial-gradient(circle at 50% 30%, ${TEAL}25, transparent 70%)` }} />
-              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-semibold" style={{ color: TEAL }}>Patient Outcome</p>
+                style={{ background: `radial-gradient(circle at 50% 30%, ${POSITIVE}25, transparent 70%)` }} />
+              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-semibold" style={{ color: POSITIVE }}>Patient Outcome</p>
               <p className="text-white text-4xl font-light relative" style={{ letterSpacing: "-0.02em" }}>Stage IA</p>
               <p className="text-white/45 text-[15px] mt-2 relative">Caught early · 92% survival</p>
             </motion.div>
