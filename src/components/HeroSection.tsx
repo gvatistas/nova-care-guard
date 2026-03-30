@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import FacetedCrownLogo from "./FacetedCrownLogo";
 
-const BG = 0x050708;
+const BG = 0x030405;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -68,7 +68,7 @@ const HeroSection = () => {
         fragmentShader: `
           varying float vFade;
           void main() {
-            gl_FragColor = vec4(0.35, 0.38, 0.45, vFade * 0.06);
+            gl_FragColor = vec4(0.25, 0.25, 0.3, vFade * 0.05);
           }
         `,
       });
@@ -111,7 +111,7 @@ const HeroSection = () => {
             if (d > 1.0) discard;
             float core = exp(-d * d * 5.0) * vAlpha;
             float halo = (1.0 - d * d) * vAlpha * 0.15;
-            gl_FragColor = vec4(0.45, 0.5, 0.58, (core + halo) * 0.4);
+            gl_FragColor = vec4(0.35, 0.36, 0.4, (core + halo) * 0.35);
           }
         `,
       });
@@ -233,19 +233,18 @@ const HeroSection = () => {
         uniform float uTime;
         void main() {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(180.0, 300.0, vDist));
-          float pulse = 0.6 + 0.4 * sin(uTime * 1.5 + vDist * 0.04);
-          // 5-color palette: blue → green → grey → orange → red
-          vec3 blue   = vec3(0.2, 0.45, 0.9);
-          vec3 green  = vec3(0.15, 0.8, 0.45);
-          vec3 grey   = vec3(0.4, 0.42, 0.45);
-          vec3 orange = vec3(0.95, 0.55, 0.18);
-          vec3 red    = vec3(0.85, 0.2, 0.15);
+          float pulse = 0.6 + 0.4 * sin(uTime * 2.0 + vDist * 0.06);
+          vec3 blue   = vec3(0.2, 0.4, 0.75);
+          vec3 green  = vec3(0.15, 0.7, 0.4);
+          vec3 grey   = vec3(0.45, 0.42, 0.4);
+          vec3 orange = vec3(0.9, 0.5, 0.18);
+          vec3 red    = vec3(0.8, 0.2, 0.15);
           vec3 col;
           if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
           else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
           else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
           else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
-          gl_FragColor = vec4(col, fade * pulse * 0.12);
+          gl_FragColor = vec4(col, fade * pulse * 0.18);
         }
       `,
     });
@@ -318,7 +317,7 @@ const HeroSection = () => {
     disposables.push(activeNodeGeo, activeNodeMat);
 
     // ─── PULSE PARTICLES — traveling along decision path edges on the grid ───
-    const PULSE_COUNT = 200;
+    const PULSE_COUNT = 400;
     const pulsePos = new Float32Array(PULSE_COUNT * 3);
     const pulseProgress = new Float32Array(PULSE_COUNT);
     const pulseEdge = new Int32Array(PULSE_COUNT);
@@ -329,7 +328,7 @@ const HeroSection = () => {
     for (let i = 0; i < PULSE_COUNT; i++) {
       pulseEdge[i] = Math.floor(Math.random() * totalPathEdges);
       pulseProgress[i] = Math.random();
-      pulseSpeed[i] = 0.004 + Math.random() * 0.012;
+      pulseSpeed[i] = 0.006 + Math.random() * 0.018;
       pulseOutcomeArr[i] = pathEdgeOutcome[pulseEdge[i] * 2];
       const ei = pulseEdge[i] * 6;
       const t = pulseProgress[i];
@@ -445,7 +444,7 @@ const HeroSection = () => {
         void main() {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 2.5);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 1.5);
-          gl_FragColor = vec4(0.15, 0.5, 0.8, xF * yF * 0.025);
+          gl_FragColor = vec4(0.12, 0.35, 0.55, xF * yF * 0.018);
         }
       `,
     });
@@ -467,7 +466,7 @@ const HeroSection = () => {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 1.2);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 6.0);
           float pulse = 0.8 + 0.2 * sin(uTime * 0.5);
-          gl_FragColor = vec4(0.55, 0.75, 0.95, xF * yF * 0.15 * pulse);
+          gl_FragColor = vec4(0.4, 0.55, 0.7, xF * yF * 0.1 * pulse);
         }
       `,
     });
@@ -615,7 +614,7 @@ const HeroSection = () => {
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 50% 42% at 50% 50%, rgba(5,7,8,0.55) 0%, rgba(5,7,8,0.4) 50%, rgba(5,7,8,0.15) 80%, transparent 100%)",
+        background: "radial-gradient(ellipse 45% 38% at 50% 50%, rgba(3,4,5,0.7) 0%, rgba(3,4,5,0.5) 45%, rgba(3,4,5,0.2) 75%, transparent 100%)",
       }} />
 
       {/* Film grain */}
