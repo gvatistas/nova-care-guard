@@ -2,154 +2,133 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
 const segments = [
-  { name: "Federally Qualified Health Centers", abbr: "FQHCs", stat: "1,400+ eligible facilities", desc: "Deploy verified clinical decision artifacts across the FQHC network — the largest safety-net infrastructure in North America.", value: "Cut screening gaps by 60% in the most underserved communities." },
-  { name: "Rural Health Clinics", abbr: "RHCs", stat: "4,700+ eligible facilities", desc: "Air-gapped, low-bandwidth deployment for clinics operating in connectivity-constrained environments.", value: "Zero-latency clinical guidance — no internet required." },
-  { name: "Tribal Health Programs", abbr: "IHS / Tribal", stat: "574 federally recognized tribes", desc: "Culturally-aligned clinical intelligence for Indian Health Service and tribal health organizations.", value: "Sovereign health data. Deterministic, auditable decisions." },
-  { name: "Community Health Centers", abbr: "CHCs", stat: "31M+ patients served annually", desc: "Network-wide screening adherence across multi-site community health organizations.", value: "One compiled artifact scales across entire networks." },
+  {
+    name: "Frontier Labs",
+    icon: "◇",
+    short: "Training Data",
+    desc: "Structured clinical decision schemas for fine-tuning. Zero hallucination training data.",
+  },
+  {
+    name: "Clinical AI Products",
+    icon: "⬡",
+    short: "Drop-in Logic",
+    desc: "Pre-compiled guideline logic. Drop-in clinical decision module.",
+  },
+  {
+    name: "Clinical Networks",
+    icon: "△",
+    short: "Network Adherence",
+    desc: "Network-wide screening adherence. One artifact across all sites.",
+  },
+  {
+    name: "Clinics",
+    icon: "◻",
+    short: "Point of Care",
+    desc: "Point-of-care decision support. 90% intake time reduction.",
+  },
+  {
+    name: "Patients",
+    icon: "○",
+    short: "Consumer AI",
+    desc: "Consumer-facing AI health companion. Guideline-backed, physician-verified.",
+  },
+  {
+    name: "Insurers",
+    icon: "⬢",
+    short: "Preventive ROI",
+    desc: "Preventive care ROI. Reduce downstream claims through upstream detection.",
+  },
 ];
-
-const FQHCIcon = ({ active }: { active: boolean }) => (
-  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
-    <path d="M32 6L52 16V34C52 44 43 52 32 58C21 52 12 44 12 34V16L32 6Z" stroke="white" strokeWidth={active ? 1.2 : 0.6} opacity={active ? 0.5 : 0.2} fill={active ? "rgba(255,255,255,0.04)" : "none"} />
-    <path d="M32 6L42 12L32 20Z" fill="white" opacity={active ? 0.12 : 0.04} />
-    <path d="M32 6L22 12L32 20Z" fill="white" opacity={active ? 0.08 : 0.03} />
-    <rect x="26" y="28" width="12" height="18" stroke="white" strokeWidth="0.5" opacity={active ? 0.3 : 0.1} fill="none" />
-    <line x1="32" y1="31" x2="32" y2="41" stroke="white" strokeWidth="1.5" opacity={active ? 0.5 : 0.2} />
-    <line x1="28" y1="36" x2="36" y2="36" stroke="white" strokeWidth="1.5" opacity={active ? 0.5 : 0.2} />
-  </svg>
-);
-
-const RuralIcon = ({ active }: { active: boolean }) => (
-  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
-    {[44, 48, 52, 56].map((y, i) => (
-      <path key={i} d={`M${6 + i * 2},${y} L${18 - i},${y - 3 + i} L${28 + i * 2},${y + 1} L${40 - i},${y - 2} L${50 + i},${y + 2} L${58 - i * 2},${y}`}
-        stroke="white" strokeWidth="0.5" opacity={active ? 0.15 - i * 0.03 : 0.05} fill="none" />
-    ))}
-    <path d="M32 8L42 22L32 50L22 22Z" stroke="white" strokeWidth={active ? 1 : 0.5} opacity={active ? 0.5 : 0.2} fill={active ? "rgba(255,255,255,0.04)" : "none"} />
-    <circle cx="32" cy="22" r="3" fill="white" opacity={active ? 0.4 : 0.15} />
-  </svg>
-);
-
-const TribalIcon = ({ active }: { active: boolean }) => (
-  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
-    <circle cx="32" cy="32" r="24" stroke="white" strokeWidth={active ? 1 : 0.5} opacity={active ? 0.35 : 0.12} fill="none" />
-    <circle cx="32" cy="32" r="14" stroke="white" strokeWidth={active ? 0.8 : 0.4} opacity={active ? 0.25 : 0.08} fill="none" />
-    <line x1="32" y1="8" x2="32" y2="56" stroke="white" strokeWidth={active ? 0.8 : 0.4} opacity={active ? 0.25 : 0.08} />
-    <line x1="8" y1="32" x2="56" y2="32" stroke="white" strokeWidth={active ? 0.8 : 0.4} opacity={active ? 0.25 : 0.08} />
-    <circle cx="32" cy="32" r="4" fill="white" opacity={active ? 0.4 : 0.12} />
-  </svg>
-);
-
-const CommunityIcon = ({ active }: { active: boolean }) => (
-  <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
-    {[[16,16,48,16],[48,16,48,48],[48,48,16,48],[16,48,16,16],[16,16,48,48],[48,16,16,48]].map(([x1,y1,x2,y2], i) => (
-      <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="white" strokeWidth="0.4" opacity={active ? 0.15 : 0.05} />
-    ))}
-    {[[16,16],[48,16],[48,48],[16,48]].map(([cx, cy], i) => (
-      <g key={i}>
-        <rect x={(cx ?? 0) - 6} y={(cy ?? 0) - 6} width="12" height="12"
-          transform={`rotate(45 ${cx} ${cy})`}
-          fill="white" opacity={active ? 0.06 : 0.02}
-          stroke="white" strokeWidth={active ? 0.8 : 0.4} />
-        <circle cx={cx} cy={cy} r="2.5" fill="white" opacity={active ? 0.4 : 0.15} />
-      </g>
-    ))}
-    <circle cx="32" cy="32" r="4" fill="white" opacity={active ? 0.4 : 0.12} />
-  </svg>
-);
-
-const ICONS = [FQHCIcon, RuralIcon, TribalIcon, CommunityIcon];
 
 const SegmentsSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [hovered, setHovered] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
 
   return (
     <section ref={ref} className="relative py-24 md:py-32">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(255,255,255,0.02),transparent_70%)] pointer-events-none" />
       <div className="relative max-w-[1440px] mx-auto px-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="mb-10">
-          <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
-            Deployment targets. <span style={{ color: "rgba(255,255,255,0.45)" }}>Select sector.</span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="mb-4"
+        >
+          <p className="text-[12px] font-medium uppercase text-white/30 mb-3" style={{ letterSpacing: "0.1em" }}>
+            Deployment Architecture
+          </p>
+          <h2 className="text-white font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em" }}>
+            Market Architecture
           </h2>
-          <p className="font-light mt-3 max-w-2xl" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}>
-            One compiled artifact. Multiple deployment surfaces across the North American safety-net healthcare infrastructure.
+          <p className="text-white/50 mt-2 text-lg max-w-2xl" style={{ letterSpacing: "-0.01em" }}>
+            One compiled artifact. Six deployment surfaces.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {segments.map((seg, i) => {
-            const Icon = ICONS[i]!;
-            const isHovered = hovered === i;
-            return (
-              <motion.div
-                key={seg.abbr}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.2 + i * 0.1, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="relative group cursor-default"
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  background: isHovered ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.02)",
-                  border: "1px solid",
-                  borderColor: isHovered ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.08)",
-                  transition: "all 300ms ease",
-                  boxShadow: isHovered
-                    ? "0 0 40px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.06)"
-                    : "none",
-                }}
-              >
-                <div className="p-6 md:p-8 flex items-start gap-5">
-                  <div className="shrink-0 mt-1"
+        {/* Horizontal chain */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.3 }}
+          className="mt-12 overflow-x-auto"
+        >
+          <div className="flex items-stretch gap-0 min-w-[900px]">
+            {segments.map((seg, i) => {
+              const isActive = selected === i;
+              return (
+                <div key={seg.name} className="flex items-stretch flex-1">
+                  <button
+                    onClick={() => setSelected(isActive ? null : i)}
+                    className="flex-1 border border-white/[0.08] p-5 text-left cursor-pointer transition-all duration-300 hover:bg-white/[0.03]"
                     style={{
-                      transition: "transform 300ms ease",
-                      transform: isHovered ? "perspective(800px) rotateY(5deg) rotateX(-2deg)" : "perspective(800px) rotateY(0deg) rotateX(0deg)",
-                    }}>
-                    <Icon active={isHovered} />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-3 mb-1.5">
-                      <h3 className="font-mono font-light tracking-wide text-white"
-                        style={{ transition: "color 300ms ease", fontSize: "1.125rem" }}>
-                        {seg.name}
-                      </h3>
-                      <span className="font-mono tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.25)", fontSize: "0.875rem" }}>
-                        {seg.abbr}
-                      </span>
-                    </div>
-
-                    <p className="leading-relaxed mb-2" style={{ color: "rgba(255,255,255,0.6)", fontSize: "1rem", lineHeight: 1.6 }}>{seg.desc}</p>
-
-                    {/* Value proposition */}
-                    <p className="font-mono mb-3" style={{ color: "rgba(255,255,255,0.8)", fontSize: "0.875rem", letterSpacing: "0.02em" }}>
-                      → {seg.value}
+                      borderColor: isActive ? `${TEAL}44` : "rgba(255,255,255,0.08)",
+                      background: isActive ? "rgba(0,212,170,0.04)" : "rgba(255,255,255,0.01)",
+                    }}
+                  >
+                    <div className="text-2xl mb-3 text-white/30">{seg.icon}</div>
+                    <p className="text-[12px] font-medium uppercase text-white/40 mb-1" style={{ letterSpacing: "0.1em" }}>
+                      {seg.short}
                     </p>
-
-                    <div className="font-mono tracking-[0.1em] flex items-center gap-2"
-                      style={{
-                        color: "rgba(255,255,255,0.5)",
-                        opacity: isHovered ? 1 : 0,
-                        transform: isHovered ? "translateY(0)" : "translateY(4px)",
-                        transition: "all 300ms ease",
-                        fontSize: "0.875rem",
-                      }}>
-                      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#10b981" }} />
-                      {seg.stat}
+                    <p className="text-white font-medium text-sm" style={{ letterSpacing: "-0.01em" }}>{seg.name}</p>
+                  </button>
+                  {i < segments.length - 1 && (
+                    <div className="flex items-center px-1">
+                      <span className="text-white/15 text-xs">→</span>
                     </div>
-                  </div>
+                  )}
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Expanded detail */}
+        {selected !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 border border-white/[0.08] p-8"
+            style={{ background: "rgba(0,212,170,0.02)" }}
+          >
+            <div className="flex items-start gap-6">
+              <span className="text-4xl text-white/20">{segments[selected].icon}</span>
+              <div>
+                <h3 className="text-white font-semibold text-xl mb-2" style={{ letterSpacing: "-0.02em" }}>
+                  {segments[selected].name}
+                </h3>
+                <p className="text-white/60 text-base" style={{ letterSpacing: "-0.01em" }}>
+                  {segments[selected].desc}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );
 };
+
+const TEAL = "#00d4aa";
 
 export default SegmentsSection;
