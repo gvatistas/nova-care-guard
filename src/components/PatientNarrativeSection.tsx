@@ -147,9 +147,10 @@ const Connector: FC<{ color: string; height?: number }> = ({ color, height = 32 
   </div>
 );
 
-/* ── Status indicator dot ── */
-const StatusDot: FC<{ color: string }> = ({ color }) => (
-  <span className="inline-block w-2 h-2 rounded-full mr-2 shrink-0 mt-[5px]" style={{ background: color, boxShadow: `0 0 6px ${color}40` }} />
+/* ── Status indicator dot — pulses if critical ── */
+const StatusDot: FC<{ color: string; pulse?: boolean }> = ({ color, pulse }) => (
+  <span className={`inline-block w-2 h-2 rounded-full mr-2 shrink-0 mt-[5px] ${pulse ? "animate-pulse" : ""}`}
+    style={{ background: color, boxShadow: pulse ? `0 0 10px ${color}, 0 0 20px ${color}50` : `0 0 6px ${color}40` }} />
 );
 
 /* ── Screening Node — equal sized ── */
