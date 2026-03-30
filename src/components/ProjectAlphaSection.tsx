@@ -251,7 +251,7 @@ const ProjectAlphaSection = () => {
 
             <div className="border border-white/[0.06] bg-black/30 p-6">
               <div className="mb-4">
-                <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.5rem", color: GREEN }}>90% INTAKE TIME REDUCTION</div>
+                <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.15rem", color: GREEN }}>90% INTAKE TIME REDUCTION</div>
               </div>
               <div>
                 <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.5rem", color: GREEN }}>1,000s ACTION PLANS ISSUED / DAY</div>
