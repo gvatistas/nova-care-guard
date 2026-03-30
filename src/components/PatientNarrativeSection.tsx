@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect, type FC } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
-const TEAL = "#00d4aa";
-const RED = "#cc3333";
+const POSITIVE = "#c8d6e5";
+const RED = "#ef4444";
 const ORANGE = "#e8922a";
-const GREEN = "#34d399";
+const GREEN = "#8fbc8f";
 
 /* ── Shapeshifting background for right lane ── */
 const MORPH_SHAPES = [
