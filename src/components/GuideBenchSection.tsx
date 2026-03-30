@@ -35,7 +35,7 @@ const GuideBenchSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32">
+    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#0d1117" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         {/* Header */}
         <motion.div
