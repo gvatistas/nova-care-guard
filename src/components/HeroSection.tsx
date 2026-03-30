@@ -320,7 +320,7 @@ const HeroSection = () => {
               evidence-based care across every data source, every EHR, every
               patient encounter.
             </p>
-            <div className="flex flex-col items-center gap-1.5 mt-4">
+            <div className="flex flex-row flex-wrap items-center justify-center gap-4 mt-4">
               {["Zero hallucination.", "Zero inference.", "Total clinical authority."].map((text) => (
                 <span key={text} className="inline-flex items-center gap-2 text-white/60">
                   <span
