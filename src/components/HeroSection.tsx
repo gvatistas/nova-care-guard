@@ -490,7 +490,7 @@ const HeroSection = () => {
     const dustGeo = new THREE.BufferGeometry();
     dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
     const dustMat = new THREE.PointsMaterial({
-      size: 0.1, color: 0x446688, transparent: true, opacity: 0.06,
+      size: 0.1, color: 0x555550, transparent: true, opacity: 0.04,
       sizeAttenuation: true, blending: THREE.AdditiveBlending,
     });
     scene.add(new THREE.Points(dustGeo, dustMat));
