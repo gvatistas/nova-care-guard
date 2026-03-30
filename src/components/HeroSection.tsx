@@ -588,17 +588,6 @@ const HeroSection = () => {
               evidence-based care across all data sources, EHRs and
               patient encounters.
             </p>
-            <div className="flex flex-row flex-wrap items-center justify-center gap-5 mt-10">
-              {["Zero hallucination.", "Zero inference.", "Total clinical authority."].map((text) => (
-                <span key={text} className="inline-flex items-center gap-2 text-white/60">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
-                    style={{ background: "#00ff6a", boxShadow: "0 0 8px rgba(0,255,106,0.7)" }}
-                  />
-                  {text}
-                </span>
-              ))}
-            </div>
           </motion.div>
 
           <motion.div
