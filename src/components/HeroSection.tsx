@@ -641,7 +641,7 @@ const HeroSection = () => {
                 <span key={text} className="inline-flex items-center gap-2 text-white/60">
                   <span
                     className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
-                    style={{ background: "#00d4aa", boxShadow: "0 0 6px rgba(0,212,170,0.6)" }}
+                    style={{ background: "#00ff6a", boxShadow: "0 0 8px rgba(0,255,106,0.7)" }}
                   />
                   {text}
                 </span>
