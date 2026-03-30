@@ -1,10 +1,121 @@
-import { useRef, type FC } from "react";
-import { motion, useInView } from "framer-motion";
-import FacetedCrownLogo from "./FacetedCrownLogo";
+import { useRef, useState, useEffect, type FC } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
 const TEAL = "#00d4aa";
 const RED = "#cc3333";
 const ORANGE = "#e8922a";
+
+/* ── Shapeshifting Crown Logo — dark grayscale palette ── */
+const MORPH_SHAPES = [
+  // Crown silhouette
+  "M 50,90 L 65,40 L 80,60 L 100,15 L 120,60 L 135,40 L 150,90 Z",
+  // Diamond facet
+  "M 100,10 L 150,55 L 100,100 L 50,55 Z",
+  // Hexagonal crystal
+  "M 100,8 L 148,32 L 148,75 L 100,98 L 52,75 L 52,32 Z",
+  // Angular shield
+  "M 100,5 L 155,30 L 150,80 L 100,105 L 50,80 L 45,30 Z",
+  // Octagonal
+  "M 75,10 L 125,10 L 155,40 L 155,70 L 125,100 L 75,100 L 45,70 L 45,40 Z",
+  // Crown again (loop)
+  "M 50,90 L 65,40 L 80,60 L 100,15 L 120,60 L 135,40 L 150,90 Z",
+];
+
+const INNER_STRUCTURES: string[][] = [
+  // Crown internals
+  ["M 65,40 L 100,90", "M 135,40 L 100,90", "M 100,15 L 100,90", "M 50,90 L 100,50 L 150,90", "M 80,60 L 120,60", "M 65,40 L 135,40"],
+  // Diamond internals
+  ["M 100,10 L 100,100", "M 50,55 L 150,55", "M 75,32 L 125,78", "M 125,32 L 75,78", "M 100,10 L 50,55 L 100,100", "M 100,10 L 150,55 L 100,100"],
+  // Hex internals
+  ["M 100,8 L 100,98", "M 52,32 L 148,75", "M 148,32 L 52,75", "M 52,32 L 100,53 L 148,32", "M 52,75 L 100,53 L 148,75", "M 100,8 L 100,53"],
+  // Shield internals
+  ["M 100,5 L 100,105", "M 45,30 L 150,80", "M 155,30 L 50,80", "M 100,5 L 45,30 L 50,80 L 100,55", "M 100,5 L 155,30 L 150,80 L 100,55", "M 100,55 L 100,105"],
+  // Octagon internals
+  ["M 75,10 L 125,100", "M 125,10 L 75,100", "M 45,40 L 155,70", "M 155,40 L 45,70", "M 100,10 L 100,100", "M 45,55 L 155,55"],
+  // Crown again
+  ["M 65,40 L 100,90", "M 135,40 L 100,90", "M 100,15 L 100,90", "M 50,90 L 100,50 L 150,90", "M 80,60 L 120,60", "M 65,40 L 135,40"],
+];
+
+// Dark grayscale fills matching the brand logo
+const FACET_FILLS = [
+  [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#4A4A4A" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#7A7A7A" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#5A5A5A" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#3A3A3A" }],
+  [{ d: "M 100,10 L 150,55 L 100,55 Z", fill: "#5A5A5A" }, { d: "M 100,10 L 50,55 L 100,55 Z", fill: "#7A7A7A" }, { d: "M 50,55 L 100,100 L 100,55 Z", fill: "#4A4A4A" }, { d: "M 150,55 L 100,100 L 100,55 Z", fill: "#3A3A3A" }],
+  [{ d: "M 100,8 L 148,32 L 100,53 Z", fill: "#6A6A6A" }, { d: "M 52,32 L 100,8 L 100,53 Z", fill: "#8A8A8A" }, { d: "M 148,32 L 148,75 L 100,53 Z", fill: "#4A4A4A" }, { d: "M 52,75 L 52,32 L 100,53 Z", fill: "#5A5A5A" }],
+  [{ d: "M 100,5 L 155,30 L 100,55 Z", fill: "#5A5A5A" }, { d: "M 45,30 L 100,5 L 100,55 Z", fill: "#7A7A7A" }, { d: "M 155,30 L 150,80 L 100,55 Z", fill: "#3A3A3A" }, { d: "M 50,80 L 45,30 L 100,55 Z", fill: "#4A4A4A" }],
+  [{ d: "M 75,10 L 125,10 L 100,55 Z", fill: "#6A6A6A" }, { d: "M 125,10 L 155,40 L 100,55 Z", fill: "#4A4A4A" }, { d: "M 155,40 L 155,70 L 100,55 Z", fill: "#3A3A3A" }, { d: "M 45,40 L 75,10 L 100,55 Z", fill: "#8A8A8A" }],
+  [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#4A4A4A" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#7A7A7A" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#5A5A5A" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#3A3A3A" }],
+];
+
+const ShapeshiftingLogo: FC<{ size?: number }> = ({ size = 120 }) => {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => setIdx((p) => (p + 1) % (MORPH_SHAPES.length - 1)), 2200);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextIdx = (idx + 1) % MORPH_SHAPES.length;
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 200 110" className="overflow-visible shrink-0">
+      <defs>
+        <filter id="crown-glow">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      {/* Filled facets with morphing */}
+      <AnimatePresence mode="wait">
+        <motion.g key={idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
+          {FACET_FILLS[idx]?.map((f, i) => (
+            <motion.path key={i} d={f.d} fill={f.fill} opacity={0.85}
+              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 0.85, scale: 1 }}
+              transition={{ duration: 0.6, delay: i * 0.08 }} />
+          ))}
+        </motion.g>
+      </AnimatePresence>
+
+      {/* Outer wireframe */}
+      <motion.path
+        d={MORPH_SHAPES[idx]}
+        fill="none" stroke="#B0B0B0" strokeWidth="1.5" strokeLinejoin="miter"
+        filter="url(#crown-glow)"
+        initial={false}
+        animate={{ d: MORPH_SHAPES[nextIdx] }}
+        transition={{ duration: 2, ease: "easeInOut" }}
+      />
+
+      {/* Inner structure */}
+      <AnimatePresence mode="wait">
+        <motion.g key={`s${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+          {INNER_STRUCTURES[idx]?.map((d, i) => (
+            <motion.path key={i} d={d} fill="none" stroke="#9A9A9A" strokeWidth="0.6"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 0.35 }}
+              transition={{ duration: 0.8, delay: i * 0.1 }} />
+          ))}
+        </motion.g>
+      </AnimatePresence>
+
+      {/* Center vertex pulse */}
+      <circle cx="100" cy="55" r="2" fill="#C0C0C0" opacity="0.6">
+        <animate attributeName="r" values="1.5;4;1.5" dur="2.2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2.2s" repeatCount="indefinite" />
+      </circle>
+
+      {/* Outer edge stroke (secondary) for depth */}
+      <motion.path
+        d={MORPH_SHAPES[idx]}
+        fill="none" stroke="#E8E8E8" strokeWidth="0.4" strokeLinejoin="miter"
+        initial={false}
+        animate={{ d: MORPH_SHAPES[nextIdx] }}
+        transition={{ duration: 2, ease: "easeInOut" }}
+        opacity={0.2}
+      />
+    </svg>
+  );
+};
 
 /* ── Patient Card ── */
 const PatientCard: FC = () => (
