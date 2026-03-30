@@ -71,7 +71,7 @@ const EngineBackground: FC = () => {
         <AnimatePresence mode="wait">
           <motion.g key={idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }}>
             {FACET_FILLS[idx]?.map((f, i) => (
-              <motion.path key={i} d={f.d} fill={TEAL} initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0.3] }} transition={{ duration: 1, delay: i * 0.1 }} />
+              <motion.path key={i} d={f.d} fill={POSITIVE} initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0.3] }} transition={{ duration: 1, delay: i * 0.1 }} />
             ))}
           </motion.g>
         </AnimatePresence>
