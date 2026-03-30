@@ -232,15 +232,20 @@ const HeroSection = () => {
         varying float vDist;
         uniform float uTime;
         void main() {
-          float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 260.0, vDist));
+          float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(180.0, 300.0, vDist));
           float pulse = 0.6 + 0.4 * sin(uTime * 1.5 + vDist * 0.04);
-          vec3 grey   = vec3(0.35, 0.32, 0.3);
-          vec3 orange = vec3(0.95, 0.55, 0.15);
-          vec3 red    = vec3(0.85, 0.18, 0.12);
-          vec3 col = vOutcome < 0.5
-            ? mix(grey, orange, vOutcome * 2.0)
-            : mix(orange, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col, fade * pulse * 0.1);
+          // 5-color palette: blue → green → grey → orange → red
+          vec3 blue   = vec3(0.2, 0.45, 0.9);
+          vec3 green  = vec3(0.15, 0.8, 0.45);
+          vec3 grey   = vec3(0.4, 0.42, 0.45);
+          vec3 orange = vec3(0.95, 0.55, 0.18);
+          vec3 red    = vec3(0.85, 0.2, 0.15);
+          vec3 col;
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
+          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
+          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
+          gl_FragColor = vec4(col, fade * pulse * 0.12);
         }
       `,
     });
