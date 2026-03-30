@@ -1,275 +1,277 @@
-import { useRef, useState, useEffect, type FC } from "react";
-import { motion } from "framer-motion";
+import { useRef, useEffect, type FC } from "react";
+import { motion, useInView } from "framer-motion";
+import * as THREE from "three";
 
 const TEAL = "#00d4aa";
 const RED = "#cc3333";
 
-const Badge: FC<{ children: React.ReactNode; color: string }> = ({ children, color }) => (
-  <span
-    className="inline-block px-2 py-0.5 text-[10px] font-medium uppercase"
-    style={{ background: `${color}18`, color, border: `1px solid ${color}33`, letterSpacing: "0.1em" }}
-  >
-    {children}
-  </span>
-);
-
-const Check = () => <span className="text-[#00d4aa] shrink-0">✓</span>;
-const Cross = () => <span className="text-[#cc3333] shrink-0">✕</span>;
-
-const tests = [
-  {
-    name: "LDCT Lung Screening",
-    with: { status: "Ordered, USPSTF criteria met", badge: "ORDERED" },
-    without: { status: "Not flagged, no order", badge: "MISSED" },
-  },
-  {
-    name: "Colonoscopy",
-    with: { status: "Scheduled, ACS guidelines", badge: "SCHEDULED" },
-    without: { status: "Patient told to ask PCP", badge: "DEFERRED" },
-  },
-  {
-    name: "BP + Lipid Panel",
-    with: { status: "Flagged, statin pathway compiled", badge: "FLAGGED" },
-    without: { status: "Normal visit, no follow-up", badge: "MISSED" },
-  },
-  {
-    name: "HbA1c",
-    with: { status: "Pre-diabetes detected, monitoring initiated", badge: "DETECTED" },
-    without: { status: "Not tested", badge: "MISSED" },
-  },
-];
-
-const PatientNarrativeSection = () => {
-  const [visibleNodes, setVisibleNodes] = useState<Set<number>>(new Set());
-  const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
+/* ── Wireframe human figure (low-poly, Pipeline-style) ── */
+const HumanWireframe: FC<{ className?: string }> = ({ className }) => {
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const idx = Number(entry.target.getAttribute("data-node"));
-          if (entry.isIntersecting) setVisibleNodes((prev) => new Set(prev).add(idx));
-        });
-      },
-      { threshold: 0.3 }
-    );
-    nodeRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
+    const el = mountRef.current;
+    if (!el) return;
+
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(w, h);
+    renderer.setClearColor(0x000000, 0);
+    el.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
+    camera.position.set(0, 0, 5.5);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const mat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
+    const matBright = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 });
+    const dotMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.04, transparent: true, opacity: 0.5 });
+    const tealDotMat = new THREE.PointsMaterial({ color: 0x00d4aa, size: 0.06, transparent: true, opacity: 0.6 });
+    const facetMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.03, side: THREE.DoubleSide });
+
+    // Build a low-poly human figure from simple geometry
+    // Head - icosahedron
+    const headGeo = new THREE.IcosahedronGeometry(0.32, 1);
+    const headEdges = new THREE.EdgesGeometry(headGeo);
+    const headWire = new THREE.LineSegments(headEdges, matBright);
+    headWire.position.y = 1.55;
+    group.add(headWire);
+    const headMesh = new THREE.Mesh(headGeo, facetMat);
+    headMesh.position.y = 1.55;
+    group.add(headMesh);
+
+    // Neck
+    const neckPts = [new THREE.Vector3(0, 1.25, 0), new THREE.Vector3(0, 1.1, 0)];
+    const neckGeo = new THREE.BufferGeometry().setFromPoints(neckPts);
+    group.add(new THREE.Line(neckGeo, mat));
+
+    // Torso - tapered box-like shape from vertices
+    const torsoVerts = [
+      // shoulders
+      [-0.55, 1.1, 0.18], [0.55, 1.1, 0.18], [0.55, 1.1, -0.18], [-0.55, 1.1, -0.18],
+      // waist
+      [-0.35, 0.15, 0.14], [0.35, 0.15, 0.14], [0.35, 0.15, -0.14], [-0.35, 0.15, -0.14],
+      // hips
+      [-0.4, -0.05, 0.15], [0.4, -0.05, 0.15], [0.4, -0.05, -0.15], [-0.4, -0.05, -0.15],
+    ];
+    const torsoEdges = [
+      [0,1],[1,2],[2,3],[3,0], // top
+      [4,5],[5,6],[6,7],[7,4], // waist
+      [8,9],[9,10],[10,11],[11,8], // hips
+      [0,4],[1,5],[2,6],[3,7], // sides top
+      [4,8],[5,9],[6,10],[7,11], // sides bottom
+      [0,5],[1,4],[4,9],[5,8], // cross bracing
+    ];
+    const torsoPts: THREE.Vector3[] = [];
+    torsoEdges.forEach(([a, b]) => {
+      torsoPts.push(new THREE.Vector3(...torsoVerts[a] as [number, number, number]));
+      torsoPts.push(new THREE.Vector3(...torsoVerts[b] as [number, number, number]));
+    });
+    const torsoGeo = new THREE.BufferGeometry().setFromPoints(torsoPts);
+    group.add(new THREE.LineSegments(torsoGeo, mat));
+
+    // Torso facets
+    const torsoFacetGeo = new THREE.BufferGeometry();
+    const tvf = new Float32Array([
+      ...torsoVerts[0], ...torsoVerts[1], ...torsoVerts[5],
+      ...torsoVerts[0], ...torsoVerts[5], ...torsoVerts[4],
+      ...torsoVerts[1], ...torsoVerts[2], ...torsoVerts[6],
+      ...torsoVerts[1], ...torsoVerts[6], ...torsoVerts[5],
+    ].flat() as number[]);
+    torsoFacetGeo.setAttribute("position", new THREE.BufferAttribute(tvf, 3));
+    group.add(new THREE.Mesh(torsoFacetGeo, facetMat));
+
+    // Arms
+    const armJoints = {
+      left: [[-0.55, 1.1, 0], [-0.72, 0.55, 0.05], [-0.62, 0.05, 0.02]],
+      right: [[0.55, 1.1, 0], [0.72, 0.55, 0.05], [0.62, 0.05, 0.02]],
+    };
+    Object.values(armJoints).forEach((joints) => {
+      const pts = joints.map((j) => new THREE.Vector3(j[0], j[1], j[2]));
+      const geo = new THREE.BufferGeometry().setFromPoints(pts);
+      group.add(new THREE.Line(geo, mat));
+      group.add(new THREE.Points(geo, dotMat));
+    });
+
+    // Legs
+    const legJoints = {
+      left: [[-0.22, -0.05, 0], [-0.25, -0.75, 0.04], [-0.23, -1.45, 0], [-0.25, -1.65, 0.08]],
+      right: [[0.22, -0.05, 0], [0.25, -0.75, 0.04], [0.23, -1.45, 0], [0.25, -1.65, 0.08]],
+    };
+    Object.values(legJoints).forEach((joints) => {
+      const pts = joints.map((j) => new THREE.Vector3(j[0], j[1], j[2]));
+      const geo = new THREE.BufferGeometry().setFromPoints(pts);
+      group.add(new THREE.Line(geo, mat));
+      group.add(new THREE.Points(geo, dotMat));
+    });
+
+    // Scanning teal dots along the body
+    const scanPtsArr: number[] = [];
+    for (let i = 0; i < 60; i++) {
+      const y = 1.8 - Math.random() * 3.5;
+      const spread = y > 1.1 ? 0.3 : y > 0 ? 0.5 : y > -0.5 ? 0.35 : 0.25;
+      const x = (Math.random() - 0.5) * spread * 2;
+      const z = (Math.random() - 0.5) * 0.3;
+      scanPtsArr.push(x, y, z);
+    }
+    const scanGeo = new THREE.BufferGeometry();
+    scanGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(scanPtsArr), 3));
+    group.add(new THREE.Points(scanGeo, tealDotMat));
+
+    // Center the figure
+    group.position.y = -0.1;
+
+    let animId: number;
+    let t = 0;
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      t += 0.003;
+      group.rotation.y = Math.sin(t) * 0.15;
+      // Gentle breathing
+      const breathe = 1 + Math.sin(t * 2) * 0.008;
+      group.scale.set(breathe, breathe, breathe);
+      // Pulse scan dots
+      tealDotMat.opacity = 0.35 + Math.sin(t * 3) * 0.25;
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const onResize = () => {
+      const nw = el.clientWidth;
+      const nh = el.clientHeight;
+      camera.aspect = nw / nh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nw, nh);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", onResize);
+      renderer.dispose();
+      el.removeChild(renderer.domElement);
+    };
   }, []);
 
-  const isVis = (n: number) => visibleNodes.has(n);
+  return <div ref={mountRef} className={className} />;
+};
+
+/* ── Main Section ── */
+const PatientNarrativeSection = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-24 px-6 relative overflow-hidden" style={{ background: "#1a1d21" }}>
-      {/* Header */}
-      <div className="max-w-5xl mx-auto text-center mb-16">
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-[12px] font-medium uppercase text-white/30 mb-4"
-          style={{ letterSpacing: "0.1em" }}
-        >
-          Clinical Decision Divergence
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-semibold text-white"
-          style={{ letterSpacing: "-0.03em" }}
-        >
-          Jane Doe, 52
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-white/40 mt-3 text-base"
-          style={{ letterSpacing: "-0.01em" }}
-        >
-          One patient. Two pathways. Every test matters.
-        </motion.p>
-      </div>
-
-      {/* Root node */}
-      <div className="max-w-5xl mx-auto">
-        <div
-          ref={(el) => { nodeRefs.current[0] = el; }}
-          data-node={0}
-          className="flex justify-center mb-8"
-        >
+    <section ref={ref} className="py-24 px-6 relative overflow-hidden" style={{ background: "#1a1d21" }}>
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left — Content */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={isVis(0) ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.6 }}
-            className="border border-white/20 px-8 py-4 text-center"
-            style={{ background: "rgba(255,255,255,0.03)" }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7 }}
           >
-            <p className="text-white font-semibold text-lg" style={{ letterSpacing: "-0.02em" }}>Jane Doe, 52 — Routine Visit</p>
-            <p className="text-white/40 text-sm mt-1">3 undetected risk factors in chart</p>
-          </motion.div>
-        </div>
-
-        {/* Fork divider */}
-        <div className="flex justify-center mb-8">
-          <svg width="200" height="40" viewBox="0 0 200 40">
-            <line x1="100" y1="0" x2="50" y2="40" stroke={RED} strokeWidth="1" opacity="0.4" />
-            <line x1="100" y1="0" x2="150" y2="40" stroke={TEAL} strokeWidth="1" opacity="0.4" />
-            <circle cx="100" cy="0" r="3" fill="white" opacity="0.5" />
-          </svg>
-        </div>
-
-        {/* Column headers — LEFT=WITHOUT, RIGHT=WITH */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-          <div className="text-center md:text-left">
-            <span className="text-[12px] font-medium uppercase" style={{ color: RED, letterSpacing: "0.1em" }}>
-              Without Medient
-            </span>
-            <p className="text-white/30 text-[11px] mt-1" style={{ letterSpacing: "0.05em" }}>Standard of Care</p>
-          </div>
-          <div className="text-center md:text-right">
-            <span className="text-[12px] font-medium uppercase" style={{ color: TEAL, letterSpacing: "0.1em" }}>
-              With Medient
-            </span>
-            <p className="text-white/30 text-[11px] mt-1" style={{ letterSpacing: "0.05em" }}>Clinic UI · Consumer AI · Full Pipeline</p>
-          </div>
-        </div>
-
-        {/* Test nodes — LEFT=WITHOUT, RIGHT=WITH */}
-        {tests.map((test, idx) => (
-          <div
-            key={idx}
-            ref={(el) => { nodeRefs.current[idx + 1] = el; }}
-            data-node={idx + 1}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-          >
-            {/* WITHOUT (left) */}
-            <motion.div
-              className="border p-4 transition-all duration-700"
-              style={{
-                borderColor: isVis(idx + 1) ? `${RED}33` : "rgba(255,255,255,0.06)",
-                background: isVis(idx + 1) ? "rgba(204,51,51,0.03)" : "rgba(255,255,255,0.01)",
-                opacity: isVis(idx + 1) ? 1 : 0,
-                transform: isVis(idx + 1) ? "translateY(0)" : "translateY(16px)",
-              }}
+            <p
+              className="text-[11px] font-medium uppercase text-white/25 mb-4"
+              style={{ letterSpacing: "0.12em" }}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-medium uppercase text-white/50" style={{ letterSpacing: "0.1em" }}>{test.name}</span>
-                <Badge color={RED}>{test.without.badge}</Badge>
-              </div>
-              <div className="flex items-start gap-2 text-sm">
-                <Cross />
-                <span className="text-white/40">{test.without.status}</span>
-              </div>
-            </motion.div>
-
-            {/* WITH (right) */}
-            <motion.div
-              className="border p-4 transition-all duration-700"
-              style={{
-                borderColor: isVis(idx + 1) ? `${TEAL}44` : "rgba(255,255,255,0.06)",
-                background: isVis(idx + 1) ? "rgba(0,212,170,0.03)" : "rgba(255,255,255,0.01)",
-                opacity: isVis(idx + 1) ? 1 : 0,
-                transform: isVis(idx + 1) ? "translateY(0)" : "translateY(16px)",
-                transitionDelay: "0.1s",
-              }}
+              Clinical Decision Divergence
+            </p>
+            <h2
+              className="text-3xl md:text-4xl font-normal text-white mb-2"
+              style={{ letterSpacing: "-0.03em" }}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-medium uppercase text-white/50" style={{ letterSpacing: "0.1em" }}>{test.name}</span>
-                <Badge color={TEAL}>{test.with.badge}</Badge>
-              </div>
-              <div className="flex items-start gap-2 text-sm">
-                <Check />
-                <span className="text-white/80">{test.with.status}</span>
-              </div>
-            </motion.div>
-          </div>
-        ))}
-
-        {/* Outcomes — LEFT=WITHOUT (red), RIGHT=WITH (teal) */}
-        <div
-          ref={(el) => { nodeRefs.current[5] = el; }}
-          data-node={5}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8"
-        >
-          {/* WITHOUT outcome (left) */}
-          <motion.div
-            className="border p-6 transition-all duration-700"
-            style={{
-              borderColor: isVis(5) ? `${RED}44` : "rgba(255,255,255,0.06)",
-              background: isVis(5) ? "rgba(204,51,51,0.05)" : "rgba(255,255,255,0.01)",
-              opacity: isVis(5) ? 1 : 0,
-              transform: isVis(5) ? "translateY(0)" : "translateY(16px)",
-            }}
-          >
-            <p className="text-[12px] font-medium uppercase mb-3" style={{ color: RED, letterSpacing: "0.1em" }}>
-              18 Months Later
+              Jane Doe, 52
+            </h2>
+            <p className="text-white/35 text-sm mb-8" style={{ letterSpacing: "0.01em" }}>
+              Routine visit · 3 undetected risk factors in chart
             </p>
-            <p className="text-xl font-semibold text-white" style={{ letterSpacing: "-0.02em" }}>Late-stage — Stage IIIB</p>
-            <div className="mt-3 space-y-1 text-sm">
-              <p className="text-white/50">Treatment cost: <span style={{ color: RED }} className="font-semibold">$288K+</span></p>
-              <p className="text-white/50">5-year survival: <span style={{ color: RED }} className="font-semibold">23%</span></p>
+
+            {/* Compact test results */}
+            <div className="space-y-3 mb-10">
+              {[
+                { test: "LDCT Lung Screening", with: "Ordered", without: "Not flagged" },
+                { test: "Colonoscopy", with: "Scheduled", without: "Deferred" },
+                { test: "BP + Lipid Panel", with: "Statin pathway compiled", without: "No follow-up" },
+                { test: "HbA1c", with: "Pre-diabetes detected", without: "Not tested" },
+              ].map((row) => (
+                <div
+                  key={row.test}
+                  className="flex items-center gap-3 py-2 border-b border-white/[0.05]"
+                >
+                  <span className="text-white/50 text-sm flex-1 min-w-0" style={{ letterSpacing: "0.01em" }}>
+                    {row.test}
+                  </span>
+                  <span className="text-[11px] px-2 py-0.5 shrink-0" style={{ color: TEAL, background: `${TEAL}12`, border: `1px solid ${TEAL}25` }}>
+                    {row.with}
+                  </span>
+                  <span className="text-[11px] px-2 py-0.5 shrink-0" style={{ color: RED, background: `${RED}12`, border: `1px solid ${RED}25` }}>
+                    {row.without}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Outcomes */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="border border-white/[0.06] p-4" style={{ background: `${TEAL}06` }}>
+                <p className="text-[10px] uppercase font-medium mb-2" style={{ color: TEAL, letterSpacing: "0.1em" }}>
+                  With Medient
+                </p>
+                <p className="text-white text-lg font-normal" style={{ letterSpacing: "-0.02em" }}>Stage IA</p>
+                <p className="text-white/40 text-xs mt-1">$4,200 · 92% survival</p>
+              </div>
+              <div className="border border-white/[0.06] p-4" style={{ background: `${RED}06` }}>
+                <p className="text-[10px] uppercase font-medium mb-2" style={{ color: RED, letterSpacing: "0.1em" }}>
+                  Without
+                </p>
+                <p className="text-white text-lg font-normal" style={{ letterSpacing: "-0.02em" }}>Stage IIIB</p>
+                <p className="text-white/40 text-xs mt-1">$288K+ · 23% survival</p>
+              </div>
             </div>
           </motion.div>
 
-          {/* WITH outcome (right) */}
+          {/* Right — 3D Wireframe Figure */}
           <motion.div
-            className="border p-6 transition-all duration-700"
-            style={{
-              borderColor: isVis(5) ? `${TEAL}55` : "rgba(255,255,255,0.06)",
-              background: isVis(5) ? "linear-gradient(135deg, rgba(0,212,170,0.08), rgba(0,212,170,0.02))" : "rgba(255,255,255,0.01)",
-              boxShadow: isVis(5) ? "0 0 40px rgba(0,212,170,0.06)" : "none",
-              opacity: isVis(5) ? 1 : 0,
-              transform: isVis(5) ? "translateY(0)" : "translateY(16px)",
-              transitionDelay: "0.1s",
-            }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative flex items-center justify-center"
           >
-            <p className="text-[12px] font-medium uppercase mb-3" style={{ color: TEAL, letterSpacing: "0.1em" }}>
-              Same Visit. Same Day.
-            </p>
-            <p className="text-xl font-semibold text-white" style={{ letterSpacing: "-0.02em" }}>Caught early — Stage IA</p>
-            <div className="mt-3 space-y-1 text-sm">
-              <p className="text-white/50">Screening cost: <span style={{ color: TEAL }} className="font-semibold">$4,200</span></p>
-              <p className="text-white/50">5-year survival: <span style={{ color: TEAL }} className="font-semibold">92%</span></p>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Macro scale */}
-        <div
-          ref={(el) => { nodeRefs.current[6] = el; }}
-          data-node={6}
-          className="mt-12"
-        >
-          <motion.div
-            className="border border-white/[0.06] p-6 transition-all duration-700"
-            style={{
-              background: "rgba(255,255,255,0.015)",
-              opacity: isVis(6) ? 1 : 0,
-              transform: isVis(6) ? "translateY(0)" : "translateY(16px)",
-            }}
-          >
-            <p className="text-[12px] font-medium uppercase text-white/30 mb-4 text-center" style={{ letterSpacing: "0.1em" }}>
-              At Scale: 10,000 Patients/Year
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div>
-                <p className="text-2xl font-semibold text-white" style={{ letterSpacing: "-0.03em" }}>340+</p>
-                <p className="text-white/40 text-sm mt-1">Early detections per year</p>
-              </div>
-              <div>
-                <p className="text-2xl font-semibold text-white" style={{ letterSpacing: "-0.03em" }}>$96M</p>
-                <p className="text-white/40 text-sm mt-1">Downstream costs avoided</p>
-              </div>
-              <div>
-                <p className="text-2xl font-semibold text-white" style={{ letterSpacing: "-0.03em" }}>94%</p>
-                <p className="text-white/40 text-sm mt-1">Screening gaps closed</p>
-              </div>
-            </div>
+            {/* Subtle radial glow behind figure */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(0,212,170,0.04) 0%, transparent 65%)",
+              }}
+            />
+            <HumanWireframe className="w-full h-[480px] md:h-[560px]" />
           </motion.div>
         </div>
+
+        {/* Scale bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="mt-16 grid grid-cols-3 gap-px bg-white/[0.04]"
+        >
+          {[
+            { val: "340+", label: "Early detections / year" },
+            { val: "$96M", label: "Downstream costs avoided" },
+            { val: "94%", label: "Screening gaps closed" },
+          ].map((s) => (
+            <div key={s.val} className="p-5 text-center" style={{ background: "#1a1d21" }}>
+              <p className="text-xl font-normal text-white" style={{ letterSpacing: "-0.02em" }}>{s.val}</p>
+              <p className="text-white/30 text-xs mt-1">{s.label}</p>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
