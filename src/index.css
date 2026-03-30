@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -69,16 +69,16 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 1.7;
-    letter-spacing: -0.01em;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 }
 
