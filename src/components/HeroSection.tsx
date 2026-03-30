@@ -352,9 +352,9 @@ const HeroSection = () => {
           vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
-          vAlpha = smoothstep(5.0, 18.0, d) * (1.0 - smoothstep(140.0, 230.0, d));
+          vAlpha = smoothstep(5.0, 15.0, d) * (1.0 - smoothstep(160.0, 280.0, d));
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = max(2.0, 6.0 * vAlpha * (120.0 / -mv.z));
+          gl_PointSize = max(3.0, 9.0 * vAlpha * (140.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
       `,
@@ -365,15 +365,21 @@ const HeroSection = () => {
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
-          float core = exp(-d * d * 3.0);
-          float glow = exp(-d * 1.0) * 0.5;
-          vec3 grey   = vec3(0.45, 0.4, 0.37);
-          vec3 orange = vec3(1.0, 0.6, 0.2);
-          vec3 red    = vec3(0.9, 0.22, 0.12);
-          vec3 col = vOutcome < 0.5
-            ? mix(grey, orange, vOutcome * 2.0)
-            : mix(orange, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.55);
+          float core = exp(-d * d * 2.5);
+          float glow = exp(-d * 0.8) * 0.6;
+          float outer = exp(-d * 0.4) * 0.2;
+          vec3 blue   = vec3(0.3, 0.55, 1.0);
+          vec3 green  = vec3(0.25, 1.0, 0.55);
+          vec3 grey   = vec3(0.5, 0.5, 0.55);
+          vec3 orange = vec3(1.0, 0.65, 0.2);
+          vec3 red    = vec3(0.95, 0.25, 0.15);
+          vec3 col;
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
+          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
+          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
+          float bright = core + glow + outer;
+          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.8);
         }
       `,
     });
