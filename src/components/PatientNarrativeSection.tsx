@@ -299,6 +299,7 @@ const PatientNarrativeSection = () => {
                 status="Missed"
                 delay={0.8}
                 inView={inView}
+                critical
               />
             </div>
 
