@@ -417,16 +417,16 @@ const PatientNarrativeSection = () => {
             </motion.div>
 
             <div className="w-full max-w-sm flex flex-col items-center gap-0 relative z-10">
-              <ScreeningNode label="LDCT Lung Screening" sublabel="Auto-ordered by compiled guideline" color={TEAL} status="Compiled" delay={0.5} inView={inView} />
-              <Connector color={TEAL} />
-              <ScreeningNode label="Colonoscopy" sublabel="Scheduled — age + risk flagged" color={TEAL} status="Scheduled" delay={0.6} inView={inView} />
-              <Connector color={TEAL} />
-              <ScreeningNode label="BP + Lipid Panel" sublabel="Statin pathway compiled" color={TEAL} status="Optimized" delay={0.7} inView={inView} />
-              <Connector color={TEAL} />
-              <ScreeningNode label="HbA1c" sublabel="Pre-diabetes detected at 6.1%" color={TEAL} status="Detected" delay={0.8} inView={inView} />
+              <ScreeningNode label="LDCT Lung Screening" sublabel="Auto-ordered by compiled guideline" color={POSITIVE} status="Compiled" delay={0.5} inView={inView} />
+              <Connector color={POSITIVE} />
+              <ScreeningNode label="Colonoscopy" sublabel="Scheduled — age + risk flagged" color={POSITIVE} status="Scheduled" delay={0.6} inView={inView} />
+              <Connector color={POSITIVE} />
+              <ScreeningNode label="BP + Lipid Panel" sublabel="Statin pathway compiled" color={POSITIVE} status="Optimized" delay={0.7} inView={inView} />
+              <Connector color={POSITIVE} />
+              <ScreeningNode label="HbA1c" sublabel="Pre-diabetes detected at 6.1%" color={POSITIVE} status="Detected" delay={0.8} inView={inView} />
             </div>
 
-            <Connector color={TEAL} height={36} />
+            <Connector color={POSITIVE} height={36} />
 
             {/* Patient outcome */}
             <motion.div
