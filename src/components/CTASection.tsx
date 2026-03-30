@@ -14,7 +14,7 @@ const CTASection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}>
           <h2 className="text-white font-semibold text-3xl md:text-4xl mb-4" style={{ letterSpacing: "-0.03em" }}>
-            Unlocking the proactive healthcare patients deserve.
+            Unlocking proactive healthcare for all.
           </h2>
           <p className="text-white/50 text-lg mb-8 max-w-3xl" style={{ lineHeight: 1.7, letterSpacing: "-0.01em" }}>
             Medient compiles every clinical guideline into deterministic, formally verified decision infrastructure; bridging AI and evidence-based care across every data source, every EHR, every patient encounter.
