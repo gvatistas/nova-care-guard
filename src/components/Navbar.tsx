@@ -22,7 +22,7 @@ const Navbar = () => {
     >
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
-          <img src="/medient-crown-light.svg" alt="Medient Health" className="h-10 w-auto" />
+          <img src="/medient-crown-light.svg" alt="Medient Health" className="h-8 w-auto" />
           <span className="text-white text-lg font-bold" style={{ letterSpacing: "0.08em" }}>MEDIENT</span>
           <span className="text-white text-lg font-light" style={{ letterSpacing: "0.15em" }}>HEALTH</span>
         </a>
