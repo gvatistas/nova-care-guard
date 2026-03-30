@@ -66,7 +66,7 @@ const EngineBackground: FC = () => {
           <circle cx="100" cy="55" r="48" fill="none" stroke={POSITIVE} strokeWidth="0.25" strokeDasharray="3 20" />
         </g>
         <g style={{ transformOrigin: "100px 55px", transform: `rotate(${-rotation * 0.6}deg)` }}>
-          <circle cx="100" cy="55" r="56" fill="none" stroke={TEAL} strokeWidth="0.2" strokeDasharray="2 16" />
+          <circle cx="100" cy="55" r="56" fill="none" stroke={POSITIVE} strokeWidth="0.2" strokeDasharray="2 16" />
         </g>
         <AnimatePresence mode="wait">
           <motion.g key={idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }}>
