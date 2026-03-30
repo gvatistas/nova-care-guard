@@ -331,12 +331,18 @@ const PatientNarrativeSection = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.15 }}
-              className="border p-6 text-center w-full"
+              className="border p-6 text-center w-full relative overflow-hidden"
               style={{ borderColor: `${RED}20`, background: `${RED}05` }}
             >
-              <p className="text-[10px] uppercase tracking-[0.12em] text-white/30 mb-2">Direct cost</p>
-              <p className="text-white text-3xl font-light">$288,000+</p>
-              <p className="text-white/30 text-[12px] mt-3 leading-relaxed max-w-xs mx-auto">
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{ opacity: [0, 0.05, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                style={{ background: `linear-gradient(180deg, ${RED}20, transparent)` }}
+              />
+              <p className="text-[10px] uppercase tracking-[0.12em] text-white/30 mb-2 relative">Direct cost</p>
+              <p className="text-white text-3xl font-light relative">$288,000+</p>
+              <p className="text-white/30 text-[12px] mt-3 leading-relaxed max-w-xs mx-auto relative">
                 Chemo, radiation, ICU stays, lost productivity. Multiplied across millions of patients, this is the GDP-scale crisis a16z calls "the cost of infinite healthcare."
               </p>
             </motion.div>
