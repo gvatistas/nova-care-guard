@@ -328,7 +328,7 @@ const HeroSection = () => {
     for (let i = 0; i < PULSE_COUNT; i++) {
       pulseEdge[i] = Math.floor(Math.random() * totalPathEdges);
       pulseProgress[i] = Math.random();
-      pulseSpeed[i] = 0.004 + Math.random() * 0.012;
+      pulseSpeed[i] = 0.006 + Math.random() * 0.018;
       pulseOutcomeArr[i] = pathEdgeOutcome[pulseEdge[i] * 2];
       const ei = pulseEdge[i] * 6;
       const t = pulseProgress[i];
