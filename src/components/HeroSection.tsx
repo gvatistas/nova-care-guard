@@ -291,7 +291,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="text-white font-semibold"
+            className="text-white font-light"
             style={{
               fontSize: "clamp(2.5rem, 5vw, 4rem)",
               lineHeight: 1.08,
