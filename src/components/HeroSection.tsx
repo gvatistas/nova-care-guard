@@ -568,7 +568,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="mt-10 flex flex-row gap-6"
+            className="mt-12 flex flex-row gap-6"
           >
             <a
               href="#contact"
