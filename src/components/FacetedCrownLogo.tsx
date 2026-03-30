@@ -6,14 +6,14 @@ interface FacetedCrownLogoProps {
 }
 
 const FacetedCrownLogo: React.FC<FacetedCrownLogoProps> = ({ size = 40, className = '' }) => {
-  const fontSize = size * 0.35;
   return (
-    <span
-      className={`text-white font-bold select-none ${className}`}
-      style={{ fontSize, letterSpacing: "0.12em", lineHeight: 1 }}
-    >
-      MEDIENT
-    </span>
+    <img
+      src="/medient-icon-white.svg"
+      alt="Medient"
+      className={`select-none ${className}`}
+      style={{ width: size, height: 'auto' }}
+      draggable={false}
+    />
   );
 };
 
