@@ -500,23 +500,21 @@ const HeroSection = () => {
           >
             <a
               href="#contact"
-              className="group relative text-[13px] font-medium uppercase text-white/90 px-8 py-3.5 transition-all duration-500 overflow-hidden"
+              className="group relative text-[13px] font-medium uppercase text-white/80 px-8 py-3.5 transition-all duration-500 overflow-hidden"
               style={{ letterSpacing: "0.08em" }}
             >
-              <span className="absolute inset-0 border border-white/20 transition-all duration-500 group-hover:border-white/50" />
+              <span className="absolute inset-0 border border-white/[0.12] bg-gradient-to-b from-white/[0.06] to-white/[0.02] transition-all duration-500 group-hover:border-white/25 group-hover:from-white/[0.10] group-hover:to-white/[0.04]" />
               <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-transparent via-white/60 to-transparent group-hover:w-full transition-all duration-500" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Request Demo</span>
             </a>
             <a
               href="#pipeline"
-              className="group relative text-[13px] font-medium uppercase text-white/40 px-8 py-3.5 transition-all duration-500 overflow-hidden"
+              className="group relative text-[13px] font-medium uppercase text-white/80 px-8 py-3.5 transition-all duration-500 overflow-hidden"
               style={{ letterSpacing: "0.08em" }}
             >
-              <span className="absolute inset-0 border border-white/[0.08] transition-all duration-500 group-hover:border-white/20" />
-              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.03] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:w-full transition-all duration-500" />
-              <span className="relative z-10 group-hover:text-white/70 transition-colors duration-300">Read White Paper</span>
+              <span className="absolute inset-0 border border-white/[0.12] bg-gradient-to-b from-white/[0.06] to-white/[0.02] transition-all duration-500 group-hover:border-white/25 group-hover:from-white/[0.10] group-hover:to-white/[0.04]" />
+              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="relative z-10 group-hover:text-white transition-colors duration-300">Read White Paper</span>
             </a>
           </motion.div>
         </div>
