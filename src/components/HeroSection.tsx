@@ -534,6 +534,9 @@ const HeroSection = () => {
         if (pulseProgress[i] > 1) {
           pulseProgress[i] = 0;
           pulseEdge[i] = Math.floor(Math.random() * totalEdges);
+          const oArr = pulseGeo.attributes.outcome.array as Float32Array;
+          oArr[i] = edgeOutcomes[pulseEdge[i] * 2];
+          pulseGeo.attributes.outcome.needsUpdate = true;
         }
         const ei = pulseEdge[i] * 6;
         const pr = pulseProgress[i];
