@@ -57,7 +57,7 @@ const EngineBackground: FC = () => {
       <svg width="100%" height="100%" viewBox="0 0 200 110" preserveAspectRatio="xMidYMid slice" className="absolute inset-0">
         <defs>
           <radialGradient id="eng-bg-grad" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stopColor={TEAL} stopOpacity="0.4" />
+            <stop offset="0%" stopColor={POSITIVE} stopOpacity="0.4" />
             <stop offset="100%" stopColor={TEAL} stopOpacity="0" />
           </radialGradient>
         </defs>
