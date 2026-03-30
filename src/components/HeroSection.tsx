@@ -521,11 +521,11 @@ const HeroSection = () => {
         (m.uniforms as any).uCamZ.value = camZ;
       });
 
-      // Decision tree uniforms
-      (edgeMat.uniforms as any).uTime.value = time;
-      (edgeMat.uniforms as any).uCamZ.value = camZ;
-      (treeNodeMat.uniforms as any).uTime.value = time;
-      (treeNodeMat.uniforms as any).uCamZ.value = camZ;
+      // Decision path uniforms
+      (pathEdgeMat.uniforms as any).uTime.value = time;
+      (pathEdgeMat.uniforms as any).uCamZ.value = camZ;
+      (activeNodeMat.uniforms as any).uTime.value = time;
+      (activeNodeMat.uniforms as any).uCamZ.value = camZ;
 
       // Radar rings
       radarMats.forEach((m, i) => {
@@ -533,22 +533,22 @@ const HeroSection = () => {
         radarRings[i].lookAt(camera.position);
       });
 
-      // Pulse particles — travel along edges
+      // Pulse particles — travel along grid path edges
       const pArr = pulseGeo.attributes.position.array as Float32Array;
       for (let i = 0; i < PULSE_COUNT; i++) {
         pulseProgress[i] += pulseSpeed[i];
         if (pulseProgress[i] > 1) {
           pulseProgress[i] = 0;
-          pulseEdge[i] = Math.floor(Math.random() * totalEdges);
+          pulseEdge[i] = Math.floor(Math.random() * totalPathEdges);
           const oArr = pulseGeo.attributes.outcome.array as Float32Array;
-          oArr[i] = edgeOutcomes[pulseEdge[i] * 2];
+          oArr[i] = pathEdgeOutcome[pulseEdge[i] * 2];
           pulseGeo.attributes.outcome.needsUpdate = true;
         }
         const ei = pulseEdge[i] * 6;
         const pr = pulseProgress[i];
-        pArr[i * 3] = edgePositions[ei] + (edgePositions[ei + 3] - edgePositions[ei]) * pr;
-        pArr[i * 3 + 1] = edgePositions[ei + 1] + (edgePositions[ei + 4] - edgePositions[ei + 1]) * pr;
-        pArr[i * 3 + 2] = edgePositions[ei + 2] + (edgePositions[ei + 5] - edgePositions[ei + 2]) * pr;
+        pArr[i * 3]     = pathEdgePos[ei]     + (pathEdgePos[ei + 3] - pathEdgePos[ei]) * pr;
+        pArr[i * 3 + 1] = pathEdgePos[ei + 1] + (pathEdgePos[ei + 4] - pathEdgePos[ei + 1]) * pr;
+        pArr[i * 3 + 2] = pathEdgePos[ei + 2] + (pathEdgePos[ei + 5] - pathEdgePos[ei + 2]) * pr;
       }
       pulseGeo.attributes.position.needsUpdate = true;
       (pulseMat.uniforms as any).uTime.value = time;
