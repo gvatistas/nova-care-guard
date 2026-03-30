@@ -537,7 +537,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="mt-6 text-lg text-white/50"
+            className="mt-8 text-lg text-white/50"
             style={{
               maxWidth: 960,
               lineHeight: 1.7,
