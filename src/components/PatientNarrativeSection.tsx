@@ -445,7 +445,7 @@ const PatientNarrativeSection = () => {
               <p className="text-white/45 text-[15px] mt-2 relative">Caught early · 92% survival</p>
             </motion.div>
 
-            <Connector color={TEAL} height={24} />
+            <Connector color={POSITIVE} height={24} />
 
             {/* Cost */}
             <motion.div
