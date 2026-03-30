@@ -211,7 +211,7 @@ const PatientNarrativeSection = () => {
 
             {/* Medient AI badge with shapeshifting logo */}
             <div className="flex items-center gap-5 border border-white/[0.06] p-5" style={{ background: "#1e2227" }}>
-              <FacetedCrownLogo size={64} />
+              <ShapeshiftingLogo size={120} />
               <div>
                 <p className="text-[10px] uppercase tracking-[0.12em] mb-1" style={{ color: TEAL }}>Medient Engine</p>
                 <p className="text-white/35 text-[11px] leading-relaxed">
