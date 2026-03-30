@@ -8,11 +8,10 @@ interface FacetedCrownLogoProps {
 const FacetedCrownLogo: React.FC<FacetedCrownLogoProps> = ({ size = 40, className = '' }) => {
   return (
     <img 
-      src="/medient-crown-white.svg" 
+      src="/medient-icon-white.svg" 
       alt="Medient" 
-      height={size}
       className={className}
-      style={{ objectFit: 'contain', height: size, width: 'auto' }}
+      style={{ height: size, width: 'auto', objectFit: 'contain' }}
     />
   );
 };
