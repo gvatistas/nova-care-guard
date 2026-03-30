@@ -19,7 +19,7 @@ const HeroSection = () => {
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(BG, 0.004);
+    scene.fog = new THREE.FogExp2(BG, 0.005);
     const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 800);
     camera.position.set(0, 0, 0);
     camera.lookAt(0, 0, -100);
@@ -298,9 +298,9 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 blue   = vec3(0.25, 0.5, 1.0);
-          vec3 green  = vec3(0.2, 0.9, 0.5);
-          vec3 grey   = vec3(0.45, 0.45, 0.48);
+          vec3 blue   = vec3(0.18, 0.35, 0.7);
+          vec3 green  = vec3(0.2, 0.75, 0.45);
+          vec3 grey   = vec3(0.5, 0.48, 0.45);
           vec3 orange = vec3(1.0, 0.6, 0.2);
           vec3 red    = vec3(0.9, 0.22, 0.15);
           vec3 col;
@@ -367,11 +367,11 @@ const HeroSection = () => {
           float core = exp(-d * d * 2.5);
           float glow = exp(-d * 0.8) * 0.6;
           float outer = exp(-d * 0.4) * 0.2;
-          vec3 blue   = vec3(0.3, 0.55, 1.0);
-          vec3 green  = vec3(0.25, 1.0, 0.55);
-          vec3 grey   = vec3(0.5, 0.5, 0.55);
-          vec3 orange = vec3(1.0, 0.65, 0.2);
-          vec3 red    = vec3(0.95, 0.25, 0.15);
+          vec3 blue   = vec3(0.2, 0.4, 0.75);
+          vec3 green  = vec3(0.2, 0.85, 0.5);
+          vec3 grey   = vec3(0.55, 0.52, 0.48);
+          vec3 orange = vec3(1.0, 0.6, 0.2);
+          vec3 red    = vec3(0.9, 0.25, 0.15);
           vec3 col;
           if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
           else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
@@ -444,7 +444,7 @@ const HeroSection = () => {
         void main() {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 2.5);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 1.5);
-          gl_FragColor = vec4(0.12, 0.35, 0.55, xF * yF * 0.018);
+          gl_FragColor = vec4(0.2, 0.22, 0.25, xF * yF * 0.012);
         }
       `,
     });
@@ -466,7 +466,7 @@ const HeroSection = () => {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 1.2);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 6.0);
           float pulse = 0.8 + 0.2 * sin(uTime * 0.5);
-          gl_FragColor = vec4(0.4, 0.55, 0.7, xF * yF * 0.1 * pulse);
+          gl_FragColor = vec4(0.3, 0.35, 0.42, xF * yF * 0.07 * pulse);
         }
       `,
     });
@@ -490,7 +490,7 @@ const HeroSection = () => {
     const dustGeo = new THREE.BufferGeometry();
     dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
     const dustMat = new THREE.PointsMaterial({
-      size: 0.1, color: 0x446688, transparent: true, opacity: 0.06,
+      size: 0.1, color: 0x555550, transparent: true, opacity: 0.04,
       sizeAttenuation: true, blending: THREE.AdditiveBlending,
     });
     scene.add(new THREE.Points(dustGeo, dustMat));
@@ -614,7 +614,7 @@ const HeroSection = () => {
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 45% 38% at 50% 50%, rgba(3,4,5,0.7) 0%, rgba(3,4,5,0.5) 45%, rgba(3,4,5,0.2) 75%, transparent 100%)",
+        background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(3,4,5,0.88) 0%, rgba(3,4,5,0.75) 35%, rgba(3,4,5,0.45) 65%, rgba(3,4,5,0.15) 85%, transparent 100%)",
       }} />
 
       {/* Film grain */}
