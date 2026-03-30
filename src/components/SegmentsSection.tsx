@@ -286,7 +286,7 @@ const SegmentsSection = () => {
                       animate={isActive ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.5, delay: 0.15 }}
                     >
-                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: TEAL }}>
+                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: ACCENT }}>
                         {seg.short}
                       </p>
                       <h3 className="text-white text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em" }}>
