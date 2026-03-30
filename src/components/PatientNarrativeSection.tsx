@@ -58,7 +58,7 @@ const EngineBackground: FC = () => {
         <defs>
           <radialGradient id="eng-bg-grad" cx="50%" cy="40%" r="60%">
             <stop offset="0%" stopColor={POSITIVE} stopOpacity="0.4" />
-            <stop offset="100%" stopColor={TEAL} stopOpacity="0" />
+            <stop offset="100%" stopColor={POSITIVE} stopOpacity="0" />
           </radialGradient>
         </defs>
         <g style={{ transformOrigin: "100px 55px", transform: `rotate(${rotation}deg)` }}>
