@@ -2,7 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, type FC } from "react";
 import * as THREE from "three";
 
-const TEAL = "#00d4aa";
+const ACCENT = "#c8d6e5";
 
 const segments = [
   {
@@ -79,10 +79,10 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const group = new THREE.Group();
     scene.add(group);
 
-    const wireMat = new THREE.LineBasicMaterial({ color: 0x00d4aa, transparent: true, opacity: 0.4 });
-    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x00d4aa, transparent: true, opacity: 0.12 });
-    const facetMat = new THREE.MeshBasicMaterial({ color: 0x00d4aa, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
-    const pointMat = new THREE.PointsMaterial({ color: 0x00d4aa, size: 0.03, transparent: true, opacity: 0.5 });
+    const wireMat = new THREE.LineBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.4 });
+    const wireMatDim = new THREE.LineBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.12 });
+    const facetMat = new THREE.MeshBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+    const pointMat = new THREE.PointsMaterial({ color: 0xc8d6e5, size: 0.03, transparent: true, opacity: 0.5 });
 
     // Each segment gets a unique geometry
     let geo: THREE.BufferGeometry;
@@ -142,7 +142,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     }
     const pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0x00d4aa, size: 0.02, transparent: true, opacity: 0.3 });
+    const pMat = new THREE.PointsMaterial({ color: 0xc8d6e5, size: 0.02, transparent: true, opacity: 0.3 });
     group.add(new THREE.Points(pGeo, pMat));
 
     let t = 0;
@@ -231,12 +231,12 @@ const SegmentsSection = () => {
                   onClick={() => setSelected(i)}
                   className="w-full text-left px-6 py-5 border-b border-white/[0.04] transition-all duration-300 cursor-pointer"
                   style={{
-                    background: isActive ? "rgba(0,212,170,0.04)" : "transparent",
-                    borderLeft: isActive ? `2px solid ${TEAL}` : "2px solid transparent",
+                    background: isActive ? "rgba(200,214,229,0.04)" : "transparent",
+                    borderLeft: isActive ? `2px solid ${ACCENT}` : "2px solid transparent",
                   }}
                 >
                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
-                    style={{ color: isActive ? TEAL : "rgba(255,255,255,0.3)" }}
+                    style={{ color: isActive ? ACCENT : "rgba(255,255,255,0.3)" }}
                   >
                     {seg.short}
                   </p>
@@ -270,11 +270,11 @@ const SegmentsSection = () => {
                   <div className="relative flex items-center justify-center p-8" style={{ minHeight: 320 }}>
                     {/* Radial glow behind shape */}
                     <div className="absolute inset-0 pointer-events-none" style={{
-                      background: "radial-gradient(ellipse at center, rgba(0,212,170,0.06) 0%, transparent 60%)",
+                      background: "radial-gradient(ellipse at center, rgba(200,214,229,0.06) 0%, transparent 60%)",
                     }} />
                     {/* Scan lines overlay */}
                     <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,212,170,0.15) 3px, rgba(0,212,170,0.15) 4px)",
+                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(200,214,229,0.15) 3px, rgba(200,214,229,0.15) 4px)",
                     }} />
                     {isActive && <SegmentHologram index={i} isActive={isActive} />}
                   </div>
@@ -286,7 +286,7 @@ const SegmentsSection = () => {
                       animate={isActive ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.5, delay: 0.15 }}
                     >
-                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: TEAL }}>
+                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: ACCENT }}>
                         {seg.short}
                       </p>
                       <h3 className="text-white text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em" }}>
@@ -300,7 +300,7 @@ const SegmentsSection = () => {
                       </p>
 
                       {/* Key metric */}
-                      <div className="border border-white/[0.06] p-5 inline-block" style={{ background: "rgba(0,212,170,0.03)" }}>
+                      <div className="border border-white/[0.06] p-5 inline-block" style={{ background: "rgba(200,214,229,0.03)" }}>
                         <p className="text-3xl font-light text-white" style={{ letterSpacing: "-0.02em" }}>
                           {seg.stat}
                         </p>

@@ -109,7 +109,7 @@ const PipelineSection = () => {
                 <span key={text} className="inline-flex items-center gap-2 text-white/60">
                   <span
                     className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
-                    style={{ background: "#00ff6a", boxShadow: "0 0 8px rgba(0,255,106,0.7)" }}
+                    style={{ background: "#c8d6e5", boxShadow: "0 0 8px rgba(200,214,229,0.7)" }}
                   />
                   {text}
                 </span>

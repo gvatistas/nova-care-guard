@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect, type FC } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
-const TEAL = "#00d4aa";
-const RED = "#cc3333";
+const POSITIVE = "#c8d6e5";
+const RED = "#ef4444";
 const ORANGE = "#e8922a";
-const GREEN = "#34d399";
+const GREEN = "#8fbc8f";
 
 /* ── Shapeshifting background for right lane ── */
 const MORPH_SHAPES = [
@@ -57,39 +57,39 @@ const EngineBackground: FC = () => {
       <svg width="100%" height="100%" viewBox="0 0 200 110" preserveAspectRatio="xMidYMid slice" className="absolute inset-0">
         <defs>
           <radialGradient id="eng-bg-grad" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stopColor={TEAL} stopOpacity="0.4" />
-            <stop offset="100%" stopColor={TEAL} stopOpacity="0" />
+            <stop offset="0%" stopColor={POSITIVE} stopOpacity="0.4" />
+            <stop offset="100%" stopColor={POSITIVE} stopOpacity="0" />
           </radialGradient>
         </defs>
         <g style={{ transformOrigin: "100px 55px", transform: `rotate(${rotation}deg)` }}>
-          <circle cx="100" cy="55" r="52" fill="none" stroke={TEAL} strokeWidth="0.4" strokeDasharray="8 12" />
-          <circle cx="100" cy="55" r="48" fill="none" stroke={TEAL} strokeWidth="0.25" strokeDasharray="3 20" />
+          <circle cx="100" cy="55" r="52" fill="none" stroke={POSITIVE} strokeWidth="0.4" strokeDasharray="8 12" />
+          <circle cx="100" cy="55" r="48" fill="none" stroke={POSITIVE} strokeWidth="0.25" strokeDasharray="3 20" />
         </g>
         <g style={{ transformOrigin: "100px 55px", transform: `rotate(${-rotation * 0.6}deg)` }}>
-          <circle cx="100" cy="55" r="56" fill="none" stroke={TEAL} strokeWidth="0.2" strokeDasharray="2 16" />
+          <circle cx="100" cy="55" r="56" fill="none" stroke={POSITIVE} strokeWidth="0.2" strokeDasharray="2 16" />
         </g>
         <AnimatePresence mode="wait">
           <motion.g key={idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }}>
             {FACET_FILLS[idx]?.map((f, i) => (
-              <motion.path key={i} d={f.d} fill={TEAL} initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0.3] }} transition={{ duration: 1, delay: i * 0.1 }} />
+              <motion.path key={i} d={f.d} fill={POSITIVE} initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0.3] }} transition={{ duration: 1, delay: i * 0.1 }} />
             ))}
           </motion.g>
         </AnimatePresence>
-        <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke={TEAL} strokeWidth="1.5" strokeLinejoin="miter" initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }} transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }} />
+        <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke={POSITIVE} strokeWidth="1.5" strokeLinejoin="miter" initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }} transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }} />
         <AnimatePresence mode="wait">
           <motion.g key={`s${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
             {INNER_STRUCTURES[idx]?.map((d, i) => (
-              <motion.path key={i} d={d} fill="none" stroke={TEAL} strokeWidth="0.6" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: [0, 0.6, 0.3] }} transition={{ duration: 1.2, delay: i * 0.12 }} />
+              <motion.path key={i} d={d} fill="none" stroke={POSITIVE} strokeWidth="0.6" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: [0, 0.6, 0.3] }} transition={{ duration: 1.2, delay: i * 0.12 }} />
             ))}
           </motion.g>
         </AnimatePresence>
-        <circle cx="100" cy="55" r="2" fill={TEAL} opacity="0.5">
+        <circle cx="100" cy="55" r="2" fill={POSITIVE} opacity="0.5">
           <animate attributeName="r" values="1;6;1" dur="3.2s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3.2s" repeatCount="indefinite" />
         </circle>
         {[0, 72, 144, 216, 288].map((angle, i) => (
           <g key={i} style={{ transformOrigin: "100px 55px", transform: `rotate(${angle + rotation * 2}deg)` }}>
-            <circle cx="140" cy="55" r="0.8" fill={TEAL} opacity={0.3}>
+            <circle cx="140" cy="55" r="0.8" fill={POSITIVE} opacity={0.3}>
               <animate attributeName="opacity" values="0.2;0.05;0.2" dur={`${2.5 + i * 0.3}s`} repeatCount="indefinite" />
             </circle>
           </g>
@@ -307,7 +307,7 @@ const PatientNarrativeSection = () => {
             </p>
             <motion.div
               className="w-2 h-2 rounded-full"
-              animate={{ background: activeSide === "right" ? TEAL : "#ffffff15", boxShadow: activeSide === "right" ? `0 0 12px ${TEAL}` : "none" }}
+              animate={{ background: activeSide === "right" ? POSITIVE : "#ffffff15", boxShadow: activeSide === "right" ? `0 0 12px ${POSITIVE}` : "none" }}
               transition={{ duration: 0.6 }}
             />
           </div>
@@ -411,22 +411,22 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4 }}
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center relative z-10"
-              style={{ color: TEAL, borderColor: `${TEAL}25`, background: `${TEAL}08`, boxShadow: `0 0 12px ${TEAL}10` }}
+              style={{ color: POSITIVE, borderColor: `${POSITIVE}25`, background: `${POSITIVE}08`, boxShadow: `0 0 12px ${POSITIVE}10` }}
             >
               ✓ With Medient
             </motion.div>
 
             <div className="w-full max-w-sm flex flex-col items-center gap-0 relative z-10">
-              <ScreeningNode label="LDCT Lung Screening" sublabel="Auto-ordered by compiled guideline" color={TEAL} status="Compiled" delay={0.5} inView={inView} />
-              <Connector color={TEAL} />
-              <ScreeningNode label="Colonoscopy" sublabel="Scheduled — age + risk flagged" color={TEAL} status="Scheduled" delay={0.6} inView={inView} />
-              <Connector color={TEAL} />
-              <ScreeningNode label="BP + Lipid Panel" sublabel="Statin pathway compiled" color={TEAL} status="Optimized" delay={0.7} inView={inView} />
-              <Connector color={TEAL} />
-              <ScreeningNode label="HbA1c" sublabel="Pre-diabetes detected at 6.1%" color={TEAL} status="Detected" delay={0.8} inView={inView} />
+              <ScreeningNode label="LDCT Lung Screening" sublabel="Auto-ordered by compiled guideline" color={POSITIVE} status="Compiled" delay={0.5} inView={inView} />
+              <Connector color={POSITIVE} />
+              <ScreeningNode label="Colonoscopy" sublabel="Scheduled — age + risk flagged" color={POSITIVE} status="Scheduled" delay={0.6} inView={inView} />
+              <Connector color={POSITIVE} />
+              <ScreeningNode label="BP + Lipid Panel" sublabel="Statin pathway compiled" color={POSITIVE} status="Optimized" delay={0.7} inView={inView} />
+              <Connector color={POSITIVE} />
+              <ScreeningNode label="HbA1c" sublabel="Pre-diabetes detected at 6.1%" color={POSITIVE} status="Detected" delay={0.8} inView={inView} />
             </div>
 
-            <Connector color={TEAL} height={36} />
+            <Connector color={POSITIVE} height={36} />
 
             {/* Patient outcome */}
             <motion.div
@@ -434,18 +434,18 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 1.0 }}
               className="border p-7 text-center w-full max-w-sm relative overflow-hidden z-10"
-              style={{ borderColor: `${TEAL}35`, background: `${TEAL}0a`, boxShadow: `0 0 30px ${TEAL}12, inset 0 0 20px ${TEAL}08` }}
+              style={{ borderColor: `${POSITIVE}35`, background: `${POSITIVE}0a`, boxShadow: `0 0 30px ${POSITIVE}12, inset 0 0 20px ${POSITIVE}08` }}
             >
               <motion.div className="absolute inset-0 pointer-events-none"
                 animate={{ opacity: [0, 0.10, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                style={{ background: `radial-gradient(circle at 50% 30%, ${TEAL}25, transparent 70%)` }} />
-              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-semibold" style={{ color: TEAL }}>Patient Outcome</p>
+                style={{ background: `radial-gradient(circle at 50% 30%, ${POSITIVE}25, transparent 70%)` }} />
+              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-semibold" style={{ color: POSITIVE }}>Patient Outcome</p>
               <p className="text-white text-4xl font-light relative" style={{ letterSpacing: "-0.02em" }}>Stage IA</p>
               <p className="text-white/45 text-[15px] mt-2 relative">Caught early · 92% survival</p>
             </motion.div>
 
-            <Connector color={TEAL} height={24} />
+            <Connector color={POSITIVE} height={24} />
 
             {/* Cost */}
             <motion.div
@@ -453,12 +453,12 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.15 }}
               className="border p-7 text-center w-full relative overflow-hidden z-10"
-              style={{ borderColor: `${TEAL}25`, background: `${TEAL}06`, boxShadow: `0 0 20px ${TEAL}08` }}
+              style={{ borderColor: `${POSITIVE}25`, background: `${POSITIVE}06`, boxShadow: `0 0 20px ${POSITIVE}08` }}
             >
               <motion.div className="absolute inset-0 pointer-events-none"
                 animate={{ opacity: [0, 0.05, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                style={{ background: `linear-gradient(180deg, ${TEAL}15, transparent)` }} />
+                style={{ background: `linear-gradient(180deg, ${POSITIVE}15, transparent)` }} />
               <p className="text-xs uppercase tracking-[0.12em] text-white/40 mb-2 relative font-medium">Direct cost</p>
               <p className="text-white text-4xl font-light relative">$4,200</p>
               <p className="text-white/40 text-[14px] mt-3 leading-relaxed max-w-xs mx-auto relative">
@@ -478,7 +478,7 @@ const PatientNarrativeSection = () => {
         >
           <ShapeshiftingLogo size={100} />
           <div>
-            <p className="text-xs uppercase tracking-[0.12em] mb-1" style={{ color: TEAL }}>Medient Engine</p>
+            <p className="text-xs uppercase tracking-[0.12em] mb-1" style={{ color: POSITIVE }}>Medient Engine</p>
             <p className="text-white/45 text-[13px] leading-relaxed">
               Compiled clinical decision infrastructure analyzing 23 guideline pathways in &lt;0.3s
             </p>
