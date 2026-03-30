@@ -35,7 +35,7 @@ const GuideBenchSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32">
+    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#0d1117" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         {/* Header */}
         <motion.div
@@ -102,9 +102,9 @@ const GuideBenchSection = () => {
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
           >
-            <div className="border border-white/[0.10] overflow-hidden" style={{ background: "rgba(255,255,255,0.015)" }}>
+            <div className="border border-white/[0.12] overflow-hidden" style={{ background: "#141a22" }}>
               {/* Table header */}
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.10]" style={{ background: "rgba(0,212,170,0.04)" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.12]" style={{ background: "rgba(0,212,170,0.08)" }}>
                 {["Guideline", "Patients", "Fidelity", "Status"].map((h) => (
                   <span key={h} className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.12em", color: "#00d4aa" }}>
                     {h}
@@ -143,7 +143,7 @@ const GuideBenchSection = () => {
               ))}
 
               {/* Table footer — aggregate */}
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t border-white/[0.10]" style={{ background: "rgba(0,212,170,0.03)" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t border-white/[0.12]" style={{ background: "rgba(0,212,170,0.06)" }}>
                 <span className="text-white/60 text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em" }}>Aggregate</span>
                 <span className="text-white/50 text-sm tabular-nums font-mono">750</span>
                 <div className="flex items-center gap-2">
