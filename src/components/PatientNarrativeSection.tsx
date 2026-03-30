@@ -79,7 +79,7 @@ const EngineBackground: FC = () => {
         <AnimatePresence mode="wait">
           <motion.g key={`s${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
             {INNER_STRUCTURES[idx]?.map((d, i) => (
-              <motion.path key={i} d={d} fill="none" stroke={TEAL} strokeWidth="0.6" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: [0, 0.6, 0.3] }} transition={{ duration: 1.2, delay: i * 0.12 }} />
+              <motion.path key={i} d={d} fill="none" stroke={POSITIVE} strokeWidth="0.6" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: [0, 0.6, 0.3] }} transition={{ duration: 1.2, delay: i * 0.12 }} />
             ))}
           </motion.g>
         </AnimatePresence>
