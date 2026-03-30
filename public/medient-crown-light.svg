@@ -1,14 +1,14 @@
-<svg width="320" height="350" viewBox="340 250 320 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g id="M_Crown_Icon">
-    <path d="M500 280 L440 420 L500 550 Z" fill="#BBBBBB" />
-    <path d="M500 280 L560 420 L500 550 Z" fill="#D0D0D0" />
-    <path d="M400 340 L500 550 L460 470 Z" fill="#E0E0E0" />
-    <path d="M400 340 L370 570 L460 470 Z" fill="#555555" />
-    <path d="M370 570 L430 510 L460 470 Z" fill="#CCCCCC" />
-    <path d="M600 340 L500 550 L540 470 Z" fill="#C8C8C8" />
-    <path d="M600 340 L630 570 L540 470 Z" fill="#444444" />
-    <path d="M630 570 L570 510 L540 470 Z" fill="#E0E0E0" />
-    <g stroke="#AAAAAA" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M500 280 L440 420 L500 550 Z" fill="#D0D0D0" />
+    <path d="M500 280 L560 420 L500 550 Z" fill="#A0A0A0" />
+    <path d="M400 340 L500 550 L460 470 Z" fill="#C0C0C0" />
+    <path d="M400 340 L370 570 L460 470 Z" fill="#E0E0E0" />
+    <path d="M370 570 L430 510 L460 470 Z" fill="#909090" />
+    <path d="M600 340 L500 550 L540 470 Z" fill="#B0B0B0" />
+    <path d="M600 340 L630 570 L540 470 Z" fill="#F5F5F5" />
+    <path d="M630 570 L570 510 L540 470 Z" fill="#C0C0C0" />
+    <g stroke="#E8E8E8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
       <path d="M370 570 L400 340 L500 280 L600 340 L630 570" />
       <path d="M370 570 L500 550 L630 570" />
       <path d="M400 340 L500 550 L600 340" />
