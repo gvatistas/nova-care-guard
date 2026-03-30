@@ -21,86 +21,122 @@ const HeroSection = () => {
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(BG, 0.018);
-    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 300);
-    camera.position.set(0, 0, 38);
+    scene.fog = new THREE.FogExp2(BG, 0.012);
+    const camera = new THREE.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.1, 400);
+    camera.position.set(0, 0, 50);
 
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    // ─── LAYER 1: Central morphing polyhedron core ───
+    // ─── LAYER 1: Small morphing core (off-center, subtle) ───
     const coreGroup = new THREE.Group();
+    coreGroup.position.set(0, 0, 0);
     worldGroup.add(coreGroup);
 
-    const icoGeo = new THREE.IcosahedronGeometry(6, 1);
+    const icoGeo = new THREE.IcosahedronGeometry(4, 1);
     const icoWire = new THREE.WireframeGeometry(icoGeo);
-    const icoMat = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0.12 });
+    const icoMat = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0.08 });
     const icoMesh = new THREE.LineSegments(icoWire, icoMat);
     coreGroup.add(icoMesh);
 
-    // Ghost polyhedron — offset rotation for depth
-    const icoGeo2 = new THREE.IcosahedronGeometry(7.5, 1);
-    const icoWire2 = new THREE.WireframeGeometry(icoGeo2);
-    const icoMat2 = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.03 });
-    const icoMesh2 = new THREE.LineSegments(icoWire2, icoMat2);
-    coreGroup.add(icoMesh2);
-
-    // Inner octahedron
-    const octGeo = new THREE.OctahedronGeometry(3.5, 0);
+    const octGeo = new THREE.OctahedronGeometry(2.5, 0);
     const octWire = new THREE.WireframeGeometry(octGeo);
-    const octMat = new THREE.LineBasicMaterial({ color: LILAC, transparent: true, opacity: 0.08 });
+    const octMat = new THREE.LineBasicMaterial({ color: LILAC, transparent: true, opacity: 0.06 });
     const octMesh = new THREE.LineSegments(octWire, octMat);
     coreGroup.add(octMesh);
 
-    // ─── LAYER 2: Massive network graph — 3 concentric shells ───
-    const NODE_COUNT = 700;
+    // ─── LAYER 2: Wide-spread network — fills viewport corners ───
+    const NODE_COUNT = 900;
     const nodePositions: THREE.Vector3[] = [];
-    const nodeRoles: number[] = []; // 0=inner, 1=mid, 2=outer
+    const nodeRoles: number[] = [];
     const edgePairs: [number, number][] = [];
 
-    // Inner shell — dense cluster
-    for (let i = 0; i < 150; i++) {
-      const phi = Math.acos(2 * Math.random() - 1);
-      const theta = Math.random() * Math.PI * 2;
-      const r = 8 + Math.random() * 3;
-      nodePositions.push(new THREE.Vector3(
-        r * Math.sin(phi) * Math.cos(theta),
-        r * Math.sin(phi) * Math.sin(theta),
-        r * Math.cos(phi)
-      ));
-      nodeRoles.push(0);
+    // Aspect-aware spread
+    const aspect = container.clientWidth / container.clientHeight;
+    const spreadX = 55 * aspect;
+    const spreadY = 45;
+
+    // Corner clusters — dense groups at 4 corners + edges
+    const corners = [
+      { x: -spreadX * 0.7, y: spreadY * 0.6 },   // top-left
+      { x: spreadX * 0.7, y: spreadY * 0.6 },    // top-right
+      { x: -spreadX * 0.7, y: -spreadY * 0.6 },  // bottom-left
+      { x: spreadX * 0.7, y: -spreadY * 0.6 },   // bottom-right
+      { x: -spreadX * 0.85, y: 0 },               // mid-left
+      { x: spreadX * 0.85, y: 0 },                // mid-right
+      { x: 0, y: spreadY * 0.75 },                // top-center
+      { x: 0, y: -spreadY * 0.75 },               // bottom-center
+    ];
+
+    // 320 nodes in corner clusters
+    for (let ci = 0; ci < corners.length; ci++) {
+      const c = corners[ci];
+      const count = ci < 4 ? 50 : 30;
+      for (let i = 0; i < count; i++) {
+        const r = 6 + Math.random() * 8;
+        const a = Math.random() * Math.PI * 2;
+        const z = (Math.random() - 0.5) * 12;
+        nodePositions.push(new THREE.Vector3(
+          c.x + Math.cos(a) * r,
+          c.y + Math.sin(a) * r,
+          z
+        ));
+        nodeRoles.push(0);
+      }
     }
-    // Mid shell — toroidal ring
+
+    // 300 nodes along edges/periphery — rectangular distribution biased outward
     for (let i = 0; i < 300; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI * 2;
-      const R = 16 + Math.sin(phi * 3) * 2;
-      const rr = 4 + Math.random() * 2;
+      const side = Math.random();
+      let x: number, y: number;
+      if (side < 0.25) { // top edge
+        x = (Math.random() - 0.5) * spreadX * 1.6;
+        y = spreadY * (0.3 + Math.random() * 0.5);
+      } else if (side < 0.5) { // bottom edge
+        x = (Math.random() - 0.5) * spreadX * 1.6;
+        y = -spreadY * (0.3 + Math.random() * 0.5);
+      } else if (side < 0.75) { // left edge
+        x = -spreadX * (0.3 + Math.random() * 0.6);
+        y = (Math.random() - 0.5) * spreadY * 1.4;
+      } else { // right edge
+        x = spreadX * (0.3 + Math.random() * 0.6);
+        y = (Math.random() - 0.5) * spreadY * 1.4;
+      }
+      const z = (Math.random() - 0.5) * 20;
+      nodePositions.push(new THREE.Vector3(x, y, z));
+      nodeRoles.push(1);
+    }
+
+    // 180 mid-field nodes — ring around center (not IN center)
+    for (let i = 0; i < 180; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const r = 15 + Math.random() * 20;
+      const z = (Math.random() - 0.5) * 15;
       nodePositions.push(new THREE.Vector3(
-        (R + rr * Math.cos(phi)) * Math.cos(theta) + (Math.random() - 0.5) * 1.5,
-        rr * Math.sin(phi) + (Math.random() - 0.5) * 1.5,
-        (R + rr * Math.cos(phi)) * Math.sin(theta) + (Math.random() - 0.5) * 1.5
+        Math.cos(angle) * r,
+        Math.sin(angle) * r * 0.7,
+        z
       ));
       nodeRoles.push(1);
     }
-    // Outer constellation
-    for (let i = 0; i < 250; i++) {
-      const phi = Math.acos(2 * Math.random() - 1);
-      const theta = Math.random() * Math.PI * 2;
-      const r = 24 + Math.random() * 10;
+
+    // 100 sparse sentinel nodes — very far out, faint
+    for (let i = 0; i < 100; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const r = 40 + Math.random() * 25;
       nodePositions.push(new THREE.Vector3(
-        r * Math.sin(phi) * Math.cos(theta),
-        r * Math.sin(phi) * Math.sin(theta),
-        r * Math.cos(phi)
+        Math.cos(angle) * r * aspect,
+        Math.sin(angle) * r * 0.8,
+        (Math.random() - 0.5) * 30
       ));
       nodeRoles.push(2);
     }
 
-    // Connect nearby nodes — more edges for denser mesh
+    // Connect nearby nodes
     for (let i = 0; i < NODE_COUNT; i++) {
       let connections = 0;
-      const maxConn = nodeRoles[i] === 0 ? 6 : nodeRoles[i] === 1 ? 5 : 3;
-      const maxDist = nodeRoles[i] === 0 ? 7 : nodeRoles[i] === 1 ? 6.5 : 9;
+      const maxConn = nodeRoles[i] === 0 ? 5 : nodeRoles[i] === 1 ? 4 : 2;
+      const maxDist = nodeRoles[i] === 0 ? 10 : nodeRoles[i] === 1 ? 12 : 18;
       for (let j = i + 1; j < NODE_COUNT && connections < maxConn; j++) {
         const dist = nodePositions[i].distanceTo(nodePositions[j]);
         if (dist < maxDist) {
@@ -110,25 +146,21 @@ const HeroSection = () => {
       }
     }
 
-    // Cross-shell bridges — connect inner to mid and mid to outer
-    for (let i = 0; i < 150; i++) {
-      let best = -1, bestDist = 999;
-      for (let j = 150; j < 450; j++) {
-        const d = nodePositions[i].distanceTo(nodePositions[j]);
-        if (d < bestDist) { bestDist = d; best = j; }
+    // Long-range cross-cluster tendrils
+    for (let ci = 0; ci < corners.length; ci++) {
+      const clusterStart = ci < 4 ? ci * 50 : 200 + (ci - 4) * 30;
+      const clusterEnd = ci < 4 ? clusterStart + 50 : clusterStart + 30;
+      for (let i = clusterStart; i < clusterEnd; i += 5) {
+        let best = -1, bestDist = 999;
+        for (let j = 320; j < 620; j++) {
+          const d = nodePositions[i].distanceTo(nodePositions[j]);
+          if (d < bestDist) { bestDist = d; best = j; }
+        }
+        if (best >= 0 && bestDist < 40) edgePairs.push([i, best]);
       }
-      if (best >= 0 && bestDist < 14) edgePairs.push([i, best]);
-    }
-    for (let i = 150; i < 450; i += 3) {
-      let best = -1, bestDist = 999;
-      for (let j = 450; j < NODE_COUNT; j++) {
-        const d = nodePositions[i].distanceTo(nodePositions[j]);
-        if (d < bestDist) { bestDist = d; best = j; }
-      }
-      if (best >= 0 && bestDist < 18) edgePairs.push([i, best]);
     }
 
-    // Node points with custom shader
+    // Node points
     const nodeGeoPos = new Float32Array(NODE_COUNT * 3);
     const nodeSizes = new Float32Array(NODE_COUNT);
     const nodeIntensity = new Float32Array(NODE_COUNT);
@@ -136,8 +168,8 @@ const HeroSection = () => {
       nodeGeoPos[i * 3] = nodePositions[i].x;
       nodeGeoPos[i * 3 + 1] = nodePositions[i].y;
       nodeGeoPos[i * 3 + 2] = nodePositions[i].z;
-      nodeSizes[i] = nodeRoles[i] === 0 ? 0.12 + Math.random() * 0.08 : 0.05 + Math.random() * 0.07;
-      nodeIntensity[i] = nodeRoles[i] === 0 ? 1.0 : nodeRoles[i] === 1 ? 0.6 : 0.3;
+      nodeSizes[i] = nodeRoles[i] === 0 ? 0.10 + Math.random() * 0.08 : nodeRoles[i] === 1 ? 0.06 + Math.random() * 0.06 : 0.04 + Math.random() * 0.04;
+      nodeIntensity[i] = nodeRoles[i] === 0 ? 0.9 : nodeRoles[i] === 1 ? 0.5 : 0.2;
     }
     const nodeGeo = new THREE.BufferGeometry();
     nodeGeo.setAttribute("position", new THREE.BufferAttribute(nodeGeoPos, 3));
@@ -160,10 +192,10 @@ const HeroSection = () => {
         uniform float uTime;
         void main() {
           vIntensity = intensity;
-          float pulse = 1.0 + sin(uTime * 2.0 + position.x * 0.5) * 0.15 * intensity;
+          float pulse = 1.0 + sin(uTime * 1.5 + position.x * 0.3 + position.y * 0.2) * 0.2 * intensity;
           vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
           vDist = -mvPos.z;
-          gl_PointSize = size * pulse * (250.0 / -mvPos.z);
+          gl_PointSize = size * pulse * (280.0 / -mvPos.z);
           gl_Position = projectionMatrix * mvPos;
         }
       `,
@@ -175,16 +207,16 @@ const HeroSection = () => {
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
-          float brightness = clamp(1.0 - (vDist - 10.0) / 50.0, 0.1, 1.0);
+          float brightness = clamp(1.0 - (vDist - 10.0) / 60.0, 0.08, 1.0);
           vec3 col = mix(uWhite, uTeal, vIntensity);
-          float glow = (1.0 - d * d) * brightness * (0.4 + vIntensity * 0.5);
+          float glow = (1.0 - d * d) * brightness * (0.3 + vIntensity * 0.5);
           gl_FragColor = vec4(col, glow);
         }
       `,
     });
     worldGroup.add(new THREE.Points(nodeGeo, nodeMat));
 
-    // ─── Edges — base layer ───
+    // Edges
     const edgePositions = new Float32Array(edgePairs.length * 6);
     for (let i = 0; i < edgePairs.length; i++) {
       const [a, b] = edgePairs[i];
@@ -197,77 +229,121 @@ const HeroSection = () => {
     }
     const edgeGeo = new THREE.BufferGeometry();
     edgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePositions, 3));
-    const edgeMat = new THREE.LineBasicMaterial({ color: 0x1a3040, transparent: true, opacity: 0.12 });
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x1a3040, transparent: true, opacity: 0.10 });
     worldGroup.add(new THREE.LineSegments(edgeGeo, edgeMat));
 
-    // ─── Pulse illumination layer ───
-    const PULSE_COUNT = 20;
+    // Pulse illumination
+    const PULSE_COUNT = 25;
     interface PulseInfo { origin: THREE.Vector3; radius: number; life: number; maxLife: number; color: THREE.Color; speed: number; }
     const activePulses: PulseInfo[] = [];
     const pulseEdgeColors = new Float32Array(edgePairs.length * 6);
     const pulseEdgeGeo = new THREE.BufferGeometry();
     pulseEdgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePositions.slice(), 3));
     pulseEdgeGeo.setAttribute("color", new THREE.BufferAttribute(pulseEdgeColors, 3));
-    const pulseEdgeMat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7 });
+    const pulseEdgeMat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.65 });
     worldGroup.add(new THREE.LineSegments(pulseEdgeGeo, pulseEdgeMat));
 
-    // ─── LAYER 3: Data-flow particles traveling along edges ───
-    const FLOW_COUNT = 200;
+    // Data-flow particles
+    const FLOW_COUNT = 300;
     interface FlowParticle { edgeIdx: number; t: number; speed: number; }
     const flows: FlowParticle[] = [];
     for (let i = 0; i < FLOW_COUNT; i++) {
       flows.push({
         edgeIdx: Math.floor(Math.random() * edgePairs.length),
         t: Math.random(),
-        speed: 0.003 + Math.random() * 0.008,
+        speed: 0.004 + Math.random() * 0.01,
       });
     }
     const flowPos = new Float32Array(FLOW_COUNT * 3);
     const flowGeo = new THREE.BufferGeometry();
     flowGeo.setAttribute("position", new THREE.BufferAttribute(flowPos, 3));
     const flowMat = new THREE.PointsMaterial({
-      size: 0.08, color: TEAL, transparent: true, opacity: 0.6,
+      size: 0.07, color: TEAL, transparent: true, opacity: 0.5,
       sizeAttenuation: true, blending: THREE.AdditiveBlending,
     });
     worldGroup.add(new THREE.Points(flowGeo, flowMat));
 
-    // ─── LAYER 4: Orbital data rings ───
+    // ─── LAYER 3: Scanning grid plane — sentient awareness ───
+    const gridGroup = new THREE.Group();
+    worldGroup.add(gridGroup);
+    const gridSize = 120;
+    const gridDiv = 40;
+    const gridGeo = new THREE.PlaneGeometry(gridSize, gridSize * 0.6, gridDiv, Math.floor(gridDiv * 0.6));
+    const gridMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      wireframe: true,
+      uniforms: {
+        uTime: { value: 0 },
+        uScanPos: { value: 0 },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vPos;
+        void main() {
+          vUv = uv;
+          vPos = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform float uScanPos;
+        varying vec2 vUv;
+        varying vec3 vPos;
+        void main() {
+          float scanLine = 1.0 - smoothstep(0.0, 8.0, abs(vPos.x - uScanPos));
+          float base = 0.012;
+          float edgeFade = smoothstep(0.0, 0.15, vUv.x) * smoothstep(0.0, 0.15, 1.0 - vUv.x) * smoothstep(0.0, 0.2, vUv.y) * smoothstep(0.0, 0.2, 1.0 - vUv.y);
+          float alpha = (base + scanLine * 0.06) * edgeFade;
+          vec3 col = mix(vec3(0.15, 0.25, 0.3), vec3(0.0, 0.83, 0.67), scanLine * 0.5);
+          gl_FragColor = vec4(col, alpha);
+        }
+      `,
+    });
+    const gridMesh = new THREE.Mesh(gridGeo, gridMat);
+    gridMesh.rotation.x = -Math.PI * 0.42;
+    gridMesh.position.y = -8;
+    gridMesh.position.z = -10;
+    gridGroup.add(gridMesh);
+
+    // ─── Orbital rings — wider ───
     const ringGroup = new THREE.Group();
     worldGroup.add(ringGroup);
-    const ringRadii = [13, 19, 27];
-    const ringSegments = [128, 96, 64];
-    const ringOpacities = [0.06, 0.04, 0.025];
+    const ringRadii = [18, 28, 42];
     const ringMeshes: THREE.Line[] = [];
     ringRadii.forEach((r, ri) => {
       const pts: THREE.Vector3[] = [];
-      for (let j = 0; j <= ringSegments[ri]; j++) {
-        const angle = (j / ringSegments[ri]) * Math.PI * 2;
+      const segs = 96 + ri * 16;
+      for (let j = 0; j <= segs; j++) {
+        const angle = (j / segs) * Math.PI * 2;
         pts.push(new THREE.Vector3(Math.cos(angle) * r, 0, Math.sin(angle) * r));
       }
       const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: ringOpacities[ri] });
+      const mat = new THREE.LineBasicMaterial({ color: ri === 0 ? TEAL : 0x334455, transparent: true, opacity: 0.04 - ri * 0.008 });
       const line = new THREE.Line(geo, mat);
-      line.rotation.x = Math.PI * 0.1 + ri * 0.15;
-      line.rotation.z = ri * 0.3;
+      line.rotation.x = Math.PI * 0.35 + ri * 0.08;
+      line.rotation.z = ri * 0.25;
       ringGroup.add(line);
       ringMeshes.push(line);
     });
 
-    // ─── LAYER 5: Ambient deep-field particles ───
-    const AMBIENT_COUNT = 500;
+    // ─── Ambient particles ───
+    const AMBIENT_COUNT = 600;
     const ambPos = new Float32Array(AMBIENT_COUNT * 3);
     const ambVel = new Float32Array(AMBIENT_COUNT * 3);
     for (let i = 0; i < AMBIENT_COUNT; i++) {
-      ambPos[i * 3] = (Math.random() - 0.5) * 80;
-      ambPos[i * 3 + 1] = (Math.random() - 0.5) * 50;
-      ambPos[i * 3 + 2] = (Math.random() - 0.5) * 40;
-      ambVel[i * 3] = (Math.random() - 0.5) * 0.004;
-      ambVel[i * 3 + 1] = (Math.random() - 0.5) * 0.004;
-      ambVel[i * 3 + 2] = (Math.random() - 0.5) * 0.004;
+      ambPos[i * 3] = (Math.random() - 0.5) * 120;
+      ambPos[i * 3 + 1] = (Math.random() - 0.5) * 70;
+      ambPos[i * 3 + 2] = (Math.random() - 0.5) * 50;
+      ambVel[i * 3] = (Math.random() - 0.5) * 0.005;
+      ambVel[i * 3 + 1] = (Math.random() - 0.5) * 0.005;
+      ambVel[i * 3 + 2] = (Math.random() - 0.5) * 0.003;
     }
     const ambGeo = new THREE.BufferGeometry();
     ambGeo.setAttribute("position", new THREE.BufferAttribute(ambPos, 3));
-    const ambMat = new THREE.PointsMaterial({ size: 0.04, color: 0x445566, transparent: true, opacity: 0.18, sizeAttenuation: true });
+    const ambMat = new THREE.PointsMaterial({ size: 0.04, color: 0x445566, transparent: true, opacity: 0.15, sizeAttenuation: true });
     worldGroup.add(new THREE.Points(ambGeo, ambMat));
 
     // ─── Mouse + resize ───
@@ -285,7 +361,7 @@ const HeroSection = () => {
     };
     window.addEventListener("resize", onResize);
 
-    // ─── ANIMATION LOOP ───
+    // ─── ANIMATION ───
     let raf = 0;
     let frame = 0;
     const tealColor = new THREE.Color(TEAL);
@@ -297,43 +373,39 @@ const HeroSection = () => {
       frame++;
       const t = frame * 0.001;
 
-      // Core polyhedron morphing
-      coreGroup.rotation.y += 0.0012;
-      coreGroup.rotation.x = Math.sin(t * 0.7) * 0.15;
-      const corePulse = 1 + Math.sin(t * 1.5) * 0.06;
-      icoMesh.scale.setScalar(corePulse);
-      icoMesh2.rotation.y -= 0.0008;
-      icoMesh2.rotation.z += 0.0004;
-      octMesh.rotation.x += 0.002;
-      octMesh.rotation.z -= 0.0015;
-      const octPulse = 1 + Math.sin(t * 2.5 + 1) * 0.1;
-      octMesh.scale.setScalar(octPulse);
+      // Core morph — subtle, not distracting
+      coreGroup.rotation.y += 0.001;
+      coreGroup.rotation.x = Math.sin(t * 0.5) * 0.12;
+      icoMesh.scale.setScalar(1 + Math.sin(t * 1.5) * 0.05);
+      octMesh.rotation.x += 0.0018;
+      octMesh.rotation.z -= 0.001;
+      octMesh.scale.setScalar(1 + Math.sin(t * 2 + 1) * 0.08);
 
-      // World slow rotation + breathe
-      worldGroup.rotation.y += 0.0003;
-      const breathe = 0.98 + Math.sin(t * 0.8) * 0.02;
-      worldGroup.scale.setScalar(breathe);
+      // Scanning grid sweep
+      const scanX = Math.sin(t * 0.4) * 60;
+      (gridMat.uniforms as any).uScanPos.value = scanX;
+      (gridMat.uniforms as any).uTime.value = t;
 
-      // Rings rotation
+      // Rings
       ringMeshes.forEach((r, i) => {
-        r.rotation.y += 0.0005 * (i + 1) * (i % 2 === 0 ? 1 : -1);
+        r.rotation.y += 0.0004 * (i + 1) * (i % 2 === 0 ? 1 : -1);
       });
 
-      // Spawn pulses — more frequently, varied colors
-      if (frame % 30 === 0 && activePulses.length < PULSE_COUNT) {
+      // Spawn pulses from corners
+      if (frame % 25 === 0 && activePulses.length < PULSE_COUNT) {
         const originIdx = Math.floor(Math.random() * NODE_COUNT);
         const colorChoice = Math.random();
         activePulses.push({
           origin: nodePositions[originIdx].clone(),
           radius: 0,
           life: 0,
-          maxLife: 90 + Math.random() * 80,
-          color: colorChoice < 0.6 ? tealColor : colorChoice < 0.85 ? whiteColor : lilacColor,
-          speed: 0.12 + Math.random() * 0.15,
+          maxLife: 80 + Math.random() * 100,
+          color: colorChoice < 0.55 ? tealColor : colorChoice < 0.8 ? whiteColor : lilacColor,
+          speed: 0.15 + Math.random() * 0.2,
         });
       }
 
-      // Reset & update pulse edges
+      // Pulse edge illumination
       pulseEdgeColors.fill(0);
       for (let pi = activePulses.length - 1; pi >= 0; pi--) {
         const pulse = activePulses[pi];
@@ -350,8 +422,8 @@ const HeroSection = () => {
           const dx = midX - pulse.origin.x, dy = midY - pulse.origin.y, dz = midZ - pulse.origin.z;
           const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
           const ringDist = Math.abs(dist - pulse.radius);
-          if (ringDist < 2.5) {
-            const glow = intensity * Math.max(0, 1 - ringDist / 2.5) * 0.7;
+          if (ringDist < 3) {
+            const glow = intensity * Math.max(0, 1 - ringDist / 3) * 0.6;
             for (let v = 0; v < 2; v++) {
               const ci = ei * 6 + v * 3;
               pulseEdgeColors[ci] = Math.min(1, pulseEdgeColors[ci] + pulse.color.r * glow);
@@ -371,7 +443,7 @@ const HeroSection = () => {
         if (f.t > 1) {
           f.t = 0;
           f.edgeIdx = Math.floor(Math.random() * edgePairs.length);
-          f.speed = 0.003 + Math.random() * 0.008;
+          f.speed = 0.004 + Math.random() * 0.01;
         }
         const [a, b] = edgePairs[f.edgeIdx];
         const pa = nodePositions[a], pb = nodePositions[b];
@@ -387,18 +459,18 @@ const HeroSection = () => {
         aArr[i * 3] += ambVel[i * 3];
         aArr[i * 3 + 1] += ambVel[i * 3 + 1];
         aArr[i * 3 + 2] += ambVel[i * 3 + 2];
-        if (Math.abs(aArr[i * 3]) > 40) ambVel[i * 3] *= -1;
-        if (Math.abs(aArr[i * 3 + 1]) > 25) ambVel[i * 3 + 1] *= -1;
-        if (Math.abs(aArr[i * 3 + 2]) > 20) ambVel[i * 3 + 2] *= -1;
+        if (Math.abs(aArr[i * 3]) > 60) ambVel[i * 3] *= -1;
+        if (Math.abs(aArr[i * 3 + 1]) > 35) ambVel[i * 3 + 1] *= -1;
+        if (Math.abs(aArr[i * 3 + 2]) > 25) ambVel[i * 3 + 2] *= -1;
       }
       ambGeo.attributes.position.needsUpdate = true;
 
       // Node shader time
       (nodeMat.uniforms as any).uTime.value = t * 3;
 
-      // Camera parallax
-      camera.position.x += (mouse.x * 2 - camera.position.x) * 0.015;
-      camera.position.y += (-mouse.y * 1.5 - camera.position.y) * 0.015;
+      // Camera parallax — wider range
+      camera.position.x += (mouse.x * 3 - camera.position.x) * 0.012;
+      camera.position.y += (-mouse.y * 2 - camera.position.y) * 0.012;
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
@@ -413,8 +485,8 @@ const HeroSection = () => {
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
       nodeGeo.dispose(); edgeGeo.dispose(); pulseEdgeGeo.dispose(); ambGeo.dispose(); flowGeo.dispose();
       nodeMat.dispose(); edgeMat.dispose(); pulseEdgeMat.dispose(); ambMat.dispose(); flowMat.dispose();
-      icoGeo.dispose(); icoMat.dispose(); icoGeo2.dispose(); icoMat2.dispose();
-      octGeo.dispose(); octMat.dispose();
+      icoGeo.dispose(); icoMat.dispose(); octGeo.dispose(); octMat.dispose();
+      gridGeo.dispose(); gridMat.dispose();
       ringMeshes.forEach(r => { r.geometry.dispose(); (r.material as THREE.Material).dispose(); });
     };
   }, []);
