@@ -466,7 +466,7 @@ const HeroSection = () => {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 1.2);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 6.0);
           float pulse = 0.8 + 0.2 * sin(uTime * 0.5);
-          gl_FragColor = vec4(0.4, 0.55, 0.7, xF * yF * 0.1 * pulse);
+          gl_FragColor = vec4(0.3, 0.35, 0.42, xF * yF * 0.07 * pulse);
         }
       `,
     });
