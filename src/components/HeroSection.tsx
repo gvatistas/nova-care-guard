@@ -354,12 +354,14 @@ const HeroSection = () => {
     const pulseProgress = new Float32Array(PULSE_COUNT);
     const pulseEdge = new Int32Array(PULSE_COUNT);
     const pulseSpeed = new Float32Array(PULSE_COUNT);
+    const pulseOutcome = new Float32Array(PULSE_COUNT);
     const totalEdges = edgePositions.length / 6;
 
     for (let i = 0; i < PULSE_COUNT; i++) {
       pulseEdge[i] = Math.floor(Math.random() * totalEdges);
       pulseProgress[i] = Math.random();
       pulseSpeed[i] = 0.003 + Math.random() * 0.008;
+      pulseOutcome[i] = edgeOutcomes[pulseEdge[i] * 2]; // inherit edge outcome
       const ei = pulseEdge[i] * 6;
       const t = pulseProgress[i];
       pulsePos[i * 3] = edgePositions[ei] + (edgePositions[ei + 3] - edgePositions[ei]) * t;
@@ -368,30 +370,40 @@ const HeroSection = () => {
     }
     const pulseGeo = new THREE.BufferGeometry();
     pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulsePos, 3));
+    pulseGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(pulseOutcome, 1));
     const pulseMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
+        attribute float outcome;
         varying float vAlpha;
+        varying float vOutcome;
         uniform float uTime, uCamZ;
         void main() {
+          vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
           vAlpha = smoothstep(5.0, 20.0, d) * (1.0 - smoothstep(150.0, 250.0, d));
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = max(2.0, 5.0 * vAlpha * (100.0 / -mv.z));
+          gl_PointSize = max(2.0, 5.5 * vAlpha * (100.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
       `,
       fragmentShader: `
         varying float vAlpha;
+        varying float vOutcome;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 3.0);
           float glow = exp(-d * 1.2) * 0.4;
-          vec3 col = vec3(0.0, 1.0, 0.6);
-          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.6);
+          vec3 green = vec3(0.0, 1.0, 0.45);
+          vec3 amber = vec3(1.0, 0.7, 0.1);
+          vec3 red = vec3(1.0, 0.2, 0.1);
+          vec3 col = vOutcome < 0.5
+            ? mix(green, amber, vOutcome * 2.0)
+            : mix(amber, red, (vOutcome - 0.5) * 2.0);
+          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.65);
         }
       `,
     });
