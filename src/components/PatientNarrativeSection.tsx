@@ -307,7 +307,7 @@ const PatientNarrativeSection = () => {
             </p>
             <motion.div
               className="w-2 h-2 rounded-full"
-              animate={{ background: activeSide === "right" ? TEAL : "#ffffff15", boxShadow: activeSide === "right" ? `0 0 12px ${TEAL}` : "none" }}
+              animate={{ background: activeSide === "right" ? POSITIVE : "#ffffff15", boxShadow: activeSide === "right" ? `0 0 12px ${POSITIVE}` : "none" }}
               transition={{ duration: 0.6 }}
             />
           </div>
