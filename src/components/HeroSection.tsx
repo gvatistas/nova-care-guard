@@ -524,10 +524,10 @@ const HeroSection = () => {
       mouse.x += (mouse.tx - mouse.x) * 0.015;
       mouse.y += (mouse.ty - mouse.y) * 0.015;
 
-      const camZ = -t * 3;
+      const camZ = -t * 2.5;
       camera.position.z = camZ;
-      camera.position.x = mouse.x * 4;
-      camera.position.y = mouse.y * -2;
+      camera.position.x = mouse.x * 3;
+      camera.position.y = mouse.y * -1.5;
       camera.lookAt(camera.position.x * 0.3, 0, camZ - 100);
 
       const time = t * 3;
