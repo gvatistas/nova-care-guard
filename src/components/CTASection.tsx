@@ -1,6 +1,5 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import FacetedCrownLogo from "@/components/FacetedCrownLogo";
 
 const CTASection = () => {
   const ref = useRef(null);
@@ -32,9 +31,6 @@ const CTASection = () => {
           </div>
         </motion.div>
       </div>
-
-      {/* Footer crown */}
-      <motion.div
 
       {/* Footer */}
       <motion.footer initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
