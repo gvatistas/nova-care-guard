@@ -13,7 +13,7 @@ const CTASection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}>
           <h2 className="text-white font-semibold text-3xl md:text-4xl mb-4" style={{ letterSpacing: "-0.03em" }}>
-            Unlocking proactive healthcare for all.
+            bridging the gap between AI and evidence-based care.
           </h2>
           <p className="text-white/50 text-lg mb-8 max-w-3xl" style={{ lineHeight: 1.7, letterSpacing: "-0.01em" }}>
             Our healthcare system wasn't built for prevention. We're changing that: replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it's too late.
