@@ -270,11 +270,11 @@ const SegmentsSection = () => {
                   <div className="relative flex items-center justify-center p-8" style={{ minHeight: 320 }}>
                     {/* Radial glow behind shape */}
                     <div className="absolute inset-0 pointer-events-none" style={{
-                      background: "radial-gradient(ellipse at center, rgba(0,212,170,0.06) 0%, transparent 60%)",
+                      background: "radial-gradient(ellipse at center, rgba(200,214,229,0.06) 0%, transparent 60%)",
                     }} />
                     {/* Scan lines overlay */}
                     <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,212,170,0.15) 3px, rgba(0,212,170,0.15) 4px)",
+                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(200,214,229,0.15) 3px, rgba(200,214,229,0.15) 4px)",
                     }} />
                     {isActive && <SegmentHologram index={i} isActive={isActive} />}
                   </div>
