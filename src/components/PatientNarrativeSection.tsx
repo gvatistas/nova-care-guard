@@ -486,23 +486,6 @@ const PatientNarrativeSection = () => {
         </motion.div>
 
         {/* Stats bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1.3, duration: 0.6 }}
-          className="mt-14 grid grid-cols-3 gap-px bg-white/[0.04]"
-        >
-          {[
-            { val: "340+", label: "Early detections / year" },
-            { val: "$96M", label: "Downstream costs avoided" },
-            { val: "94%", label: "Screening gaps closed" },
-          ].map((s) => (
-            <div key={s.val} className="p-6 text-center" style={{ background: "#1a1d21" }}>
-              <p className="text-2xl font-light text-white" style={{ letterSpacing: "-0.02em" }}>{s.val}</p>
-              <p className="text-white/40 text-[14px] mt-1.5">{s.label}</p>
-            </div>
-          ))}
-        </motion.div>
       </div>
     </section>
   );
