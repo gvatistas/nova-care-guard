@@ -409,12 +409,11 @@ const HeroSection = () => {
             float t = mod(uTime * 0.5 + uPhase, 6.0);
             float fade = (1.0 - t / 6.0);
             float ring = smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
-            float oc = fract(uPhase * 0.41);
-            vec3 green = vec3(0.0, 0.85, 0.45);
-            vec3 amber = vec3(0.95, 0.65, 0.1);
-            vec3 red = vec3(0.9, 0.15, 0.1);
-            vec3 col = oc < 0.5 ? mix(green, amber, oc * 2.0) : mix(amber, red, (oc - 0.5) * 2.0);
-            gl_FragColor = vec4(col, ring * fade * fade * 0.1);
+            vec3 teal = vec3(0.12, 0.6, 0.5);
+            vec3 green = vec3(0.2, 0.95, 0.55);
+            float resolve = 0.5 + 0.5 * sin(uTime * 2.0 + uPhase * 3.0);
+            vec3 col = mix(teal, green, resolve * 0.5);
+            gl_FragColor = vec4(col, ring * fade * fade * 0.08);
           }
         `,
       });
