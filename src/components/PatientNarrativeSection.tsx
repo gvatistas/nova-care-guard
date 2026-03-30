@@ -83,7 +83,7 @@ const EngineBackground: FC = () => {
             ))}
           </motion.g>
         </AnimatePresence>
-        <circle cx="100" cy="55" r="2" fill={TEAL} opacity="0.5">
+        <circle cx="100" cy="55" r="2" fill={POSITIVE} opacity="0.5">
           <animate attributeName="r" values="1;6;1" dur="3.2s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3.2s" repeatCount="indefinite" />
         </circle>
