@@ -302,24 +302,36 @@ const HeroSection = () => {
             Unlocking proactive healthcare for all.
           </motion.h1>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-6 text-lg text-white/50"
             style={{
-              maxWidth: 640,
+              maxWidth: 800,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
               textShadow: "0 0 30px rgba(0,0,0,0.8)",
             }}
           >
-            Medient compiles every clinical guideline into deterministic,
-            formally verified decision infrastructure — bridging AI and
-            evidence-based care across every data source, every EHR, every
-            patient encounter. Zero hallucination. Zero inference. Total
-            clinical authority.
-          </motion.p>
+            <p>
+              Medient compiles every clinical guideline into deterministic,
+              formally verified decision infrastructure; bridging AI and
+              evidence-based care across every data source, every EHR, every
+              patient encounter.
+            </p>
+            <div className="flex flex-col items-center gap-1.5 mt-4">
+              {["Zero hallucination.", "Zero inference.", "Total clinical authority."].map((text) => (
+                <span key={text} className="inline-flex items-center gap-2 text-white/60">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
+                    style={{ background: "#00d4aa", boxShadow: "0 0 6px rgba(0,212,170,0.6)" }}
+                  />
+                  {text}
+                </span>
+              ))}
+            </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
