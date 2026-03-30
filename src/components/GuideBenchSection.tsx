@@ -104,7 +104,7 @@ const GuideBenchSection = () => {
           >
             <div className="border border-white/[0.12] overflow-hidden" style={{ background: "#141a22" }}>
               {/* Table header */}
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.10]" style={{ background: "rgba(0,212,170,0.04)" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.12]" style={{ background: "rgba(0,212,170,0.08)" }}>
                 {["Guideline", "Patients", "Fidelity", "Status"].map((h) => (
                   <span key={h} className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.12em", color: "#00d4aa" }}>
                     {h}
