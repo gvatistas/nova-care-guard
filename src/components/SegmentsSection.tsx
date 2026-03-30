@@ -2,7 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, type FC } from "react";
 import * as THREE from "three";
 
-const TEAL = "#00d4aa";
+const ACCENT = "#c8d6e5";
 
 const segments = [
   {
