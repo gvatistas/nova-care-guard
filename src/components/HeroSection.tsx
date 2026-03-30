@@ -164,42 +164,62 @@ const HeroSection = () => {
     ];
     treeRoots.forEach(root => trees.push(buildTree(root, 0, 5, 12, 5)));
 
-    // Collect all edges and nodes from trees
+    // Collect all edges and nodes from trees, with outcome scores
     const edgePositions: number[] = [];
     const nodePositions: number[] = [];
     const nodeDepths: number[] = [];
+    const nodeOutcomes: number[] = []; // 0=green(good), 0.5=amber(mixed), 1=red(bad)
     const edgeIds: number[] = [];
+    const edgeOutcomes: number[] = [];
     let edgeIdx = 0;
 
+    // Deterministic pseudo-random per node
+    const hashNode = (id: number) => {
+      let h = id * 2654435761;
+      h = ((h >>> 16) ^ h) * 0x45d9f3b;
+      return ((h >>> 16) ^ h) / 4294967296;
+    };
+
     const traverseTree = (node: TreeNode) => {
+      // Deeper nodes more likely to be bad outcomes
+      const rng = hashNode(node.id);
+      const outcome = node.depth === 0 ? 0.15 : Math.min(1.0, (node.depth / 5) * 0.6 + rng * 0.5);
       nodePositions.push(node.pos.x, node.pos.y, node.pos.z);
       nodeDepths.push(node.depth);
+      nodeOutcomes.push(outcome);
       node.children.forEach(child => {
+        const childOutcome = hashNode(child.id);
+        const eo = Math.min(1.0, (child.depth / 5) * 0.5 + childOutcome * 0.5);
         edgePositions.push(node.pos.x, node.pos.y, node.pos.z);
         edgePositions.push(child.pos.x, child.pos.y, child.pos.z);
         edgeIds.push(edgeIdx, edgeIdx);
+        edgeOutcomes.push(eo, eo);
         edgeIdx++;
         traverseTree(child);
       });
     };
     trees.forEach(t => traverseTree(t));
 
-    // Decision tree edges
+    // Decision tree edges — green/amber/red based on outcome
     const edgeGeo = new THREE.BufferGeometry();
     edgeGeo.setAttribute("position", new THREE.Float32BufferAttribute(edgePositions, 3));
     edgeGeo.setAttribute("edgeId", new THREE.Float32BufferAttribute(edgeIds, 1));
+    edgeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(edgeOutcomes, 1));
     const edgeMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
         attribute float edgeId;
+        attribute float outcome;
         varying float vPulse;
         varying float vDist;
+        varying float vOutcome;
         uniform float uTime, uCamZ;
         void main() {
+          vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           vDist = abs(wp.z - uCamZ);
-          float wave = sin(uTime * 2.0 + edgeId * 0.7) * 0.5 + 0.5;
+          float wave = sin(uTime * 1.8 + edgeId * 0.7) * 0.5 + 0.5;
           vPulse = wave;
           gl_Position = projectionMatrix * viewMatrix * wp;
         }
@@ -207,10 +227,17 @@ const HeroSection = () => {
       fragmentShader: `
         varying float vPulse;
         varying float vDist;
+        varying float vOutcome;
         void main() {
           float fade = smoothstep(5.0, 30.0, vDist) * (1.0 - smoothstep(180.0, 280.0, vDist));
-          float intensity = mix(0.06, 0.25, vPulse) * fade;
-          vec3 col = mix(vec3(0.3, 0.6, 0.9), vec3(0.0, 0.9, 0.6), vPulse);
+          float intensity = mix(0.06, 0.22, vPulse) * fade;
+          // Green → Amber → Red based on outcome
+          vec3 green = vec3(0.0, 0.85, 0.4);
+          vec3 amber = vec3(0.95, 0.65, 0.1);
+          vec3 red = vec3(0.95, 0.15, 0.1);
+          vec3 col = vOutcome < 0.5
+            ? mix(green, amber, vOutcome * 2.0)
+            : mix(amber, red, (vOutcome - 0.5) * 2.0);
           gl_FragColor = vec4(col, intensity);
         }
       `,
@@ -219,25 +246,29 @@ const HeroSection = () => {
     scene.add(edgeMesh);
     disposables.push(edgeGeo, edgeMat);
 
-    // Decision tree nodes — glowing spheres
+    // Decision tree nodes — green/amber/red glowing spheres
     const treeNodeGeo = new THREE.BufferGeometry();
     treeNodeGeo.setAttribute("position", new THREE.Float32BufferAttribute(nodePositions, 3));
     treeNodeGeo.setAttribute("depth", new THREE.Float32BufferAttribute(nodeDepths, 1));
+    treeNodeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(nodeOutcomes, 1));
     const treeNodeMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
         attribute float depth;
+        attribute float outcome;
         varying float vAlpha;
         varying float vDepth;
+        varying float vOutcome;
         uniform float uTime, uCamZ;
         void main() {
           vDepth = depth;
+          vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
           float df = smoothstep(5.0, 25.0, d) * (1.0 - smoothstep(160.0, 260.0, d));
-          float pulse = 0.6 + 0.4 * sin(uTime * 3.0 + depth * 1.5 + position.x * 0.3);
-          float sizeBase = mix(6.0, 2.5, depth / 5.0);
+          float pulse = 0.6 + 0.4 * sin(uTime * 2.5 + depth * 1.5 + position.x * 0.3);
+          float sizeBase = mix(7.0, 3.0, depth / 5.0);
           vAlpha = df * pulse;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
           gl_PointSize = max(2.0, sizeBase * df * (150.0 / -mv.z));
@@ -247,16 +278,21 @@ const HeroSection = () => {
       fragmentShader: `
         varying float vAlpha;
         varying float vDepth;
+        varying float vOutcome;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.5) * 0.3;
           float glow = exp(-d * 0.8) * 0.15;
-          vec3 coreCol = mix(vec3(0.0, 0.85, 0.55), vec3(0.3, 0.5, 1.0), vDepth / 5.0);
-          vec3 haloCol = mix(vec3(0.0, 0.6, 0.4), vec3(0.2, 0.3, 0.8), vDepth / 5.0);
-          vec3 color = coreCol * core + haloCol * (halo + glow);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.7);
+          vec3 green = vec3(0.0, 0.9, 0.4);
+          vec3 amber = vec3(1.0, 0.7, 0.1);
+          vec3 red = vec3(1.0, 0.15, 0.1);
+          vec3 baseCol = vOutcome < 0.5
+            ? mix(green, amber, vOutcome * 2.0)
+            : mix(amber, red, (vOutcome - 0.5) * 2.0);
+          vec3 color = baseCol * (core + halo * 0.6 + glow * 0.4);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.75);
         }
       `,
     });
