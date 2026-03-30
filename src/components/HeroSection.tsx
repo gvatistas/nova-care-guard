@@ -624,7 +624,7 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-8 text-lg text-white/50"
             style={{
-              maxWidth: 960,
+              maxWidth: 1100,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
               textShadow: "0 0 40px rgba(6,8,9,0.9)",
