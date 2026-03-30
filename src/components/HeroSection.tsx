@@ -552,7 +552,7 @@ const HeroSection = () => {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="mb-12"
           >
-            <FacetedCrownLogo size={72} />
+            <FacetedCrownLogo size={180} />
           </motion.div>
 
           <motion.h1
