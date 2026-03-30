@@ -1,9 +1,9 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 
-const GREEN = "#e5e5e5";
-const RED = "#666666";
-const AMBER = "#999999";
+const GREEN = "#4ade80";
+const RED = "#ef4444";
+const AMBER = "#9ca3af";
 
 // Quebec province rough outline
 const QUEBEC_OUTLINE = "M60,20 L90,10 L130,8 L170,15 L200,10 L240,5 L280,12 L320,8 L360,15 L380,25 L390,45 L385,70 L375,95 L360,115 L340,130 L315,140 L285,148 L250,150 L215,148 L180,142 L150,135 L125,125 L105,110 L85,90 L70,65 L58,40 Z";
@@ -81,7 +81,7 @@ const ProjectAlphaSection = () => {
     return "pending";
   }, [flatClinics, greenCount]);
 
-  const adherence = Math.round(45 + (greenCount / totalClinics) * 45);
+  const adherence = Math.round(45 + (greenCount / totalClinics) * 49);
 
   return (
     <section id="project-alpha" ref={ref} className="relative py-24 md:py-32">
@@ -117,7 +117,7 @@ const ProjectAlphaSection = () => {
               {regions.map((region, i) => (
                 <g key={i}>
                   <path d={region.path} fill="white" fillOpacity="0.03" stroke="white" strokeWidth="0.6" opacity="0.15" />
-                  <text x={region.cx} y={region.cy - 18} textAnchor="middle" fontFamily="'Montserrat', sans-serif" fontSize="4" letterSpacing="1.5" fill="white" opacity="0.25">{region.label}</text>
+                  <text x={region.cx} y={region.cy - 18} textAnchor="middle" fontFamily="'Inter', system-ui, sans-serif" fontSize="4" letterSpacing="1.5" fill="white" opacity="0.25">{region.label}</text>
                 </g>
               ))}
 
@@ -158,7 +158,7 @@ const ProjectAlphaSection = () => {
               {/* Clinic dots */}
               {allClinics.map((regionClinics, ri) => regionClinics.map((clinic, ci) => {
                 const state = getClinicState(ri, ci);
-                const color = state === "active" ? GREEN : state === "deploying" ? AMBER : "rgba(255,255,255,0.5)";
+                const color = state === "active" ? GREEN : state === "deploying" ? AMBER : RED;
                 return (
                   <g key={`c-${ri}-${ci}`}>
                     {state === "active" && (
@@ -212,7 +212,7 @@ const ProjectAlphaSection = () => {
               <div className="flex items-center gap-4 font-mono" style={{ fontSize: "0.75rem" }}>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: GREEN }} /> Active</span>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: AMBER }} /> Deploying</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "rgba(255,255,255,0.5)" }} /> Pending</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: RED }} /> Pending</span>
               </div>
               <span className="font-mono tracking-[0.1em]" style={{ fontSize: "0.875rem", color: greenCount === totalClinics ? GREEN : AMBER }}>
                 {greenCount === totalClinics ? "FULLY OPERATIONAL" : "DEPLOYING..."}

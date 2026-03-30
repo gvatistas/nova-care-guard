@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import FacetedCrownLogo from "@/components/FacetedCrownLogo";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -23,18 +22,18 @@ const Navbar = () => {
     >
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
-          <FacetedCrownLogo size={32} />
-          <span className="font-heading text-white text-lg tracking-[0.08em] font-bold">MEDIENT</span>
-          <span className="font-heading text-white text-lg tracking-[0.08em] font-light">HEALTH</span>
+          <img src="/medient-crown-light.svg" alt="Medient Health" className="h-10 w-auto" />
+          <span className="text-white text-lg font-bold" style={{ letterSpacing: "0.08em" }}>MEDIENT</span>
+          <span className="text-white text-lg font-light" style={{ letterSpacing: "0.15em" }}>HEALTH</span>
         </a>
         <div className="flex items-center gap-6 md:gap-10">
-          <a href="#pipeline" className="hidden md:block font-heading text-sm font-medium tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <a href="#pipeline" className="hidden md:block text-[13px] font-medium uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)", letterSpacing: "0.05em" }}>
             Architecture
           </a>
-          <a href="#project-alpha" className="hidden md:block font-heading text-sm font-medium tracking-[0.1em] uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <a href="#project-alpha" className="hidden md:block text-[13px] font-medium uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.6)", letterSpacing: "0.05em" }}>
             Project Alpha
           </a>
-          <a href="#contact" className="font-heading text-sm font-semibold tracking-[0.1em] uppercase text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300">
+          <a href="#contact" className="text-[13px] font-medium uppercase text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300" style={{ letterSpacing: "0.05em" }}>
             Get Started
           </a>
         </div>

@@ -12,28 +12,28 @@ const CTASection = () => {
 
       <div className="relative max-w-[1440px] mx-auto px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}>
-          <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em] mb-4" style={{ fontSize: "2.5rem" }}>
+          transition={{ duration: 0.6 }}>
+          <h2 className="text-white font-semibold text-3xl md:text-4xl mb-4" style={{ letterSpacing: "-0.03em" }}>
             Unlocking the proactive healthcare patients deserve.
           </h2>
-          <p className="font-light leading-relaxed mb-8 max-w-3xl" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem", lineHeight: 1.7 }}>
+          <p className="text-white/50 text-lg mb-8 max-w-3xl" style={{ lineHeight: 1.7, letterSpacing: "-0.01em" }}>
             The healthcare system wasn't built for prevention. We're changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it's too late.
           </p>
 
           <div className="flex flex-col sm:flex-row items-start gap-4">
-            <a href="#" className="font-mono uppercase transition-all duration-300 bg-white text-black hover:bg-gray-200"
-              style={{ fontSize: "1rem", letterSpacing: "0.15em", padding: "16px 48px" }}>
+            <a href="#" className="text-[13px] font-medium uppercase bg-white text-black px-12 py-4 hover:bg-gray-200 transition-all duration-300"
+              style={{ letterSpacing: "0.05em" }}>
               Request Demo
             </a>
-            <a href="#" className="font-mono uppercase transition-all duration-300 text-white border border-white/30 hover:bg-white hover:text-black"
-              style={{ fontSize: "1rem", letterSpacing: "0.15em", padding: "16px 48px" }}>
+            <a href="#" className="text-[13px] font-medium uppercase text-white border border-white/30 px-12 py-4 hover:bg-white hover:text-black transition-all duration-300"
+              style={{ letterSpacing: "0.05em" }}>
               Read White Paper
             </a>
           </div>
         </motion.div>
       </div>
 
-      {/* Static faceted crown logo */}
+      {/* Footer crown */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
@@ -41,10 +41,7 @@ const CTASection = () => {
         className="mt-24 flex flex-col items-center px-8"
       >
         <FacetedCrownLogo size={160} />
-        <div
-          className="mt-5 font-mono tracking-[0.3em] uppercase"
-          style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.25)" }}
-        >
+        <div className="mt-5 text-[12px] font-medium uppercase text-white/25" style={{ letterSpacing: "0.3em" }}>
           Medient Health
         </div>
       </motion.div>
@@ -53,8 +50,8 @@ const CTASection = () => {
       <motion.footer initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
         className="mt-16 border-t border-white/[0.06]">
         <div className="max-w-[1440px] mx-auto px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="font-mono" style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.875rem" }}>© 2026 Medient Health. All rights reserved.</div>
-          <div className="flex items-center gap-8 font-mono tracking-[0.1em] uppercase" style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.875rem" }}>
+          <div className="text-sm text-white/40">© 2026 Medient Health. All rights reserved.</div>
+          <div className="flex items-center gap-8 text-[13px] font-medium uppercase text-white/40" style={{ letterSpacing: "0.05em" }}>
             <a href="#" className="hover:text-white transition-colors duration-300">Whitepaper</a>
             <a href="#" className="hover:text-white transition-colors duration-300">GuideBench</a>
             <a href="#" className="hover:text-white transition-colors duration-300">Contact</a>
