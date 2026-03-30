@@ -298,9 +298,9 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 blue   = vec3(0.25, 0.5, 1.0);
-          vec3 green  = vec3(0.2, 0.9, 0.5);
-          vec3 grey   = vec3(0.45, 0.45, 0.48);
+          vec3 blue   = vec3(0.18, 0.35, 0.7);
+          vec3 green  = vec3(0.2, 0.75, 0.45);
+          vec3 grey   = vec3(0.5, 0.48, 0.45);
           vec3 orange = vec3(1.0, 0.6, 0.2);
           vec3 red    = vec3(0.9, 0.22, 0.15);
           vec3 col;
