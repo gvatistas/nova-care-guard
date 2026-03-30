@@ -360,18 +360,21 @@ const HeroSection = () => {
       fragmentShader: `
         varying float vAlpha;
         varying float vOutcome;
+        uniform float uTime;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 3.0);
           float glow = exp(-d * 1.0) * 0.5;
-          vec3 green = vec3(0.0, 1.0, 0.5);
-          vec3 amber = vec3(1.0, 0.75, 0.1);
-          vec3 red   = vec3(1.0, 0.2, 0.1);
+          vec3 teal  = vec3(0.15, 0.65, 0.55);
+          vec3 green = vec3(0.25, 1.0, 0.6);
+          vec3 red   = vec3(0.95, 0.22, 0.15);
           vec3 col = vOutcome < 0.5
-            ? mix(green, amber, vOutcome * 2.0)
-            : mix(amber, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.75);
+            ? mix(teal, green, (0.5 - vOutcome) * 2.0)
+            : mix(teal, red, smoothstep(0.5, 1.0, vOutcome));
+          float resolve = smoothstep(0.7, 1.0, vOutcome) * (0.5 + 0.5 * sin(uTime * 5.0 + gl_FragCoord.y * 0.02));
+          col = mix(col, green, resolve * 0.8);
+          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.6);
         }
       `,
     });
