@@ -68,7 +68,7 @@ const HeroSection = () => {
         fragmentShader: `
           varying float vFade;
           void main() {
-            gl_FragColor = vec4(0.4, 0.35, 0.32, vFade * 0.06);
+            gl_FragColor = vec4(0.35, 0.38, 0.45, vFade * 0.06);
           }
         `,
       });
@@ -111,7 +111,7 @@ const HeroSection = () => {
             if (d > 1.0) discard;
             float core = exp(-d * d * 5.0) * vAlpha;
             float halo = (1.0 - d * d) * vAlpha * 0.15;
-            gl_FragColor = vec4(0.5, 0.45, 0.42, (core + halo) * 0.35);
+            gl_FragColor = vec4(0.45, 0.5, 0.58, (core + halo) * 0.4);
           }
         `,
       });
@@ -232,15 +232,20 @@ const HeroSection = () => {
         varying float vDist;
         uniform float uTime;
         void main() {
-          float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 260.0, vDist));
+          float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(180.0, 300.0, vDist));
           float pulse = 0.6 + 0.4 * sin(uTime * 1.5 + vDist * 0.04);
-          vec3 grey   = vec3(0.35, 0.32, 0.3);
-          vec3 orange = vec3(0.95, 0.55, 0.15);
-          vec3 red    = vec3(0.85, 0.18, 0.12);
-          vec3 col = vOutcome < 0.5
-            ? mix(grey, orange, vOutcome * 2.0)
-            : mix(orange, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col, fade * pulse * 0.1);
+          // 5-color palette: blue → green → grey → orange → red
+          vec3 blue   = vec3(0.2, 0.45, 0.9);
+          vec3 green  = vec3(0.15, 0.8, 0.45);
+          vec3 grey   = vec3(0.4, 0.42, 0.45);
+          vec3 orange = vec3(0.95, 0.55, 0.18);
+          vec3 red    = vec3(0.85, 0.2, 0.15);
+          vec3 col;
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
+          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
+          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
+          gl_FragColor = vec4(col, fade * pulse * 0.12);
         }
       `,
     });
@@ -294,14 +299,18 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 grey   = vec3(0.4, 0.36, 0.33);
-          vec3 orange = vec3(1.0, 0.6, 0.18);
-          vec3 red    = vec3(0.9, 0.2, 0.12);
-          vec3 col = vOutcome < 0.5
-            ? mix(grey, orange, vOutcome * 2.0)
-            : mix(orange, red, (vOutcome - 0.5) * 2.0);
+          vec3 blue   = vec3(0.25, 0.5, 1.0);
+          vec3 green  = vec3(0.2, 0.9, 0.5);
+          vec3 grey   = vec3(0.45, 0.45, 0.48);
+          vec3 orange = vec3(1.0, 0.6, 0.2);
+          vec3 red    = vec3(0.9, 0.22, 0.15);
+          vec3 col;
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
+          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
+          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.6);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.65);
         }
       `,
     });
@@ -343,9 +352,9 @@ const HeroSection = () => {
           vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
-          vAlpha = smoothstep(5.0, 18.0, d) * (1.0 - smoothstep(140.0, 230.0, d));
+          vAlpha = smoothstep(5.0, 15.0, d) * (1.0 - smoothstep(160.0, 280.0, d));
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = max(2.0, 6.0 * vAlpha * (120.0 / -mv.z));
+          gl_PointSize = max(3.0, 9.0 * vAlpha * (140.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
       `,
@@ -356,15 +365,21 @@ const HeroSection = () => {
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
-          float core = exp(-d * d * 3.0);
-          float glow = exp(-d * 1.0) * 0.5;
-          vec3 grey   = vec3(0.45, 0.4, 0.37);
-          vec3 orange = vec3(1.0, 0.6, 0.2);
-          vec3 red    = vec3(0.9, 0.22, 0.12);
-          vec3 col = vOutcome < 0.5
-            ? mix(grey, orange, vOutcome * 2.0)
-            : mix(orange, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.55);
+          float core = exp(-d * d * 2.5);
+          float glow = exp(-d * 0.8) * 0.6;
+          float outer = exp(-d * 0.4) * 0.2;
+          vec3 blue   = vec3(0.3, 0.55, 1.0);
+          vec3 green  = vec3(0.25, 1.0, 0.55);
+          vec3 grey   = vec3(0.5, 0.5, 0.55);
+          vec3 orange = vec3(1.0, 0.65, 0.2);
+          vec3 red    = vec3(0.95, 0.25, 0.15);
+          vec3 col;
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
+          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
+          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
+          float bright = core + glow + outer;
+          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.8);
         }
       `,
     });
@@ -399,11 +414,12 @@ const HeroSection = () => {
             float t = mod(uTime * 0.5 + uPhase, 6.0);
             float fade = (1.0 - t / 6.0);
             float ring = smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
-            vec3 grey = vec3(0.4, 0.35, 0.32);
+            vec3 blue = vec3(0.25, 0.45, 0.85);
+            vec3 green = vec3(0.2, 0.8, 0.45);
             vec3 orange = vec3(0.9, 0.5, 0.15);
-            float pulse = 0.5 + 0.5 * sin(uTime * 2.0 + uPhase * 3.0);
-            vec3 col = mix(grey, orange, pulse * 0.5);
-            gl_FragColor = vec4(col, ring * fade * fade * 0.07);
+            float cycle = fract(uPhase * 0.33);
+            vec3 col = cycle < 0.33 ? mix(blue, green, cycle * 3.0) : cycle < 0.66 ? mix(green, orange, (cycle - 0.33) * 3.0) : mix(orange, blue, (cycle - 0.66) * 3.0);
+            gl_FragColor = vec4(col, ring * fade * fade * 0.08);
           }
         `,
       });
@@ -599,7 +615,7 @@ const HeroSection = () => {
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 55% 45% at 50% 50%, rgba(5,7,8,0.5) 0%, rgba(5,7,8,0.75) 45%, #050708 100%)",
+        background: "radial-gradient(ellipse 50% 42% at 50% 50%, rgba(5,7,8,0.55) 0%, rgba(5,7,8,0.4) 50%, rgba(5,7,8,0.15) 80%, transparent 100%)",
       }} />
 
       {/* Film grain */}
