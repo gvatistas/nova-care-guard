@@ -453,7 +453,7 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.15 }}
               className="border p-7 text-center w-full relative overflow-hidden z-10"
-              style={{ borderColor: `${TEAL}25`, background: `${TEAL}06`, boxShadow: `0 0 20px ${TEAL}08` }}
+              style={{ borderColor: `${POSITIVE}25`, background: `${POSITIVE}06`, boxShadow: `0 0 20px ${POSITIVE}08` }}
             >
               <motion.div className="absolute inset-0 pointer-events-none"
                 animate={{ opacity: [0, 0.05, 0] }}
