@@ -478,7 +478,7 @@ const PatientNarrativeSection = () => {
         >
           <ShapeshiftingLogo size={100} />
           <div>
-            <p className="text-xs uppercase tracking-[0.12em] mb-1" style={{ color: TEAL }}>Medient Engine</p>
+            <p className="text-xs uppercase tracking-[0.12em] mb-1" style={{ color: POSITIVE }}>Medient Engine</p>
             <p className="text-white/45 text-[13px] leading-relaxed">
               Compiled clinical decision infrastructure analyzing 23 guideline pathways in &lt;0.3s
             </p>
