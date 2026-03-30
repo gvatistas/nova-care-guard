@@ -212,7 +212,7 @@ const ProjectAlphaSection = () => {
               <div className="flex items-center gap-4 font-mono" style={{ fontSize: "0.75rem" }}>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: GREEN }} /> Active</span>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: AMBER }} /> Deploying</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "rgba(255,255,255,0.5)" }} /> Pending</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: RED }} /> Pending</span>
               </div>
               <span className="font-mono tracking-[0.1em]" style={{ fontSize: "0.875rem", color: greenCount === totalClinics ? GREEN : AMBER }}>
                 {greenCount === totalClinics ? "FULLY OPERATIONAL" : "DEPLOYING..."}
