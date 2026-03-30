@@ -75,7 +75,7 @@ const EngineBackground: FC = () => {
             ))}
           </motion.g>
         </AnimatePresence>
-        <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke={TEAL} strokeWidth="1.5" strokeLinejoin="miter" initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }} transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }} />
+        <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke={POSITIVE} strokeWidth="1.5" strokeLinejoin="miter" initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }} transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }} />
         <AnimatePresence mode="wait">
           <motion.g key={`s${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
             {INNER_STRUCTURES[idx]?.map((d, i) => (
