@@ -317,7 +317,7 @@ const HeroSection = () => {
     disposables.push(activeNodeGeo, activeNodeMat);
 
     // ─── PULSE PARTICLES — traveling along decision path edges on the grid ───
-    const PULSE_COUNT = 200;
+    const PULSE_COUNT = 400;
     const pulsePos = new Float32Array(PULSE_COUNT * 3);
     const pulseProgress = new Float32Array(PULSE_COUNT);
     const pulseEdge = new Int32Array(PULSE_COUNT);
