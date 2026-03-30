@@ -19,7 +19,7 @@ const HeroSection = () => {
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(BG, 0.004);
+    scene.fog = new THREE.FogExp2(BG, 0.005);
     const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 800);
     camera.position.set(0, 0, 0);
     camera.lookAt(0, 0, -100);
