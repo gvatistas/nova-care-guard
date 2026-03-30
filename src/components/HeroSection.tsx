@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import FacetedCrownLogo from "./FacetedCrownLogo";
 
-const BG = 0x050708;
+const BG = 0x030405;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
