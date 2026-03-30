@@ -292,20 +292,24 @@ const HeroSection = () => {
       fragmentShader: `
         varying float vOutcome;
         varying float vAlpha;
+        uniform float uTime;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 green = vec3(0.0, 1.0, 0.5);
-          vec3 amber = vec3(1.0, 0.75, 0.1);
-          vec3 red   = vec3(1.0, 0.18, 0.1);
+          vec3 teal    = vec3(0.12, 0.6, 0.55);
+          vec3 green   = vec3(0.2, 1.0, 0.6);
+          vec3 red     = vec3(0.95, 0.2, 0.15);
           vec3 col = vOutcome < 0.5
-            ? mix(green, amber, vOutcome * 2.0)
-            : mix(amber, red, (vOutcome - 0.5) * 2.0);
+            ? mix(teal, green, (0.5 - vOutcome) * 2.0)
+            : mix(teal, red, smoothstep(0.5, 1.0, vOutcome));
+          // Animate red alerts resolving to green
+          float resolve = smoothstep(0.7, 1.0, vOutcome) * (0.5 + 0.5 * sin(uTime * 4.0 + gl_FragCoord.x * 0.01));
+          col = mix(col, green, resolve * 0.7);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.85);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.7);
         }
       `,
     });
