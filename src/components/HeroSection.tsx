@@ -4,17 +4,7 @@ import * as THREE from "three";
 import FacetedCrownLogo from "./FacetedCrownLogo";
 
 const BG = 0x0a0c0f;
-const TEAL = 0x00ffd4;
-
-const PATHWAYS = [
-  { color: 0x00d4ff, label: "LUNG CANCER\nSCREENING", nodes: 3 },
-  { color: 0xffaa00, label: "COLORECTAL\nDETECTION", nodes: 3 },
-  { color: 0xff4444, label: "CARDIOVASCULAR\nRISK", nodes: 3 },
-  { color: 0xaa44ff, label: "DIABETES\nMANAGEMENT", nodes: 3 },
-];
-
-interface NodeInfo { pos: THREE.Vector3; color: THREE.Color; isHub: boolean; }
-interface EdgeInfo { from: number; to: number; color: THREE.Color; }
+const TEAL = 0x00d4aa;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -30,181 +20,135 @@ const HeroSection = () => {
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(BG, 0.018);
+    scene.fog = new THREE.FogExp2(BG, 0.025);
     const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 200);
-    camera.position.set(0, 2, 28);
+    camera.position.set(0, 0, 30);
 
-    const treeGroup = new THREE.Group();
-    scene.add(treeGroup);
+    const meshGroup = new THREE.Group();
+    scene.add(meshGroup);
 
-    const nodes: NodeInfo[] = [];
-    const edges: EdgeInfo[] = [];
+    // Generate a massive spherical/toroidal neural mesh
+    const NODE_COUNT = 400;
+    const nodePositions: THREE.Vector3[] = [];
+    const edgePairs: [number, number][] = [];
 
-    // Root node — large
-    const rootPos = new THREE.Vector3(0, 8, 0);
-    nodes.push({ pos: rootPos, color: new THREE.Color(TEAL), isHub: true });
-    const rootIdx = 0;
-
-    // 4 pathways
-    const spread = 5.5;
-    PATHWAYS.forEach((pw, pi) => {
-      const xBase = (pi - 1.5) * spread;
-      const pwColor = new THREE.Color(pw.color);
-      for (let ni = 0; ni < pw.nodes; ni++) {
-        const y = 8 - (ni + 1) * 3.5;
-        const x = xBase + (Math.random() - 0.5) * 0.8;
-        const z = (Math.random() - 0.5) * 2;
-        const idx = nodes.length;
-        nodes.push({ pos: new THREE.Vector3(x, y, z), color: pwColor, isHub: false });
-        const fromIdx = ni === 0 ? rootIdx : idx - 1;
-        edges.push({ from: fromIdx, to: idx, color: pwColor });
-      }
-    });
-
-    // Bottom convergence
-    const bottomPos = new THREE.Vector3(0, -6, 0);
-    const bottomIdx = nodes.length;
-    nodes.push({ pos: bottomPos, color: new THREE.Color(TEAL), isHub: true });
-    PATHWAYS.forEach((pw, pi) => {
-      const lastNodeIdx = rootIdx + 1 + pi * pw.nodes + (pw.nodes - 1);
-      edges.push({ from: lastNodeIdx, to: bottomIdx, color: new THREE.Color(pw.color) });
-    });
-
-    // Render nodes
-    const sphereGeo = new THREE.SphereGeometry(1, 16, 16);
-    const diamondGeo = new THREE.OctahedronGeometry(1, 0);
-    const glowCircleGeo = new THREE.RingGeometry(0.8, 1.2, 32);
-    const hubMeshes: THREE.Mesh[] = [];
-    const diamondMeshes: THREE.Mesh[] = [];
-
-    nodes.forEach((n) => {
-      if (n.isHub) {
-        const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95 });
-        const mesh = new THREE.Mesh(sphereGeo, mat);
-        mesh.scale.setScalar(0.5);
-        mesh.position.copy(n.pos);
-        treeGroup.add(mesh);
-        hubMeshes.push(mesh);
-
-        // Outer glow
-        const gMat = new THREE.MeshBasicMaterial({ color: n.color, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
-        const glow = new THREE.Mesh(glowCircleGeo, gMat);
-        glow.scale.setScalar(1.5);
-        glow.position.copy(n.pos);
-        treeGroup.add(glow);
-
-        // Second glow ring
-        const g2Mat = new THREE.MeshBasicMaterial({ color: n.color, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-        const g2 = new THREE.Mesh(glowCircleGeo, g2Mat);
-        g2.scale.setScalar(2.5);
-        g2.position.copy(n.pos);
-        treeGroup.add(g2);
-      } else {
-        const mat = new THREE.MeshBasicMaterial({ color: n.color, transparent: true, opacity: 0.7 });
-        const mesh = new THREE.Mesh(diamondGeo, mat);
-        mesh.scale.setScalar(0.3);
-        mesh.position.copy(n.pos);
-        treeGroup.add(mesh);
-        diamondMeshes.push(mesh);
-
-        // Halo
-        const hMat = new THREE.MeshBasicMaterial({ color: n.color, transparent: true, opacity: 0.1, side: THREE.DoubleSide });
-        const halo = new THREE.Mesh(glowCircleGeo, hMat);
-        halo.scale.setScalar(0.6);
-        halo.position.copy(n.pos);
-        treeGroup.add(halo);
-      }
-    });
-
-    // Edges as thicker glowing lines
-    edges.forEach((e) => {
-      const positions = new Float32Array([
-        nodes[e.from].pos.x, nodes[e.from].pos.y, nodes[e.from].pos.z,
-        nodes[e.to].pos.x, nodes[e.to].pos.y, nodes[e.to].pos.z,
-      ]);
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-
-      // Main line
-      const mat = new THREE.LineBasicMaterial({ color: e.color, transparent: true, opacity: 0.3 });
-      treeGroup.add(new THREE.LineSegments(geo, mat));
-
-      // Glow line
-      const gMat = new THREE.LineBasicMaterial({ color: e.color, transparent: true, opacity: 0.1, linewidth: 2 });
-      treeGroup.add(new THREE.LineSegments(geo.clone(), gMat));
-    });
-
-    // Patient pulses
-    const PULSE_COUNT = 60;
-    const pulsePos = new Float32Array(PULSE_COUNT * 3);
-    const pulseColors = new Float32Array(PULSE_COUNT * 3);
-    interface Pulse { edgeIdx: number; t: number; speed: number; }
-    const pulses: Pulse[] = [];
-
-    for (let i = 0; i < PULSE_COUNT; i++) {
-      const edgeIdx = Math.floor(Math.random() * edges.length);
-      pulses.push({ edgeIdx, t: Math.random(), speed: 0.002 + Math.random() * 0.005 });
-      const isWhite = Math.random() < 0.25;
-      const c = isWhite ? new THREE.Color(0xffffff) : new THREE.Color(edges[edgeIdx].color);
-      pulseColors[i * 3] = c.r;
-      pulseColors[i * 3 + 1] = c.g;
-      pulseColors[i * 3 + 2] = c.b;
+    // Create nodes on a toroidal surface with some randomization
+    for (let i = 0; i < NODE_COUNT; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI * 2;
+      const R = 12 + Math.sin(phi * 3) * 2; // Major radius with variation
+      const r = 5 + Math.random() * 2; // Minor radius
+      const x = (R + r * Math.cos(phi)) * Math.cos(theta) + (Math.random() - 0.5) * 2;
+      const y = r * Math.sin(phi) + (Math.random() - 0.5) * 2;
+      const z = (R + r * Math.cos(phi)) * Math.sin(theta) + (Math.random() - 0.5) * 2;
+      nodePositions.push(new THREE.Vector3(x, y, z));
     }
-    const pulseGeo = new THREE.BufferGeometry();
-    pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulsePos, 3));
-    pulseGeo.setAttribute("color", new THREE.BufferAttribute(pulseColors, 3));
-    const pulseMat = new THREE.PointsMaterial({ size: 0.12, transparent: true, opacity: 0.85, vertexColors: true, sizeAttenuation: true });
-    treeGroup.add(new THREE.Points(pulseGeo, pulseMat));
 
-    // Trail particles (afterglow)
-    const TRAIL_COUNT = 180;
-    const trailPos = new Float32Array(TRAIL_COUNT * 3);
-    const trailColors = new Float32Array(TRAIL_COUNT * 3);
-    const trailOpacities = new Float32Array(TRAIL_COUNT);
-    let trailIdx = 0;
-    const trailGeo = new THREE.BufferGeometry();
-    trailGeo.setAttribute("position", new THREE.BufferAttribute(trailPos, 3));
-    trailGeo.setAttribute("color", new THREE.BufferAttribute(trailColors, 3));
-    const trailMat = new THREE.PointsMaterial({ size: 0.06, transparent: true, opacity: 0.4, vertexColors: true, sizeAttenuation: true });
-    treeGroup.add(new THREE.Points(trailGeo, trailMat));
+    // Connect nearby nodes
+    const CONNECTION_DIST = 6;
+    for (let i = 0; i < NODE_COUNT; i++) {
+      let connections = 0;
+      for (let j = i + 1; j < NODE_COUNT && connections < 4; j++) {
+        const dist = nodePositions[i].distanceTo(nodePositions[j]);
+        if (dist < CONNECTION_DIST) {
+          edgePairs.push([i, j]);
+          connections++;
+        }
+      }
+    }
 
-    // Ambient particles
-    const AMB_COUNT = 300;
-    const ambPos = new Float32Array(AMB_COUNT * 3);
-    const ambVel = new Float32Array(AMB_COUNT * 3);
-    for (let i = 0; i < AMB_COUNT; i++) {
-      ambPos[i * 3] = (Math.random() - 0.5) * 50;
-      ambPos[i * 3 + 1] = (Math.random() - 0.5) * 30;
-      ambPos[i * 3 + 2] = (Math.random() - 0.5) * 25;
-      ambVel[i * 3] = (Math.random() - 0.5) * 0.001;
-      ambVel[i * 3 + 1] = (Math.random() - 0.5) * 0.001;
-      ambVel[i * 3 + 2] = (Math.random() - 0.5) * 0.001;
+    // Node points
+    const nodeGeoPos = new Float32Array(NODE_COUNT * 3);
+    const nodeSizes = new Float32Array(NODE_COUNT);
+    for (let i = 0; i < NODE_COUNT; i++) {
+      nodeGeoPos[i * 3] = nodePositions[i].x;
+      nodeGeoPos[i * 3 + 1] = nodePositions[i].y;
+      nodeGeoPos[i * 3 + 2] = nodePositions[i].z;
+      nodeSizes[i] = 0.06 + Math.random() * 0.08;
+    }
+    const nodeGeo = new THREE.BufferGeometry();
+    nodeGeo.setAttribute("position", new THREE.BufferAttribute(nodeGeoPos, 3));
+    nodeGeo.setAttribute("size", new THREE.BufferAttribute(nodeSizes, 1));
+
+    // Custom shader for depth-based brightness
+    const nodeMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uCameraPos: { value: camera.position },
+        uColor: { value: new THREE.Color(0xccdddd) },
+        uTeal: { value: new THREE.Color(TEAL) },
+        uTime: { value: 0 },
+      },
+      vertexShader: `
+        attribute float size;
+        varying float vDist;
+        varying vec3 vWorldPos;
+        void main() {
+          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+          vDist = -mvPos.z;
+          vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+          gl_PointSize = size * (200.0 / -mvPos.z);
+          gl_Position = projectionMatrix * mvPos;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        varying float vDist;
+        void main() {
+          float d = length(gl_PointCoord - 0.5) * 2.0;
+          if (d > 1.0) discard;
+          float brightness = clamp(1.0 - (vDist - 10.0) / 40.0, 0.15, 1.0);
+          float alpha = (1.0 - d * d) * brightness * 0.7;
+          gl_FragColor = vec4(uColor, alpha);
+        }
+      `,
+    });
+    meshGroup.add(new THREE.Points(nodeGeo, nodeMat));
+
+    // Edges as line segments with low opacity
+    const edgePositions = new Float32Array(edgePairs.length * 6);
+    for (let i = 0; i < edgePairs.length; i++) {
+      const [a, b] = edgePairs[i];
+      edgePositions[i * 6] = nodePositions[a].x;
+      edgePositions[i * 6 + 1] = nodePositions[a].y;
+      edgePositions[i * 6 + 2] = nodePositions[a].z;
+      edgePositions[i * 6 + 3] = nodePositions[b].x;
+      edgePositions[i * 6 + 4] = nodePositions[b].y;
+      edgePositions[i * 6 + 5] = nodePositions[b].z;
+    }
+    const edgeGeo = new THREE.BufferGeometry();
+    edgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePositions, 3));
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x334455, transparent: true, opacity: 0.08 });
+    meshGroup.add(new THREE.LineSegments(edgeGeo, edgeMat));
+
+    // Pulse system — teal ripples from random nodes
+    const PULSE_COUNT = 12;
+    interface PulseInfo { origin: THREE.Vector3; radius: number; life: number; maxLife: number; }
+    const activePulses: PulseInfo[] = [];
+    const pulseEdgeColors = new Float32Array(edgePairs.length * 6);
+    const pulseEdgeGeo = new THREE.BufferGeometry();
+    pulseEdgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePositions.slice(), 3));
+    pulseEdgeGeo.setAttribute("color", new THREE.BufferAttribute(pulseEdgeColors, 3));
+    const pulseEdgeMat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.5 });
+    meshGroup.add(new THREE.LineSegments(pulseEdgeGeo, pulseEdgeMat));
+
+    // Ambient micro-particles
+    const AMBIENT_COUNT = 350;
+    const ambPos = new Float32Array(AMBIENT_COUNT * 3);
+    const ambVel = new Float32Array(AMBIENT_COUNT * 3);
+    for (let i = 0; i < AMBIENT_COUNT; i++) {
+      ambPos[i * 3] = (Math.random() - 0.5) * 60;
+      ambPos[i * 3 + 1] = (Math.random() - 0.5) * 40;
+      ambPos[i * 3 + 2] = (Math.random() - 0.5) * 30;
+      ambVel[i * 3] = (Math.random() - 0.5) * 0.003;
+      ambVel[i * 3 + 1] = (Math.random() - 0.5) * 0.003;
+      ambVel[i * 3 + 2] = (Math.random() - 0.5) * 0.003;
     }
     const ambGeo = new THREE.BufferGeometry();
     ambGeo.setAttribute("position", new THREE.BufferAttribute(ambPos, 3));
-    const ambMat = new THREE.PointsMaterial({ size: 0.03, color: 0x334455, transparent: true, opacity: 0.2, sizeAttenuation: true });
-    treeGroup.add(new THREE.Points(ambGeo, ambMat));
-
-    // Pathway label sprites
-    PATHWAYS.forEach((pw, pi) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 256;
-      canvas.height = 128;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = `#${new THREE.Color(pw.color).getHexString()}`;
-      ctx.font = "bold 20px Inter, system-ui, sans-serif";
-      ctx.textAlign = "center";
-      const lines = pw.label.split("\n");
-      lines.forEach((line, li) => ctx.fillText(line, 128, 50 + li * 28));
-
-      const tex = new THREE.CanvasTexture(canvas);
-      const spriteMat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.5 });
-      const sprite = new THREE.Sprite(spriteMat);
-      const xBase = (pi - 1.5) * spread;
-      sprite.position.set(xBase, 8 - 2.2 * 3.5 - 2, 0);
-      sprite.scale.set(4, 2, 1);
-      treeGroup.add(sprite);
-    });
+    const ambMat = new THREE.PointsMaterial({ size: 0.04, color: 0x556677, transparent: true, opacity: 0.15, sizeAttenuation: true });
+    meshGroup.add(new THREE.Points(ambGeo, ambMat));
 
     // Mouse parallax
     const mouse = { x: 0, y: 0 };
@@ -224,90 +168,82 @@ const HeroSection = () => {
 
     let raf = 0;
     let frame = 0;
-    const lookTarget = new THREE.Vector3(0, 2, 0);
+    const tealColor = new THREE.Color(TEAL);
 
     const animate = () => {
       raf = requestAnimationFrame(animate);
       frame++;
 
-      treeGroup.rotation.y += 0.0005;
-      treeGroup.rotation.x = Math.sin(frame * 0.0002) * 0.06;
+      // Slow rotation + breathing
+      meshGroup.rotation.y += 0.0005;
+      const breathe = 0.98 + Math.sin(frame * 0.001) * 0.02;
+      meshGroup.scale.setScalar(breathe);
 
-      // Hub pulse
-      hubMeshes.forEach((mesh, i) => {
-        const s = 0.5 * (1 + Math.sin(frame * 0.003 + i * 2) * 0.15);
-        mesh.scale.setScalar(s);
-      });
+      // Spawn pulses
+      if (frame % 60 === 0 && activePulses.length < PULSE_COUNT) {
+        const originIdx = Math.floor(Math.random() * NODE_COUNT);
+        activePulses.push({
+          origin: nodePositions[originIdx].clone(),
+          radius: 0,
+          life: 0,
+          maxLife: 120 + Math.random() * 60,
+        });
+      }
 
-      // Diamond rotation + pulse
-      diamondMeshes.forEach((mesh, i) => {
-        mesh.rotation.y += 0.005;
-        const s = 0.3 * (1 + Math.sin(frame * 0.004 + i) * 0.15);
-        mesh.scale.setScalar(s);
-      });
+      // Reset pulse edge colors
+      pulseEdgeColors.fill(0);
 
-      // Pulses
-      const pArr = pulseGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < PULSE_COUNT; i++) {
-        const p = pulses[i];
-        p.t += p.speed;
-        if (p.t >= 1) {
-          p.t = 0;
-          p.edgeIdx = Math.floor(Math.random() * edges.length);
-          const isWhite = Math.random() < 0.25;
-          const c = isWhite ? new THREE.Color(0xffffff) : new THREE.Color(edges[p.edgeIdx].color);
-          pulseColors[i * 3] = c.r;
-          pulseColors[i * 3 + 1] = c.g;
-          pulseColors[i * 3 + 2] = c.b;
+      // Update pulses and illuminate edges
+      for (let pi = activePulses.length - 1; pi >= 0; pi--) {
+        const pulse = activePulses[pi];
+        pulse.life++;
+        pulse.radius += 0.15;
+        const intensity = Math.max(0, 1 - pulse.life / pulse.maxLife);
+
+        if (pulse.life > pulse.maxLife) {
+          activePulses.splice(pi, 1);
+          continue;
         }
-        const e = edges[p.edgeIdx];
-        const a = nodes[e.from].pos, b = nodes[e.to].pos;
-        const x = a.x + (b.x - a.x) * p.t;
-        const y = a.y + (b.y - a.y) * p.t;
-        const z = a.z + (b.z - a.z) * p.t;
-        pArr[i * 3] = x;
-        pArr[i * 3 + 1] = y;
-        pArr[i * 3 + 2] = z;
 
-        // Trail
-        if (frame % 3 === 0 && i < 20) {
-          const ti = trailIdx % TRAIL_COUNT;
-          trailPos[ti * 3] = x;
-          trailPos[ti * 3 + 1] = y;
-          trailPos[ti * 3 + 2] = z;
-          trailColors[ti * 3] = pulseColors[i * 3];
-          trailColors[ti * 3 + 1] = pulseColors[i * 3 + 1];
-          trailColors[ti * 3 + 2] = pulseColors[i * 3 + 2];
-          trailOpacities[ti] = 1;
-          trailIdx++;
+        for (let ei = 0; ei < edgePairs.length; ei++) {
+          const [a, b] = edgePairs[ei];
+          const midX = (nodePositions[a].x + nodePositions[b].x) * 0.5;
+          const midY = (nodePositions[a].y + nodePositions[b].y) * 0.5;
+          const midZ = (nodePositions[a].z + nodePositions[b].z) * 0.5;
+          const dx = midX - pulse.origin.x;
+          const dy = midY - pulse.origin.y;
+          const dz = midZ - pulse.origin.z;
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          const ringDist = Math.abs(dist - pulse.radius);
+          if (ringDist < 2) {
+            const glow = intensity * Math.max(0, 1 - ringDist / 2) * 0.6;
+            for (let v = 0; v < 2; v++) {
+              const ci = ei * 6 + v * 3;
+              pulseEdgeColors[ci] = Math.min(1, pulseEdgeColors[ci] + tealColor.r * glow);
+              pulseEdgeColors[ci + 1] = Math.min(1, pulseEdgeColors[ci + 1] + tealColor.g * glow);
+              pulseEdgeColors[ci + 2] = Math.min(1, pulseEdgeColors[ci + 2] + tealColor.b * glow);
+            }
+          }
         }
       }
-      pulseGeo.attributes.position.needsUpdate = true;
-      pulseGeo.attributes.color.needsUpdate = true;
-
-      // Fade trails
-      for (let i = 0; i < TRAIL_COUNT; i++) {
-        trailOpacities[i] *= 0.97;
-      }
-      trailGeo.attributes.position.needsUpdate = true;
-      trailGeo.attributes.color.needsUpdate = true;
+      pulseEdgeGeo.attributes.color.needsUpdate = true;
 
       // Ambient drift
       const aArr = ambGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < AMB_COUNT; i++) {
+      for (let i = 0; i < AMBIENT_COUNT; i++) {
         aArr[i * 3] += ambVel[i * 3];
         aArr[i * 3 + 1] += ambVel[i * 3 + 1];
         aArr[i * 3 + 2] += ambVel[i * 3 + 2];
-        if (Math.abs(aArr[i * 3]) > 25) ambVel[i * 3] *= -1;
-        if (Math.abs(aArr[i * 3 + 1]) > 15) ambVel[i * 3 + 1] *= -1;
-        if (Math.abs(aArr[i * 3 + 2]) > 12) ambVel[i * 3 + 2] *= -1;
+        if (Math.abs(aArr[i * 3]) > 30) ambVel[i * 3] *= -1;
+        if (Math.abs(aArr[i * 3 + 1]) > 20) ambVel[i * 3 + 1] *= -1;
+        if (Math.abs(aArr[i * 3 + 2]) > 15) ambVel[i * 3 + 2] *= -1;
       }
       ambGeo.attributes.position.needsUpdate = true;
 
-      // Parallax
-      lookTarget.x += (mouse.x * 2 - lookTarget.x) * 0.015;
-      lookTarget.y += (-mouse.y * 1.5 + 2 - lookTarget.y) * 0.015;
-      camera.lookAt(lookTarget);
+      // Camera parallax
+      camera.position.x += (mouse.x * 1.5 - camera.position.x) * 0.02;
+      camera.position.y += (-mouse.y * 1 - camera.position.y) * 0.02;
+      camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
     };
@@ -319,36 +255,36 @@ const HeroSection = () => {
       window.removeEventListener("mousemove", onMouseMove);
       renderer.dispose();
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
-      sphereGeo.dispose(); diamondGeo.dispose(); glowCircleGeo.dispose();
-      pulseGeo.dispose(); trailGeo.dispose(); ambGeo.dispose();
-      pulseMat.dispose(); trailMat.dispose(); ambMat.dispose();
+      nodeGeo.dispose(); edgeGeo.dispose(); pulseEdgeGeo.dispose(); ambGeo.dispose();
+      nodeMat.dispose(); edgeMat.dispose(); pulseEdgeMat.dispose(); ambMat.dispose();
     };
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen overflow-hidden">
+      {/* 3D canvas — absolute background */}
       <div ref={mountRef} className="absolute inset-0 z-0" />
 
       {/* Radial vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 50% 50% at 50% 50%, transparent 0%, #0a0c0f 100%)",
+        background: "radial-gradient(ellipse 60% 60% at 50% 50%, transparent 0%, #0a0c0f 100%)",
       }} />
 
-      {/* Film grain overlay */}
+      {/* Film grain */}
       <div className="absolute inset-0 z-[6] pointer-events-none opacity-[0.03]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         backgroundSize: "128px 128px",
       }} />
 
-      {/* Hero content */}
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-24">
-        <div className="max-w-3xl flex flex-col">
+      {/* Hero content — centered overlay */}
+      <div className="relative z-10 flex h-full w-full items-center justify-center">
+        <div className="max-w-3xl flex flex-col items-center text-center px-6">
           <motion.div
             animate={{ opacity: [0.4, 0.7, 0.4] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="mb-8"
           >
-            <FacetedCrownLogo size={80} />
+            <FacetedCrownLogo size={72} />
           </motion.div>
 
           <motion.h1
@@ -360,7 +296,7 @@ const HeroSection = () => {
               fontSize: "clamp(2.5rem, 5vw, 4rem)",
               lineHeight: 1.08,
               letterSpacing: "-0.03em",
-              textShadow: "0 0 40px rgba(0,0,0,0.8)",
+              textShadow: "0 0 60px rgba(0,0,0,0.9), 0 0 120px rgba(0,0,0,0.5)",
             }}
           >
             Unlocking the proactive healthcare patients deserve.
@@ -375,7 +311,7 @@ const HeroSection = () => {
               maxWidth: 640,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              textShadow: "0 0 20px rgba(0,0,0,0.6)",
+              textShadow: "0 0 30px rgba(0,0,0,0.8)",
             }}
           >
             The healthcare system was not built for prevention. We are changing
