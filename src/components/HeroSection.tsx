@@ -3,29 +3,7 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import FacetedCrownLogo from "./FacetedCrownLogo";
 
-const BG = 0x060809;
-const TEAL = 0x00d4aa;
-const DEEP_TEAL = 0x007a60;
-const LILAC = 0x6a5acd;
-const COLD_BLUE = 0x1a2a4a;
-
-interface TreeNode {
-  pos: THREE.Vector3;
-  depth: number;
-  parent: number;
-  children: number[];
-  active: boolean;
-  activatedAt: number;
-}
-
-interface PathParticle {
-  nodeFrom: number;
-  nodeTo: number;
-  t: number;
-  speed: number;
-  color: THREE.Color;
-  born: number;
-}
+const BG = 0x050708;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -38,311 +16,228 @@ const HeroSection = () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setClearColor(BG, 1);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.9;
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(BG, 0.006);
-    const camera = new THREE.PerspectiveCamera(65, container.clientWidth / container.clientHeight, 0.1, 500);
-    camera.position.set(0, 0, 60);
+    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 600);
+    camera.position.set(0, 0, 0);
+    camera.lookAt(0, 0, -100);
 
-    const worldGroup = new THREE.Group();
-    scene.add(worldGroup);
+    // ─── Infinite corridor mesh — floor + ceiling ───
+    const GRID_W = 80;
+    const GRID_D = 120;
+    const SPACING = 2.2;
 
-    const aspect = container.clientWidth / container.clientHeight;
+    const createGridPlane = (yOffset: number, flip: boolean) => {
+      const group = new THREE.Group();
 
-    // ─── LAYER 0: Deep nebula fog planes ───
-    const nebulaMats: THREE.ShaderMaterial[] = [];
-    for (let i = 0; i < 3; i++) {
-      const planeGeo = new THREE.PlaneGeometry(220, 140, 1, 1);
-      const nebMat = new THREE.ShaderMaterial({
-        transparent: true, depthWrite: false, side: THREE.DoubleSide,
-        uniforms: { uTime: { value: 0 }, uLayer: { value: i }, uTeal: { value: new THREE.Color(DEEP_TEAL) }, uBlue: { value: new THREE.Color(COLD_BLUE) } },
-        vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-        fragmentShader: `
-          uniform float uTime, uLayer;
-          uniform vec3 uTeal, uBlue;
-          varying vec2 vUv;
-          float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-          float noise(vec2 p) { vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f); return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y); }
-          float fbm(vec2 p) { float v=0.0, a=0.5; for(int i=0;i<5;i++){v+=a*noise(p);p*=2.0;a*=0.5;} return v; }
-          void main() {
-            float speed = 0.02 + uLayer * 0.008;
-            vec2 p = vUv * (2.0 + uLayer * 0.5) + vec2(uTime * speed, uTime * speed * 0.3);
-            float n = fbm(p + fbm(p + uTime * 0.01));
-            float edgeFade = smoothstep(0.0,0.3,vUv.x)*smoothstep(0.0,0.3,1.0-vUv.x)*smoothstep(0.0,0.25,vUv.y)*smoothstep(0.0,0.25,1.0-vUv.y);
-            vec3 col = mix(uBlue, uTeal, n * 0.3);
-            gl_FragColor = vec4(col, n * 0.025 * edgeFade * (1.0 - uLayer * 0.2));
-          }`,
-      });
-      nebulaMats.push(nebMat);
-      const plane = new THREE.Mesh(planeGeo, nebMat);
-      plane.position.z = -35 - i * 18;
-      worldGroup.add(plane);
-    }
-
-    // ─── DECISION TREE — branching structure ───
-    const MAX_DEPTH = 8;
-    const nodes: TreeNode[] = [];
-    const spreadX = 50 * aspect;
-    const spreadY = 48;
-
-    // Build tree procedurally — starts from left, branches right & up/down
-    const buildTree = (parentIdx: number, depth: number, y: number, x: number, ySpread: number) => {
-      if (depth > MAX_DEPTH) return;
-      // 2-3 branches per node at early depths, fewer later
-      const branchCount = depth < 3 ? 2 + Math.floor(Math.random() * 2) : depth < 5 ? 2 : (Math.random() < 0.6 ? 2 : 1);
-      const stepX = (spreadX * 2) / (MAX_DEPTH + 2);
-
-      for (let b = 0; b < branchCount; b++) {
-        const angle = ((b / (branchCount - 1 || 1)) - 0.5) * ySpread;
-        const newY = y + angle + (Math.random() - 0.5) * 2;
-        const newX = x + stepX * (0.7 + Math.random() * 0.6);
-        const z = (Math.random() - 0.5) * 12;
-        const idx = nodes.length;
-        nodes.push({
-          pos: new THREE.Vector3(newX, newY, z),
-          depth,
-          parent: parentIdx,
-          children: [],
-          active: false,
-          activatedAt: -1,
-        });
-        nodes[parentIdx].children.push(idx);
-
-        // Recurse with diminishing spread
-        if (depth < MAX_DEPTH) {
-          buildTree(idx, depth + 1, newY, newX, ySpread * (0.5 + Math.random() * 0.2));
+      // Grid lines
+      const linePositions: number[] = [];
+      // Longitudinal lines (going into distance)
+      for (let x = -GRID_W / 2; x <= GRID_W / 2; x++) {
+        const xp = x * SPACING;
+        linePositions.push(xp, 0, 0, xp, 0, -GRID_D * SPACING);
+      }
+      // Lateral lines
+      for (let z = 0; z <= GRID_D; z++) {
+        const zp = -z * SPACING;
+        linePositions.push(-GRID_W / 2 * SPACING, 0, zp, GRID_W / 2 * SPACING, 0, zp);
+      }
+      // Diagonal connections for triangular mesh feel
+      for (let x = -GRID_W / 2; x < GRID_W / 2; x++) {
+        for (let z = 0; z < GRID_D; z += 2) {
+          const x1 = x * SPACING, x2 = (x + 1) * SPACING;
+          const z1 = -z * SPACING, z2 = -(z + 1) * SPACING;
+          linePositions.push(x1, 0, z1, x2, 0, z2);
+          linePositions.push(x2, 0, z1, x1, 0, z2);
         }
       }
+
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
+      const lineMat = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        uniforms: {
+          uCamZ: { value: 0 },
+          uTime: { value: 0 },
+        },
+        vertexShader: `
+          varying float vDist;
+          varying float vFade;
+          uniform float uCamZ;
+          void main() {
+            vec4 worldPos = modelMatrix * vec4(position, 1.0);
+            vDist = abs(worldPos.z - uCamZ);
+            vFade = smoothstep(0.0, 30.0, vDist) * (1.0 - smoothstep(180.0, 260.0, vDist));
+            gl_Position = projectionMatrix * viewMatrix * worldPos;
+          }
+        `,
+        fragmentShader: `
+          varying float vDist;
+          varying float vFade;
+          void main() {
+            float alpha = vFade * 0.08;
+            gl_FragColor = vec4(0.6, 0.7, 0.8, alpha);
+          }
+        `,
+      });
+      const lines = new THREE.LineSegments(lineGeo, lineMat);
+      group.add(lines);
+
+      // Node dots at intersections
+      const dotPositions: number[] = [];
+      const dotAlphas: number[] = [];
+      for (let x = -GRID_W / 2; x <= GRID_W / 2; x += 1) {
+        for (let z = 0; z <= GRID_D; z += 1) {
+          dotPositions.push(x * SPACING, 0, -z * SPACING);
+          // Brighter toward center column, fading at edges
+          const centerFade = 1 - Math.abs(x) / (GRID_W / 2) * 0.6;
+          dotAlphas.push(centerFade);
+        }
+      }
+      const dotGeo = new THREE.BufferGeometry();
+      dotGeo.setAttribute("position", new THREE.Float32BufferAttribute(dotPositions, 3));
+      dotGeo.setAttribute("alpha", new THREE.Float32BufferAttribute(dotAlphas, 1));
+
+      const dotMat = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uTime: { value: 0 },
+          uCamZ: { value: 0 },
+        },
+        vertexShader: `
+          attribute float alpha;
+          varying float vAlpha;
+          varying float vDist;
+          uniform float uTime;
+          uniform float uCamZ;
+          void main() {
+            vec4 worldPos = modelMatrix * vec4(position, 1.0);
+            vDist = abs(worldPos.z - uCamZ);
+            float distFade = smoothstep(0.0, 20.0, vDist) * (1.0 - smoothstep(150.0, 250.0, vDist));
+            float pulse = 1.0 + sin(uTime * 1.5 + position.x * 0.8 + position.z * 0.3) * 0.2;
+            vAlpha = alpha * distFade * pulse;
+            vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+            gl_PointSize = max(1.0, (3.5 * alpha * distFade) * (120.0 / -mvPos.z));
+            gl_Position = projectionMatrix * mvPos;
+          }
+        `,
+        fragmentShader: `
+          varying float vAlpha;
+          varying float vDist;
+          void main() {
+            float d = length(gl_PointCoord - 0.5) * 2.0;
+            if (d > 1.0) discard;
+            float core = exp(-d * d * 5.0) * vAlpha;
+            float halo = (1.0 - d * d) * vAlpha * 0.15;
+            float brightness = core + halo;
+            gl_FragColor = vec4(0.85, 0.9, 1.0, brightness * 0.5);
+          }
+        `,
+      });
+      const dots = new THREE.Points(dotGeo, dotMat);
+      group.add(dots);
+
+      group.position.y = yOffset;
+      if (flip) group.scale.y = -1;
+
+      return { group, lineMat, dotMat, lineGeo, dotGeo };
     };
 
-    // Root node — far left
-    nodes.push({
-      pos: new THREE.Vector3(-spreadX * 0.85, 0, 0),
-      depth: 0,
-      parent: -1,
-      children: [],
-      active: true,
-      activatedAt: 0,
-    });
-    buildTree(0, 1, 0, -spreadX * 0.85, spreadY * 0.8);
+    const floor = createGridPlane(-18, false);
+    const ceiling = createGridPlane(18, true);
+    scene.add(floor.group);
+    scene.add(ceiling.group);
 
-    // Build a second tree mirrored/offset for density
-    const secondRootIdx = nodes.length;
-    nodes.push({
-      pos: new THREE.Vector3(-spreadX * 0.7, spreadY * 0.3, -5),
-      depth: 0,
-      parent: -1,
-      children: [],
-      active: true,
-      activatedAt: 0,
-    });
-    buildTree(secondRootIdx, 1, spreadY * 0.3, -spreadX * 0.7, spreadY * 0.5);
-
-    const thirdRootIdx = nodes.length;
-    nodes.push({
-      pos: new THREE.Vector3(-spreadX * 0.75, -spreadY * 0.35, -3),
-      depth: 0,
-      parent: -1,
-      children: [],
-      active: true,
-      activatedAt: 0,
-    });
-    buildTree(thirdRootIdx, 1, -spreadY * 0.35, -spreadX * 0.75, spreadY * 0.45);
-
-    // Collect all edges
-    const edges: [number, number][] = [];
-    for (let i = 0; i < nodes.length; i++) {
-      for (const c of nodes[i].children) {
-        edges.push([i, c]);
-      }
-    }
-
-    // ── Node points geometry ──
-    const nodeGeoPos = new Float32Array(nodes.length * 3);
-    const nodeSizes = new Float32Array(nodes.length);
-    const nodeAlphas = new Float32Array(nodes.length);
-    for (let i = 0; i < nodes.length; i++) {
-      nodeGeoPos[i * 3] = nodes[i].pos.x;
-      nodeGeoPos[i * 3 + 1] = nodes[i].pos.y;
-      nodeGeoPos[i * 3 + 2] = nodes[i].pos.z;
-      const depthFade = 1 - nodes[i].depth / (MAX_DEPTH + 1);
-      nodeSizes[i] = (0.04 + depthFade * 0.12);
-      nodeAlphas[i] = 0;
-    }
-    const nodeGeo = new THREE.BufferGeometry();
-    nodeGeo.setAttribute("position", new THREE.BufferAttribute(nodeGeoPos, 3));
-    nodeGeo.setAttribute("size", new THREE.BufferAttribute(nodeSizes, 1));
-    nodeGeo.setAttribute("alpha", new THREE.BufferAttribute(nodeAlphas, 1));
-
-    const nodeMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      uniforms: { uTime: { value: 0 }, uTeal: { value: new THREE.Color(TEAL) } },
-      vertexShader: `
-        attribute float size, alpha;
-        varying float vAlpha;
+    // ─── Horizon glow ───
+    const horizonGeo = new THREE.PlaneGeometry(300, 8, 1, 1);
+    const horizonMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+      fragmentShader: `
         uniform float uTime;
+        varying vec2 vUv;
         void main() {
-          vAlpha = alpha;
-          float pulse = 1.0 + sin(uTime * 2.0 + position.x * 0.3) * 0.15 * alpha;
-          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = size * pulse * (320.0 / -mvPos.z);
-          gl_Position = projectionMatrix * mvPos;
-        }`,
-      fragmentShader: `
-        uniform vec3 uTeal;
-        varying float vAlpha;
-        void main() {
-          float d = length(gl_PointCoord - 0.5) * 2.0;
-          if (d > 1.0) discard;
-          float core = exp(-d*d*4.0) * vAlpha * 0.9;
-          float halo = (1.0 - d) * vAlpha * 0.15;
-          gl_FragColor = vec4(uTeal, core + halo);
-        }`,
+          float xFade = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 1.5);
+          float yFade = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 8.0);
+          float pulse = 0.8 + 0.2 * sin(uTime * 0.5);
+          float alpha = xFade * yFade * 0.12 * pulse;
+          gl_FragColor = vec4(0.7, 0.8, 0.95, alpha);
+        }
+      `,
     });
-    const nodePoints = new THREE.Points(nodeGeo, nodeMat);
-    worldGroup.add(nodePoints);
+    const horizonPlane = new THREE.Mesh(horizonGeo, horizonMat);
+    horizonPlane.position.set(0, 0, -260);
+    scene.add(horizonPlane);
 
-    // ── Edge lines ──
-    const edgePositions = new Float32Array(edges.length * 6);
-    const edgeColors = new Float32Array(edges.length * 6);
-    for (let i = 0; i < edges.length; i++) {
-      const [a, b] = edges[i];
-      edgePositions[i * 6] = nodes[a].pos.x; edgePositions[i * 6 + 1] = nodes[a].pos.y; edgePositions[i * 6 + 2] = nodes[a].pos.z;
-      edgePositions[i * 6 + 3] = nodes[b].pos.x; edgePositions[i * 6 + 4] = nodes[b].pos.y; edgePositions[i * 6 + 5] = nodes[b].pos.z;
+    // ─── Ambient dust ───
+    const DUST_COUNT = 400;
+    const dustPos = new Float32Array(DUST_COUNT * 3);
+    const dustVel = new Float32Array(DUST_COUNT * 3);
+    for (let i = 0; i < DUST_COUNT; i++) {
+      dustPos[i * 3] = (Math.random() - 0.5) * 100;
+      dustPos[i * 3 + 1] = (Math.random() - 0.5) * 30;
+      dustPos[i * 3 + 2] = -Math.random() * 200;
+      dustVel[i * 3] = (Math.random() - 0.5) * 0.003;
+      dustVel[i * 3 + 1] = (Math.random() - 0.5) * 0.002;
+      dustVel[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
     }
-    edgeColors.fill(0);
-    const edgeGeo = new THREE.BufferGeometry();
-    edgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePositions, 3));
-    edgeGeo.setAttribute("color", new THREE.BufferAttribute(edgeColors, 3));
-    const edgeMat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
-    worldGroup.add(new THREE.LineSegments(edgeGeo, edgeMat));
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+    const dustMat = new THREE.PointsMaterial({
+      size: 0.08, color: 0x556677, transparent: true, opacity: 0.08,
+      sizeAttenuation: true, blending: THREE.AdditiveBlending,
+    });
+    scene.add(new THREE.Points(dustGeo, dustMat));
 
-    // ── Dim base edges (always visible, very faint) ──
-    const baseEdgeMat = new THREE.LineBasicMaterial({ color: 0x0d1a25, transparent: true, opacity: 0.06 });
-    worldGroup.add(new THREE.LineSegments(edgeGeo.clone(), baseEdgeMat));
-
-    // ── Path particles — data flowing through the tree ──
-    const MAX_PARTICLES = 800;
-    const particles: PathParticle[] = [];
-    const particlePos = new Float32Array(MAX_PARTICLES * 3);
-    const particleAlphas = new Float32Array(MAX_PARTICLES);
-    const particleGeo = new THREE.BufferGeometry();
-    particleGeo.setAttribute("position", new THREE.BufferAttribute(particlePos, 3));
-    particleGeo.setAttribute("alpha", new THREE.BufferAttribute(particleAlphas, 1));
-    const particleMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      uniforms: { uTeal: { value: new THREE.Color(TEAL) }, uLilac: { value: new THREE.Color(LILAC) } },
-      vertexShader: `
-        attribute float alpha;
-        varying float vAlpha;
-        void main() {
-          vAlpha = alpha;
-          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = (0.06 + alpha * 0.06) * (300.0 / -mvPos.z);
-          gl_Position = projectionMatrix * mvPos;
-        }`,
+    // ─── Scan wave — travels along the corridor ───
+    const scanGeo = new THREE.PlaneGeometry(200, 40, 1, 1);
+    const scanMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
       fragmentShader: `
-        uniform vec3 uTeal, uLilac;
-        varying float vAlpha;
+        varying vec2 vUv;
         void main() {
-          float d = length(gl_PointCoord - 0.5) * 2.0;
-          if (d > 1.0) discard;
-          float glow = exp(-d*d*3.0) * vAlpha;
-          gl_FragColor = vec4(uTeal, glow * 0.7);
-        }`,
+          float xFade = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 3.0);
+          float yFade = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 2.0);
+          float alpha = xFade * yFade * 0.03;
+          gl_FragColor = vec4(0.5, 0.7, 0.9, alpha);
+        }
+      `,
     });
-    worldGroup.add(new THREE.Points(particleGeo, particleMat));
-
-    // ── Scanning grid plane ──
-    const gridGeo = new THREE.PlaneGeometry(160, 100, 55, 35);
-    const gridMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, side: THREE.DoubleSide, wireframe: true,
-      uniforms: { uTime: { value: 0 }, uScanPos: { value: 0 } },
-      vertexShader: `varying vec2 vUv; varying vec3 vPos; void main() { vUv = uv; vPos = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-      fragmentShader: `
-        uniform float uTime, uScanPos;
-        varying vec2 vUv; varying vec3 vPos;
-        void main() {
-          float scan = 1.0 - smoothstep(0.0, 8.0, abs(vPos.x - uScanPos));
-          float base = 0.006;
-          float edgeFade = smoothstep(0.0,0.12,vUv.x)*smoothstep(0.0,0.12,1.0-vUv.x)*smoothstep(0.0,0.18,vUv.y)*smoothstep(0.0,0.18,1.0-vUv.y);
-          float alpha = (base + scan * 0.04) * edgeFade;
-          vec3 col = mix(vec3(0.05,0.1,0.15), vec3(0.0,0.83,0.67), scan * 0.3);
-          gl_FragColor = vec4(col, alpha);
-        }`,
-    });
-    const gridMesh = new THREE.Mesh(gridGeo, gridMat);
-    gridMesh.rotation.x = -Math.PI * 0.42;
-    gridMesh.position.set(0, -12, -18);
-    worldGroup.add(gridMesh);
-
-    // ── Orbital rings ──
-    const ringMeshes: THREE.Line[] = [];
-    [15, 28, 45].forEach((r, ri) => {
-      const pts: THREE.Vector3[] = [];
-      const segs = 120 + ri * 20;
-      for (let j = 0; j <= segs; j++) {
-        const a = (j / segs) * Math.PI * 2;
-        pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r));
-      }
-      const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: ri === 0 ? TEAL : COLD_BLUE, transparent: true, opacity: 0.02 - ri * 0.004 });
-      const line = new THREE.Line(geo, mat);
-      line.rotation.x = Math.PI * 0.33 + ri * 0.07;
-      line.rotation.z = ri * 0.2;
-      worldGroup.add(line);
-      ringMeshes.push(line);
-    });
-
-    // ── Ambient dust ──
-    const AMBIENT_COUNT = 700;
-    const ambPos = new Float32Array(AMBIENT_COUNT * 3);
-    const ambVel = new Float32Array(AMBIENT_COUNT * 3);
-    for (let i = 0; i < AMBIENT_COUNT; i++) {
-      ambPos[i*3] = (Math.random()-0.5)*180; ambPos[i*3+1] = (Math.random()-0.5)*100; ambPos[i*3+2] = (Math.random()-0.5)*60;
-      ambVel[i*3] = (Math.random()-0.5)*0.003; ambVel[i*3+1] = (Math.random()-0.5)*0.003; ambVel[i*3+2] = (Math.random()-0.5)*0.002;
-    }
-    const ambGeo = new THREE.BufferGeometry();
-    ambGeo.setAttribute("position", new THREE.BufferAttribute(ambPos, 3));
-    const ambMat = new THREE.PointsMaterial({ size: 0.03, color: 0x2a3a4a, transparent: true, opacity: 0.10, sizeAttenuation: true, blending: THREE.AdditiveBlending });
-    worldGroup.add(new THREE.Points(ambGeo, ambMat));
+    const scanPlane = new THREE.Mesh(scanGeo, scanMat);
+    scanPlane.rotation.x = Math.PI * 0.5;
+    scene.add(scanPlane);
 
     // ─── Mouse + resize ───
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-    const onMouseMove = (e: MouseEvent) => { mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2; mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2; };
+    const onMouseMove = (e: MouseEvent) => {
+      mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
     window.addEventListener("mousemove", onMouseMove);
-    const onResize = () => { const w = container.clientWidth, h = container.clientHeight; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); };
+    const onResize = () => {
+      const w = container.clientWidth, h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
     window.addEventListener("resize", onResize);
 
-    // ─── ANIMATION STATE ───
+    // ─── ANIMATION ───
     let raf = 0;
     let frame = 0;
-    const tealColor = new THREE.Color(TEAL);
-
-    // Wave activation — tree lights up in waves from roots
-    let waveTimer = 0;
-    const WAVE_SPEED = 0.35; // how fast activation ripples through the tree
-    const WAVE_INTERVAL = 280; // frames between waves
-    let waveCount = 0;
-
-    const spawnParticlesFromNode = (nodeIdx: number, time: number) => {
-      const node = nodes[nodeIdx];
-      for (const childIdx of node.children) {
-        if (particles.length < MAX_PARTICLES) {
-          particles.push({
-            nodeFrom: nodeIdx,
-            nodeTo: childIdx,
-            t: 0,
-            speed: 0.008 + Math.random() * 0.012,
-            color: tealColor,
-            born: time,
-          });
-        }
-      }
-    };
 
     const animate = () => {
       raf = requestAnimationFrame(animate);
@@ -350,149 +245,45 @@ const HeroSection = () => {
       const t = frame * 0.001;
 
       // Smooth mouse
-      mouse.x += (mouse.tx - mouse.x) * 0.02;
-      mouse.y += (mouse.ty - mouse.y) * 0.02;
+      mouse.x += (mouse.tx - mouse.x) * 0.015;
+      mouse.y += (mouse.ty - mouse.y) * 0.015;
 
-      // ── Wave activation ──
-      waveTimer++;
-      if (waveTimer >= WAVE_INTERVAL) {
-        waveTimer = 0;
-        waveCount++;
-        // Reset all nodes
-        for (const n of nodes) { n.active = false; n.activatedAt = -1; }
-        // Activate roots
-        for (let i = 0; i < nodes.length; i++) {
-          if (nodes[i].parent === -1) {
-            nodes[i].active = true;
-            nodes[i].activatedAt = frame;
-            spawnParticlesFromNode(i, frame);
-          }
+      // Slow drift forward
+      const camZ = -t * 3;
+      camera.position.z = camZ;
+      camera.position.x = mouse.x * 3;
+      camera.position.y = mouse.y * -1.5;
+      camera.lookAt(camera.position.x * 0.3, 0, camZ - 100);
+
+      // Update uniforms
+      const allMats = [floor.lineMat, floor.dotMat, ceiling.lineMat, ceiling.dotMat];
+      allMats.forEach(m => {
+        (m.uniforms as any).uTime.value = t * 3;
+        (m.uniforms as any).uCamZ.value = camZ;
+      });
+      (horizonMat.uniforms as any).uTime.value = t * 3;
+      horizonPlane.position.z = camZ - 260;
+      (scanMat.uniforms as any).uTime.value = t;
+
+      // Scan wave position — oscillates along corridor
+      const scanZ = camZ - 30 - Math.sin(t * 0.8) * 60;
+      scanPlane.position.z = scanZ;
+      scanPlane.position.y = 0;
+
+      // Dust drift
+      const dArr = dustGeo.attributes.position.array as Float32Array;
+      for (let i = 0; i < DUST_COUNT; i++) {
+        dArr[i * 3] += dustVel[i * 3];
+        dArr[i * 3 + 1] += dustVel[i * 3 + 1];
+        dArr[i * 3 + 2] += dustVel[i * 3 + 2];
+        // Recycle particles that fall behind camera
+        if (dArr[i * 3 + 2] > camZ + 10) {
+          dArr[i * 3] = (Math.random() - 0.5) * 100;
+          dArr[i * 3 + 1] = (Math.random() - 0.5) * 30;
+          dArr[i * 3 + 2] = camZ - 150 - Math.random() * 50;
         }
       }
-
-      // Propagate activation through tree
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        if (node.active && node.activatedAt > 0) {
-          const elapsed = (frame - node.activatedAt) * 0.001;
-          if (elapsed > WAVE_SPEED) {
-            for (const childIdx of node.children) {
-              if (!nodes[childIdx].active) {
-                nodes[childIdx].active = true;
-                nodes[childIdx].activatedAt = frame;
-                spawnParticlesFromNode(childIdx, frame);
-              }
-            }
-          }
-        }
-      }
-
-      // Update node alphas
-      const alphaArr = nodeGeo.attributes.alpha.array as Float32Array;
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        if (node.active && node.activatedAt > 0) {
-          const elapsed = (frame - node.activatedAt) * 0.003;
-          const fadeIn = Math.min(1, elapsed);
-          const fadeOut = Math.max(0, 1 - (elapsed - 2) * 0.15);
-          const depthFade = 1 - node.depth / (MAX_DEPTH + 2);
-          alphaArr[i] = fadeIn * fadeOut * depthFade * 0.8;
-        } else {
-          alphaArr[i] = Math.max(0, alphaArr[i] - 0.005);
-        }
-      }
-      nodeGeo.attributes.alpha.needsUpdate = true;
-
-      // Update edge colors based on active nodes
-      const ecArr = edgeGeo.attributes.color.array as Float32Array;
-      for (let i = 0; i < edges.length; i++) {
-        const [a, b] = edges[i];
-        const aAlpha = alphaArr[a];
-        const bAlpha = alphaArr[b];
-        const intensity = Math.min(aAlpha, bAlpha) * 0.4;
-        const c = tealColor;
-        ecArr[i*6] = c.r * intensity; ecArr[i*6+1] = c.g * intensity; ecArr[i*6+2] = c.b * intensity;
-        ecArr[i*6+3] = c.r * intensity; ecArr[i*6+4] = c.g * intensity; ecArr[i*6+5] = c.b * intensity;
-      }
-      edgeGeo.attributes.color.needsUpdate = true;
-
-      // Update path particles
-      const pArr = particleGeo.attributes.position.array as Float32Array;
-      const paArr = particleGeo.attributes.alpha.array as Float32Array;
-      // Clear all first
-      paArr.fill(0);
-      pArr.fill(0);
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.t += p.speed;
-        if (p.t > 1) {
-          // At destination — spawn new particles down children
-          const destNode = nodes[p.nodeTo];
-          if (destNode.children.length > 0) {
-            for (const childIdx of destNode.children) {
-              if (particles.length < MAX_PARTICLES) {
-                particles.push({
-                  nodeFrom: p.nodeTo,
-                  nodeTo: childIdx,
-                  t: 0,
-                  speed: 0.006 + Math.random() * 0.014,
-                  color: tealColor,
-                  born: frame,
-                });
-              }
-            }
-          }
-          particles.splice(i, 1);
-          continue;
-        }
-
-        if (i < MAX_PARTICLES) {
-          const fromPos = nodes[p.nodeFrom].pos;
-          const toPos = nodes[p.nodeTo].pos;
-          // Slight curve via midpoint offset
-          const mid = new THREE.Vector3().lerpVectors(fromPos, toPos, 0.5);
-          mid.y += (Math.sin(p.born * 0.01) * 1.5);
-          // Quadratic bezier
-          const oneMinusT = 1 - p.t;
-          pArr[i*3] = oneMinusT*oneMinusT*fromPos.x + 2*oneMinusT*p.t*mid.x + p.t*p.t*toPos.x;
-          pArr[i*3+1] = oneMinusT*oneMinusT*fromPos.y + 2*oneMinusT*p.t*mid.y + p.t*p.t*toPos.y;
-          pArr[i*3+2] = oneMinusT*oneMinusT*fromPos.z + 2*oneMinusT*p.t*mid.z + p.t*p.t*toPos.z;
-          const fadeEdge = Math.min(p.t * 5, 1) * Math.min((1 - p.t) * 5, 1);
-          const depthFade = 1 - nodes[p.nodeTo].depth / (MAX_DEPTH + 2);
-          paArr[i] = fadeEdge * depthFade * 0.8;
-        }
-      }
-      particleGeo.attributes.position.needsUpdate = true;
-      particleGeo.attributes.alpha.needsUpdate = true;
-
-      // Nebula time
-      nebulaMats.forEach(m => { (m.uniforms as any).uTime.value = t * 3; });
-
-      // Grid scan
-      (gridMat.uniforms as any).uScanPos.value = Math.sin(t * 0.3) * 80;
-      (gridMat.uniforms as any).uTime.value = t;
-
-      // Rings
-      ringMeshes.forEach((r, i) => { r.rotation.y += 0.0002 * (i + 1) * (i % 2 === 0 ? 1 : -1); });
-
-      // Node shader time
-      (nodeMat.uniforms as any).uTime.value = t * 3;
-
-      // Ambient drift
-      const aArr = ambGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < AMBIENT_COUNT; i++) {
-        aArr[i*3] += ambVel[i*3]; aArr[i*3+1] += ambVel[i*3+1]; aArr[i*3+2] += ambVel[i*3+2];
-        if (Math.abs(aArr[i*3]) > 90) ambVel[i*3] *= -1;
-        if (Math.abs(aArr[i*3+1]) > 50) ambVel[i*3+1] *= -1;
-        if (Math.abs(aArr[i*3+2]) > 30) ambVel[i*3+2] *= -1;
-      }
-      ambGeo.attributes.position.needsUpdate = true;
-
-      // Camera
-      camera.position.x += (mouse.x * 4 - camera.position.x) * 0.008;
-      camera.position.y += (-mouse.y * 2.5 - camera.position.y) * 0.008;
-      camera.lookAt(0, 0, 0);
+      dustGeo.attributes.position.needsUpdate = true;
 
       renderer.render(scene, camera);
     };
@@ -504,11 +295,13 @@ const HeroSection = () => {
       window.removeEventListener("mousemove", onMouseMove);
       renderer.dispose();
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
-      nodeGeo.dispose(); edgeGeo.dispose(); particleGeo.dispose(); ambGeo.dispose();
-      nodeMat.dispose(); edgeMat.dispose(); baseEdgeMat.dispose(); particleMat.dispose(); ambMat.dispose();
-      gridGeo.dispose(); gridMat.dispose();
-      nebulaMats.forEach(m => m.dispose());
-      ringMeshes.forEach(r => { r.geometry.dispose(); (r.material as THREE.Material).dispose(); });
+      [floor, ceiling].forEach(g => {
+        g.lineGeo.dispose(); g.dotGeo.dispose();
+        g.lineMat.dispose(); g.dotMat.dispose();
+      });
+      horizonGeo.dispose(); horizonMat.dispose();
+      dustGeo.dispose(); dustMat.dispose();
+      scanGeo.dispose(); scanMat.dispose();
     };
   }, []);
 
@@ -518,16 +311,11 @@ const HeroSection = () => {
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 55% 55% at 50% 48%, transparent 0%, rgba(6,8,9,0.7) 60%, #060809 100%)",
-      }} />
-
-      {/* Top/bottom bands */}
-      <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "linear-gradient(180deg, rgba(6,8,9,0.5) 0%, transparent 20%, transparent 80%, rgba(6,8,9,0.6) 100%)",
+        background: "radial-gradient(ellipse 60% 50% at 50% 50%, transparent 0%, rgba(5,7,8,0.6) 55%, #050708 100%)",
       }} />
 
       {/* Film grain */}
-      <div className="absolute inset-0 z-[6] pointer-events-none opacity-[0.025]" style={{
+      <div className="absolute inset-0 z-[6] pointer-events-none opacity-[0.02]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         backgroundSize: "128px 128px",
       }} />
@@ -552,7 +340,7 @@ const HeroSection = () => {
               fontSize: "clamp(2.5rem, 5vw, 4rem)",
               lineHeight: 1.08,
               letterSpacing: "-0.03em",
-              textShadow: "0 0 80px rgba(0,0,0,0.95), 0 0 160px rgba(6,8,9,0.8)",
+              textShadow: "0 0 80px rgba(0,0,0,0.95), 0 0 160px rgba(5,7,8,0.8)",
             }}
           >
             Unlocking proactive healthcare for all.
@@ -567,7 +355,7 @@ const HeroSection = () => {
               maxWidth: 1280,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              textShadow: "0 0 40px rgba(6,8,9,0.9)",
+              textShadow: "0 0 40px rgba(5,7,8,0.9)",
             }}
           >
             <p>
