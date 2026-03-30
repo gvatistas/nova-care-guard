@@ -271,6 +271,7 @@ const PatientNarrativeSection = () => {
                 status="Missed"
                 delay={0.5}
                 inView={inView}
+                critical
               />
               <Connector color={ORANGE} />
               <ScreeningNode
