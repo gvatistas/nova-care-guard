@@ -617,12 +617,12 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.3 }}
             className="text-white font-light"
-            style={{
-              fontSize: "clamp(2.5rem, 5vw, 4rem)",
-              lineHeight: 1.08,
-              letterSpacing: "-0.03em",
-              textShadow: "0 0 80px rgba(0,0,0,0.95), 0 0 160px rgba(5,7,8,0.8)",
-            }}
+             style={{
+               fontSize: "clamp(2.5rem, 5vw, 4rem)",
+               lineHeight: 1.08,
+               letterSpacing: "-0.03em",
+               textShadow: "0 0 60px rgba(0,0,0,1), 0 0 120px rgba(5,7,8,0.95), 0 2px 40px rgba(0,0,0,0.9)",
+             }}
           >
             Unlocking proactive healthcare for all.
           </motion.h1>
