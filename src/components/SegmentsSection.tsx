@@ -231,8 +231,8 @@ const SegmentsSection = () => {
                   onClick={() => setSelected(i)}
                   className="w-full text-left px-6 py-5 border-b border-white/[0.04] transition-all duration-300 cursor-pointer"
                   style={{
-                    background: isActive ? "rgba(0,212,170,0.04)" : "transparent",
-                    borderLeft: isActive ? `2px solid ${TEAL}` : "2px solid transparent",
+                    background: isActive ? "rgba(200,214,229,0.04)" : "transparent",
+                    borderLeft: isActive ? `2px solid ${ACCENT}` : "2px solid transparent",
                   }}
                 >
                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
