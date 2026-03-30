@@ -147,9 +147,10 @@ const Connector: FC<{ color: string; height?: number }> = ({ color, height = 32 
   </div>
 );
 
-/* ── Status indicator dot ── */
-const StatusDot: FC<{ color: string }> = ({ color }) => (
-  <span className="inline-block w-2 h-2 rounded-full mr-2 shrink-0 mt-[5px]" style={{ background: color, boxShadow: `0 0 6px ${color}40` }} />
+/* ── Status indicator dot — pulses if critical ── */
+const StatusDot: FC<{ color: string; pulse?: boolean }> = ({ color, pulse }) => (
+  <span className={`inline-block w-2 h-2 rounded-full mr-2 shrink-0 mt-[5px] ${pulse ? "animate-pulse" : ""}`}
+    style={{ background: color, boxShadow: pulse ? `0 0 10px ${color}, 0 0 20px ${color}50` : `0 0 6px ${color}40` }} />
 );
 
 /* ── Screening Node — equal sized ── */
@@ -160,19 +161,28 @@ const ScreeningNode: FC<{
   status: string;
   delay: number;
   inView: boolean;
-}> = ({ label, sublabel, color, status, delay, inView }) => (
+  critical?: boolean;
+}> = ({ label, sublabel, color, status, delay, inView, critical }) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={inView ? { opacity: 1, y: 0 } : {}}
     transition={{ duration: 0.5, delay }}
-    className="border px-5 py-4 w-full"
+    className="border px-5 py-4 w-full relative overflow-hidden"
     style={{ borderColor: `${color}25`, background: `${color}06` }}
   >
-    <p className="text-[13px] text-white/90 font-normal mb-1.5" style={{ letterSpacing: "-0.01em" }}>
+    {critical && (
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        animate={{ opacity: [0, 0.08, 0] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        style={{ background: color }}
+      />
+    )}
+    <p className="text-[13px] text-white/90 font-normal mb-1.5 relative" style={{ letterSpacing: "-0.01em" }}>
       {label}
     </p>
-    <div className="flex items-start">
-      <StatusDot color={color} />
+    <div className="flex items-start relative">
+      <StatusDot color={color} pulse={critical} />
       <div>
         <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color }}>{status}</p>
         <p className="text-white/35 text-[11px] mt-0.5 leading-relaxed">{sublabel}</p>
@@ -261,6 +271,7 @@ const PatientNarrativeSection = () => {
                 status="Missed"
                 delay={0.5}
                 inView={inView}
+                critical
               />
               <Connector color={ORANGE} />
               <ScreeningNode
@@ -288,6 +299,7 @@ const PatientNarrativeSection = () => {
                 status="Missed"
                 delay={0.8}
                 inView={inView}
+                critical
               />
             </div>
 
@@ -298,12 +310,18 @@ const PatientNarrativeSection = () => {
               initial={{ opacity: 0, scale: 0.97 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 1.0 }}
-              className="border p-6 text-center w-full max-w-sm"
+              className="border p-6 text-center w-full max-w-sm relative overflow-hidden"
               style={{ borderColor: `${RED}30`, background: `${RED}08` }}
             >
-              <p className="text-[10px] uppercase tracking-[0.12em] mb-2" style={{ color: RED }}>Patient Outcome</p>
-              <p className="text-white text-3xl font-light" style={{ letterSpacing: "-0.02em" }}>Stage IIIB</p>
-              <p className="text-white/35 text-sm mt-1.5">Late-stage diagnosis · 23% survival</p>
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{ opacity: [0, 0.06, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                style={{ background: `radial-gradient(circle at 50% 50%, ${RED}40, transparent 70%)` }}
+              />
+              <p className="text-[10px] uppercase tracking-[0.12em] mb-2 relative" style={{ color: RED }}>Patient Outcome</p>
+              <p className="text-white text-3xl font-light relative" style={{ letterSpacing: "-0.02em" }}>Stage IIIB</p>
+              <p className="text-white/35 text-sm mt-1.5 relative">Late-stage diagnosis · 23% survival</p>
             </motion.div>
 
             <Connector color={RED} height={28} />
@@ -313,12 +331,18 @@ const PatientNarrativeSection = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.15 }}
-              className="border p-6 text-center w-full"
+              className="border p-6 text-center w-full relative overflow-hidden"
               style={{ borderColor: `${RED}20`, background: `${RED}05` }}
             >
-              <p className="text-[10px] uppercase tracking-[0.12em] text-white/30 mb-2">Direct cost</p>
-              <p className="text-white text-3xl font-light">$288,000+</p>
-              <p className="text-white/30 text-[12px] mt-3 leading-relaxed max-w-xs mx-auto">
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{ opacity: [0, 0.05, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                style={{ background: `linear-gradient(180deg, ${RED}20, transparent)` }}
+              />
+              <p className="text-[10px] uppercase tracking-[0.12em] text-white/30 mb-2 relative">Direct cost</p>
+              <p className="text-white text-3xl font-light relative">$288,000+</p>
+              <p className="text-white/30 text-[12px] mt-3 leading-relaxed max-w-xs mx-auto relative">
                 Chemo, radiation, ICU stays, lost productivity. Multiplied across millions of patients, this is the GDP-scale crisis a16z calls "the cost of infinite healthcare."
               </p>
             </motion.div>
@@ -381,12 +405,18 @@ const PatientNarrativeSection = () => {
               initial={{ opacity: 0, scale: 0.97 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 1.0 }}
-              className="border p-6 text-center w-full max-w-sm"
+              className="border p-6 text-center w-full max-w-sm relative overflow-hidden"
               style={{ borderColor: `${TEAL}30`, background: `${TEAL}08` }}
             >
-              <p className="text-[10px] uppercase tracking-[0.12em] mb-2" style={{ color: TEAL }}>Patient Outcome</p>
-              <p className="text-white text-3xl font-light" style={{ letterSpacing: "-0.02em" }}>Stage IA</p>
-              <p className="text-white/35 text-sm mt-1.5">Caught early · 92% survival</p>
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{ opacity: [0, 0.06, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                style={{ background: `radial-gradient(circle at 50% 50%, ${TEAL}30, transparent 70%)` }}
+              />
+              <p className="text-[10px] uppercase tracking-[0.12em] mb-2 relative" style={{ color: TEAL }}>Patient Outcome</p>
+              <p className="text-white text-3xl font-light relative" style={{ letterSpacing: "-0.02em" }}>Stage IA</p>
+              <p className="text-white/35 text-sm mt-1.5 relative">Caught early · 92% survival</p>
             </motion.div>
 
             <Connector color={TEAL} height={28} />
@@ -396,12 +426,18 @@ const PatientNarrativeSection = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.15 }}
-              className="border p-6 text-center w-full"
+              className="border p-6 text-center w-full relative overflow-hidden"
               style={{ borderColor: `${TEAL}20`, background: `${TEAL}05` }}
             >
-              <p className="text-[10px] uppercase tracking-[0.12em] text-white/30 mb-2">Direct cost</p>
-              <p className="text-white text-3xl font-light">$4,200</p>
-              <p className="text-white/30 text-[12px] mt-3 leading-relaxed max-w-xs mx-auto">
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{ opacity: [0, 0.04, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                style={{ background: `linear-gradient(180deg, ${TEAL}15, transparent)` }}
+              />
+              <p className="text-[10px] uppercase tracking-[0.12em] text-white/30 mb-2 relative">Direct cost</p>
+              <p className="text-white text-3xl font-light relative">$4,200</p>
+              <p className="text-white/30 text-[12px] mt-3 leading-relaxed max-w-xs mx-auto relative">
                 Outpatient screening, early intervention. 68x cheaper. Scaled across populations, this is how you bend the healthcare cost curve.
               </p>
             </motion.div>
