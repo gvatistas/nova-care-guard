@@ -216,7 +216,7 @@ const GuideBenchSection = () => {
             className="flex flex-col items-center justify-center"
           >
             <div className="text-center mb-4">
-              <div className="text-7xl font-semibold text-white tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1 }}>
+                <div className="text-7xl font-semibold tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#4ade80" }}>
                 {counter}%
               </div>
               <p className="text-[12px] font-medium uppercase text-white/25 mt-3" style={{ letterSpacing: "0.1em" }}>
