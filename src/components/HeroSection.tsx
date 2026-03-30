@@ -176,19 +176,18 @@ const HeroSection = () => {
         const node: PathNode = { gx, gz, y, outcome, depth };
         activeNodes.set(key, node);
 
-        // Branch count decreases with depth
         const branches = depth < 2 ? 3 : (seeded(seed + depth * 7) % 3 === 0 ? 3 : 2);
         for (let b = 0; b < branches; b++) {
           const s = seeded(seed * 31 + b * 97 + depth * 13);
-          // Move forward (deeper Z) with lateral spread
           const dz = 2 + (s % 3);
-          const dx = ((s >> 4) % 5) - 2; // -2 to +2
+          const dx = ((s >> 4) % 5) - 2;
           const ngx = gx + dx;
           const ngz = gz + dz;
           if (ngx < -HALF_W || ngx > HALF_W || ngz > GRID_D) continue;
 
-          // Outcome worsens with depth and randomness
-          const childOutcome = Math.min(1.0, outcome + (depth / 10) * 0.15 + (s % 100) / 300);
+          // outcome: 0 = resolved/green, 1 = alert/red — most resolve, few stay red
+          const rng = (s % 100) / 100;
+          const childOutcome = rng > 0.82 ? 0.9 + rng * 0.1 : Math.max(0, outcome * 0.5 - depth * 0.03);
           const childNode: PathNode = { gx: ngx, gz: ngz, y, outcome: childOutcome, depth: depth + 1 };
           const childKey = nodeKey(ngx, ngz, y);
           activeNodes.set(childKey, childNode);
@@ -196,7 +195,8 @@ const HeroSection = () => {
           buildBranch(ngx, ngz, y, depth + 1, childOutcome, s);
         }
       };
-      buildBranch(root.gx, root.gz, root.y, 0, 0.05 + (ri % 3) * 0.1, ri * 1337 + 42);
+      // Start mostly neutral/slightly alert
+      buildBranch(root.gx, root.gz, root.y, 0, 0.3 + (ri % 3) * 0.15, ri * 1337 + 42);
     });
 
     // ─── Edge lines connecting grid dots (decision paths) ───
@@ -233,14 +233,19 @@ const HeroSection = () => {
         uniform float uTime;
         void main() {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 260.0, vDist));
-          float pulse = 0.6 + 0.4 * sin(uTime * 2.0 + vDist * 0.05);
-          vec3 green = vec3(0.0, 0.9, 0.45);
-          vec3 amber = vec3(1.0, 0.7, 0.1);
-          vec3 red   = vec3(1.0, 0.15, 0.1);
+          float pulse = 0.6 + 0.4 * sin(uTime * 1.5 + vDist * 0.04);
+          // Tactical palette: teal base, green resolved, red alert (rare)
+          vec3 teal    = vec3(0.1, 0.55, 0.5);
+          vec3 green   = vec3(0.15, 0.95, 0.55);
+          vec3 red     = vec3(0.9, 0.2, 0.15);
+          // outcome < 0.5 = resolved (teal→green), > 0.8 = alert (red)
           vec3 col = vOutcome < 0.5
-            ? mix(green, amber, vOutcome * 2.0)
-            : mix(amber, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col, fade * pulse * 0.18);
+            ? mix(teal, green, (0.5 - vOutcome) * 2.0)
+            : mix(teal, red, smoothstep(0.5, 1.0, vOutcome));
+          // Red nodes pulse and resolve to green over time
+          float resolve = smoothstep(0.7, 1.0, vOutcome) * (0.5 + 0.5 * sin(uTime * 3.0 + vDist * 0.1));
+          col = mix(col, green, resolve * 0.6);
+          gl_FragColor = vec4(col, fade * pulse * 0.12);
         }
       `,
     });
@@ -287,20 +292,24 @@ const HeroSection = () => {
       fragmentShader: `
         varying float vOutcome;
         varying float vAlpha;
+        uniform float uTime;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 green = vec3(0.0, 1.0, 0.5);
-          vec3 amber = vec3(1.0, 0.75, 0.1);
-          vec3 red   = vec3(1.0, 0.18, 0.1);
+          vec3 teal    = vec3(0.12, 0.6, 0.55);
+          vec3 green   = vec3(0.2, 1.0, 0.6);
+          vec3 red     = vec3(0.95, 0.2, 0.15);
           vec3 col = vOutcome < 0.5
-            ? mix(green, amber, vOutcome * 2.0)
-            : mix(amber, red, (vOutcome - 0.5) * 2.0);
+            ? mix(teal, green, (0.5 - vOutcome) * 2.0)
+            : mix(teal, red, smoothstep(0.5, 1.0, vOutcome));
+          // Animate red alerts resolving to green
+          float resolve = smoothstep(0.7, 1.0, vOutcome) * (0.5 + 0.5 * sin(uTime * 4.0 + gl_FragCoord.x * 0.01));
+          col = mix(col, green, resolve * 0.7);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.85);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.7);
         }
       `,
     });
@@ -351,18 +360,21 @@ const HeroSection = () => {
       fragmentShader: `
         varying float vAlpha;
         varying float vOutcome;
+        uniform float uTime;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 3.0);
           float glow = exp(-d * 1.0) * 0.5;
-          vec3 green = vec3(0.0, 1.0, 0.5);
-          vec3 amber = vec3(1.0, 0.75, 0.1);
-          vec3 red   = vec3(1.0, 0.2, 0.1);
+          vec3 teal  = vec3(0.15, 0.65, 0.55);
+          vec3 green = vec3(0.25, 1.0, 0.6);
+          vec3 red   = vec3(0.95, 0.22, 0.15);
           vec3 col = vOutcome < 0.5
-            ? mix(green, amber, vOutcome * 2.0)
-            : mix(amber, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.75);
+            ? mix(teal, green, (0.5 - vOutcome) * 2.0)
+            : mix(teal, red, smoothstep(0.5, 1.0, vOutcome));
+          float resolve = smoothstep(0.7, 1.0, vOutcome) * (0.5 + 0.5 * sin(uTime * 5.0 + gl_FragCoord.y * 0.02));
+          col = mix(col, green, resolve * 0.8);
+          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.6);
         }
       `,
     });
@@ -397,12 +409,11 @@ const HeroSection = () => {
             float t = mod(uTime * 0.5 + uPhase, 6.0);
             float fade = (1.0 - t / 6.0);
             float ring = smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
-            float oc = fract(uPhase * 0.41);
-            vec3 green = vec3(0.0, 0.85, 0.45);
-            vec3 amber = vec3(0.95, 0.65, 0.1);
-            vec3 red = vec3(0.9, 0.15, 0.1);
-            vec3 col = oc < 0.5 ? mix(green, amber, oc * 2.0) : mix(amber, red, (oc - 0.5) * 2.0);
-            gl_FragColor = vec4(col, ring * fade * fade * 0.1);
+            vec3 teal = vec3(0.12, 0.6, 0.5);
+            vec3 green = vec3(0.2, 0.95, 0.55);
+            float resolve = 0.5 + 0.5 * sin(uTime * 2.0 + uPhase * 3.0);
+            vec3 col = mix(teal, green, resolve * 0.5);
+            gl_FragColor = vec4(col, ring * fade * fade * 0.08);
           }
         `,
       });
