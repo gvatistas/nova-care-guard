@@ -614,7 +614,7 @@ const HeroSection = () => {
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 50% 42% at 50% 50%, rgba(5,7,8,0.55) 0%, rgba(5,7,8,0.4) 50%, rgba(5,7,8,0.15) 80%, transparent 100%)",
+        background: "radial-gradient(ellipse 45% 38% at 50% 50%, rgba(3,4,5,0.7) 0%, rgba(3,4,5,0.5) 45%, rgba(3,4,5,0.2) 75%, transparent 100%)",
       }} />
 
       {/* Film grain */}
