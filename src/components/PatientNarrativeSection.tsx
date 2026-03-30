@@ -161,19 +161,28 @@ const ScreeningNode: FC<{
   status: string;
   delay: number;
   inView: boolean;
-}> = ({ label, sublabel, color, status, delay, inView }) => (
+  critical?: boolean;
+}> = ({ label, sublabel, color, status, delay, inView, critical }) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={inView ? { opacity: 1, y: 0 } : {}}
     transition={{ duration: 0.5, delay }}
-    className="border px-5 py-4 w-full"
+    className="border px-5 py-4 w-full relative overflow-hidden"
     style={{ borderColor: `${color}25`, background: `${color}06` }}
   >
-    <p className="text-[13px] text-white/90 font-normal mb-1.5" style={{ letterSpacing: "-0.01em" }}>
+    {critical && (
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        animate={{ opacity: [0, 0.08, 0] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        style={{ background: color }}
+      />
+    )}
+    <p className="text-[13px] text-white/90 font-normal mb-1.5 relative" style={{ letterSpacing: "-0.01em" }}>
       {label}
     </p>
-    <div className="flex items-start">
-      <StatusDot color={color} />
+    <div className="flex items-start relative">
+      <StatusDot color={color} pulse={critical} />
       <div>
         <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color }}>{status}</p>
         <p className="text-white/35 text-[11px] mt-0.5 leading-relaxed">{sublabel}</p>
