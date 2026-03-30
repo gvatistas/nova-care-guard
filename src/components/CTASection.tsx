@@ -35,16 +35,6 @@ const CTASection = () => {
 
       {/* Footer crown */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ delay: 0.8, duration: 1.2 }}
-        className="mt-24 flex flex-col items-center px-8"
-      >
-        <FacetedCrownLogo size={200} />
-        <div className="mt-5 text-[12px] font-medium uppercase text-white/25" style={{ letterSpacing: "0.3em" }}>
-          Medient Health
-        </div>
-      </motion.div>
 
       {/* Footer */}
       <motion.footer initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
