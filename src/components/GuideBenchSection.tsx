@@ -143,7 +143,7 @@ const GuideBenchSection = () => {
               ))}
 
               {/* Table footer — aggregate */}
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t border-white/[0.10]" style={{ background: "rgba(0,212,170,0.03)" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t border-white/[0.12]" style={{ background: "rgba(0,212,170,0.06)" }}>
                 <span className="text-white/60 text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em" }}>Aggregate</span>
                 <span className="text-white/50 text-sm tabular-nums font-mono">750</span>
                 <div className="flex items-center gap-2">
