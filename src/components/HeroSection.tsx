@@ -299,14 +299,18 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 grey   = vec3(0.4, 0.36, 0.33);
-          vec3 orange = vec3(1.0, 0.6, 0.18);
-          vec3 red    = vec3(0.9, 0.2, 0.12);
-          vec3 col = vOutcome < 0.5
-            ? mix(grey, orange, vOutcome * 2.0)
-            : mix(orange, red, (vOutcome - 0.5) * 2.0);
+          vec3 blue   = vec3(0.25, 0.5, 1.0);
+          vec3 green  = vec3(0.2, 0.9, 0.5);
+          vec3 grey   = vec3(0.45, 0.45, 0.48);
+          vec3 orange = vec3(1.0, 0.6, 0.2);
+          vec3 red    = vec3(0.9, 0.22, 0.15);
+          vec3 col;
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
+          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
+          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.6);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.65);
         }
       `,
     });
