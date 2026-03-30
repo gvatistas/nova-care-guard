@@ -337,13 +337,13 @@ const PatientNarrativeSection = () => {
             </motion.div>
 
             <div className="w-full max-w-sm flex flex-col items-center gap-0">
-              <ScreeningNode label="LDCT Lung Screening" sublabel="Not flagged — missed entirely" color={RED} status="Missed" delay={0.5} inView={inView} critical />
-              <Connector color={ORANGE} />
-              <ScreeningNode label="Colonoscopy" sublabel="Delayed 2 years — partially deferred" color={ORANGE} status="Deferred" delay={0.6} inView={inView} />
+              <ScreeningNode label="BP + Lipid Panel" sublabel="Reviewed and noted — within standard workflow" color={GREEN} status="Completed" delay={0.5} inView={inView} />
               <Connector color={GREEN} />
-              <ScreeningNode label="BP + Lipid Panel" sublabel="Reviewed and noted, within standard workflow" color={GREEN} status="Completed" delay={0.7} inView={inView} />
+              <ScreeningNode label="Colonoscopy" sublabel="Ordered on schedule — completed as routine" color={GREEN} status="Completed" delay={0.6} inView={inView} />
+              <Connector color={ORANGE} />
+              <ScreeningNode label="HbA1c" sublabel="Pre-diabetic range flagged but not followed up" color={ORANGE} status="Deferred" delay={0.7} inView={inView} />
               <Connector color={RED} />
-              <ScreeningNode label="HbA1c" sublabel="Not tested — missed entirely" color={RED} status="Missed" delay={0.8} inView={inView} critical />
+              <ScreeningNode label="LDCT Lung Screening" sublabel="Not flagged — missed entirely" color={RED} status="Missed" delay={0.8} inView={inView} critical />
             </div>
 
             <Connector color={RED} height={36} />
