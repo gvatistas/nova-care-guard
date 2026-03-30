@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import FacetedCrownLogo from "./FacetedCrownLogo";
 
-const BG = 0x0a0c0f;
+const BG = 0x060809;
 const TEAL = 0x00d4aa;
-const LILAC = 0x8a7cc8;
+const DEEP_TEAL = 0x007a60;
+const LILAC = 0x6a5acd;
+const COLD_BLUE = 0x1a2a4a;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -18,145 +20,232 @@ const HeroSection = () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setClearColor(BG, 1);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(BG, 0.012);
-    const camera = new THREE.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.1, 400);
-    camera.position.set(0, 0, 50);
+    scene.fog = new THREE.FogExp2(BG, 0.008);
+    const camera = new THREE.PerspectiveCamera(65, container.clientWidth / container.clientHeight, 0.1, 500);
+    camera.position.set(0, 0, 55);
 
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    // ─── LAYER 1: Small morphing core (off-center, subtle) ───
+    const aspect = container.clientWidth / container.clientHeight;
+
+    // ─── LAYER 0: Deep nebula fog planes — atmospheric depth ───
+    const nebulaGroup = new THREE.Group();
+    worldGroup.add(nebulaGroup);
+    const nebulaMats: THREE.ShaderMaterial[] = [];
+
+    for (let i = 0; i < 4; i++) {
+      const planeGeo = new THREE.PlaneGeometry(200, 120, 1, 1);
+      const nebMat = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        uniforms: {
+          uTime: { value: 0 },
+          uLayer: { value: i },
+          uTeal: { value: new THREE.Color(DEEP_TEAL) },
+          uBlue: { value: new THREE.Color(COLD_BLUE) },
+        },
+        vertexShader: `
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          uniform float uLayer;
+          uniform vec3 uTeal;
+          uniform vec3 uBlue;
+          varying vec2 vUv;
+          
+          float hash(vec2 p) {
+            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+          }
+          float noise(vec2 p) {
+            vec2 i = floor(p);
+            vec2 f = fract(p);
+            f = f * f * (3.0 - 2.0 * f);
+            float a = hash(i);
+            float b = hash(i + vec2(1.0, 0.0));
+            float c = hash(i + vec2(0.0, 1.0));
+            float d = hash(i + vec2(1.0, 1.0));
+            return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+          }
+          float fbm(vec2 p) {
+            float v = 0.0;
+            float a = 0.5;
+            for (int i = 0; i < 5; i++) {
+              v += a * noise(p);
+              p *= 2.0;
+              a *= 0.5;
+            }
+            return v;
+          }
+          
+          void main() {
+            float speed = 0.02 + uLayer * 0.008;
+            vec2 p = vUv * (2.0 + uLayer * 0.5) + vec2(uTime * speed, uTime * speed * 0.3);
+            float n = fbm(p + fbm(p + uTime * 0.01));
+            
+            float edgeFade = smoothstep(0.0, 0.3, vUv.x) * smoothstep(0.0, 0.3, 1.0 - vUv.x)
+                           * smoothstep(0.0, 0.25, vUv.y) * smoothstep(0.0, 0.25, 1.0 - vUv.y);
+            
+            vec3 col = mix(uBlue, uTeal, n * 0.4);
+            float alpha = n * 0.035 * edgeFade * (1.0 - uLayer * 0.15);
+            gl_FragColor = vec4(col, alpha);
+          }
+        `,
+      });
+      nebulaMats.push(nebMat);
+      const plane = new THREE.Mesh(planeGeo, nebMat);
+      plane.position.z = -30 - i * 15;
+      plane.position.y = (i - 1.5) * 3;
+      nebulaGroup.add(plane);
+    }
+
+    // ─── LAYER 1: Central sentient core — breathing entity ───
     const coreGroup = new THREE.Group();
-    coreGroup.position.set(0, 0, 0);
     worldGroup.add(coreGroup);
 
-    const icoGeo = new THREE.IcosahedronGeometry(4, 1);
+    // Inner dodecahedron — the "brain"
+    const dodGeo = new THREE.DodecahedronGeometry(3.5, 0);
+    const dodWire = new THREE.WireframeGeometry(dodGeo);
+    const dodMat = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0.06 });
+    const dodMesh = new THREE.LineSegments(dodWire, dodMat);
+    coreGroup.add(dodMesh);
+
+    const icoGeo = new THREE.IcosahedronGeometry(5, 1);
     const icoWire = new THREE.WireframeGeometry(icoGeo);
-    const icoMat = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0.08 });
+    const icoMat = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0.04 });
     const icoMesh = new THREE.LineSegments(icoWire, icoMat);
     coreGroup.add(icoMesh);
 
-    const octGeo = new THREE.OctahedronGeometry(2.5, 0);
-    const octWire = new THREE.WireframeGeometry(octGeo);
-    const octMat = new THREE.LineBasicMaterial({ color: LILAC, transparent: true, opacity: 0.06 });
-    const octMesh = new THREE.LineSegments(octWire, octMat);
-    coreGroup.add(octMesh);
+    // Core glow sphere
+    const glowGeo = new THREE.SphereGeometry(2, 32, 32);
+    const glowMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color(TEAL) },
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vPos;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          vPos = (modelViewMatrix * vec4(position, 1.0)).xyz;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform vec3 uColor;
+        varying vec3 vNormal;
+        varying vec3 vPos;
+        void main() {
+          float rim = 1.0 - abs(dot(vNormal, normalize(-vPos)));
+          float pulse = 0.5 + 0.5 * sin(uTime * 0.8);
+          float alpha = pow(rim, 3.0) * (0.08 + pulse * 0.04);
+          gl_FragColor = vec4(uColor, alpha);
+        }
+      `,
+    });
+    const glowSphere = new THREE.Mesh(glowGeo, glowMat);
+    coreGroup.add(glowSphere);
 
-    // ─── LAYER 2: Wide-spread network — fills viewport corners ───
-    const NODE_COUNT = 900;
+    // ─── LAYER 2: Neural network — vast, mysterious ───
+    const NODE_COUNT = 1200;
     const nodePositions: THREE.Vector3[] = [];
     const nodeRoles: number[] = [];
     const edgePairs: [number, number][] = [];
 
-    // Aspect-aware spread
-    const aspect = container.clientWidth / container.clientHeight;
-    const spreadX = 55 * aspect;
-    const spreadY = 45;
+    const spreadX = 65 * aspect;
+    const spreadY = 55;
 
-    // Corner clusters — dense groups at 4 corners + edges
+    // Corner clusters — dense
     const corners = [
-      { x: -spreadX * 0.7, y: spreadY * 0.6 },   // top-left
-      { x: spreadX * 0.7, y: spreadY * 0.6 },    // top-right
-      { x: -spreadX * 0.7, y: -spreadY * 0.6 },  // bottom-left
-      { x: spreadX * 0.7, y: -spreadY * 0.6 },   // bottom-right
-      { x: -spreadX * 0.85, y: 0 },               // mid-left
-      { x: spreadX * 0.85, y: 0 },                // mid-right
-      { x: 0, y: spreadY * 0.75 },                // top-center
-      { x: 0, y: -spreadY * 0.75 },               // bottom-center
+      { x: -spreadX * 0.75, y: spreadY * 0.65 },
+      { x: spreadX * 0.75, y: spreadY * 0.65 },
+      { x: -spreadX * 0.75, y: -spreadY * 0.65 },
+      { x: spreadX * 0.75, y: -spreadY * 0.65 },
+      { x: -spreadX * 0.9, y: 0 },
+      { x: spreadX * 0.9, y: 0 },
+      { x: 0, y: spreadY * 0.8 },
+      { x: 0, y: -spreadY * 0.8 },
     ];
 
-    // 320 nodes in corner clusters
     for (let ci = 0; ci < corners.length; ci++) {
       const c = corners[ci];
-      const count = ci < 4 ? 50 : 30;
+      const count = ci < 4 ? 60 : 35;
       for (let i = 0; i < count; i++) {
-        const r = 6 + Math.random() * 8;
+        const r = 5 + Math.random() * 10;
         const a = Math.random() * Math.PI * 2;
-        const z = (Math.random() - 0.5) * 12;
-        nodePositions.push(new THREE.Vector3(
-          c.x + Math.cos(a) * r,
-          c.y + Math.sin(a) * r,
-          z
-        ));
+        const z = (Math.random() - 0.5) * 18;
+        nodePositions.push(new THREE.Vector3(c.x + Math.cos(a) * r, c.y + Math.sin(a) * r, z));
         nodeRoles.push(0);
       }
     }
 
-    // 300 nodes along edges/periphery — rectangular distribution biased outward
-    for (let i = 0; i < 300; i++) {
+    // Edge nodes
+    for (let i = 0; i < 350; i++) {
       const side = Math.random();
       let x: number, y: number;
-      if (side < 0.25) { // top edge
-        x = (Math.random() - 0.5) * spreadX * 1.6;
-        y = spreadY * (0.3 + Math.random() * 0.5);
-      } else if (side < 0.5) { // bottom edge
-        x = (Math.random() - 0.5) * spreadX * 1.6;
-        y = -spreadY * (0.3 + Math.random() * 0.5);
-      } else if (side < 0.75) { // left edge
-        x = -spreadX * (0.3 + Math.random() * 0.6);
-        y = (Math.random() - 0.5) * spreadY * 1.4;
-      } else { // right edge
-        x = spreadX * (0.3 + Math.random() * 0.6);
-        y = (Math.random() - 0.5) * spreadY * 1.4;
-      }
-      const z = (Math.random() - 0.5) * 20;
-      nodePositions.push(new THREE.Vector3(x, y, z));
+      if (side < 0.25) { x = (Math.random() - 0.5) * spreadX * 1.8; y = spreadY * (0.3 + Math.random() * 0.55); }
+      else if (side < 0.5) { x = (Math.random() - 0.5) * spreadX * 1.8; y = -spreadY * (0.3 + Math.random() * 0.55); }
+      else if (side < 0.75) { x = -spreadX * (0.3 + Math.random() * 0.65); y = (Math.random() - 0.5) * spreadY * 1.5; }
+      else { x = spreadX * (0.3 + Math.random() * 0.65); y = (Math.random() - 0.5) * spreadY * 1.5; }
+      nodePositions.push(new THREE.Vector3(x, y, (Math.random() - 0.5) * 25));
       nodeRoles.push(1);
     }
 
-    // 180 mid-field nodes — ring around center (not IN center)
-    for (let i = 0; i < 180; i++) {
+    // Mid-field ring
+    for (let i = 0; i < 220; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const r = 15 + Math.random() * 20;
-      const z = (Math.random() - 0.5) * 15;
-      nodePositions.push(new THREE.Vector3(
-        Math.cos(angle) * r,
-        Math.sin(angle) * r * 0.7,
-        z
-      ));
+      const r = 12 + Math.random() * 25;
+      nodePositions.push(new THREE.Vector3(Math.cos(angle) * r, Math.sin(angle) * r * 0.7, (Math.random() - 0.5) * 18));
       nodeRoles.push(1);
     }
 
-    // 100 sparse sentinel nodes — very far out, faint
-    for (let i = 0; i < 100; i++) {
+    // Far sentinels
+    for (let i = nodePositions.length; i < NODE_COUNT; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const r = 40 + Math.random() * 25;
-      nodePositions.push(new THREE.Vector3(
-        Math.cos(angle) * r * aspect,
-        Math.sin(angle) * r * 0.8,
-        (Math.random() - 0.5) * 30
-      ));
+      const r = 45 + Math.random() * 30;
+      nodePositions.push(new THREE.Vector3(Math.cos(angle) * r * aspect, Math.sin(angle) * r * 0.85, (Math.random() - 0.5) * 35));
       nodeRoles.push(2);
     }
 
-    // Connect nearby nodes
+    // Connect nearby
     for (let i = 0; i < NODE_COUNT; i++) {
       let connections = 0;
-      const maxConn = nodeRoles[i] === 0 ? 5 : nodeRoles[i] === 1 ? 4 : 2;
-      const maxDist = nodeRoles[i] === 0 ? 10 : nodeRoles[i] === 1 ? 12 : 18;
+      const maxConn = nodeRoles[i] === 0 ? 6 : nodeRoles[i] === 1 ? 4 : 2;
+      const maxDist = nodeRoles[i] === 0 ? 11 : nodeRoles[i] === 1 ? 13 : 20;
       for (let j = i + 1; j < NODE_COUNT && connections < maxConn; j++) {
-        const dist = nodePositions[i].distanceTo(nodePositions[j]);
-        if (dist < maxDist) {
+        if (nodePositions[i].distanceTo(nodePositions[j]) < maxDist) {
           edgePairs.push([i, j]);
           connections++;
         }
       }
     }
 
-    // Long-range cross-cluster tendrils
+    // Cross-cluster tendrils
     for (let ci = 0; ci < corners.length; ci++) {
-      const clusterStart = ci < 4 ? ci * 50 : 200 + (ci - 4) * 30;
-      const clusterEnd = ci < 4 ? clusterStart + 50 : clusterStart + 30;
-      for (let i = clusterStart; i < clusterEnd; i += 5) {
+      const cStart = ci < 4 ? ci * 60 : 240 + (ci - 4) * 35;
+      const cEnd = ci < 4 ? cStart + 60 : cStart + 35;
+      for (let i = cStart; i < cEnd; i += 4) {
         let best = -1, bestDist = 999;
-        for (let j = 320; j < 620; j++) {
+        for (let j = 380; j < 700; j++) {
           const d = nodePositions[i].distanceTo(nodePositions[j]);
           if (d < bestDist) { bestDist = d; best = j; }
         }
-        if (best >= 0 && bestDist < 40) edgePairs.push([i, best]);
+        if (best >= 0 && bestDist < 45) edgePairs.push([i, best]);
       }
     }
 
@@ -168,8 +257,8 @@ const HeroSection = () => {
       nodeGeoPos[i * 3] = nodePositions[i].x;
       nodeGeoPos[i * 3 + 1] = nodePositions[i].y;
       nodeGeoPos[i * 3 + 2] = nodePositions[i].z;
-      nodeSizes[i] = nodeRoles[i] === 0 ? 0.10 + Math.random() * 0.08 : nodeRoles[i] === 1 ? 0.06 + Math.random() * 0.06 : 0.04 + Math.random() * 0.04;
-      nodeIntensity[i] = nodeRoles[i] === 0 ? 0.9 : nodeRoles[i] === 1 ? 0.5 : 0.2;
+      nodeSizes[i] = nodeRoles[i] === 0 ? 0.12 + Math.random() * 0.08 : nodeRoles[i] === 1 ? 0.07 + Math.random() * 0.05 : 0.04 + Math.random() * 0.03;
+      nodeIntensity[i] = nodeRoles[i] === 0 ? 1.0 : nodeRoles[i] === 1 ? 0.5 : 0.15;
     }
     const nodeGeo = new THREE.BufferGeometry();
     nodeGeo.setAttribute("position", new THREE.BufferAttribute(nodeGeoPos, 3));
@@ -179,10 +268,11 @@ const HeroSection = () => {
     const nodeMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
+      blending: THREE.AdditiveBlending,
       uniforms: {
         uTime: { value: 0 },
         uTeal: { value: new THREE.Color(TEAL) },
-        uWhite: { value: new THREE.Color(0xccddee) },
+        uWhite: { value: new THREE.Color(0x88aacc) },
       },
       vertexShader: `
         attribute float size;
@@ -192,10 +282,10 @@ const HeroSection = () => {
         uniform float uTime;
         void main() {
           vIntensity = intensity;
-          float pulse = 1.0 + sin(uTime * 1.5 + position.x * 0.3 + position.y * 0.2) * 0.2 * intensity;
+          float pulse = 1.0 + sin(uTime * 1.2 + position.x * 0.2 + position.y * 0.15) * 0.25 * intensity;
           vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
           vDist = -mvPos.z;
-          gl_PointSize = size * pulse * (280.0 / -mvPos.z);
+          gl_PointSize = size * pulse * (300.0 / -mvPos.z);
           gl_Position = projectionMatrix * mvPos;
         }
       `,
@@ -207,150 +297,131 @@ const HeroSection = () => {
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
-          float brightness = clamp(1.0 - (vDist - 10.0) / 60.0, 0.08, 1.0);
+          float brightness = clamp(1.0 - (vDist - 10.0) / 70.0, 0.05, 1.0);
           vec3 col = mix(uWhite, uTeal, vIntensity);
-          float glow = (1.0 - d * d) * brightness * (0.3 + vIntensity * 0.5);
-          gl_FragColor = vec4(col, glow);
+          float core = exp(-d * d * 4.0) * brightness * vIntensity * 0.8;
+          float halo = (1.0 - d) * brightness * 0.15;
+          gl_FragColor = vec4(col, core + halo);
         }
       `,
     });
     worldGroup.add(new THREE.Points(nodeGeo, nodeMat));
 
-    // Edges
+    // Edges — darker, more mysterious
     const edgePositions = new Float32Array(edgePairs.length * 6);
     for (let i = 0; i < edgePairs.length; i++) {
       const [a, b] = edgePairs[i];
-      edgePositions[i * 6] = nodePositions[a].x;
-      edgePositions[i * 6 + 1] = nodePositions[a].y;
-      edgePositions[i * 6 + 2] = nodePositions[a].z;
-      edgePositions[i * 6 + 3] = nodePositions[b].x;
-      edgePositions[i * 6 + 4] = nodePositions[b].y;
-      edgePositions[i * 6 + 5] = nodePositions[b].z;
+      edgePositions[i * 6] = nodePositions[a].x; edgePositions[i * 6 + 1] = nodePositions[a].y; edgePositions[i * 6 + 2] = nodePositions[a].z;
+      edgePositions[i * 6 + 3] = nodePositions[b].x; edgePositions[i * 6 + 4] = nodePositions[b].y; edgePositions[i * 6 + 5] = nodePositions[b].z;
     }
     const edgeGeo = new THREE.BufferGeometry();
     edgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePositions, 3));
-    const edgeMat = new THREE.LineBasicMaterial({ color: 0x1a3040, transparent: true, opacity: 0.10 });
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x0d1a25, transparent: true, opacity: 0.12 });
     worldGroup.add(new THREE.LineSegments(edgeGeo, edgeMat));
 
     // Pulse illumination
-    const PULSE_COUNT = 25;
+    const PULSE_COUNT = 35;
     interface PulseInfo { origin: THREE.Vector3; radius: number; life: number; maxLife: number; color: THREE.Color; speed: number; }
     const activePulses: PulseInfo[] = [];
     const pulseEdgeColors = new Float32Array(edgePairs.length * 6);
     const pulseEdgeGeo = new THREE.BufferGeometry();
     pulseEdgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePositions.slice(), 3));
     pulseEdgeGeo.setAttribute("color", new THREE.BufferAttribute(pulseEdgeColors, 3));
-    const pulseEdgeMat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.65 });
+    const pulseEdgeMat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
     worldGroup.add(new THREE.LineSegments(pulseEdgeGeo, pulseEdgeMat));
 
-    // Data-flow particles
-    const FLOW_COUNT = 300;
+    // Data-flow particles — more, slower, moodier
+    const FLOW_COUNT = 500;
     interface FlowParticle { edgeIdx: number; t: number; speed: number; }
     const flows: FlowParticle[] = [];
     for (let i = 0; i < FLOW_COUNT; i++) {
-      flows.push({
-        edgeIdx: Math.floor(Math.random() * edgePairs.length),
-        t: Math.random(),
-        speed: 0.004 + Math.random() * 0.01,
-      });
+      flows.push({ edgeIdx: Math.floor(Math.random() * edgePairs.length), t: Math.random(), speed: 0.002 + Math.random() * 0.006 });
     }
     const flowPos = new Float32Array(FLOW_COUNT * 3);
     const flowGeo = new THREE.BufferGeometry();
     flowGeo.setAttribute("position", new THREE.BufferAttribute(flowPos, 3));
-    const flowMat = new THREE.PointsMaterial({
-      size: 0.07, color: TEAL, transparent: true, opacity: 0.5,
-      sizeAttenuation: true, blending: THREE.AdditiveBlending,
-    });
+    const flowMat = new THREE.PointsMaterial({ size: 0.06, color: TEAL, transparent: true, opacity: 0.45, sizeAttenuation: true, blending: THREE.AdditiveBlending });
     worldGroup.add(new THREE.Points(flowGeo, flowMat));
 
-    // ─── LAYER 3: Scanning grid plane — sentient awareness ───
-    const gridGroup = new THREE.Group();
-    worldGroup.add(gridGroup);
-    const gridSize = 120;
-    const gridDiv = 40;
+    // ─── LAYER 3: Scanning awareness plane ───
+    const gridSize = 140;
+    const gridDiv = 50;
     const gridGeo = new THREE.PlaneGeometry(gridSize, gridSize * 0.6, gridDiv, Math.floor(gridDiv * 0.6));
     const gridMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
       wireframe: true,
-      uniforms: {
-        uTime: { value: 0 },
-        uScanPos: { value: 0 },
-      },
+      uniforms: { uTime: { value: 0 }, uScanPos: { value: 0 }, uScanPos2: { value: 0 } },
       vertexShader: `
         varying vec2 vUv;
         varying vec3 vPos;
-        void main() {
-          vUv = uv;
-          vPos = position;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
+        void main() { vUv = uv; vPos = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
       `,
       fragmentShader: `
         uniform float uTime;
         uniform float uScanPos;
+        uniform float uScanPos2;
         varying vec2 vUv;
         varying vec3 vPos;
         void main() {
-          float scanLine = 1.0 - smoothstep(0.0, 8.0, abs(vPos.x - uScanPos));
-          float base = 0.012;
-          float edgeFade = smoothstep(0.0, 0.15, vUv.x) * smoothstep(0.0, 0.15, 1.0 - vUv.x) * smoothstep(0.0, 0.2, vUv.y) * smoothstep(0.0, 0.2, 1.0 - vUv.y);
-          float alpha = (base + scanLine * 0.06) * edgeFade;
-          vec3 col = mix(vec3(0.15, 0.25, 0.3), vec3(0.0, 0.83, 0.67), scanLine * 0.5);
+          float scan1 = 1.0 - smoothstep(0.0, 6.0, abs(vPos.x - uScanPos));
+          float scan2 = 1.0 - smoothstep(0.0, 4.0, abs(vPos.y * 1.67 - uScanPos2));
+          float base = 0.008;
+          float edgeFade = smoothstep(0.0, 0.12, vUv.x) * smoothstep(0.0, 0.12, 1.0 - vUv.x) * smoothstep(0.0, 0.18, vUv.y) * smoothstep(0.0, 0.18, 1.0 - vUv.y);
+          float alpha = (base + scan1 * 0.05 + scan2 * 0.03) * edgeFade;
+          vec3 col = mix(vec3(0.06, 0.12, 0.18), vec3(0.0, 0.83, 0.67), (scan1 + scan2) * 0.3);
           gl_FragColor = vec4(col, alpha);
         }
       `,
     });
     const gridMesh = new THREE.Mesh(gridGeo, gridMat);
     gridMesh.rotation.x = -Math.PI * 0.42;
-    gridMesh.position.y = -8;
-    gridMesh.position.z = -10;
-    gridGroup.add(gridMesh);
+    gridMesh.position.y = -10;
+    gridMesh.position.z = -15;
+    worldGroup.add(gridMesh);
 
-    // ─── Orbital rings — wider ───
-    const ringGroup = new THREE.Group();
-    worldGroup.add(ringGroup);
-    const ringRadii = [18, 28, 42];
+    // ─── Orbital rings — ghostly ───
+    const ringRadii = [15, 25, 38, 55];
     const ringMeshes: THREE.Line[] = [];
     ringRadii.forEach((r, ri) => {
       const pts: THREE.Vector3[] = [];
-      const segs = 96 + ri * 16;
+      const segs = 120 + ri * 20;
       for (let j = 0; j <= segs; j++) {
         const angle = (j / segs) * Math.PI * 2;
         pts.push(new THREE.Vector3(Math.cos(angle) * r, 0, Math.sin(angle) * r));
       }
       const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: ri === 0 ? TEAL : 0x334455, transparent: true, opacity: 0.04 - ri * 0.008 });
+      const mat = new THREE.LineBasicMaterial({ color: ri === 0 ? TEAL : ri === 1 ? DEEP_TEAL : COLD_BLUE, transparent: true, opacity: 0.025 - ri * 0.004 });
       const line = new THREE.Line(geo, mat);
-      line.rotation.x = Math.PI * 0.35 + ri * 0.08;
-      line.rotation.z = ri * 0.25;
-      ringGroup.add(line);
+      line.rotation.x = Math.PI * 0.33 + ri * 0.07;
+      line.rotation.z = ri * 0.2;
+      worldGroup.add(line);
       ringMeshes.push(line);
     });
 
-    // ─── Ambient particles ───
-    const AMBIENT_COUNT = 600;
+    // ─── Ambient particle field — deep space dust ───
+    const AMBIENT_COUNT = 900;
     const ambPos = new Float32Array(AMBIENT_COUNT * 3);
     const ambVel = new Float32Array(AMBIENT_COUNT * 3);
     for (let i = 0; i < AMBIENT_COUNT; i++) {
-      ambPos[i * 3] = (Math.random() - 0.5) * 120;
-      ambPos[i * 3 + 1] = (Math.random() - 0.5) * 70;
-      ambPos[i * 3 + 2] = (Math.random() - 0.5) * 50;
-      ambVel[i * 3] = (Math.random() - 0.5) * 0.005;
-      ambVel[i * 3 + 1] = (Math.random() - 0.5) * 0.005;
-      ambVel[i * 3 + 2] = (Math.random() - 0.5) * 0.003;
+      ambPos[i * 3] = (Math.random() - 0.5) * 160;
+      ambPos[i * 3 + 1] = (Math.random() - 0.5) * 90;
+      ambPos[i * 3 + 2] = (Math.random() - 0.5) * 60;
+      ambVel[i * 3] = (Math.random() - 0.5) * 0.003;
+      ambVel[i * 3 + 1] = (Math.random() - 0.5) * 0.003;
+      ambVel[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
     }
     const ambGeo = new THREE.BufferGeometry();
     ambGeo.setAttribute("position", new THREE.BufferAttribute(ambPos, 3));
-    const ambMat = new THREE.PointsMaterial({ size: 0.04, color: 0x445566, transparent: true, opacity: 0.15, sizeAttenuation: true });
+    const ambMat = new THREE.PointsMaterial({ size: 0.035, color: 0x2a3a4a, transparent: true, opacity: 0.12, sizeAttenuation: true, blending: THREE.AdditiveBlending });
     worldGroup.add(new THREE.Points(ambGeo, ambMat));
 
     // ─── Mouse + resize ───
-    const mouse = { x: 0, y: 0 };
+    const mouse = { x: 0, y: 0, target: { x: 0, y: 0 } };
     const onMouseMove = (e: MouseEvent) => {
-      mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+      mouse.target.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouse.target.y = (e.clientY / window.innerHeight - 0.5) * 2;
     };
     window.addEventListener("mousemove", onMouseMove);
     const onResize = () => {
@@ -366,46 +437,58 @@ const HeroSection = () => {
     let frame = 0;
     const tealColor = new THREE.Color(TEAL);
     const lilacColor = new THREE.Color(LILAC);
-    const whiteColor = new THREE.Color(0xffffff);
+    const deepTealColor = new THREE.Color(DEEP_TEAL);
 
     const animate = () => {
       raf = requestAnimationFrame(animate);
       frame++;
       const t = frame * 0.001;
 
-      // Core morph — subtle, not distracting
-      coreGroup.rotation.y += 0.001;
-      coreGroup.rotation.x = Math.sin(t * 0.5) * 0.12;
-      icoMesh.scale.setScalar(1 + Math.sin(t * 1.5) * 0.05);
-      octMesh.rotation.x += 0.0018;
-      octMesh.rotation.z -= 0.001;
-      octMesh.scale.setScalar(1 + Math.sin(t * 2 + 1) * 0.08);
+      // Smooth mouse
+      mouse.x += (mouse.target.x - mouse.x) * 0.02;
+      mouse.y += (mouse.target.y - mouse.y) * 0.02;
 
-      // Scanning grid sweep
-      const scanX = Math.sin(t * 0.4) * 60;
+      // Core — slow, breathing, alive
+      coreGroup.rotation.y += 0.0006;
+      coreGroup.rotation.x = Math.sin(t * 0.3) * 0.08;
+      dodMesh.rotation.x += 0.0012;
+      dodMesh.rotation.z -= 0.0008;
+      const breathe = 1 + Math.sin(t * 0.6) * 0.06;
+      dodMesh.scale.setScalar(breathe);
+      icoMesh.scale.setScalar(1 + Math.sin(t * 0.4 + 1) * 0.04);
+      icoMesh.rotation.y -= 0.0005;
+      (glowMat.uniforms as any).uTime.value = t * 3;
+
+      // Nebula time
+      nebulaMats.forEach((m) => { (m.uniforms as any).uTime.value = t * 3; });
+
+      // Scanning grid — dual sweep
+      const scanX = Math.sin(t * 0.3) * 70;
+      const scanY = Math.cos(t * 0.22) * 40;
       (gridMat.uniforms as any).uScanPos.value = scanX;
+      (gridMat.uniforms as any).uScanPos2.value = scanY;
       (gridMat.uniforms as any).uTime.value = t;
 
-      // Rings
+      // Rings — slow ethereal rotation
       ringMeshes.forEach((r, i) => {
-        r.rotation.y += 0.0004 * (i + 1) * (i % 2 === 0 ? 1 : -1);
+        r.rotation.y += 0.0002 * (i + 1) * (i % 2 === 0 ? 1 : -1);
       });
 
-      // Spawn pulses from corners
-      if (frame % 25 === 0 && activePulses.length < PULSE_COUNT) {
+      // Spawn pulses — from network edges, rippling outward
+      if (frame % 18 === 0 && activePulses.length < PULSE_COUNT) {
         const originIdx = Math.floor(Math.random() * NODE_COUNT);
         const colorChoice = Math.random();
         activePulses.push({
           origin: nodePositions[originIdx].clone(),
           radius: 0,
           life: 0,
-          maxLife: 80 + Math.random() * 100,
-          color: colorChoice < 0.55 ? tealColor : colorChoice < 0.8 ? whiteColor : lilacColor,
-          speed: 0.15 + Math.random() * 0.2,
+          maxLife: 100 + Math.random() * 120,
+          color: colorChoice < 0.5 ? tealColor : colorChoice < 0.75 ? deepTealColor : lilacColor,
+          speed: 0.12 + Math.random() * 0.18,
         });
       }
 
-      // Pulse edge illumination
+      // Illuminate edges
       pulseEdgeColors.fill(0);
       for (let pi = activePulses.length - 1; pi >= 0; pi--) {
         const pulse = activePulses[pi];
@@ -422,8 +505,8 @@ const HeroSection = () => {
           const dx = midX - pulse.origin.x, dy = midY - pulse.origin.y, dz = midZ - pulse.origin.z;
           const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
           const ringDist = Math.abs(dist - pulse.radius);
-          if (ringDist < 3) {
-            const glow = intensity * Math.max(0, 1 - ringDist / 3) * 0.6;
+          if (ringDist < 3.5) {
+            const glow = intensity * Math.max(0, 1 - ringDist / 3.5) * 0.5;
             for (let v = 0; v < 2; v++) {
               const ci = ei * 6 + v * 3;
               pulseEdgeColors[ci] = Math.min(1, pulseEdgeColors[ci] + pulse.color.r * glow);
@@ -440,11 +523,7 @@ const HeroSection = () => {
       for (let i = 0; i < FLOW_COUNT; i++) {
         const f = flows[i];
         f.t += f.speed;
-        if (f.t > 1) {
-          f.t = 0;
-          f.edgeIdx = Math.floor(Math.random() * edgePairs.length);
-          f.speed = 0.004 + Math.random() * 0.01;
-        }
+        if (f.t > 1) { f.t = 0; f.edgeIdx = Math.floor(Math.random() * edgePairs.length); f.speed = 0.002 + Math.random() * 0.006; }
         const [a, b] = edgePairs[f.edgeIdx];
         const pa = nodePositions[a], pb = nodePositions[b];
         fArr[i * 3] = pa.x + (pb.x - pa.x) * f.t;
@@ -459,18 +538,18 @@ const HeroSection = () => {
         aArr[i * 3] += ambVel[i * 3];
         aArr[i * 3 + 1] += ambVel[i * 3 + 1];
         aArr[i * 3 + 2] += ambVel[i * 3 + 2];
-        if (Math.abs(aArr[i * 3]) > 60) ambVel[i * 3] *= -1;
-        if (Math.abs(aArr[i * 3 + 1]) > 35) ambVel[i * 3 + 1] *= -1;
-        if (Math.abs(aArr[i * 3 + 2]) > 25) ambVel[i * 3 + 2] *= -1;
+        if (Math.abs(aArr[i * 3]) > 80) ambVel[i * 3] *= -1;
+        if (Math.abs(aArr[i * 3 + 1]) > 45) ambVel[i * 3 + 1] *= -1;
+        if (Math.abs(aArr[i * 3 + 2]) > 30) ambVel[i * 3 + 2] *= -1;
       }
       ambGeo.attributes.position.needsUpdate = true;
 
-      // Node shader time
+      // Node shader
       (nodeMat.uniforms as any).uTime.value = t * 3;
 
-      // Camera parallax — wider range
-      camera.position.x += (mouse.x * 3 - camera.position.x) * 0.012;
-      camera.position.y += (-mouse.y * 2 - camera.position.y) * 0.012;
+      // Camera — slow, cinematic parallax
+      camera.position.x += (mouse.x * 4 - camera.position.x) * 0.008;
+      camera.position.y += (-mouse.y * 2.5 - camera.position.y) * 0.008;
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
@@ -485,34 +564,40 @@ const HeroSection = () => {
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
       nodeGeo.dispose(); edgeGeo.dispose(); pulseEdgeGeo.dispose(); ambGeo.dispose(); flowGeo.dispose();
       nodeMat.dispose(); edgeMat.dispose(); pulseEdgeMat.dispose(); ambMat.dispose(); flowMat.dispose();
-      icoGeo.dispose(); icoMat.dispose(); octGeo.dispose(); octMat.dispose();
+      dodGeo.dispose(); dodMat.dispose(); icoGeo.dispose(); icoMat.dispose();
+      glowGeo.dispose(); glowMat.dispose();
       gridGeo.dispose(); gridMat.dispose();
+      nebulaMats.forEach(m => m.dispose());
       ringMeshes.forEach(r => { r.geometry.dispose(); (r.material as THREE.Material).dispose(); });
     };
   }, []);
 
   return (
     <section className="relative h-screen overflow-hidden">
-      {/* 3D canvas — absolute background */}
       <div ref={mountRef} className="absolute inset-0 z-0" />
 
-      {/* Radial vignette */}
+      {/* Deep vignette — tighter, darker */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 60% 60% at 50% 50%, transparent 0%, #0a0c0f 100%)",
+        background: "radial-gradient(ellipse 55% 55% at 50% 48%, transparent 0%, rgba(6,8,9,0.7) 60%, #060809 100%)",
       }} />
 
-      {/* Film grain */}
-      <div className="absolute inset-0 z-[6] pointer-events-none opacity-[0.03]" style={{
+      {/* Top/bottom darkness bands */}
+      <div className="absolute inset-0 z-[5] pointer-events-none" style={{
+        background: "linear-gradient(180deg, rgba(6,8,9,0.5) 0%, transparent 20%, transparent 80%, rgba(6,8,9,0.6) 100%)",
+      }} />
+
+      {/* Subtle film grain */}
+      <div className="absolute inset-0 z-[6] pointer-events-none opacity-[0.025]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         backgroundSize: "128px 128px",
       }} />
 
-      {/* Hero content — centered overlay */}
+      {/* Hero content */}
       <div className="relative z-10 flex h-full w-full items-center justify-center">
         <div className="max-w-3xl flex flex-col items-center text-center px-6">
           <motion.div
-            animate={{ opacity: [0.4, 0.7, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="mb-12"
           >
             <FacetedCrownLogo size={72} />
@@ -521,13 +606,13 @@ const HeroSection = () => {
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
+            transition={{ duration: 1.2, delay: 0.3 }}
             className="text-white font-light"
             style={{
               fontSize: "clamp(2.5rem, 5vw, 4rem)",
               lineHeight: 1.08,
               letterSpacing: "-0.03em",
-              textShadow: "0 0 60px rgba(0,0,0,0.9), 0 0 120px rgba(0,0,0,0.5)",
+              textShadow: "0 0 80px rgba(0,0,0,0.95), 0 0 160px rgba(6,8,9,0.8)",
             }}
           >
             Unlocking proactive healthcare for all.
@@ -542,7 +627,7 @@ const HeroSection = () => {
               maxWidth: 960,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              textShadow: "0 0 30px rgba(0,0,0,0.8)",
+              textShadow: "0 0 40px rgba(6,8,9,0.9)",
             }}
           >
             <p>
@@ -596,16 +681,16 @@ const HeroSection = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
+        transition={{ delay: 2.5, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] font-medium uppercase text-white/20" style={{ letterSpacing: "0.3em" }}>
+        <span className="text-[10px] font-medium uppercase text-white/15" style={{ letterSpacing: "0.3em" }}>
           Scroll to explore
         </span>
         <motion.span
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="text-white/20 text-sm"
+          className="text-white/15 text-sm"
         >
           ▾
         </motion.span>
