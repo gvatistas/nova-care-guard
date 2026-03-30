@@ -1,115 +1,10 @@
-import { useRef, useState, useEffect, type FC } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, type FC } from "react";
+import { motion, useInView } from "framer-motion";
+import FacetedCrownLogo from "./FacetedCrownLogo";
 
 const TEAL = "#00d4aa";
 const RED = "#cc3333";
 const ORANGE = "#e8922a";
-
-/* ── Shapeshifting Medient Logo ── */
-const MORPH_SHAPES = [
-  // Crown form
-  "M 60,85 L 75,45 L 90,65 L 100,25 L 110,65 L 125,45 L 140,85 Z",
-  // Diamond
-  "M 100,20 L 145,62 L 100,105 L 55,62 Z",
-  // Hexagon
-  "M 100,20 L 145,40 L 145,80 L 100,100 L 55,80 L 55,40 Z",
-  // Abstract angular
-  "M 70,25 L 130,25 L 155,62 L 130,100 L 70,100 L 45,62 Z",
-  // Crown form again
-  "M 60,85 L 75,45 L 90,65 L 100,25 L 110,65 L 125,45 L 140,85 Z",
-];
-
-const INNER_LINES: string[][] = [
-  ["M 75,45 L 100,85", "M 125,45 L 100,85", "M 100,25 L 100,85", "M 60,85 L 100,55 L 140,85"],
-  ["M 100,20 L 100,105", "M 55,62 L 145,62", "M 78,41 L 122,83", "M 122,41 L 78,83"],
-  ["M 100,20 L 100,100", "M 55,40 L 145,80", "M 145,40 L 55,80", "M 55,60 L 145,60"],
-  ["M 70,25 L 130,100", "M 130,25 L 70,100", "M 45,62 L 155,62", "M 100,25 L 100,100"],
-  ["M 75,45 L 100,85", "M 125,45 L 100,85", "M 100,25 L 100,85", "M 60,85 L 100,55 L 140,85"],
-];
-
-const ShapeshiftingLogo: FC<{ size?: number }> = ({ size = 200 }) => {
-  const [shapeIdx, setShapeIdx] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShapeIdx((p) => (p + 1) % (MORPH_SHAPES.length - 1));
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <svg width={size} height={size} viewBox="0 0 200 120" className="overflow-visible">
-      {/* Glow */}
-      <defs>
-        <filter id="logo-glow">
-          <feGaussianBlur stdDeviation="4" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-      </defs>
-
-      {/* Outer shape morph */}
-      <motion.path
-        d={MORPH_SHAPES[shapeIdx]}
-        fill="none"
-        stroke={TEAL}
-        strokeWidth="1.2"
-        strokeLinejoin="miter"
-        filter="url(#logo-glow)"
-        initial={false}
-        animate={{ d: MORPH_SHAPES[shapeIdx + 1] || MORPH_SHAPES[0] }}
-        transition={{ duration: 2.5, ease: "easeInOut" }}
-        opacity={0.7}
-      />
-
-      {/* Filled facets */}
-      <motion.path
-        d={MORPH_SHAPES[shapeIdx]}
-        fill={TEAL}
-        initial={false}
-        animate={{ d: MORPH_SHAPES[shapeIdx + 1] || MORPH_SHAPES[0] }}
-        transition={{ duration: 2.5, ease: "easeInOut" }}
-        opacity={0.06}
-      />
-
-      {/* Inner structure lines */}
-      <AnimatePresence mode="wait">
-        <motion.g
-          key={shapeIdx}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-        >
-          {INNER_LINES[shapeIdx]?.map((d, i) => (
-            <motion.path
-              key={i}
-              d={d}
-              fill="none"
-              stroke="white"
-              strokeWidth="0.5"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 0.2 }}
-              transition={{ duration: 1.2, delay: i * 0.15 }}
-            />
-          ))}
-        </motion.g>
-      </AnimatePresence>
-
-      {/* Center pulse */}
-      <circle cx="100" cy="62" r="2" fill={TEAL} opacity="0.5">
-        <animate attributeName="r" values="1.5;3.5;1.5" dur="3s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.5;0.15;0.5" dur="3s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Corner vertices */}
-      {[[100, 25], [60, 85], [140, 85], [75, 45], [125, 45]].map(([cx, cy], i) => (
-        <circle key={i} cx={cx} cy={cy} r="1.5" fill="white" opacity={0.3}>
-          <animate attributeName="opacity" values="0.3;0.1;0.3" dur={`${2 + i * 0.3}s`} repeatCount="indefinite" />
-        </circle>
-      ))}
-    </svg>
-  );
-};
 
 /* ── Patient Card ── */
 const PatientCard: FC = () => (
@@ -205,7 +100,7 @@ const PatientNarrativeSection = () => {
 
             {/* Medient AI badge with shapeshifting logo */}
             <div className="flex items-center gap-5 border border-white/[0.06] p-5" style={{ background: "#1e2227" }}>
-              <ShapeshiftingLogo size={80} />
+              <FacetedCrownLogo size={64} />
               <div>
                 <p className="text-[10px] uppercase tracking-[0.12em] mb-1" style={{ color: TEAL }}>Medient Engine</p>
                 <p className="text-white/35 text-[11px] leading-relaxed">
