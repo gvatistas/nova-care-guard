@@ -127,250 +127,209 @@ const HeroSection = () => {
     scene.add(floor.group);
     scene.add(ceiling.group);
 
-    // ─── 3D DECISION TREE — branching paths in space ───
-    interface TreeNode {
-      pos: THREE.Vector3;
-      children: TreeNode[];
-      depth: number;
-      id: number;
-    }
+    // ─── DECISION PATHS ON THE GRID DOTS ───
+    // Build paths that travel across the grid dot intersections
+    // Each path starts from a root dot and branches outward through neighboring dots
+    
+    const HALF_W = GRID_W / 2;
+    // Grid coordinate → world position
+    const gridToWorld = (gx: number, gz: number, y: number) =>
+      new THREE.Vector3(gx * SPACING, y, -gz * SPACING);
 
-    let nodeIdCounter = 0;
-    const buildTree = (origin: THREE.Vector3, depth: number, maxDepth: number, spreadX: number, spreadY: number): TreeNode => {
-      const node: TreeNode = { pos: origin.clone(), children: [], depth, id: nodeIdCounter++ };
-      if (depth >= maxDepth) return node;
-      const branches = depth === 0 ? 3 : (Math.random() > 0.3 ? 2 : 3);
-      for (let i = 0; i < branches; i++) {
-        const angle = ((i / branches) - 0.5) * Math.PI * 0.8 + (Math.random() - 0.5) * 0.4;
-        const childPos = new THREE.Vector3(
-          origin.x + Math.sin(angle) * spreadX * (0.7 + Math.random() * 0.6),
-          origin.y + (Math.random() - 0.5) * spreadY,
-          origin.z - (8 + Math.random() * 6)
-        );
-        node.children.push(buildTree(childPos, depth + 1, maxDepth, spreadX * 0.65, spreadY * 0.8));
-      }
-      return node;
+    interface PathNode { gx: number; gz: number; y: number; outcome: number; depth: number; }
+    interface PathEdge { from: PathNode; to: PathNode; outcome: number; }
+
+    const allEdges: PathEdge[] = [];
+    const activeNodes = new Map<string, PathNode>();
+    const nodeKey = (gx: number, gz: number, y: number) => `${gx},${gz},${y < 0 ? 'f' : 'c'}`;
+
+    // Seeded random
+    const seeded = (s: number) => {
+      let h = Math.imul(s ^ 0x5bd1e995, 0x5bd1e995);
+      h = ((h >>> 13) ^ h) * 0x5bd1e995;
+      return ((h >>> 15) ^ h) >>> 0;
     };
 
-    // Create multiple decision trees scattered in the corridor
-    const trees: TreeNode[] = [];
-    const treeRoots: THREE.Vector3[] = [
-      new THREE.Vector3(-25, -4, -40),
-      new THREE.Vector3(28, 5, -80),
-      new THREE.Vector3(-15, 6, -130),
-      new THREE.Vector3(20, -5, -180),
-      new THREE.Vector3(-30, 3, -220),
-      new THREE.Vector3(15, -3, -270),
+    // Build branching paths from root grid positions
+    const PATH_ROOTS = [
+      { gx: -10, gz: 8, y: -18 },
+      { gx: 12, gz: 18, y: -18 },
+      { gx: -20, gz: 35, y: -18 },
+      { gx: 5, gz: 50, y: -18 },
+      { gx: -15, gz: 65, y: -18 },
+      { gx: 18, gz: 80, y: -18 },
+      { gx: -8, gz: 95, y: -18 },
+      { gx: 10, gz: 110, y: -18 },
+      // Ceiling paths
+      { gx: 8, gz: 12, y: 18 },
+      { gx: -18, gz: 28, y: 18 },
+      { gx: 15, gz: 45, y: 18 },
+      { gx: -5, gz: 60, y: 18 },
+      { gx: 20, gz: 78, y: 18 },
+      { gx: -12, gz: 100, y: 18 },
     ];
-    treeRoots.forEach(root => trees.push(buildTree(root, 0, 5, 12, 5)));
 
-    // Collect all edges and nodes from trees, with outcome scores
-    const edgePositions: number[] = [];
-    const nodePositions: number[] = [];
-    const nodeDepths: number[] = [];
-    const nodeOutcomes: number[] = []; // 0=green(good), 0.5=amber(mixed), 1=red(bad)
-    const edgeIds: number[] = [];
-    const edgeOutcomes: number[] = [];
-    let edgeIdx = 0;
+    PATH_ROOTS.forEach((root, ri) => {
+      const buildBranch = (gx: number, gz: number, y: number, depth: number, outcome: number, seed: number) => {
+        if (depth > 8 || gx < -HALF_W || gx > HALF_W || gz < 0 || gz > GRID_D) return;
+        const key = nodeKey(gx, gz, y);
+        const node: PathNode = { gx, gz, y, outcome, depth };
+        activeNodes.set(key, node);
 
-    // Deterministic pseudo-random per node
-    const hashNode = (id: number) => {
-      let h = id * 2654435761;
-      h = ((h >>> 16) ^ h) * 0x45d9f3b;
-      return ((h >>> 16) ^ h) / 4294967296;
-    };
+        // Branch count decreases with depth
+        const branches = depth < 2 ? 3 : (seeded(seed + depth * 7) % 3 === 0 ? 3 : 2);
+        for (let b = 0; b < branches; b++) {
+          const s = seeded(seed * 31 + b * 97 + depth * 13);
+          // Move forward (deeper Z) with lateral spread
+          const dz = 2 + (s % 3);
+          const dx = ((s >> 4) % 5) - 2; // -2 to +2
+          const ngx = gx + dx;
+          const ngz = gz + dz;
+          if (ngx < -HALF_W || ngx > HALF_W || ngz > GRID_D) continue;
 
-    const traverseTree = (node: TreeNode) => {
-      // Deeper nodes more likely to be bad outcomes
-      const rng = hashNode(node.id);
-      const outcome = node.depth === 0 ? 0.15 : Math.min(1.0, (node.depth / 5) * 0.6 + rng * 0.5);
-      nodePositions.push(node.pos.x, node.pos.y, node.pos.z);
-      nodeDepths.push(node.depth);
-      nodeOutcomes.push(outcome);
-      node.children.forEach(child => {
-        const childOutcome = hashNode(child.id);
-        const eo = Math.min(1.0, (child.depth / 5) * 0.5 + childOutcome * 0.5);
-        edgePositions.push(node.pos.x, node.pos.y, node.pos.z);
-        edgePositions.push(child.pos.x, child.pos.y, child.pos.z);
-        edgeIds.push(edgeIdx, edgeIdx);
-        edgeOutcomes.push(eo, eo);
-        edgeIdx++;
-        traverseTree(child);
-      });
-    };
-    trees.forEach(t => traverseTree(t));
+          // Outcome worsens with depth and randomness
+          const childOutcome = Math.min(1.0, outcome + (depth / 10) * 0.15 + (s % 100) / 300);
+          const childNode: PathNode = { gx: ngx, gz: ngz, y, outcome: childOutcome, depth: depth + 1 };
+          const childKey = nodeKey(ngx, ngz, y);
+          activeNodes.set(childKey, childNode);
+          allEdges.push({ from: node, to: childNode, outcome: childOutcome });
+          buildBranch(ngx, ngz, y, depth + 1, childOutcome, s);
+        }
+      };
+      buildBranch(root.gx, root.gz, root.y, 0, 0.05 + (ri % 3) * 0.1, ri * 1337 + 42);
+    });
 
-    // Decision tree edges — green/amber/red based on outcome
-    const edgeGeo = new THREE.BufferGeometry();
-    edgeGeo.setAttribute("position", new THREE.Float32BufferAttribute(edgePositions, 3));
-    edgeGeo.setAttribute("edgeId", new THREE.Float32BufferAttribute(edgeIds, 1));
-    edgeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(edgeOutcomes, 1));
-    const edgeMat = new THREE.ShaderMaterial({
+    // ─── Edge lines connecting grid dots (decision paths) ───
+    const pathEdgePos: number[] = [];
+    const pathEdgeOutcome: number[] = [];
+    allEdges.forEach(e => {
+      const p1 = gridToWorld(e.from.gx, e.from.gz, e.from.y);
+      const p2 = gridToWorld(e.to.gx, e.to.gz, e.to.y);
+      pathEdgePos.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+      pathEdgeOutcome.push(e.outcome, e.outcome);
+    });
+
+    const pathEdgeGeo = new THREE.BufferGeometry();
+    pathEdgeGeo.setAttribute("position", new THREE.Float32BufferAttribute(pathEdgePos, 3));
+    pathEdgeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(pathEdgeOutcome, 1));
+    const pathEdgeMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
-        attribute float edgeId;
         attribute float outcome;
-        varying float vPulse;
-        varying float vDist;
         varying float vOutcome;
+        varying float vDist;
         uniform float uTime, uCamZ;
         void main() {
           vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           vDist = abs(wp.z - uCamZ);
-          float wave = sin(uTime * 1.8 + edgeId * 0.7) * 0.5 + 0.5;
-          vPulse = wave;
           gl_Position = projectionMatrix * viewMatrix * wp;
         }
       `,
       fragmentShader: `
-        varying float vPulse;
-        varying float vDist;
         varying float vOutcome;
+        varying float vDist;
+        uniform float uTime;
         void main() {
-          float fade = smoothstep(5.0, 30.0, vDist) * (1.0 - smoothstep(180.0, 280.0, vDist));
-          float intensity = mix(0.06, 0.22, vPulse) * fade;
-          // Green → Amber → Red based on outcome
-          vec3 green = vec3(0.0, 0.85, 0.4);
-          vec3 amber = vec3(0.95, 0.65, 0.1);
-          vec3 red = vec3(0.95, 0.15, 0.1);
+          float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 260.0, vDist));
+          float pulse = 0.6 + 0.4 * sin(uTime * 2.0 + vDist * 0.05);
+          vec3 green = vec3(0.0, 0.9, 0.45);
+          vec3 amber = vec3(1.0, 0.7, 0.1);
+          vec3 red   = vec3(1.0, 0.15, 0.1);
           vec3 col = vOutcome < 0.5
             ? mix(green, amber, vOutcome * 2.0)
             : mix(amber, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col, intensity);
+          gl_FragColor = vec4(col, fade * pulse * 0.18);
         }
       `,
     });
-    const edgeMesh = new THREE.LineSegments(edgeGeo, edgeMat);
-    scene.add(edgeMesh);
-    disposables.push(edgeGeo, edgeMat);
+    scene.add(new THREE.LineSegments(pathEdgeGeo, pathEdgeMat));
+    disposables.push(pathEdgeGeo, pathEdgeMat);
 
-    // Decision tree nodes — green/amber/red glowing spheres
-    const treeNodeGeo = new THREE.BufferGeometry();
-    treeNodeGeo.setAttribute("position", new THREE.Float32BufferAttribute(nodePositions, 3));
-    treeNodeGeo.setAttribute("depth", new THREE.Float32BufferAttribute(nodeDepths, 1));
-    treeNodeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(nodeOutcomes, 1));
-    const treeNodeMat = new THREE.ShaderMaterial({
+    // ─── Highlighted grid nodes — glow on active decision points ───
+    const activeNodePos: number[] = [];
+    const activeNodeOutcome: number[] = [];
+    const activeNodeDepth: number[] = [];
+    activeNodes.forEach(n => {
+      const wp = gridToWorld(n.gx, n.gz, n.y);
+      activeNodePos.push(wp.x, wp.y, wp.z);
+      activeNodeOutcome.push(n.outcome);
+      activeNodeDepth.push(n.depth);
+    });
+
+    const activeNodeGeo = new THREE.BufferGeometry();
+    activeNodeGeo.setAttribute("position", new THREE.Float32BufferAttribute(activeNodePos, 3));
+    activeNodeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(activeNodeOutcome, 1));
+    activeNodeGeo.setAttribute("depth", new THREE.Float32BufferAttribute(activeNodeDepth, 1));
+    const activeNodeMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
-        attribute float depth;
         attribute float outcome;
-        varying float vAlpha;
-        varying float vDepth;
+        attribute float depth;
         varying float vOutcome;
+        varying float vAlpha;
         uniform float uTime, uCamZ;
         void main() {
-          vDepth = depth;
           vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
-          float df = smoothstep(5.0, 25.0, d) * (1.0 - smoothstep(160.0, 260.0, d));
-          float pulse = 0.6 + 0.4 * sin(uTime * 2.5 + depth * 1.5 + position.x * 0.3);
-          float sizeBase = mix(7.0, 3.0, depth / 5.0);
+          float df = smoothstep(5.0, 20.0, d) * (1.0 - smoothstep(150.0, 250.0, d));
+          float pulse = 0.5 + 0.5 * sin(uTime * 2.5 + depth * 1.8 + position.x * 0.4);
+          float sizeBase = mix(8.0, 4.0, depth / 8.0);
           vAlpha = df * pulse;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = max(2.0, sizeBase * df * (150.0 / -mv.z));
+          gl_PointSize = max(2.0, sizeBase * df * (160.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
       `,
       fragmentShader: `
-        varying float vAlpha;
-        varying float vDepth;
         varying float vOutcome;
+        varying float vAlpha;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 4.0);
-          float halo = exp(-d * d * 1.5) * 0.3;
-          float glow = exp(-d * 0.8) * 0.15;
-          vec3 green = vec3(0.0, 0.9, 0.4);
-          vec3 amber = vec3(1.0, 0.7, 0.1);
-          vec3 red = vec3(1.0, 0.15, 0.1);
-          vec3 baseCol = vOutcome < 0.5
+          float halo = exp(-d * d * 1.2) * 0.35;
+          float glow = exp(-d * 0.6) * 0.2;
+          vec3 green = vec3(0.0, 1.0, 0.5);
+          vec3 amber = vec3(1.0, 0.75, 0.1);
+          vec3 red   = vec3(1.0, 0.18, 0.1);
+          vec3 col = vOutcome < 0.5
             ? mix(green, amber, vOutcome * 2.0)
             : mix(amber, red, (vOutcome - 0.5) * 2.0);
-          vec3 color = baseCol * (core + halo * 0.6 + glow * 0.4);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.75);
+          vec3 color = col * (core + halo * 0.7 + glow * 0.4);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.85);
         }
       `,
     });
-    scene.add(new THREE.Points(treeNodeGeo, treeNodeMat));
-    disposables.push(treeNodeGeo, treeNodeMat);
+    scene.add(new THREE.Points(activeNodeGeo, activeNodeMat));
+    disposables.push(activeNodeGeo, activeNodeMat);
 
-    // ─── RADAR RINGS — expanding from root nodes ───
-    const RING_COUNT = 6;
-    const radarRings: THREE.Mesh[] = [];
-    const radarMats: THREE.ShaderMaterial[] = [];
-    for (let i = 0; i < RING_COUNT; i++) {
-      const ringGeo = new THREE.RingGeometry(0.5, 1.0, 64);
-      const ringMat = new THREE.ShaderMaterial({
-        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-        side: THREE.DoubleSide,
-        uniforms: { uTime: { value: 0 }, uPhase: { value: i * 1.2 } },
-        vertexShader: `
-          varying vec2 vUv;
-          uniform float uTime, uPhase;
-          void main() {
-            vUv = uv;
-            float t = mod(uTime * 0.6 + uPhase, 7.0);
-            float scale = t * 5.0;
-            vec3 scaled = position * scale;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(scaled, 1.0);
-          }
-        `,
-        fragmentShader: `
-          varying vec2 vUv;
-          uniform float uTime, uPhase;
-          void main() {
-            float t = mod(uTime * 0.6 + uPhase, 7.0);
-            float fade = (1.0 - t / 7.0);
-            float ring = smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
-            float outcome = fract(uPhase * 0.37);
-            vec3 green = vec3(0.0, 0.85, 0.4);
-            vec3 amber = vec3(0.95, 0.65, 0.1);
-            vec3 red = vec3(0.9, 0.15, 0.1);
-            vec3 col = outcome < 0.5
-              ? mix(green, amber, outcome * 2.0)
-              : mix(amber, red, (outcome - 0.5) * 2.0);
-            gl_FragColor = vec4(col, ring * fade * fade * 0.12);
-          }
-        `,
-      });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      const rootIdx = i % treeRoots.length;
-      ring.position.copy(treeRoots[rootIdx]);
-      ring.lookAt(camera.position);
-      scene.add(ring);
-      radarRings.push(ring);
-      radarMats.push(ringMat);
-      disposables.push(ringGeo, ringMat);
-    }
-
-    // ─── PULSE PARTICLES — traveling along tree edges ───
-    const PULSE_COUNT = 120;
+    // ─── PULSE PARTICLES — traveling along decision path edges on the grid ───
+    const PULSE_COUNT = 200;
     const pulsePos = new Float32Array(PULSE_COUNT * 3);
     const pulseProgress = new Float32Array(PULSE_COUNT);
     const pulseEdge = new Int32Array(PULSE_COUNT);
     const pulseSpeed = new Float32Array(PULSE_COUNT);
-    const pulseOutcome = new Float32Array(PULSE_COUNT);
-    const totalEdges = edgePositions.length / 6;
+    const pulseOutcomeArr = new Float32Array(PULSE_COUNT);
+    const totalPathEdges = pathEdgePos.length / 6;
 
     for (let i = 0; i < PULSE_COUNT; i++) {
-      pulseEdge[i] = Math.floor(Math.random() * totalEdges);
+      pulseEdge[i] = Math.floor(Math.random() * totalPathEdges);
       pulseProgress[i] = Math.random();
-      pulseSpeed[i] = 0.003 + Math.random() * 0.008;
-      pulseOutcome[i] = edgeOutcomes[pulseEdge[i] * 2]; // inherit edge outcome
+      pulseSpeed[i] = 0.004 + Math.random() * 0.012;
+      pulseOutcomeArr[i] = pathEdgeOutcome[pulseEdge[i] * 2];
       const ei = pulseEdge[i] * 6;
       const t = pulseProgress[i];
-      pulsePos[i * 3] = edgePositions[ei] + (edgePositions[ei + 3] - edgePositions[ei]) * t;
-      pulsePos[i * 3 + 1] = edgePositions[ei + 1] + (edgePositions[ei + 4] - edgePositions[ei + 1]) * t;
-      pulsePos[i * 3 + 2] = edgePositions[ei + 2] + (edgePositions[ei + 5] - edgePositions[ei + 2]) * t;
+      pulsePos[i * 3]     = pathEdgePos[ei]     + (pathEdgePos[ei + 3] - pathEdgePos[ei]) * t;
+      pulsePos[i * 3 + 1] = pathEdgePos[ei + 1] + (pathEdgePos[ei + 4] - pathEdgePos[ei + 1]) * t;
+      pulsePos[i * 3 + 2] = pathEdgePos[ei + 2] + (pathEdgePos[ei + 5] - pathEdgePos[ei + 2]) * t;
     }
     const pulseGeo = new THREE.BufferGeometry();
     pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulsePos, 3));
-    pulseGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(pulseOutcome, 1));
+    pulseGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(pulseOutcomeArr, 1));
     const pulseMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
@@ -383,9 +342,9 @@ const HeroSection = () => {
           vOutcome = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
-          vAlpha = smoothstep(5.0, 20.0, d) * (1.0 - smoothstep(150.0, 250.0, d));
+          vAlpha = smoothstep(5.0, 18.0, d) * (1.0 - smoothstep(140.0, 230.0, d));
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = max(2.0, 5.5 * vAlpha * (100.0 / -mv.z));
+          gl_PointSize = max(2.0, 6.0 * vAlpha * (120.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
       `,
@@ -396,19 +355,66 @@ const HeroSection = () => {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
           float core = exp(-d * d * 3.0);
-          float glow = exp(-d * 1.2) * 0.4;
-          vec3 green = vec3(0.0, 1.0, 0.45);
-          vec3 amber = vec3(1.0, 0.7, 0.1);
-          vec3 red = vec3(1.0, 0.2, 0.1);
+          float glow = exp(-d * 1.0) * 0.5;
+          vec3 green = vec3(0.0, 1.0, 0.5);
+          vec3 amber = vec3(1.0, 0.75, 0.1);
+          vec3 red   = vec3(1.0, 0.2, 0.1);
           vec3 col = vOutcome < 0.5
             ? mix(green, amber, vOutcome * 2.0)
             : mix(amber, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.65);
+          gl_FragColor = vec4(col * (core + glow), (core + glow) * vAlpha * 0.75);
         }
       `,
     });
     scene.add(new THREE.Points(pulseGeo, pulseMat));
     disposables.push(pulseGeo, pulseMat);
+
+    // ─── RIPPLE RINGS — expand from root nodes on the grid ───
+    const RING_COUNT = 8;
+    const radarRings: THREE.Mesh[] = [];
+    const radarMats: THREE.ShaderMaterial[] = [];
+    PATH_ROOTS.slice(0, RING_COUNT).forEach((root, i) => {
+      const ringGeo = new THREE.RingGeometry(0.3, 0.8, 48);
+      const ringMat = new THREE.ShaderMaterial({
+        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        uniforms: { uTime: { value: 0 }, uPhase: { value: i * 0.9 } },
+        vertexShader: `
+          varying vec2 vUv;
+          uniform float uTime, uPhase;
+          void main() {
+            vUv = uv;
+            float t = mod(uTime * 0.5 + uPhase, 6.0);
+            float scale = t * 4.0;
+            vec3 scaled = position * scale;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(scaled, 1.0);
+          }
+        `,
+        fragmentShader: `
+          varying vec2 vUv;
+          uniform float uTime, uPhase;
+          void main() {
+            float t = mod(uTime * 0.5 + uPhase, 6.0);
+            float fade = (1.0 - t / 6.0);
+            float ring = smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
+            float oc = fract(uPhase * 0.41);
+            vec3 green = vec3(0.0, 0.85, 0.45);
+            vec3 amber = vec3(0.95, 0.65, 0.1);
+            vec3 red = vec3(0.9, 0.15, 0.1);
+            vec3 col = oc < 0.5 ? mix(green, amber, oc * 2.0) : mix(amber, red, (oc - 0.5) * 2.0);
+            gl_FragColor = vec4(col, ring * fade * fade * 0.1);
+          }
+        `,
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      const wp = gridToWorld(root.gx, root.gz, root.y);
+      ring.position.copy(wp);
+      ring.lookAt(camera.position);
+      scene.add(ring);
+      radarRings.push(ring);
+      radarMats.push(ringMat);
+      disposables.push(ringGeo, ringMat);
+    });
 
     // ─── SCAN WAVE — vertical plane sweeping through corridor ───
     const scanGeo = new THREE.PlaneGeometry(200, 50, 1, 1);
@@ -515,11 +521,11 @@ const HeroSection = () => {
         (m.uniforms as any).uCamZ.value = camZ;
       });
 
-      // Decision tree uniforms
-      (edgeMat.uniforms as any).uTime.value = time;
-      (edgeMat.uniforms as any).uCamZ.value = camZ;
-      (treeNodeMat.uniforms as any).uTime.value = time;
-      (treeNodeMat.uniforms as any).uCamZ.value = camZ;
+      // Decision path uniforms
+      (pathEdgeMat.uniforms as any).uTime.value = time;
+      (pathEdgeMat.uniforms as any).uCamZ.value = camZ;
+      (activeNodeMat.uniforms as any).uTime.value = time;
+      (activeNodeMat.uniforms as any).uCamZ.value = camZ;
 
       // Radar rings
       radarMats.forEach((m, i) => {
@@ -527,22 +533,22 @@ const HeroSection = () => {
         radarRings[i].lookAt(camera.position);
       });
 
-      // Pulse particles — travel along edges
+      // Pulse particles — travel along grid path edges
       const pArr = pulseGeo.attributes.position.array as Float32Array;
       for (let i = 0; i < PULSE_COUNT; i++) {
         pulseProgress[i] += pulseSpeed[i];
         if (pulseProgress[i] > 1) {
           pulseProgress[i] = 0;
-          pulseEdge[i] = Math.floor(Math.random() * totalEdges);
+          pulseEdge[i] = Math.floor(Math.random() * totalPathEdges);
           const oArr = pulseGeo.attributes.outcome.array as Float32Array;
-          oArr[i] = edgeOutcomes[pulseEdge[i] * 2];
+          oArr[i] = pathEdgeOutcome[pulseEdge[i] * 2];
           pulseGeo.attributes.outcome.needsUpdate = true;
         }
         const ei = pulseEdge[i] * 6;
         const pr = pulseProgress[i];
-        pArr[i * 3] = edgePositions[ei] + (edgePositions[ei + 3] - edgePositions[ei]) * pr;
-        pArr[i * 3 + 1] = edgePositions[ei + 1] + (edgePositions[ei + 4] - edgePositions[ei + 1]) * pr;
-        pArr[i * 3 + 2] = edgePositions[ei + 2] + (edgePositions[ei + 5] - edgePositions[ei + 2]) * pr;
+        pArr[i * 3]     = pathEdgePos[ei]     + (pathEdgePos[ei + 3] - pathEdgePos[ei]) * pr;
+        pArr[i * 3 + 1] = pathEdgePos[ei + 1] + (pathEdgePos[ei + 4] - pathEdgePos[ei + 1]) * pr;
+        pArr[i * 3 + 2] = pathEdgePos[ei + 2] + (pathEdgePos[ei + 5] - pathEdgePos[ei + 2]) * pr;
       }
       pulseGeo.attributes.position.needsUpdate = true;
       (pulseMat.uniforms as any).uTime.value = time;
