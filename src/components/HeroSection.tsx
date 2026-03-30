@@ -299,7 +299,7 @@ const HeroSection = () => {
               textShadow: "0 0 60px rgba(0,0,0,0.9), 0 0 120px rgba(0,0,0,0.5)",
             }}
           >
-            The Clinical Logic Engine.
+            Unlocking proactive healthcare for all.
           </motion.h1>
 
           <motion.p
