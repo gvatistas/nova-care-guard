@@ -299,7 +299,7 @@ const HeroSection = () => {
               textShadow: "0 0 60px rgba(0,0,0,0.9), 0 0 120px rgba(0,0,0,0.5)",
             }}
           >
-            Unlocking the proactive healthcare patients deserve.
+            The Clinical Logic Engine.
           </motion.h1>
 
           <motion.p
@@ -314,10 +314,11 @@ const HeroSection = () => {
               textShadow: "0 0 30px rgba(0,0,0,0.8)",
             }}
           >
-            The healthcare system was not built for prevention. We are changing
-            that — replacing outdated, reactive workflows with intelligent
-            clinical infrastructure that catches what matters before it is too
-            late.
+            Medient compiles every clinical guideline into deterministic,
+            formally verified decision infrastructure — bridging AI and
+            evidence-based care across every data source, every EHR, every
+            patient encounter. Zero hallucination. Zero inference. Total
+            clinical authority.
           </motion.p>
 
           <motion.div
