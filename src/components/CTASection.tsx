@@ -17,7 +17,7 @@ const CTASection = () => {
             Unlocking the proactive healthcare patients deserve.
           </h2>
           <p className="text-white/50 text-lg mb-8 max-w-3xl" style={{ lineHeight: 1.7, letterSpacing: "-0.01em" }}>
-            The healthcare system wasn't built for prevention. We're changing that — replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it's too late.
+            Medient compiles every clinical guideline into deterministic, formally verified decision infrastructure; bridging AI and evidence-based care across every data source, every EHR, every patient encounter.
           </p>
 
           <div className="flex flex-col sm:flex-row items-start gap-4">
