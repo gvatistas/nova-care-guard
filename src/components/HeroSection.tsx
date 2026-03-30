@@ -610,13 +610,6 @@ const HeroSection = () => {
       {/* Hero content */}
       <div className="relative z-10 flex h-full w-full items-center justify-center">
         <div className="max-w-3xl flex flex-col items-center text-center px-6">
-          <motion.div
-            animate={{ opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="mb-12"
-          >
-            <FacetedCrownLogo size={180} />
-          </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
