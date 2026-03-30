@@ -519,7 +519,7 @@ const HeroSection = () => {
     const animate = () => {
       raf = requestAnimationFrame(animate);
       frame++;
-      const t = frame * 0.001;
+      const t = performance.now() * 0.001;
 
       mouse.x += (mouse.tx - mouse.x) * 0.015;
       mouse.y += (mouse.ty - mouse.y) * 0.015;
