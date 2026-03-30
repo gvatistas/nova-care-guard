@@ -294,17 +294,14 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 teal    = vec3(0.12, 0.6, 0.55);
-          vec3 green   = vec3(0.2, 1.0, 0.6);
-          vec3 red     = vec3(0.95, 0.2, 0.15);
+          vec3 grey   = vec3(0.4, 0.36, 0.33);
+          vec3 orange = vec3(1.0, 0.6, 0.18);
+          vec3 red    = vec3(0.9, 0.2, 0.12);
           vec3 col = vOutcome < 0.5
-            ? mix(teal, green, (0.5 - vOutcome) * 2.0)
-            : mix(teal, red, smoothstep(0.5, 1.0, vOutcome));
-          // Animate red alerts resolving to green
-          float resolve = smoothstep(0.7, 1.0, vOutcome) * (0.5 + 0.5 * sin(uTime * 4.0 + gl_FragCoord.x * 0.01));
-          col = mix(col, green, resolve * 0.7);
+            ? mix(grey, orange, vOutcome * 2.0)
+            : mix(orange, red, (vOutcome - 0.5) * 2.0);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.7);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.6);
         }
       `,
     });
