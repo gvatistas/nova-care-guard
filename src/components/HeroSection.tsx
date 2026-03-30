@@ -513,7 +513,7 @@ const HeroSection = () => {
           <motion.div
             animate={{ opacity: [0.4, 0.7, 0.4] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="mb-8"
+            className="mb-12"
           >
             <FacetedCrownLogo size={72} />
           </motion.div>
@@ -537,7 +537,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="mt-6 text-lg text-white/50"
+            className="mt-8 text-lg text-white/50"
             style={{
               maxWidth: 960,
               lineHeight: 1.7,
@@ -551,7 +551,7 @@ const HeroSection = () => {
               evidence-based care across every data source, every EHR, every
               patient encounter.
             </p>
-            <div className="flex flex-row flex-wrap items-center justify-center gap-4 mt-4">
+            <div className="flex flex-row flex-wrap items-center justify-center gap-5 mt-6">
               {["Zero hallucination.", "Zero inference.", "Total clinical authority."].map((text) => (
                 <span key={text} className="inline-flex items-center gap-2 text-white/60">
                   <span
@@ -568,7 +568,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="mt-10 flex flex-row gap-6"
+            className="mt-12 flex flex-row gap-6"
           >
             <a
               href="#contact"
