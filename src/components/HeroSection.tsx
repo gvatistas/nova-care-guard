@@ -68,7 +68,7 @@ const HeroSection = () => {
         fragmentShader: `
           varying float vFade;
           void main() {
-            gl_FragColor = vec4(0.38, 0.38, 0.4, vFade * 0.05);
+            gl_FragColor = vec4(0.35, 0.38, 0.45, vFade * 0.06);
           }
         `,
       });
@@ -111,7 +111,7 @@ const HeroSection = () => {
             if (d > 1.0) discard;
             float core = exp(-d * d * 5.0) * vAlpha;
             float halo = (1.0 - d * d) * vAlpha * 0.15;
-            gl_FragColor = vec4(0.42, 0.42, 0.45, (core + halo) * 0.3);
+            gl_FragColor = vec4(0.45, 0.5, 0.58, (core + halo) * 0.4);
           }
         `,
       });
@@ -235,17 +235,17 @@ const HeroSection = () => {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(180.0, 300.0, vDist));
           float pulse = 0.6 + 0.4 * sin(uTime * 1.5 + vDist * 0.04);
           // 5-color palette: blue → green → grey → orange → red
-          vec3 blue   = vec3(0.18, 0.35, 0.65);
-          vec3 green  = vec3(0.15, 0.7, 0.4);
-          vec3 grey   = vec3(0.4, 0.4, 0.42);
-          vec3 orange = vec3(0.9, 0.5, 0.18);
-          vec3 red    = vec3(0.8, 0.2, 0.15);
+          vec3 blue   = vec3(0.2, 0.45, 0.9);
+          vec3 green  = vec3(0.15, 0.8, 0.45);
+          vec3 grey   = vec3(0.4, 0.42, 0.45);
+          vec3 orange = vec3(0.95, 0.55, 0.18);
+          vec3 red    = vec3(0.85, 0.2, 0.15);
           vec3 col;
-          if (vOutcome < 0.25) col = mix(grey, green, vOutcome * 4.0);
-          else if (vOutcome < 0.5) col = mix(green, blue, (vOutcome - 0.25) * 4.0);
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
           else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
           else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
-          gl_FragColor = vec4(col, fade * pulse * 0.1);
+          gl_FragColor = vec4(col, fade * pulse * 0.12);
         }
       `,
     });
@@ -299,18 +299,18 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 blue   = vec3(0.2, 0.38, 0.7);
-          vec3 green  = vec3(0.18, 0.8, 0.45);
-          vec3 grey   = vec3(0.45, 0.43, 0.44);
-          vec3 orange = vec3(0.95, 0.55, 0.2);
-          vec3 red    = vec3(0.85, 0.22, 0.15);
+          vec3 blue   = vec3(0.25, 0.5, 1.0);
+          vec3 green  = vec3(0.2, 0.9, 0.5);
+          vec3 grey   = vec3(0.45, 0.45, 0.48);
+          vec3 orange = vec3(1.0, 0.6, 0.2);
+          vec3 red    = vec3(0.9, 0.22, 0.15);
           vec3 col;
-          if (vOutcome < 0.25) col = mix(grey, green, vOutcome * 4.0);
-          else if (vOutcome < 0.5) col = mix(green, blue, (vOutcome - 0.25) * 4.0);
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
           else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
           else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
-          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.55);
+          gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.65);
         }
       `,
     });
@@ -368,18 +368,18 @@ const HeroSection = () => {
           float core = exp(-d * d * 2.5);
           float glow = exp(-d * 0.8) * 0.6;
           float outer = exp(-d * 0.4) * 0.2;
-          vec3 blue   = vec3(0.22, 0.4, 0.75);
-          vec3 green  = vec3(0.2, 0.9, 0.5);
-          vec3 grey   = vec3(0.5, 0.48, 0.48);
-          vec3 orange = vec3(0.95, 0.58, 0.2);
-          vec3 red    = vec3(0.9, 0.25, 0.15);
+          vec3 blue   = vec3(0.3, 0.55, 1.0);
+          vec3 green  = vec3(0.25, 1.0, 0.55);
+          vec3 grey   = vec3(0.5, 0.5, 0.55);
+          vec3 orange = vec3(1.0, 0.65, 0.2);
+          vec3 red    = vec3(0.95, 0.25, 0.15);
           vec3 col;
-          if (vOutcome < 0.25) col = mix(grey, green, vOutcome * 4.0);
-          else if (vOutcome < 0.5) col = mix(green, blue, (vOutcome - 0.25) * 4.0);
+          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
+          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
           else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
           else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
           float bright = core + glow + outer;
-          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.7);
+          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.8);
         }
       `,
     });
@@ -519,15 +519,15 @@ const HeroSection = () => {
     const animate = () => {
       raf = requestAnimationFrame(animate);
       frame++;
-      const t = performance.now() * 0.001;
+      const t = frame * 0.001;
 
       mouse.x += (mouse.tx - mouse.x) * 0.015;
       mouse.y += (mouse.ty - mouse.y) * 0.015;
 
-      const camZ = -t * 2.5;
+      const camZ = -t * 3;
       camera.position.z = camZ;
-      camera.position.x = mouse.x * 3;
-      camera.position.y = mouse.y * -1.5;
+      camera.position.x = mouse.x * 4;
+      camera.position.y = mouse.y * -2;
       camera.lookAt(camera.position.x * 0.3, 0, camZ - 100);
 
       const time = t * 3;
@@ -615,7 +615,7 @@ const HeroSection = () => {
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 48% 40% at 50% 50%, rgba(5,7,8,0.6) 0%, rgba(5,7,8,0.35) 50%, rgba(5,7,8,0.08) 85%, transparent 100%)",
+        background: "radial-gradient(ellipse 50% 42% at 50% 50%, rgba(5,7,8,0.55) 0%, rgba(5,7,8,0.4) 50%, rgba(5,7,8,0.15) 80%, transparent 100%)",
       }} />
 
       {/* Film grain */}
@@ -647,10 +647,10 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="mt-8 text-[17px] md:text-xl text-white/80"
+            className="mt-8 text-lg text-white/70"
             style={{
-              maxWidth: 720,
-              lineHeight: 1.75,
+              maxWidth: 1280,
+              lineHeight: 1.7,
               letterSpacing: "-0.01em",
               textShadow: "0 0 30px rgba(0,0,0,1), 0 0 60px rgba(5,7,8,0.95)",
             }}
@@ -671,19 +671,19 @@ const HeroSection = () => {
           >
             <a
               href="#contact"
-              className="group relative text-[13px] font-semibold uppercase text-white px-10 py-4 transition-all duration-500 overflow-hidden"
+              className="group relative text-[13px] font-semibold uppercase text-white px-8 py-3.5 transition-all duration-500 overflow-hidden"
               style={{ letterSpacing: "0.08em" }}
             >
-              <span className="absolute inset-0 border border-white/20 bg-white/[0.08] backdrop-blur-md transition-all duration-500 group-hover:border-white/40 group-hover:bg-white/[0.15]" />
-              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.05] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="absolute inset-0 border border-white/30 bg-white/10 backdrop-blur-sm transition-all duration-500 group-hover:border-white/50 group-hover:bg-white/20" />
+              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.06] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Request Demo</span>
             </a>
             <a
               href="#pipeline"
-              className="group relative text-[13px] font-medium uppercase text-white/80 px-10 py-4 transition-all duration-500 overflow-hidden"
+              className="group relative text-[13px] font-medium uppercase text-white/90 px-8 py-3.5 transition-all duration-500 overflow-hidden"
               style={{ letterSpacing: "0.08em" }}
             >
-              <span className="absolute inset-0 border border-white/15 bg-white/[0.05] backdrop-blur-md transition-all duration-500 group-hover:border-white/30 group-hover:bg-white/[0.1]" />
+              <span className="absolute inset-0 border border-white/20 bg-white/[0.05] backdrop-blur-sm transition-all duration-500 group-hover:border-white/40 group-hover:bg-white/15" />
               <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Read White Paper</span>
             </a>
