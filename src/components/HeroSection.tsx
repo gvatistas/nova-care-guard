@@ -111,7 +111,7 @@ const HeroSection = () => {
             if (d > 1.0) discard;
             float core = exp(-d * d * 5.0) * vAlpha;
             float halo = (1.0 - d * d) * vAlpha * 0.15;
-            gl_FragColor = vec4(0.5, 0.45, 0.42, (core + halo) * 0.35);
+            gl_FragColor = vec4(0.45, 0.5, 0.58, (core + halo) * 0.4);
           }
         `,
       });
