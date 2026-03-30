@@ -1,7 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 
-const GREEN = "#b8f4d8";
+const GREEN = "#c8d6e5";
 const RED = "#ef4444";
 const AMBER = "#9ca3af";
 

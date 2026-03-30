@@ -256,7 +256,7 @@ const GuideBenchSection = () => {
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
           >
-            <div className="border border-white/[0.08] overflow-hidden" style={{ background: "#141a22" }}>
+            <div className="border border-white/[0.08] overflow-hidden" style={{ background: "#1e2227" }}>
               {/* Table header */}
               <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.08]" style={{ background: "rgba(255,255,255,0.02)" }}>
                 {["Guideline", "Patients", "Fidelity", "Status"].map((h) => (
