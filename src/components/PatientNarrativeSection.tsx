@@ -371,15 +371,20 @@ const PatientNarrativeSection = () => {
 
           {/* ── RIGHT: With Medient ── */}
           <div className="flex flex-col items-center">
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4 }}
-              className="text-[11px] uppercase tracking-[0.15em] mb-5 font-medium"
-              style={{ color: TEAL }}
+              className="text-[12px] uppercase tracking-[0.15em] mb-6 font-semibold px-4 py-2 border self-center"
+              style={{
+                color: TEAL,
+                borderColor: `${TEAL}25`,
+                background: `${TEAL}08`,
+                boxShadow: `0 0 12px ${TEAL}10`,
+              }}
             >
-              With Medient
-            </motion.p>
+              ✓ With Medient
+            </motion.div>
 
             <div className="w-full max-w-sm flex flex-col items-center gap-0">
               <ScreeningNode
