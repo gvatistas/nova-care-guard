@@ -244,17 +244,17 @@ const ProjectAlphaSection = () => {
                 </div>
               </div>
               <div className="mt-3 text-center">
-                <span className="font-mono font-light text-white" style={{ fontSize: "3rem" }}>{adherence}%</span>
+                <span className="font-mono font-light" style={{ fontSize: "3rem", color: adherence >= 90 ? GREEN : "white" }}>{adherence}%</span>
                 <span className="font-mono ml-2 tracking-[0.1em]" style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)" }}>CURRENT</span>
               </div>
             </div>
 
             <div className="border border-white/[0.06] bg-black/30 p-6">
               <div className="mb-4">
-                <div className="font-mono font-light tracking-[-0.02em] text-white" style={{ fontSize: "1.5rem" }}>90% INTAKE TIME REDUCTION</div>
+                <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.5rem", color: GREEN }}>90% INTAKE TIME REDUCTION</div>
               </div>
               <div>
-                <div className="font-mono font-light tracking-[-0.02em] text-white" style={{ fontSize: "1.5rem" }}>10x CARE GAP CLOSURE</div>
+                <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.5rem", color: GREEN }}>2,400+ CLINICAL RECOMMENDATIONS / DAY</div>
               </div>
             </div>
           </motion.div>
