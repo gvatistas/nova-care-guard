@@ -583,10 +583,10 @@ const HeroSection = () => {
             }}
           >
             <p>
-              Medient compiles every clinical guideline into deterministic,
-              formally verified decision infrastructure; bridging AI and
-              evidence-based care across every data source, every EHR, every
-              patient encounter.
+              Medient compiles all clinical guidelines into deterministic,
+              verified decision infrastructure; bridging AI and
+              evidence-based care across all data sources, EHRs and
+              patient encounters.
             </p>
             <div className="flex flex-row flex-wrap items-center justify-center gap-5 mt-10">
               {["Zero hallucination.", "Zero inference.", "Total clinical authority."].map((text) => (
