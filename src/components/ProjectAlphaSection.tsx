@@ -92,7 +92,7 @@ const ProjectAlphaSection = () => {
           <h2 className="text-white font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem" }}>
             Project Alpha
           </h2>
-          <p className="font-light mt-2 max-w-2xl" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}>
+          <p className="font-light mt-2" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.125rem" }}>
             Real-time deployment monitoring across <span className="text-white font-normal">5 Quebec health networks, 20 clinical sites</span>.
           </p>
         </motion.div>
