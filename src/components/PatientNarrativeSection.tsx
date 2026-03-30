@@ -153,7 +153,7 @@ const StatusDot: FC<{ color: string; pulse?: boolean }> = ({ color, pulse }) => 
     style={{ background: color, boxShadow: pulse ? `0 0 10px ${color}, 0 0 20px ${color}50` : `0 0 6px ${color}40` }} />
 );
 
-/* ── Screening Node — equal sized ── */
+/* ── Screening Node ── */
 const ScreeningNode: FC<{
   label: string;
   sublabel: string;
@@ -167,26 +167,39 @@ const ScreeningNode: FC<{
     initial={{ opacity: 0, y: 10 }}
     animate={inView ? { opacity: 1, y: 0 } : {}}
     transition={{ duration: 0.5, delay }}
-    className="border px-5 py-4 w-full relative overflow-hidden"
-    style={{ borderColor: `${color}25`, background: `${color}06` }}
+    className="border px-6 py-5 w-full relative overflow-hidden"
+    style={{
+      borderColor: `${color}30`,
+      background: `${color}08`,
+      boxShadow: critical ? `inset 0 0 20px ${color}10, 0 0 15px ${color}08` : `0 0 10px ${color}05`,
+    }}
   >
     {critical && (
       <motion.div
         className="absolute inset-0 pointer-events-none"
-        animate={{ opacity: [0, 0.08, 0] }}
+        animate={{ opacity: [0, 0.10, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        style={{ background: color }}
+        style={{ background: `linear-gradient(135deg, ${color}15, transparent)` }}
       />
     )}
-    <p className="text-[13px] text-white/90 font-normal mb-1.5 relative" style={{ letterSpacing: "-0.01em" }}>
-      {label}
-    </p>
-    <div className="flex items-start relative">
+    <div className="flex items-center justify-between mb-2 relative">
+      <p className="text-[15px] text-white/90 font-normal" style={{ letterSpacing: "-0.01em" }}>
+        {label}
+      </p>
+      <span
+        className={`text-[10px] font-semibold uppercase tracking-[0.08em] px-2 py-0.5 ${critical ? "animate-pulse" : ""}`}
+        style={{
+          color,
+          background: `${color}15`,
+          border: `1px solid ${color}25`,
+        }}
+      >
+        {status}
+      </span>
+    </div>
+    <div className="flex items-center relative">
       <StatusDot color={color} pulse={critical} />
-      <div>
-        <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color }}>{status}</p>
-        <p className="text-white/35 text-[11px] mt-0.5 leading-relaxed">{sublabel}</p>
-      </div>
+      <p className="text-white/45 text-[13px] leading-relaxed">{sublabel}</p>
     </div>
   </motion.div>
 );
