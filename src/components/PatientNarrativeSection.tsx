@@ -458,7 +458,7 @@ const PatientNarrativeSection = () => {
               <motion.div className="absolute inset-0 pointer-events-none"
                 animate={{ opacity: [0, 0.05, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                style={{ background: `linear-gradient(180deg, ${TEAL}15, transparent)` }} />
+                style={{ background: `linear-gradient(180deg, ${POSITIVE}15, transparent)` }} />
               <p className="text-xs uppercase tracking-[0.12em] text-white/40 mb-2 relative font-medium">Direct cost</p>
               <p className="text-white text-4xl font-light relative">$4,200</p>
               <p className="text-white/40 text-[14px] mt-3 leading-relaxed max-w-xs mx-auto relative">
