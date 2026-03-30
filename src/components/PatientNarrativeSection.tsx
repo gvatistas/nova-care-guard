@@ -33,46 +33,157 @@ const FACET_FILLS = [
 
 const ShapeshiftingLogo: FC<{ size?: number }> = ({ size = 120 }) => {
   const [idx, setIdx] = useState(0);
+  const [rotation, setRotation] = useState(0);
+
   useEffect(() => {
-    const interval = setInterval(() => setIdx((p) => (p + 1) % (MORPH_SHAPES.length - 1)), 2200);
+    const interval = setInterval(() => setIdx((p) => (p + 1) % (MORPH_SHAPES.length - 1)), 3200);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    let raf: number;
+    let t = 0;
+    const spin = () => {
+      t += 0.003;
+      setRotation(t * 15);
+      raf = requestAnimationFrame(spin);
+    };
+    raf = requestAnimationFrame(spin);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   const nextIdx = (idx + 1) % MORPH_SHAPES.length;
+  const uid = `crown-${size}`;
+
   return (
     <svg width={size} height={size} viewBox="0 0 200 110" className="overflow-visible shrink-0">
       <defs>
-        <filter id="crown-glow">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        {/* Multi-layer glow */}
+        <filter id={`${uid}-glow`} x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="blur1" />
+          <feGaussianBlur stdDeviation="2" result="blur2" in="SourceGraphic" />
+          <feMerge>
+            <feMergeNode in="blur1" />
+            <feMergeNode in="blur2" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
+        {/* Radial gradient for inner glow */}
+        <radialGradient id={`${uid}-inner`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
+          <stop offset="60%" stopColor="#ffffff" stopOpacity="0.03" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        {/* Scanning sweep gradient */}
+        <linearGradient id={`${uid}-sweep`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0">
+            <animate attributeName="stopOpacity" values="0;0.15;0" dur="3.2s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.08">
+            <animate attributeName="stopOpacity" values="0.08;0.25;0.08" dur="3.2s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0">
+            <animate attributeName="stopOpacity" values="0;0.1;0" dur="3.2s" repeatCount="indefinite" />
+          </stop>
+        </linearGradient>
       </defs>
+
+      {/* Ambient rotating ring */}
+      <g style={{ transformOrigin: "100px 55px", transform: `rotate(${rotation}deg)` }}>
+        <circle cx="100" cy="55" r="52" fill="none" stroke="white" strokeWidth="0.3" opacity="0.06"
+          strokeDasharray="8 12" />
+        <circle cx="100" cy="55" r="48" fill="none" stroke="white" strokeWidth="0.2" opacity="0.04"
+          strokeDasharray="3 20" />
+      </g>
+
+      {/* Slow counter-rotating outer ring */}
+      <g style={{ transformOrigin: "100px 55px", transform: `rotate(${-rotation * 0.6}deg)` }}>
+        <circle cx="100" cy="55" r="56" fill="none" stroke="white" strokeWidth="0.15" opacity="0.05"
+          strokeDasharray="2 16" />
+      </g>
+
+      {/* Filled facets — smooth crossfade */}
       <AnimatePresence mode="wait">
-        <motion.g key={idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
+        <motion.g key={idx}
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.05 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        >
           {FACET_FILLS[idx]?.map((f, i) => (
-            <motion.path key={i} d={f.d} fill={f.fill} opacity={0.85}
-              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 0.85, scale: 1 }}
-              transition={{ duration: 0.6, delay: i * 0.08 }} />
+            <motion.path key={i} d={f.d} fill={f.fill}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.9, 0.75] }}
+              transition={{ duration: 1, delay: i * 0.1, ease: "easeOut" }} />
           ))}
+          {/* Inner glow fill */}
+          <motion.path d={MORPH_SHAPES[idx]} fill={`url(#${uid}-inner)`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5 }} />
+          {/* Sweep highlight */}
+          <motion.path d={MORPH_SHAPES[idx]} fill={`url(#${uid}-sweep)`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }} />
         </motion.g>
       </AnimatePresence>
-      <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke="#B0B0B0" strokeWidth="1.5" strokeLinejoin="miter"
-        filter="url(#crown-glow)" initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }}
-        transition={{ duration: 2, ease: "easeInOut" }} />
+
+      {/* Primary wireframe edge — smooth morph */}
+      <motion.path
+        d={MORPH_SHAPES[idx]}
+        fill="none" stroke="#C8C8C8" strokeWidth="1.2" strokeLinejoin="miter"
+        filter={`url(#${uid}-glow)`}
+        initial={false}
+        animate={{ d: MORPH_SHAPES[nextIdx] }}
+        transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }}
+      />
+
+      {/* Ghost wireframe (offset timing for depth) */}
+      <motion.path
+        d={MORPH_SHAPES[nextIdx]}
+        fill="none" stroke="white" strokeWidth="0.3" strokeLinejoin="miter"
+        initial={false}
+        animate={{ d: MORPH_SHAPES[(nextIdx + 1) % MORPH_SHAPES.length] }}
+        transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }}
+        opacity={0.06}
+      />
+
+      {/* Inner structure lines — staggered draw */}
       <AnimatePresence mode="wait">
-        <motion.g key={`s${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+        <motion.g key={`s${idx}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           {INNER_STRUCTURES[idx]?.map((d, i) => (
-            <motion.path key={i} d={d} fill="none" stroke="#9A9A9A" strokeWidth="0.6"
-              initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.35 }}
-              transition={{ duration: 0.8, delay: i * 0.1 }} />
+            <motion.path key={i} d={d} fill="none" stroke="#A0A0A0" strokeWidth="0.5"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: [0, 0.4, 0.25] }}
+              transition={{ duration: 1.2, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }} />
           ))}
         </motion.g>
       </AnimatePresence>
-      <circle cx="100" cy="55" r="2" fill="#C0C0C0" opacity="0.6">
-        <animate attributeName="r" values="1.5;4;1.5" dur="2.2s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2.2s" repeatCount="indefinite" />
+
+      {/* Center core — breathing pulse */}
+      <circle cx="100" cy="55" r="2" fill="white" opacity="0.7">
+        <animate attributeName="r" values="1;5;1" dur="3.2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.7;0.08;0.7" dur="3.2s" repeatCount="indefinite" />
       </circle>
-      <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke="#E8E8E8" strokeWidth="0.4" strokeLinejoin="miter"
-        initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }} transition={{ duration: 2, ease: "easeInOut" }} opacity={0.2} />
+      <circle cx="100" cy="55" r="1" fill="white" opacity="0.9">
+        <animate attributeName="r" values="0.8;2;0.8" dur="3.2s" repeatCount="indefinite" />
+      </circle>
+
+      {/* Orbiting micro-particles */}
+      {[0, 72, 144, 216, 288].map((angle, i) => (
+        <g key={i} style={{ transformOrigin: "100px 55px", transform: `rotate(${angle + rotation * 2}deg)` }}>
+          <circle cx="140" cy="55" r="0.8" fill="white" opacity={0.2 + (i % 3) * 0.1}>
+            <animate attributeName="opacity" values={`${0.15 + i * 0.05};${0.05};${0.15 + i * 0.05}`}
+              dur={`${2.5 + i * 0.3}s`} repeatCount="indefinite" />
+          </circle>
+        </g>
+      ))}
     </svg>
   );
 };
