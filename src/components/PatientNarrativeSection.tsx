@@ -62,8 +62,8 @@ const EngineBackground: FC = () => {
           </radialGradient>
         </defs>
         <g style={{ transformOrigin: "100px 55px", transform: `rotate(${rotation}deg)` }}>
-          <circle cx="100" cy="55" r="52" fill="none" stroke={TEAL} strokeWidth="0.4" strokeDasharray="8 12" />
-          <circle cx="100" cy="55" r="48" fill="none" stroke={TEAL} strokeWidth="0.25" strokeDasharray="3 20" />
+          <circle cx="100" cy="55" r="52" fill="none" stroke={POSITIVE} strokeWidth="0.4" strokeDasharray="8 12" />
+          <circle cx="100" cy="55" r="48" fill="none" stroke={POSITIVE} strokeWidth="0.25" strokeDasharray="3 20" />
         </g>
         <g style={{ transformOrigin: "100px 55px", transform: `rotate(${-rotation * 0.6}deg)` }}>
           <circle cx="100" cy="55" r="56" fill="none" stroke={TEAL} strokeWidth="0.2" strokeDasharray="2 16" />
