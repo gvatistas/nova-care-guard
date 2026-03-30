@@ -102,11 +102,11 @@ const GuideBenchSection = () => {
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
           >
-            <div className="border border-white/[0.06] overflow-hidden">
+            <div className="border border-white/[0.10] overflow-hidden" style={{ background: "rgba(255,255,255,0.015)" }}>
               {/* Table header */}
-              <div className="grid grid-cols-4 gap-4 px-5 py-3 border-b border-white/[0.06]" style={{ background: "rgba(255,255,255,0.02)" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.10]" style={{ background: "rgba(0,212,170,0.04)" }}>
                 {["Guideline", "Patients", "Fidelity", "Status"].map((h) => (
-                  <span key={h} className="text-[11px] font-medium uppercase text-white/30" style={{ letterSpacing: "0.1em" }}>
+                  <span key={h} className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.12em", color: "#00d4aa" }}>
                     {h}
                   </span>
                 ))}
@@ -116,17 +116,53 @@ const GuideBenchSection = () => {
               {guidelines.map((g, i) => (
                 <motion.div
                   key={g.name}
-                  initial={{ opacity: 0 }}
-                  animate={inView ? { opacity: 1 } : {}}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.5 + i * 0.08 }}
-                  className="grid grid-cols-4 gap-4 px-5 py-4 border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"
+                  className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.06] hover:bg-white/[0.04] transition-all duration-200 group cursor-default"
                 >
-                  <span className="text-white/80 text-sm font-medium" style={{ letterSpacing: "-0.01em" }}>{g.name}</span>
-                  <span className="text-white/50 text-sm tabular-nums">{g.patients}</span>
-                  <span className="text-white font-semibold text-sm tabular-nums">{g.fidelity}%</span>
-                  <span className="text-[11px] font-medium uppercase" style={{ color: "#00d4aa", letterSpacing: "0.05em" }}>{g.status}</span>
+                  <span className="text-white/90 text-sm font-medium group-hover:text-white transition-colors" style={{ letterSpacing: "-0.01em" }}>{g.name}</span>
+                  <span className="text-white/50 text-sm tabular-nums font-mono">{g.patients}</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ background: "linear-gradient(90deg, #00d4aa, #00e8bb)" }}
+                        initial={{ width: 0 }}
+                        animate={inView ? { width: `${g.fidelity}%` } : {}}
+                        transition={{ duration: 1.2, delay: 0.6 + i * 0.1, ease: "easeOut" }}
+                      />
+                    </div>
+                    <span className="text-white font-semibold text-sm tabular-nums font-mono">{g.fidelity}%</span>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#00d4aa", boxShadow: "0 0 6px rgba(0,212,170,0.5)" }} />
+                    <span className="text-[11px] font-semibold uppercase" style={{ color: "#00d4aa", letterSpacing: "0.06em" }}>{g.status}</span>
+                  </span>
                 </motion.div>
               ))}
+
+              {/* Table footer — aggregate */}
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t border-white/[0.10]" style={{ background: "rgba(0,212,170,0.03)" }}>
+                <span className="text-white/60 text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em" }}>Aggregate</span>
+                <span className="text-white/50 text-sm tabular-nums font-mono">750</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ background: "linear-gradient(90deg, #00d4aa, #00ffcc)" }}
+                      initial={{ width: 0 }}
+                      animate={inView ? { width: "98.7%" } : {}}
+                      transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
+                    />
+                  </div>
+                  <span className="text-white font-bold text-sm tabular-nums font-mono" style={{ color: "#00d4aa" }}>98.7%</span>
+                </div>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#00d4aa", boxShadow: "0 0 8px rgba(0,212,170,0.6)" }} />
+                  <span className="text-[11px] font-bold uppercase" style={{ color: "#00d4aa", letterSpacing: "0.06em" }}>Live</span>
+                </span>
+              </div>
             </div>
 
             {/* Statement + CTA */}
