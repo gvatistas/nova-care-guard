@@ -631,12 +631,12 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="mt-8 text-lg text-white/50"
+            className="mt-8 text-lg text-white/70"
             style={{
               maxWidth: 1280,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              textShadow: "0 0 40px rgba(5,7,8,0.9)",
+              textShadow: "0 0 30px rgba(0,0,0,1), 0 0 60px rgba(5,7,8,0.95)",
             }}
           >
             <p>
@@ -655,19 +655,19 @@ const HeroSection = () => {
           >
             <a
               href="#contact"
-              className="group relative text-[13px] font-medium uppercase text-white/80 px-8 py-3.5 transition-all duration-500 overflow-hidden"
+              className="group relative text-[13px] font-semibold uppercase text-white px-8 py-3.5 transition-all duration-500 overflow-hidden"
               style={{ letterSpacing: "0.08em" }}
             >
-              <span className="absolute inset-0 border border-[#00d4aa]/[0.30] bg-gradient-to-b from-[#00d4aa]/[0.12] to-[#00d4aa]/[0.04] transition-all duration-500 group-hover:border-[#00d4aa]/50 group-hover:from-[#00d4aa]/[0.20] group-hover:to-[#00d4aa]/[0.08]" style={{ boxShadow: '0 0 20px rgba(0,212,170,0.08)' }} />
-              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="absolute inset-0 border border-white/30 bg-white/10 backdrop-blur-sm transition-all duration-500 group-hover:border-white/50 group-hover:bg-white/20" />
+              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.06] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Request Demo</span>
             </a>
             <a
               href="#pipeline"
-              className="group relative text-[13px] font-medium uppercase text-white/80 px-8 py-3.5 transition-all duration-500 overflow-hidden"
+              className="group relative text-[13px] font-medium uppercase text-white/90 px-8 py-3.5 transition-all duration-500 overflow-hidden"
               style={{ letterSpacing: "0.08em" }}
             >
-              <span className="absolute inset-0 border border-[#00d4aa]/[0.22] bg-gradient-to-b from-[#00d4aa]/[0.08] to-[#00d4aa]/[0.03] transition-all duration-500 group-hover:border-[#00d4aa]/40 group-hover:from-[#00d4aa]/[0.15] group-hover:to-[#00d4aa]/[0.06]" style={{ boxShadow: '0 0 15px rgba(0,212,170,0.06)' }} />
+              <span className="absolute inset-0 border border-white/20 bg-white/[0.05] backdrop-blur-sm transition-all duration-500 group-hover:border-white/40 group-hover:bg-white/15" />
               <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Read White Paper</span>
             </a>
