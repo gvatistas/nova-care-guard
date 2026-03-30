@@ -236,7 +236,7 @@ const SegmentsSection = () => {
                   }}
                 >
                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
-                    style={{ color: isActive ? TEAL : "rgba(255,255,255,0.3)" }}
+                    style={{ color: isActive ? ACCENT : "rgba(255,255,255,0.3)" }}
                   >
                     {seg.short}
                   </p>
