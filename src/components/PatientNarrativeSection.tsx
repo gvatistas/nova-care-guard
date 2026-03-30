@@ -89,7 +89,7 @@ const EngineBackground: FC = () => {
         </circle>
         {[0, 72, 144, 216, 288].map((angle, i) => (
           <g key={i} style={{ transformOrigin: "100px 55px", transform: `rotate(${angle + rotation * 2}deg)` }}>
-            <circle cx="140" cy="55" r="0.8" fill={TEAL} opacity={0.3}>
+            <circle cx="140" cy="55" r="0.8" fill={POSITIVE} opacity={0.3}>
               <animate attributeName="opacity" values="0.2;0.05;0.2" dur={`${2.5 + i * 0.3}s`} repeatCount="indefinite" />
             </circle>
           </g>
