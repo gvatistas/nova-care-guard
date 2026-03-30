@@ -233,14 +233,19 @@ const HeroSection = () => {
         uniform float uTime;
         void main() {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 260.0, vDist));
-          float pulse = 0.6 + 0.4 * sin(uTime * 2.0 + vDist * 0.05);
-          vec3 green = vec3(0.0, 0.9, 0.45);
-          vec3 amber = vec3(1.0, 0.7, 0.1);
-          vec3 red   = vec3(1.0, 0.15, 0.1);
+          float pulse = 0.6 + 0.4 * sin(uTime * 1.5 + vDist * 0.04);
+          // Tactical palette: teal base, green resolved, red alert (rare)
+          vec3 teal    = vec3(0.1, 0.55, 0.5);
+          vec3 green   = vec3(0.15, 0.95, 0.55);
+          vec3 red     = vec3(0.9, 0.2, 0.15);
+          // outcome < 0.5 = resolved (teal→green), > 0.8 = alert (red)
           vec3 col = vOutcome < 0.5
-            ? mix(green, amber, vOutcome * 2.0)
-            : mix(amber, red, (vOutcome - 0.5) * 2.0);
-          gl_FragColor = vec4(col, fade * pulse * 0.18);
+            ? mix(teal, green, (0.5 - vOutcome) * 2.0)
+            : mix(teal, red, smoothstep(0.5, 1.0, vOutcome));
+          // Red nodes pulse and resolve to green over time
+          float resolve = smoothstep(0.7, 1.0, vOutcome) * (0.5 + 0.5 * sin(uTime * 3.0 + vDist * 0.1));
+          col = mix(col, green, resolve * 0.6);
+          gl_FragColor = vec4(col, fade * pulse * 0.12);
         }
       `,
     });
