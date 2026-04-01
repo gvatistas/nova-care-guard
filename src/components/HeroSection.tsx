@@ -459,10 +459,10 @@ const HeroSection = () => {
               className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden backdrop-blur-lg rounded-sm"
               style={{
                 letterSpacing: "0.08em",
-                color: "rgba(17,24,39,0.8)",
-                background: "linear-gradient(135deg, rgba(255,255,255,0.35), rgba(229,231,235,0.2))",
-                border: "1px solid rgba(17,24,39,0.08)",
-                boxShadow: "0 4px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4)",
+                color: "rgba(255,255,255,0.85)",
+                background: "linear-gradient(135deg, rgba(55,65,81,0.55), rgba(55,65,81,0.35))",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 4px 30px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)",
               }}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
