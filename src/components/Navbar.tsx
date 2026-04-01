@@ -13,7 +13,7 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out`}
       style={{
-        backgroundColor: "#0F172A",
+        backgroundColor: "#111827",
         borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "none",
       }}
     >
@@ -22,13 +22,13 @@ const Navbar = () => {
           <span className="text-[22px] font-bold" style={{ letterSpacing: "0.12em", color: "#FFFFFF" }}>MEDIENT</span>
         </a>
         <div className="flex items-center gap-6 md:gap-10">
-          <a href="#pipeline" className="hidden md:block text-[13px] font-medium uppercase hover:text-[#2563EB] transition-colors duration-300" style={{ color: "rgba(255,255,255,0.65)", letterSpacing: "0.05em" }}>
+          <a href="#pipeline" className="hidden md:block text-[13px] font-medium uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.65)", letterSpacing: "0.05em" }}>
             Architecture
           </a>
-          <a href="#project-alpha" className="hidden md:block text-[13px] font-medium uppercase hover:text-[#2563EB] transition-colors duration-300" style={{ color: "rgba(255,255,255,0.65)", letterSpacing: "0.05em" }}>
+          <a href="#project-alpha" className="hidden md:block text-[13px] font-medium uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.65)", letterSpacing: "0.05em" }}>
             Project Alpha
           </a>
-          <a href="#contact" className="text-[13px] font-medium uppercase text-white px-6 py-2.5 transition-all duration-300 hover:bg-[#1D4ED8]" style={{ letterSpacing: "0.05em", backgroundColor: "#2563EB" }}>
+          <a href="#contact" className="text-[13px] font-medium uppercase text-white px-6 py-2.5 transition-all duration-300 hover:bg-[#374151]" style={{ letterSpacing: "0.05em", backgroundColor: "#111827", border: "1px solid rgba(255,255,255,0.3)" }}>
             Get Started
           </a>
         </div>

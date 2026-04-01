@@ -43,7 +43,7 @@ const ParticleGrid = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw grid lines
-      ctx.strokeStyle = "rgba(226, 232, 240, 0.35)";
+      ctx.strokeStyle = "rgba(229, 231, 235, 0.35)";
       ctx.lineWidth = 0.5;
       const spacing = 120;
       for (let x = 0; x < canvas.width; x += spacing) {
@@ -59,14 +59,14 @@ const ParticleGrid = () => {
         ctx.stroke();
       }
 
-      // Draw particles
+      // Draw particles — grayscale
       particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
         p.pulse += 0.008;
 
         const pulseOpacity = p.opacity + Math.sin(p.pulse) * 0.02;
-        ctx.fillStyle = `rgba(37, 99, 235, ${Math.max(0, pulseOpacity * 1.2)})`;
+        ctx.fillStyle = `rgba(107, 114, 128, ${Math.max(0, pulseOpacity * 1.2)})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -79,7 +79,7 @@ const ParticleGrid = () => {
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 150) {
-            ctx.strokeStyle = `rgba(37, 99, 235, ${0.01 * (1 - dist / 150)})`;
+            ctx.strokeStyle = `rgba(107, 114, 128, ${0.01 * (1 - dist / 150)})`;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
