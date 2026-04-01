@@ -272,13 +272,16 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
 
     let wireMat: THREE.LineBasicMaterial;
     let pointMat: THREE.PointsMaterial;
+    let humanPulseRings: THREE.Mesh[] = [];
+    let humanHeartGlow: THREE.Mesh | null = null;
 
     if (index === 3) {
-      // Custom wireframe human body
       const human = buildHumanWireframe(accentColor);
       group.add(human.group);
       wireMat = human.wireMat;
       pointMat = human.pointMat;
+      humanPulseRings = human.pulseRings;
+      humanHeartGlow = human.heartGlow;
     } else {
       const geo = buildSegmentGeo(index);
 
