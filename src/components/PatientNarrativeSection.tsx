@@ -268,30 +268,6 @@ const PatientNarrativeSection = () => {
           </div>
         </div>
 
-        {/* ── Decision point with alternating indicator ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-center mb-4"
-        >
-          <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#6B7280" }}>Decision point</p>
-          <div className="flex items-center justify-center gap-3 mt-2">
-            <motion.div
-              className="w-2 h-2 rounded-full"
-              animate={{ background: activeSide === "left" ? RED : "#E5E7EB", boxShadow: activeSide === "left" ? `0 0 12px ${RED}` : "none" }}
-              transition={{ duration: 0.6 }}
-            />
-            <p className="text-[11px] uppercase tracking-widest" style={{ color: "#6B7280" }}>
-              {activeSide === "left" ? "Without" : "With"} Medient
-            </p>
-            <motion.div
-              className="w-2 h-2 rounded-full"
-              animate={{ background: activeSide === "right" ? POSITIVE : "#E5E7EB", boxShadow: activeSide === "right" ? `0 0 12px ${POSITIVE}` : "none" }}
-              transition={{ duration: 0.6 }}
-            />
-          </div>
-        </motion.div>
 
         {/* ── TWO LANES ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mt-6">
