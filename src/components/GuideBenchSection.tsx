@@ -306,8 +306,8 @@ const GuideBenchSection = () => {
                   <span className="font-bold text-sm tabular-nums font-mono" style={{ color: "#111827" }}>98.7%</span>
                 </div>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#059669", boxShadow: "0 0 8px rgba(5,150,105,0.4)" }} />
-                  <span className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.06em", color: "#059669" }}>Live</span>
+                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#2563EB", boxShadow: "0 0 8px rgba(37,99,235,0.4)" }} />
+                   <span className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.06em", color: "#2563EB" }}>Live</span>
                 </span>
               </div>
             </div>
