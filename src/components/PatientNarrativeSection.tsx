@@ -392,19 +392,12 @@ const PatientNarrativeSection = () => {
 
         {/* ── Decision tree fork ── */}
         <div className="relative mt-2">
-          {/* Center stem */}
-          <motion.div
-            className="mx-auto"
-            style={{ width: 1 }}
-            animate={{
-              height: 20,
-              background: "#374151",
-              boxShadow: "0 0 4px rgba(17,24,39,0.15)",
-            }}
-            transition={{ duration: 0.4 }}
-          />
+          {/* Center stem with pulse dot */}
+          <div className="relative mx-auto" style={{ width: 1, height: 20, background: "#E5E7EB" }}>
+            <PulseDot color="#374151" delay={0.2} duration={1.2} />
+          </div>
           {/* Horizontal bar */}
-          <div className="relative mx-auto" style={{ width: "60%", maxWidth: "600px", height: 2 }}>
+          <div className="relative mx-auto" style={{ width: "60%", maxWidth: "600px", height: 1 }}>
             {/* Inactive track */}
             <div className="absolute inset-0" style={{ background: "#E5E7EB" }} />
             {/* Active highlight — left half or right half */}
@@ -414,48 +407,44 @@ const PatientNarrativeSection = () => {
                 left: activeSide === "left" ? "0%" : "50%",
                 width: "50%",
               }}
-              style={{ background: "#374151", boxShadow: "0 0 6px rgba(17,24,39,0.15)" }}
+              style={{ background: `#37415130` }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             />
             {/* Animated traveling dot */}
             <motion.div
               className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full"
-              style={{ width: 10, height: 10, background: "#111827", boxShadow: "0 0 12px rgba(17,24,39,0.4), 0 0 24px rgba(17,24,39,0.15)" }}
+              style={{ width: 8, height: 8, background: "#374151", boxShadow: "0 0 8px rgba(55,65,81,0.3)" }}
               animate={{
                 left: activeSide === "left" ? "0%" : "100%",
+                scale: [1, 1.3, 1],
               }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                left: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+                scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+              }}
             />
             {/* Trailing glow */}
             <motion.div
               className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full pointer-events-none"
-              style={{ width: 24, height: 24, background: "radial-gradient(circle, rgba(17,24,39,0.15) 0%, transparent 70%)" }}
+              style={{ width: 20, height: 20, background: "radial-gradient(circle, rgba(55,65,81,0.12) 0%, transparent 70%)" }}
               animate={{
                 left: activeSide === "left" ? "0%" : "100%",
+                opacity: [0.6, 1, 0.6],
               }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+              transition={{
+                left: { duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.05 },
+                opacity: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+              }}
             />
           </div>
-          {/* Two vertical drops into columns */}
+          {/* Two vertical drops into columns with pulse dots */}
           <div className="flex justify-between mx-auto" style={{ width: "60%", maxWidth: "600px" }}>
-            <motion.div
-              style={{ width: 2 }}
-              animate={{
-                height: 32,
-                background: activeSide === "left" ? "#374151" : "#E5E7EB",
-                boxShadow: activeSide === "left" ? "0 0 6px rgba(17,24,39,0.15)" : "none",
-              }}
-              transition={{ duration: 0.5 }}
-            />
-            <motion.div
-              style={{ width: 2 }}
-              animate={{
-                height: 32,
-                background: activeSide === "right" ? "#374151" : "#E5E7EB",
-                boxShadow: activeSide === "right" ? "0 0 6px rgba(17,24,39,0.15)" : "none",
-              }}
-              transition={{ duration: 0.5 }}
-            />
+            <div className="relative" style={{ width: 1, height: 32, background: activeSide === "left" ? `#37415130` : "#E5E7EB", transition: "background 0.5s" }}>
+              {activeSide === "left" && <PulseDot color="#374151" delay={0.3} duration={1} />}
+            </div>
+            <div className="relative" style={{ width: 1, height: 32, background: activeSide === "right" ? `#37415130` : "#E5E7EB", transition: "background 0.5s" }}>
+              {activeSide === "right" && <PulseDot color="#374151" delay={0.3} duration={1} />}
+            </div>
           </div>
         </div>
 
