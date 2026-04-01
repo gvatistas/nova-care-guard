@@ -360,7 +360,7 @@ const PatientNarrativeSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="py-28 px-6 relative overflow-hidden" style={{ background: "#F3F4F6" }}>
+    <section ref={ref} className="py-16 px-6 relative overflow-hidden" style={{ background: "#F3F4F6" }}>
       <div className="max-w-5xl mx-auto">
 
         {/* ── TOP: Jane Doe Patient Card ── */}
