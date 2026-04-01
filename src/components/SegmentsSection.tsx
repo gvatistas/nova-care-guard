@@ -298,23 +298,23 @@ const SegmentsSection = () => {
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.2 + i * 0.06 }}
                   onClick={() => setSelected(i)}
-                  className="w-full text-left px-6 py-5 border-b transition-all duration-300 cursor-pointer"
-                  style={{
-                    borderColor: "#E5E7EB",
-                    background: isActive ? "rgba(17,24,39,0.03)" : "transparent",
-                    borderLeft: isActive ? "2px solid #111827" : "2px solid transparent",
-                  }}
-                >
-                  <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
-                    style={{ color: isActive ? "#111827" : "#6B7280" }}
-                  >
-                    {seg.short}
-                  </p>
-                  <p className="text-sm font-medium"
-                    style={{ color: isActive ? "#111827" : "#374151", letterSpacing: "-0.01em" }}
-                  >
-                    {seg.name}
-                  </p>
+                   className="w-full text-left px-6 py-5 border-b transition-all duration-300 cursor-pointer"
+                   style={{
+                     borderColor: "#E5E7EB",
+                     background: isActive ? SEGMENT_COLORS[i].bg : "transparent",
+                     borderLeft: isActive ? `2px solid ${SEGMENT_COLORS[i].accent}` : "2px solid transparent",
+                   }}
+                 >
+                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
+                     style={{ color: isActive ? SEGMENT_COLORS[i].accent : "#6B7280" }}
+                   >
+                     {seg.short}
+                   </p>
+                   <p className="text-sm font-medium"
+                     style={{ color: isActive ? "#111827" : "#374151", letterSpacing: "-0.01em" }}
+                   >
+                     {seg.name}
+                   </p>
                 </motion.button>
               );
             })}
