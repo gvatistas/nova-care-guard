@@ -57,7 +57,7 @@ const DifferentiatorsSection = () => {
   return (
     <section ref={ref} className="relative py-24 md:py-32 texture-angular">
       <div className="absolute inset-0 transition-all duration-700 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at 30% 60%, rgba(255,255,255,0.02), transparent 60%)` }} />
+        style={{ background: `radial-gradient(ellipse at 30% 60%, rgba(37,99,235,0.03), transparent 60%)` }} />
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-6">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-7">

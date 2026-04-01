@@ -300,8 +300,8 @@ const SegmentsSection = () => {
                       </p>
 
                       {/* Key metric */}
-                      <div className="border border-white/[0.06] p-5 inline-block" style={{ background: "rgba(200,214,229,0.03)" }}>
-                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#4ade80" }}>
+                      <div className="border p-5 inline-block" style={{ borderColor: "#1E293B", background: "rgba(37,99,235,0.03)" }}>
+                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#06B6D4" }}>
                           {seg.stat}
                         </p>
                         <p className="text-[10px] uppercase tracking-[0.1em] text-white/30 mt-1">
