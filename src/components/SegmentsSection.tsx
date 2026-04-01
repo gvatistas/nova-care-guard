@@ -79,57 +79,38 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const group = new THREE.Group();
     scene.add(group);
 
-    const wireMat = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.4 });
-    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.12 });
-    const facetMat = new THREE.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+    const wireMat = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.5 });
+    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.15 });
+    const facetMat = new THREE.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
     const pointMat = new THREE.PointsMaterial({ color: 0x2563EB, size: 0.03, transparent: true, opacity: 0.5 });
 
-    // Each segment gets a unique geometry
     let geo: THREE.BufferGeometry;
     switch (index) {
-      case 0: // Frontier Labs — Icosahedron (data/knowledge)
-        geo = new THREE.IcosahedronGeometry(1.1, 1);
-        break;
-      case 1: // Clinical AI — Octahedron (precision/module)
-        geo = new THREE.OctahedronGeometry(1.1, 0);
-        break;
-      case 2: // Networks — Torus (connectivity)
-        geo = new THREE.TorusGeometry(0.8, 0.3, 8, 12);
-        break;
-      case 3: // Clinics — Dodecahedron (complexity/care)
-        geo = new THREE.DodecahedronGeometry(1, 0);
-        break;
-      case 4: // Patients — Sphere (wholeness/consumer)
-        geo = new THREE.SphereGeometry(1, 8, 6);
-        break;
-      case 5: // Insurers — Tetrahedron (stability/ROI)
-        geo = new THREE.TetrahedronGeometry(1.2, 1);
-        break;
-      default:
-        geo = new THREE.IcosahedronGeometry(1, 1);
+      case 0: geo = new THREE.IcosahedronGeometry(1.1, 1); break;
+      case 1: geo = new THREE.OctahedronGeometry(1.1, 0); break;
+      case 2: geo = new THREE.TorusGeometry(0.8, 0.3, 8, 12); break;
+      case 3: geo = new THREE.DodecahedronGeometry(1, 0); break;
+      case 4: geo = new THREE.SphereGeometry(1, 8, 6); break;
+      case 5: geo = new THREE.TetrahedronGeometry(1.2, 1); break;
+      default: geo = new THREE.IcosahedronGeometry(1, 1);
     }
 
-    // Wireframe edges
     const edges = new THREE.EdgesGeometry(geo);
     const wireframe = new THREE.LineSegments(edges, wireMat);
     group.add(wireframe);
 
-    // Faceted mesh fill
     const mesh = new THREE.Mesh(geo, facetMat);
     group.add(mesh);
 
-    // Vertex points
     const points = new THREE.Points(geo, pointMat);
     group.add(points);
 
-    // Secondary inner wireframe (smaller, dimmer)
     const innerGeo = geo.clone();
     innerGeo.scale(0.6, 0.6, 0.6);
     const innerEdges = new THREE.EdgesGeometry(innerGeo);
     const innerWire = new THREE.LineSegments(innerEdges, wireMatDim);
     group.add(innerWire);
 
-    // Floating particles around the shape
     const particleCount = 40;
     const pPositions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
@@ -152,10 +133,8 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
       t += 0.004;
       group.rotation.y = t * 0.5;
       group.rotation.x = Math.sin(t * 0.3) * 0.15;
-      // Breathe
       const s = 1 + Math.sin(t * 1.5) * 0.03;
       group.scale.set(s, s, s);
-      // Pulse opacity
       wireMat.opacity = 0.3 + Math.sin(t * 2) * 0.15;
       pointMat.opacity = 0.3 + Math.sin(t * 2.5) * 0.2;
       renderer.render(scene, camera);
@@ -173,7 +152,6 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     };
   }, [index]);
 
-  // Update intensity based on active state
   useEffect(() => {
     if (!sceneRef.current) return;
     const { group } = sceneRef.current;
@@ -195,7 +173,7 @@ const SegmentsSection = () => {
   const [selected, setSelected] = useState<number>(0);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32">
+    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#FFFFFF" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         {/* Header */}
         <motion.div
@@ -204,13 +182,13 @@ const SegmentsSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <p className="text-[11px] font-medium uppercase text-white/25 mb-3" style={{ letterSpacing: "0.12em" }}>
+          <p className="text-[11px] font-medium uppercase mb-3" style={{ letterSpacing: "0.12em", color: "#64748B" }}>
             Deployment Architecture
           </p>
-          <h2 className="text-white font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em" }}>
+          <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#0F172A" }}>
             Market Architecture
           </h2>
-          <p className="text-white/40 mt-3 text-base max-w-2xl">
+          <p className="mt-3 text-base max-w-2xl" style={{ color: "#334155" }}>
             One compiled artifact. Six deployment surfaces.
           </p>
         </motion.div>
@@ -219,7 +197,7 @@ const SegmentsSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-0">
 
           {/* Left — Segment list */}
-          <div className="border-r border-white/[0.06]">
+          <div className="border-r" style={{ borderColor: "#E2E8F0" }}>
             {segments.map((seg, i) => {
               const isActive = selected === i;
               return (
@@ -229,19 +207,20 @@ const SegmentsSection = () => {
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.2 + i * 0.06 }}
                   onClick={() => setSelected(i)}
-                  className="w-full text-left px-6 py-5 border-b border-white/[0.04] transition-all duration-300 cursor-pointer"
+                  className="w-full text-left px-6 py-5 border-b transition-all duration-300 cursor-pointer"
                   style={{
-                    background: isActive ? "rgba(200,214,229,0.04)" : "transparent",
+                    borderColor: "#E2E8F0",
+                    background: isActive ? "rgba(37,99,235,0.04)" : "transparent",
                     borderLeft: isActive ? `2px solid ${ACCENT}` : "2px solid transparent",
                   }}
                 >
                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
-                    style={{ color: isActive ? ACCENT : "rgba(255,255,255,0.3)" }}
+                    style={{ color: isActive ? ACCENT : "#64748B" }}
                   >
                     {seg.short}
                   </p>
                   <p className="text-sm font-medium"
-                    style={{ color: isActive ? "white" : "rgba(255,255,255,0.5)", letterSpacing: "-0.01em" }}
+                    style={{ color: isActive ? "#0F172A" : "#334155", letterSpacing: "-0.01em" }}
                   >
                     {seg.name}
                   </p>
@@ -268,13 +247,8 @@ const SegmentsSection = () => {
                 >
                   {/* 3D Hologram */}
                   <div className="relative flex items-center justify-center p-8" style={{ minHeight: 320 }}>
-                    {/* Radial glow behind shape */}
                     <div className="absolute inset-0 pointer-events-none" style={{
-                      background: "radial-gradient(ellipse at center, rgba(37,99,235,0.06) 0%, transparent 60%)",
-                    }} />
-                    {/* Scan lines overlay */}
-                    <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(37,99,235,0.15) 3px, rgba(37,99,235,0.15) 4px)",
+                      background: "radial-gradient(ellipse at center, rgba(37,99,235,0.04) 0%, transparent 60%)",
                     }} />
                     {isActive && <SegmentHologram index={i} isActive={isActive} />}
                   </div>
@@ -289,22 +263,22 @@ const SegmentsSection = () => {
                       <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: ACCENT }}>
                         {seg.short}
                       </p>
-                      <h3 className="text-white text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em" }}>
+                      <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#0F172A" }}>
                         {seg.name}
                       </h3>
-                      <p className="text-white/60 text-sm leading-relaxed mb-6">
+                      <p className="text-sm leading-relaxed mb-6" style={{ color: "#334155" }}>
                         {seg.value}
                       </p>
-                      <p className="text-white/35 text-[13px] leading-relaxed mb-8">
+                      <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#64748B" }}>
                         {seg.desc}
                       </p>
 
                       {/* Key metric */}
-                      <div className="border p-5 inline-block" style={{ borderColor: "#1E293B", background: "rgba(37,99,235,0.03)" }}>
-                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#06B6D4" }}>
+                      <div className="border p-5 inline-block" style={{ borderColor: "#E2E8F0", background: "#F8FAFC" }}>
+                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#2563EB" }}>
                           {seg.stat}
                         </p>
-                        <p className="text-[10px] uppercase tracking-[0.1em] text-white/30 mt-1">
+                        <p className="text-[10px] uppercase tracking-[0.1em] mt-1" style={{ color: "#64748B" }}>
                           {seg.statLabel}
                         </p>
                       </div>

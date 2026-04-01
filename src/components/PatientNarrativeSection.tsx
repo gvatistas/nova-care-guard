@@ -24,12 +24,12 @@ const INNER_STRUCTURES: string[][] = [
   ["M 65,40 L 100,90", "M 135,40 L 100,90", "M 100,15 L 100,90", "M 50,90 L 100,50 L 150,90", "M 80,60 L 120,60", "M 65,40 L 135,40"],
 ];
 const FACET_FILLS = [
-  [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#1E293B" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#2563EB20" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#1E293B" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#0B112080" }],
-  [{ d: "M 100,10 L 150,55 L 100,55 Z", fill: "#1E293B" }, { d: "M 100,10 L 50,55 L 100,55 Z", fill: "#2563EB20" }, { d: "M 50,55 L 100,100 L 100,55 Z", fill: "#1E293B" }, { d: "M 150,55 L 100,100 L 100,55 Z", fill: "#0B112080" }],
-  [{ d: "M 100,8 L 148,32 L 100,53 Z", fill: "#2563EB15" }, { d: "M 52,32 L 100,8 L 100,53 Z", fill: "#1E293B" }, { d: "M 148,32 L 148,75 L 100,53 Z", fill: "#0B112080" }, { d: "M 52,75 L 52,32 L 100,53 Z", fill: "#1E293B" }],
-  [{ d: "M 100,5 L 155,30 L 100,55 Z", fill: "#1E293B" }, { d: "M 45,30 L 100,5 L 100,55 Z", fill: "#2563EB20" }, { d: "M 155,30 L 150,80 L 100,55 Z", fill: "#0B112080" }, { d: "M 50,80 L 45,30 L 100,55 Z", fill: "#1E293B" }],
-  [{ d: "M 75,10 L 125,10 L 100,55 Z", fill: "#2563EB15" }, { d: "M 125,10 L 155,40 L 100,55 Z", fill: "#1E293B" }, { d: "M 155,40 L 155,70 L 100,55 Z", fill: "#0B112080" }, { d: "M 45,40 L 75,10 L 100,55 Z", fill: "#1E293B" }],
-  [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#1E293B" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#2563EB20" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#1E293B" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#0B112080" }],
+  [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#E2E8F0" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#2563EB20" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#E2E8F0" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#F1F5F9" }],
+  [{ d: "M 100,10 L 150,55 L 100,55 Z", fill: "#E2E8F0" }, { d: "M 100,10 L 50,55 L 100,55 Z", fill: "#2563EB20" }, { d: "M 50,55 L 100,100 L 100,55 Z", fill: "#E2E8F0" }, { d: "M 150,55 L 100,100 L 100,55 Z", fill: "#F1F5F9" }],
+  [{ d: "M 100,8 L 148,32 L 100,53 Z", fill: "#2563EB15" }, { d: "M 52,32 L 100,8 L 100,53 Z", fill: "#E2E8F0" }, { d: "M 148,32 L 148,75 L 100,53 Z", fill: "#F1F5F9" }, { d: "M 52,75 L 52,32 L 100,53 Z", fill: "#E2E8F0" }],
+  [{ d: "M 100,5 L 155,30 L 100,55 Z", fill: "#E2E8F0" }, { d: "M 45,30 L 100,5 L 100,55 Z", fill: "#2563EB20" }, { d: "M 155,30 L 150,80 L 100,55 Z", fill: "#F1F5F9" }, { d: "M 50,80 L 45,30 L 100,55 Z", fill: "#E2E8F0" }],
+  [{ d: "M 75,10 L 125,10 L 100,55 Z", fill: "#2563EB15" }, { d: "M 125,10 L 155,40 L 100,55 Z", fill: "#E2E8F0" }, { d: "M 155,40 L 155,70 L 100,55 Z", fill: "#F1F5F9" }, { d: "M 45,40 L 75,10 L 100,55 Z", fill: "#E2E8F0" }],
+  [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#E2E8F0" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#2563EB20" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#E2E8F0" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#F1F5F9" }],
 ];
 
 /* ── Background Shapeshifting Engine visual for right lane ── */
@@ -55,12 +55,6 @@ const EngineBackground: FC = () => {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.06 }}>
       <svg width="100%" height="100%" viewBox="0 0 200 110" preserveAspectRatio="xMidYMid slice" className="absolute inset-0">
-        <defs>
-          <radialGradient id="eng-bg-grad" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stopColor="#2563EB" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
-          </radialGradient>
-        </defs>
         <g style={{ transformOrigin: "100px 55px", transform: `rotate(${rotation}deg)` }}>
           <circle cx="100" cy="55" r="52" fill="none" stroke="#2563EB" strokeWidth="0.4" strokeDasharray="8 12" />
           <circle cx="100" cy="55" r="48" fill="none" stroke="#2563EB" strokeWidth="0.25" strokeDasharray="3 20" />
@@ -87,13 +81,6 @@ const EngineBackground: FC = () => {
           <animate attributeName="r" values="1;6;1" dur="3.2s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3.2s" repeatCount="indefinite" />
         </circle>
-        {[0, 72, 144, 216, 288].map((angle, i) => (
-          <g key={i} style={{ transformOrigin: "100px 55px", transform: `rotate(${angle + rotation * 2}deg)` }}>
-            <circle cx="140" cy="55" r="0.8" fill="#2563EB" opacity={0.3}>
-              <animate attributeName="opacity" values="0.2;0.05;0.2" dur={`${2.5 + i * 0.3}s`} repeatCount="indefinite" />
-            </circle>
-          </g>
-        ))}
       </svg>
     </div>
   );
@@ -132,14 +119,9 @@ const ShapeshiftingLogo: FC<{ size?: number }> = ({ size = 120 }) => {
           <stop offset="60%" stopColor="#2563EB" stopOpacity="0.03" />
           <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id={`${uid}-sweep`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#2563EB" stopOpacity="0"><animate attributeName="stopOpacity" values="0;0.15;0" dur="3.2s" repeatCount="indefinite" /></stop>
-          <stop offset="50%" stopColor="#2563EB" stopOpacity="0.08"><animate attributeName="stopOpacity" values="0.08;0.25;0.08" dur="3.2s" repeatCount="indefinite" /></stop>
-          <stop offset="100%" stopColor="#2563EB" stopOpacity="0"><animate attributeName="stopOpacity" values="0;0.1;0" dur="3.2s" repeatCount="indefinite" /></stop>
-        </linearGradient>
       </defs>
       <g style={{ transformOrigin: "100px 55px", transform: `rotate(${rotation}deg)` }}>
-        <circle cx="100" cy="55" r="52" fill="none" stroke="#2563EB" strokeWidth="0.3" opacity="0.1" strokeDasharray="8 12" />
+        <circle cx="100" cy="55" r="52" fill="none" stroke="#2563EB" strokeWidth="0.3" opacity="0.15" strokeDasharray="8 12" />
       </g>
       <AnimatePresence mode="wait">
         <motion.g key={idx} initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}>
@@ -147,7 +129,6 @@ const ShapeshiftingLogo: FC<{ size?: number }> = ({ size = 120 }) => {
             <motion.path key={i} d={f.d} fill={f.fill} initial={{ opacity: 0 }} animate={{ opacity: [0, 0.9, 0.75] }} transition={{ duration: 1, delay: i * 0.1 }} />
           ))}
           <motion.path d={MORPH_SHAPES[idx]} fill={`url(#${uid}-inner)`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.5 }} />
-          <motion.path d={MORPH_SHAPES[idx]} fill={`url(#${uid}-sweep)`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} />
         </motion.g>
       </AnimatePresence>
       <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke="#2563EB" strokeWidth="1.2" strokeLinejoin="miter" filter={`url(#${uid}-glow)`} initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }} transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }} />
@@ -217,19 +198,19 @@ const ScreeningNode: FC<{
         style={{ background: `linear-gradient(135deg, ${color}15, transparent)` }} />
     )}
     <div className="flex items-center justify-between mb-1.5 relative">
-      <p className="text-[16px] font-normal" style={{ letterSpacing: "-0.01em", color: "#E2E8F0" }}>{label}</p>
+      <p className="text-[16px] font-normal" style={{ letterSpacing: "-0.01em", color: "#0F172A" }}>{label}</p>
       <span className={`text-[11px] font-semibold uppercase tracking-[0.08em] px-2.5 py-0.5 ${critical ? "animate-pulse" : ""}`}
         style={{ color, background: `${color}15`, border: `1px solid ${color}25` }}>{status}</span>
     </div>
     <div className="flex items-center relative">
       <StatusDot color={color} pulse={critical} />
-      <p className="text-[14px] leading-relaxed" style={{ color: "#94A3B8" }}>{sublabel}</p>
+      <p className="text-[14px] leading-relaxed" style={{ color: "#64748B" }}>{sublabel}</p>
     </div>
   </motion.div>
 );
 
 /* ── Alternating lane controller ── */
-const CYCLE_DURATION = 5000; // ms per side
+const CYCLE_DURATION = 5000;
 
 /* ── Main Section ── */
 const PatientNarrativeSection = () => {
@@ -246,7 +227,7 @@ const PatientNarrativeSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="py-28 px-6 relative overflow-hidden" style={{ background: "#131B2E" }}>
+    <section ref={ref} className="py-28 px-6 relative overflow-hidden" style={{ background: "#FFFFFF" }}>
       <div className="max-w-5xl mx-auto">
 
         {/* ── TOP: Jane Doe Patient Card ── */}
@@ -255,10 +236,10 @@ const PatientNarrativeSection = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="max-w-lg mx-auto border p-7 relative"
-          style={{ borderColor: "#1E293B", background: "#0B1120" }}
+          style={{ borderColor: "#E2E8F0", background: "#FFFFFF", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded border flex items-center justify-center shrink-0" style={{ borderColor: "#1E293B", background: "#131B2E" }}>
+            <div className="w-14 h-14 rounded border flex items-center justify-center shrink-0" style={{ borderColor: "#E2E8F0", background: "#F8FAFC" }}>
               <svg viewBox="0 0 40 40" width="30" height="30">
                 <polygon points="20,4 30,12 28,26 20,32 12,26 10,12" fill="none" stroke="#2563EB" strokeWidth="0.8" opacity="0.4" />
                 <polygon points="20,8 26,14 24,24 20,28 16,24 14,14" fill="#2563EB" opacity="0.06" />
@@ -266,24 +247,24 @@ const PatientNarrativeSection = () => {
               </svg>
             </div>
             <div>
-              <h3 className="text-2xl font-light" style={{ letterSpacing: "-0.02em", color: "#E2E8F0" }}>Jane Doe, 52</h3>
-              <p className="text-sm mt-0.5" style={{ color: "#94A3B8" }}>Female · BMI 28.4 · Smoker (12 pk-yr)</p>
+              <h3 className="text-2xl font-light" style={{ letterSpacing: "-0.02em", color: "#0F172A" }}>Jane Doe, 52</h3>
+              <p className="text-sm mt-0.5" style={{ color: "#64748B" }}>Female · BMI 28.4 · Smoker (12 pk-yr)</p>
             </div>
           </div>
           <div className="grid grid-cols-4 gap-px mt-2">
             {[{ l: "BP", v: "138/88" }, { l: "A1c", v: "6.1%" }, { l: "LDL", v: "142" }, { l: "Risk", v: "Elevated" }].map((x) => (
-              <div key={x.l} className="py-2.5 border text-center" style={{ borderColor: "#1E293B", background: "#0B1120" }}>
-                <p className="text-[10px] uppercase tracking-[0.1em]" style={{ color: "#94A3B8" }}>{x.l}</p>
-                <p className="text-[15px] mt-0.5" style={{ color: "#E2E8F0" }}>{x.v}</p>
+              <div key={x.l} className="py-2.5 border text-center" style={{ borderColor: "#E2E8F0", background: "#F8FAFC" }}>
+                <p className="text-[10px] uppercase tracking-[0.1em]" style={{ color: "#64748B" }}>{x.l}</p>
+                <p className="text-[15px] mt-0.5" style={{ color: x.l === "Risk" ? "#F59E0B" : "#0F172A" }}>{x.v}</p>
               </div>
             ))}
           </div>
-          <p className="text-xs mt-4 tracking-wide text-center" style={{ color: "#94A3B8" }}>Routine visit · 3 undetected risk factors in chart</p>
+          <p className="text-xs mt-4 tracking-wide text-center" style={{ color: "#64748B" }}>Routine visit · 3 undetected risk factors in chart</p>
         </motion.div>
 
         {/* ── FORK ── */}
         <div className="flex justify-center mt-2">
-          <div className="relative h-10 w-px" style={{ background: "#1E293B" }}>
+          <div className="relative h-10 w-px" style={{ background: "#E2E8F0" }}>
             <PulseDot color="#2563EB" delay={0.3} duration={0.8} />
           </div>
         </div>
@@ -295,19 +276,19 @@ const PatientNarrativeSection = () => {
           transition={{ delay: 0.3, duration: 0.5 }}
           className="text-center mb-4"
         >
-          <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#94A3B8" }}>Decision point</p>
+          <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "#64748B" }}>Decision point</p>
           <div className="flex items-center justify-center gap-3 mt-2">
             <motion.div
               className="w-2 h-2 rounded-full"
-              animate={{ background: activeSide === "left" ? RED : "#1E293B", boxShadow: activeSide === "left" ? `0 0 12px ${RED}` : "none" }}
+              animate={{ background: activeSide === "left" ? RED : "#E2E8F0", boxShadow: activeSide === "left" ? `0 0 12px ${RED}` : "none" }}
               transition={{ duration: 0.6 }}
             />
-            <p className="text-[11px] uppercase tracking-widest" style={{ color: "#94A3B8" }}>
+            <p className="text-[11px] uppercase tracking-widest" style={{ color: "#64748B" }}>
               {activeSide === "left" ? "Without" : "With"} Medient
             </p>
             <motion.div
               className="w-2 h-2 rounded-full"
-              animate={{ background: activeSide === "right" ? POSITIVE : "#1E293B", boxShadow: activeSide === "right" ? `0 0 12px ${POSITIVE}` : "none" }}
+              animate={{ background: activeSide === "right" ? POSITIVE : "#E2E8F0", boxShadow: activeSide === "right" ? `0 0 12px ${POSITIVE}` : "none" }}
               transition={{ duration: 0.6 }}
             />
           </div>
@@ -331,7 +312,7 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4 }}
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center"
-              style={{ color: RED, borderColor: `${RED}25`, background: `${RED}08` }}
+              style={{ color: RED, borderColor: `${RED}25`, background: "#FFF1F2" }}
             >
               ✕ Without Medient
             </motion.div>
@@ -354,15 +335,11 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 1.0 }}
               className="border p-7 text-center w-full max-w-sm relative overflow-hidden"
-              style={{ borderColor: `${RED}35`, background: `${RED}0a`, boxShadow: `0 0 30px ${RED}12, inset 0 0 20px ${RED}08` }}
+              style={{ borderColor: `${RED}35`, background: "#FFF1F2" }}
             >
-              <motion.div className="absolute inset-0 pointer-events-none"
-                animate={{ opacity: [0, 0.10, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                style={{ background: `radial-gradient(circle at 50% 30%, ${RED}30, transparent 70%)` }} />
               <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-semibold" style={{ color: RED }}>Patient Outcome</p>
-              <p className="text-4xl font-light relative" style={{ letterSpacing: "-0.02em", color: "#E2E8F0" }}>Stage IIIB</p>
-              <p className="text-[15px] mt-2 relative" style={{ color: "#94A3B8" }}>Late-stage diagnosis · 23% survival</p>
+              <p className="text-4xl font-light relative" style={{ letterSpacing: "-0.02em", color: "#0F172A" }}>Stage IIIB</p>
+              <p className="text-[15px] mt-2 relative" style={{ color: "#64748B" }}>Late-stage diagnosis · 23% survival</p>
             </motion.div>
 
             <Connector color={RED} height={24} />
@@ -373,15 +350,11 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.15 }}
               className="border p-7 text-center w-full relative overflow-hidden"
-              style={{ borderColor: `${RED}25`, background: `${RED}06`, boxShadow: `0 0 20px ${RED}08` }}
+              style={{ borderColor: `${RED}25`, background: "#FFF1F2" }}
             >
-              <motion.div className="absolute inset-0 pointer-events-none"
-                animate={{ opacity: [0, 0.06, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                style={{ background: `linear-gradient(180deg, ${RED}18, transparent)` }} />
-              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-medium" style={{ color: "#94A3B8" }}>Direct cost</p>
-              <p className="text-4xl font-light relative" style={{ color: "#E2E8F0" }}>$288,000+</p>
-              <p className="text-[14px] mt-3 leading-relaxed max-w-xs mx-auto relative" style={{ color: "#94A3B8" }}>
+              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-medium" style={{ color: "#64748B" }}>Direct cost</p>
+              <p className="text-4xl font-light relative" style={{ color: "#0F172A" }}>$288,000+</p>
+              <p className="text-[14px] mt-3 leading-relaxed max-w-xs mx-auto relative" style={{ color: "#64748B" }}>
                 Chemo, radiation, ICU stays, lost productivity. Multiplied across millions of patients, this is the GDP-scale crisis a16z calls "the cost of infinite healthcare."
               </p>
             </motion.div>
@@ -411,7 +384,7 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4 }}
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center relative z-10"
-              style={{ color: POSITIVE, borderColor: `${POSITIVE}25`, background: `${POSITIVE}08`, boxShadow: `0 0 12px ${POSITIVE}10` }}
+              style={{ color: POSITIVE, borderColor: `${POSITIVE}25`, background: "#F0FDFA" }}
             >
               ✓ With Medient
             </motion.div>
@@ -434,15 +407,11 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 1.0 }}
               className="border p-7 text-center w-full max-w-sm relative overflow-hidden z-10"
-              style={{ borderColor: `${POSITIVE}35`, background: `${POSITIVE}0a`, boxShadow: `0 0 30px ${POSITIVE}12, inset 0 0 20px ${POSITIVE}08` }}
+              style={{ borderColor: `${POSITIVE}35`, background: "#F0FDFA" }}
             >
-              <motion.div className="absolute inset-0 pointer-events-none"
-                animate={{ opacity: [0, 0.10, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                style={{ background: `radial-gradient(circle at 50% 30%, ${POSITIVE}25, transparent 70%)` }} />
               <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-semibold" style={{ color: POSITIVE }}>Patient Outcome</p>
-              <p className="text-4xl font-light relative" style={{ letterSpacing: "-0.02em", color: "#E2E8F0" }}>Stage IA</p>
-              <p className="text-[15px] mt-2 relative" style={{ color: "#94A3B8" }}>Caught early · 92% survival</p>
+              <p className="text-4xl font-light relative" style={{ letterSpacing: "-0.02em", color: "#0F172A" }}>Stage IA</p>
+              <p className="text-[15px] mt-2 relative" style={{ color: "#64748B" }}>Caught early · 92% survival</p>
             </motion.div>
 
             <Connector color={POSITIVE} height={24} />
@@ -453,15 +422,11 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.15 }}
               className="border p-7 text-center w-full relative overflow-hidden z-10"
-              style={{ borderColor: `${POSITIVE}25`, background: `${POSITIVE}06`, boxShadow: `0 0 20px ${POSITIVE}08` }}
+              style={{ borderColor: `${POSITIVE}25`, background: "#F0FDFA" }}
             >
-              <motion.div className="absolute inset-0 pointer-events-none"
-                animate={{ opacity: [0, 0.05, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                style={{ background: `linear-gradient(180deg, ${POSITIVE}15, transparent)` }} />
-              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-medium" style={{ color: "#94A3B8" }}>Direct cost</p>
-              <p className="text-4xl font-light relative" style={{ color: "#E2E8F0" }}>$4,200</p>
-              <p className="text-[14px] mt-3 leading-relaxed max-w-xs mx-auto relative" style={{ color: "#94A3B8" }}>
+              <p className="text-xs uppercase tracking-[0.12em] mb-2 relative font-medium" style={{ color: "#64748B" }}>Direct cost</p>
+              <p className="text-4xl font-light relative" style={{ color: "#0F172A" }}>$4,200</p>
+              <p className="text-[14px] mt-3 leading-relaxed max-w-xs mx-auto relative" style={{ color: "#64748B" }}>
                 Outpatient screening, early intervention. 68x cheaper. Scaled across populations, this is how you bend the healthcare cost curve.
               </p>
             </motion.div>
@@ -474,18 +439,16 @@ const PatientNarrativeSection = () => {
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.45, duration: 0.7 }}
           className="flex items-center justify-center gap-5 border p-6 mt-14 max-w-md mx-auto"
-          style={{ borderColor: "#1E293B", background: "#0B1120" }}
+          style={{ borderColor: "#E2E8F0", background: "#FFFFFF", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
         >
           <ShapeshiftingLogo size={100} />
           <div>
             <p className="text-xs uppercase tracking-[0.12em] mb-1" style={{ color: "#2563EB" }}>Medient Engine</p>
-            <p className="text-[13px] leading-relaxed" style={{ color: "#94A3B8" }}>
+            <p className="text-[13px] leading-relaxed" style={{ color: "#64748B" }}>
               Compiled clinical decision infrastructure analyzing 23 guideline pathways in &lt;0.3s
             </p>
           </div>
         </motion.div>
-
-        {/* Stats bar */}
       </div>
     </section>
   );
