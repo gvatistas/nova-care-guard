@@ -349,10 +349,26 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
           group.rotation.y = t * 0.35;
           group.rotation.x = Math.sin(t * 0.25) * 0.4;
           break;
-        case 3: // Human — slow rotation, slight sway
-          group.rotation.y = t * 0.2;
-          group.rotation.x = Math.sin(t * 0.12) * 0.08;
+        case 3: {
+          // Human — slow rotation with breathing sway
+          group.rotation.y = t * 0.25;
+          group.rotation.x = Math.sin(t * 0.15) * 0.06;
+          // Heartbeat pulse
+          const heartbeat = Math.pow(Math.max(0, Math.sin(t * 3.5)), 8);
+          if (humanHeartGlow) {
+            (humanHeartGlow.material as THREE.MeshBasicMaterial).opacity = heartbeat * 0.7;
+            humanHeartGlow.scale.setScalar(1 + heartbeat * 1.5);
+          }
+          // Sequential ring pulses scanning the body
+          humanPulseRings.forEach((ring, ri) => {
+            const phase = (t * 0.6 + ri * 0.8) % 2.4;
+            const ringAlpha = phase < 1 ? Math.sin(phase * Math.PI) * 0.25 : 0;
+            const ringScale = 1 + (phase < 1 ? phase * 0.4 : 0);
+            (ring.material as THREE.MeshBasicMaterial).opacity = ringAlpha;
+            ring.scale.setScalar(ringScale);
+          });
           break;
+        }
         case 4:
           group.rotation.x = Math.PI / 5 + Math.sin(t * 0.3) * 0.15;
           group.rotation.y = t * 0.5;
