@@ -92,9 +92,6 @@ const PipelineSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }} className="lg:col-span-7">
-            <p className="text-[12px] font-medium uppercase mb-3" style={{ letterSpacing: "0.1em", color: "#6B7280" }}>
-              Compilation Pipeline
-            </p>
             <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
               How it works.
             </h2>
