@@ -53,6 +53,230 @@ const segments = [
   },
 ];
 
+/* ── Helper: build a brain-like shape from layered icospheres ── */
+function createBrainGeo(): THREE.Group {
+  const g = new THREE.Group();
+  // Left hemisphere
+  const leftGeo = new THREE.SphereGeometry(0.55, 10, 8, 0, Math.PI);
+  leftGeo.translate(-0.15, 0, 0);
+  // Right hemisphere
+  const rightGeo = new THREE.SphereGeometry(0.55, 10, 8, 0, Math.PI);
+  rightGeo.translate(0.15, 0, 0);
+  rightGeo.rotateY(Math.PI);
+  // Cerebellum
+  const cerebGeo = new THREE.SphereGeometry(0.3, 8, 6);
+  cerebGeo.translate(0, -0.35, -0.2);
+  // Folds (torus wraps)
+  const fold1 = new THREE.TorusGeometry(0.5, 0.06, 6, 16);
+  fold1.rotateX(Math.PI / 2);
+  const fold2 = new THREE.TorusGeometry(0.45, 0.05, 6, 16);
+  fold2.rotateZ(Math.PI / 3);
+  fold2.rotateX(Math.PI / 2.5);
+  return g; // we'll merge below
+}
+
+/* ── Helper: build a hospital-like structure ── */
+function createHospitalGeo(): THREE.BufferGeometry {
+  // Main building
+  const main = new THREE.BoxGeometry(0.9, 1.2, 0.6);
+  main.translate(0, 0, 0);
+  // Wing left
+  const wingL = new THREE.BoxGeometry(0.5, 0.8, 0.5);
+  wingL.translate(-0.6, -0.2, 0);
+  // Wing right
+  const wingR = new THREE.BoxGeometry(0.5, 0.8, 0.5);
+  wingR.translate(0.6, -0.2, 0);
+  // Tower
+  const tower = new THREE.BoxGeometry(0.3, 0.5, 0.3);
+  tower.translate(0, 0.85, 0);
+  // Cross on top
+  const crossV = new THREE.BoxGeometry(0.06, 0.25, 0.06);
+  crossV.translate(0, 1.22, 0);
+  const crossH = new THREE.BoxGeometry(0.18, 0.06, 0.06);
+  crossH.translate(0, 1.28, 0);
+
+  // Merge into one
+  const merged = mergeGeometries([main, wingL, wingR, tower, crossV, crossH]);
+  return merged;
+}
+
+/* ── Helper: merge BufferGeometries manually ── */
+function mergeGeometries(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  let totalVerts = 0;
+  let totalIdx = 0;
+  geos.forEach(g => {
+    totalVerts += g.attributes.position!.count;
+    if (g.index) totalIdx += g.index.count;
+    else totalIdx += g.attributes.position!.count;
+  });
+  const pos = new Float32Array(totalVerts * 3);
+  const indices: number[] = [];
+  let vOffset = 0;
+  let iOffset = 0;
+  geos.forEach(g => {
+    const p = g.attributes.position!;
+    for (let i = 0; i < p.count; i++) {
+      pos[(vOffset + i) * 3] = p.getX(i);
+      pos[(vOffset + i) * 3 + 1] = p.getY(i);
+      pos[(vOffset + i) * 3 + 2] = p.getZ(i);
+    }
+    if (g.index) {
+      for (let i = 0; i < g.index.count; i++) {
+        indices.push(g.index.array[i]! + vOffset);
+      }
+    } else {
+      for (let i = 0; i < p.count; i++) {
+        indices.push(vOffset + i);
+      }
+    }
+    vOffset += p.count;
+  });
+  const merged = new THREE.BufferGeometry();
+  merged.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  merged.setIndex(indices);
+  merged.computeVertexNormals();
+  return merged;
+}
+
+/* ── Helper: create a person/human silhouette shape ── */
+function createPersonGeo(): THREE.BufferGeometry {
+  // Head
+  const head = new THREE.SphereGeometry(0.25, 10, 8);
+  head.translate(0, 0.75, 0);
+  // Body (tapered cylinder)
+  const body = new THREE.CylinderGeometry(0.2, 0.35, 0.7, 8);
+  body.translate(0, 0.15, 0);
+  // Arms
+  const armL = new THREE.CylinderGeometry(0.06, 0.06, 0.6, 6);
+  armL.rotateZ(Math.PI / 6);
+  armL.translate(-0.4, 0.2, 0);
+  const armR = new THREE.CylinderGeometry(0.06, 0.06, 0.6, 6);
+  armR.rotateZ(-Math.PI / 6);
+  armR.translate(0.4, 0.2, 0);
+  // Heart indicator
+  const heart = new THREE.SphereGeometry(0.1, 8, 6);
+  heart.translate(0.08, 0.35, 0.2);
+  return mergeGeometries([head, body, armL, armR, heart]);
+}
+
+/* ── Helper: create a shield shape for insurers ── */
+function createShieldGeo(): THREE.BufferGeometry {
+  // Shield body using lathe
+  const pts: THREE.Vector2[] = [];
+  pts.push(new THREE.Vector2(0, -0.9));
+  pts.push(new THREE.Vector2(0.5, -0.5));
+  pts.push(new THREE.Vector2(0.6, 0));
+  pts.push(new THREE.Vector2(0.55, 0.4));
+  pts.push(new THREE.Vector2(0.3, 0.7));
+  pts.push(new THREE.Vector2(0, 0.95));
+  const shield = new THREE.LatheGeometry(pts, 12);
+  shield.scale(1, 1, 0.4);
+  // Dollar sign approximation — a vertical bar
+  const bar = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 6);
+  bar.translate(0, 0, 0.22);
+  // S-curve approximation with torus arcs
+  const sTop = new THREE.TorusGeometry(0.15, 0.035, 6, 8, Math.PI);
+  sTop.translate(0, 0.15, 0.22);
+  const sBot = new THREE.TorusGeometry(0.15, 0.035, 6, 8, Math.PI);
+  sBot.rotateY(Math.PI);
+  sBot.translate(0, -0.15, 0.22);
+  return mergeGeometries([shield, bar, sTop, sBot]);
+}
+
+/* ── Build segment-specific geometry ── */
+function buildSegmentGeo(index: number): THREE.BufferGeometry {
+  switch (index) {
+    case 0: {
+      // Frontier Labs — Brain
+      const leftHemi = new THREE.SphereGeometry(0.55, 12, 10, 0, Math.PI);
+      leftHemi.translate(-0.12, 0, 0);
+      const rightHemi = new THREE.SphereGeometry(0.55, 12, 10, 0, Math.PI);
+      rightHemi.rotateY(Math.PI);
+      rightHemi.translate(0.12, 0, 0);
+      const cerebellum = new THREE.SphereGeometry(0.28, 8, 6);
+      cerebellum.translate(0, -0.38, -0.18);
+      const stem = new THREE.CylinderGeometry(0.08, 0.06, 0.35, 6);
+      stem.translate(0, -0.62, -0.1);
+      const fold1 = new THREE.TorusGeometry(0.48, 0.04, 6, 20);
+      fold1.rotateX(Math.PI / 2);
+      fold1.translate(0, 0.05, 0);
+      const fold2 = new THREE.TorusGeometry(0.42, 0.035, 6, 18);
+      fold2.rotateX(Math.PI / 2);
+      fold2.rotateZ(Math.PI / 4);
+      fold2.translate(0, -0.05, 0);
+      return mergeGeometries([leftHemi, rightHemi, cerebellum, stem, fold1, fold2]);
+    }
+    case 1: {
+      // Clinical AI Products — Circuit board / chip
+      const chip = new THREE.BoxGeometry(1, 0.12, 1);
+      const core = new THREE.BoxGeometry(0.4, 0.25, 0.4);
+      core.translate(0, 0.1, 0);
+      // Pins
+      const pins: THREE.BufferGeometry[] = [chip, core];
+      for (let i = -2; i <= 2; i++) {
+        const pin = new THREE.BoxGeometry(0.05, 0.08, 0.3);
+        pin.translate(i * 0.18, -0.1, 0.65);
+        pins.push(pin);
+        const pin2 = pin.clone();
+        pin2.translate(0, 0, -1.3);
+        pins.push(pin2);
+        const pin3 = new THREE.BoxGeometry(0.3, 0.08, 0.05);
+        pin3.translate(0.65, -0.1, i * 0.18);
+        pins.push(pin3);
+        const pin4 = pin3.clone();
+        pin4.translate(-1.3, 0, 0);
+        pins.push(pin4);
+      }
+      return mergeGeometries(pins);
+    }
+    case 2: {
+      // Clinical Networks — Connected nodes / network graph
+      const nodes: THREE.BufferGeometry[] = [];
+      const positions = [
+        [0, 0.6, 0], [-0.5, 0.1, 0.3], [0.5, 0.1, 0.3],
+        [-0.3, -0.5, -0.2], [0.3, -0.5, -0.2], [0, 0, -0.5],
+      ];
+      positions.forEach(([x, y, z]) => {
+        const node = new THREE.SphereGeometry(0.12, 8, 6);
+        node.translate(x!, y!, z!);
+        nodes.push(node);
+      });
+      // Edges as thin cylinders
+      const pairs = [[0,1],[0,2],[1,2],[1,3],[2,4],[3,4],[0,5],[3,5],[4,5]];
+      pairs.forEach(([a, b]) => {
+        const pa = positions[a!]!;
+        const pb = positions[b!]!;
+        const mid = [(pa[0]!+pb[0]!)/2, (pa[1]!+pb[1]!)/2, (pa[2]!+pb[2]!)/2];
+        const dx = pb[0]!-pa[0]!, dy = pb[1]!-pa[1]!, dz = pb[2]!-pa[2]!;
+        const len = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        const edge = new THREE.CylinderGeometry(0.02, 0.02, len, 4);
+        // Orient along the connection
+        const dir = new THREE.Vector3(dx, dy, dz).normalize();
+        const up = new THREE.Vector3(0, 1, 0);
+        const quat = new THREE.Quaternion().setFromUnitVectors(up, dir);
+        edge.applyQuaternion(quat);
+        edge.translate(mid[0]!, mid[1]!, mid[2]!);
+        nodes.push(edge);
+      });
+      return mergeGeometries(nodes);
+    }
+    case 3: {
+      // Clinics — Hospital building
+      return createHospitalGeo();
+    }
+    case 4: {
+      // Patients — Person/human figure
+      return createPersonGeo();
+    }
+    case 5: {
+      // Insurers — Shield with dollar sign
+      return createShieldGeo();
+    }
+    default:
+      return new THREE.IcosahedronGeometry(1, 1);
+  }
+}
+
 /* ── 3D Hologram for each segment — GRAYSCALE ── */
 const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isActive }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -83,16 +307,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const facetMat = new THREE.MeshBasicMaterial({ color: 0x374151, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
     const pointMat = new THREE.PointsMaterial({ color: 0x6B7280, size: 0.03, transparent: true, opacity: 0.5 });
 
-    let geo: THREE.BufferGeometry;
-    switch (index) {
-      case 0: geo = new THREE.IcosahedronGeometry(1.1, 1); break;
-      case 1: geo = new THREE.OctahedronGeometry(1.1, 0); break;
-      case 2: geo = new THREE.TorusGeometry(0.8, 0.3, 8, 12); break;
-      case 3: geo = new THREE.DodecahedronGeometry(1, 0); break;
-      case 4: geo = new THREE.SphereGeometry(1, 8, 6); break;
-      case 5: geo = new THREE.TetrahedronGeometry(1.2, 1); break;
-      default: geo = new THREE.IcosahedronGeometry(1, 1);
-    }
+    const geo = buildSegmentGeo(index);
 
     const edges = new THREE.EdgesGeometry(geo);
     const wireframe = new THREE.LineSegments(edges, wireMat);
