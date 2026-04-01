@@ -184,11 +184,10 @@ const GuideBenchSection = () => {
           className="mb-12"
         >
           <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
-            GuideBench.
+            GuideBench. <span className="font-normal" style={{ color: "#9CA3AF" }}>The open-source clinical decision logic evaluation framework.</span>
           </h2>
-          <p className="mt-2 text-lg max-w-2xl" style={{ letterSpacing: "-0.01em", color: "#374151" }}>
-            The open-source clinical decision logic evaluation framework.
-            <span className="font-medium" style={{ color: "#111827" }}> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
+          <p className="mt-2 text-lg max-w-2xl font-medium" style={{ letterSpacing: "-0.01em", color: "#111827" }}>
+            10 guidelines. 750+ synthetic patients. 4 fidelity metrics.
           </p>
         </motion.div>
 
