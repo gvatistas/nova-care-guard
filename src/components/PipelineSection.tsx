@@ -187,7 +187,7 @@ const PipelineSection = () => {
             { name: "FHIR R4", status: "Native", color: "#059669" },
             { name: "HL7 CDS Hooks", status: "Supported", color: "#059669" },
           ].map((c) => (
-            <div key={c.name} className="p-4 text-center" style={{ background: "transparent" }}>
+            <div key={c.name} className="p-4 text-center" style={{ background: "#FFFFFF", backgroundImage: `linear-gradient(rgba(107,114,128,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(107,114,128,0.07) 1px, transparent 1px)`, backgroundSize: "35px 35px" }}>
               <span className="text-[11px] font-medium uppercase block mb-1" style={{ letterSpacing: "0.1em", color: "#6B7280" }}>{c.name}</span>
               <span className="text-[13px] font-medium" style={{ color: c.color, letterSpacing: "0.05em" }}>{c.status}</span>
             </div>
