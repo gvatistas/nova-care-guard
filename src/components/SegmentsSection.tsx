@@ -36,6 +36,14 @@ const segments = [
     desc: "Consumer-facing preventive health AI that never hallucinates. Every recommendation traces to a verified clinical guideline, reviewed by a physician network.",
   },
   {
+    name: "Pharmacies",
+    short: "Rx Intelligence",
+    value: "Guideline-driven medication review and dispensing support",
+    stat: "23",
+    statLabel: "Guideline pathways",
+    desc: "Automated medication interaction checks and preventive screening prompts at the point of dispensing. Pharmacists get real-time, guideline-backed alerts that catch gaps before patients leave the counter.",
+  },
+  {
     name: "Insurers",
     short: "Preventive ROI",
     value: "Reduce downstream claims through upstream detection",
