@@ -299,7 +299,7 @@ const PatientNarrativeSection = () => {
 
           {/* ── LEFT: Without Medient ── */}
           <motion.div
-            className="flex flex-col items-center"
+            className="flex flex-col items-center flex-1"
             animate={{
               opacity: activeSide === "left" ? 1 : 0.25,
               scale: activeSide === "left" ? 1 : 0.97,
@@ -325,6 +325,7 @@ const PatientNarrativeSection = () => {
               <ScreeningNode label="LDCT Scan" sublabel="USPSTF Grade A — eligible but never ordered" color={RED} status="Missed" delay={0.8} inView={inView} critical />
             </div>
 
+            <div className="flex-1" />
             <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1.4 }}
               className="mt-6 border p-4 text-center w-full max-w-sm" style={{ borderColor: `${RED}25`, background: "#FFF1F2" }}>
               <p className="text-xs uppercase tracking-[0.15em] mb-1" style={{ color: `${RED}AA` }}>18 Months Later</p>
@@ -334,7 +335,7 @@ const PatientNarrativeSection = () => {
 
           {/* ── RIGHT: With Medient ── */}
           <motion.div
-            className="flex flex-col items-center relative"
+            className="flex flex-col items-center relative flex-1"
             animate={{
               opacity: activeSide === "right" ? 1 : 0.25,
               scale: activeSide === "right" ? 1 : 0.97,
@@ -362,6 +363,7 @@ const PatientNarrativeSection = () => {
               <ScreeningNode label="LDCT Scan" sublabel="Order generated with full provenance trail" color={GREEN} status="Ordered" delay={0.8} inView={inView} />
             </div>
 
+            <div className="flex-1" />
             <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1.4 }}
               className="mt-6 border p-4 text-center w-full max-w-sm relative z-10" style={{ borderColor: `${POSITIVE}25`, background: "#F0FDF4" }}>
               <p className="text-xs uppercase tracking-[0.15em] mb-1" style={{ color: POSITIVE }}>Same Visit</p>
