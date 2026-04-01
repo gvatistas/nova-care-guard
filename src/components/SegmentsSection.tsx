@@ -62,43 +62,94 @@ const segments = [
   },
 ];
 
+/* ── Helper: merge BufferGeometries ── */
+function mergeGeos(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  let totalVerts = 0, totalIdx = 0;
+  geos.forEach(g => {
+    totalVerts += g.attributes.position!.count;
+    totalIdx += g.index ? g.index.count : g.attributes.position!.count;
+  });
+  const pos = new Float32Array(totalVerts * 3);
+  const indices: number[] = [];
+  let vOff = 0;
+  geos.forEach(g => {
+    const p = g.attributes.position!;
+    for (let i = 0; i < p.count; i++) {
+      pos[(vOff + i) * 3] = p.getX(i);
+      pos[(vOff + i) * 3 + 1] = p.getY(i);
+      pos[(vOff + i) * 3 + 2] = p.getZ(i);
+    }
+    if (g.index) { for (let i = 0; i < g.index.count; i++) indices.push(g.index.array[i]! + vOff); }
+    else { for (let i = 0; i < p.count; i++) indices.push(vOff + i); }
+    vOff += p.count;
+  });
+  const m = new THREE.BufferGeometry();
+  m.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  m.setIndex(indices);
+  m.computeVertexNormals();
+  return m;
+}
+
 /* ── Build segment-specific geometry — single clean shapes ── */
 function buildSegmentGeo(index: number): THREE.BufferGeometry {
   switch (index) {
     case 0: {
-      // Frontier Labs — Icosahedron (neural/crystalline)
       return new THREE.IcosahedronGeometry(1, 1);
     }
     case 1: {
-      // Clinical AI — Octahedron (precision/logic)
       return new THREE.OctahedronGeometry(1, 0);
     }
     case 2: {
-      // Clinics — Dodecahedron (complex network)
       return new THREE.DodecahedronGeometry(1, 0);
     }
     case 3: {
-      // Patients — Human head profile via LatheGeometry
-      const pts: THREE.Vector2[] = [
-        new THREE.Vector2(0, -0.7),    // chin bottom
-        new THREE.Vector2(0.35, -0.6), // jaw
-        new THREE.Vector2(0.48, -0.3), // cheek
-        new THREE.Vector2(0.52, 0),    // ear level
-        new THREE.Vector2(0.5, 0.25),  // temple
-        new THREE.Vector2(0.48, 0.5),  // forehead
-        new THREE.Vector2(0.4, 0.7),   // top curve
-        new THREE.Vector2(0.25, 0.85), // crown
-        new THREE.Vector2(0, 0.9),     // top
-      ];
-      const head = new THREE.LatheGeometry(pts, 32);
-      return head;
+      // Patients — Full human figure (head + neck + torso + arms + legs)
+      const head = new THREE.SphereGeometry(0.22, 16, 12);
+      head.translate(0, 0.92, 0);
+
+      const neck = new THREE.CylinderGeometry(0.08, 0.1, 0.12, 8);
+      neck.translate(0, 0.75, 0);
+
+      const torso = new THREE.CylinderGeometry(0.18, 0.22, 0.55, 12);
+      torso.translate(0, 0.42, 0);
+
+      const hipJoint = new THREE.SphereGeometry(0.22, 10, 8);
+      hipJoint.translate(0, 0.14, 0);
+
+      // Arms
+      const armL = new THREE.CylinderGeometry(0.06, 0.055, 0.5, 8);
+      armL.translate(-0.28, 0.45, 0);
+      armL.rotateZ(0.15);
+      const armR = new THREE.CylinderGeometry(0.06, 0.055, 0.5, 8);
+      armR.translate(0.28, 0.45, 0);
+      armR.rotateZ(-0.15);
+
+      // Forearms
+      const foreL = new THREE.CylinderGeometry(0.05, 0.045, 0.42, 8);
+      foreL.translate(-0.32, 0.05, 0);
+      foreL.rotateZ(0.1);
+      const foreR = new THREE.CylinderGeometry(0.05, 0.045, 0.42, 8);
+      foreR.translate(0.32, 0.05, 0);
+      foreR.rotateZ(-0.1);
+
+      // Legs
+      const legL = new THREE.CylinderGeometry(0.09, 0.07, 0.55, 8);
+      legL.translate(-0.12, -0.18, 0);
+      const legR = new THREE.CylinderGeometry(0.09, 0.07, 0.55, 8);
+      legR.translate(0.12, -0.18, 0);
+
+      // Shins
+      const shinL = new THREE.CylinderGeometry(0.065, 0.055, 0.5, 8);
+      shinL.translate(-0.12, -0.7, 0);
+      const shinR = new THREE.CylinderGeometry(0.065, 0.055, 0.5, 8);
+      shinR.translate(0.12, -0.7, 0);
+
+      return mergeGeos([head, neck, torso, hipJoint, armL, armR, foreL, foreR, legL, legR, shinL, shinR]);
     }
     case 4: {
-      // Pharmacies — Torus (Rx ring/cycle)
       return new THREE.TorusGeometry(0.7, 0.3, 16, 32);
     }
     case 5: {
-      // Insurers — Tetrahedron (stability/foundation)
       return new THREE.TetrahedronGeometry(1, 1);
     }
     default:
