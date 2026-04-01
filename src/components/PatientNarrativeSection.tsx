@@ -327,7 +327,7 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4 }}
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center relative z-10"
-              style={{ color: POSITIVE, borderColor: `${POSITIVE}25`, background: "#F0FDF4" }}
+              style={{ color: "#2563EB", borderColor: "rgba(37,99,235,0.15)", background: "#EFF6FF" }}
             >
               ✓ With Medient
             </motion.div>
