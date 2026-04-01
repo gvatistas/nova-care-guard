@@ -103,9 +103,28 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return new THREE.DodecahedronGeometry(1, 0);
     }
     case 3: {
-      // Patients — Low-poly wireframe human body (vertex + edge mesh)
-      // We return a dummy geo; the actual rendering is custom in SegmentHologram
-      return null as unknown as THREE.BufferGeometry;
+      // Patients — 3D heart shape via ExtrudeGeometry
+      const shape = new THREE.Shape();
+      const s = 0.06;
+      shape.moveTo(0, 0);
+      shape.bezierCurveTo(0, -3 * s, -5 * s, -15 * s, -10 * s, -15 * s);
+      shape.bezierCurveTo(-18 * s, -15 * s, -18 * s, -2 * s, -18 * s, -2 * s);
+      shape.bezierCurveTo(-18 * s, 5 * s, -12 * s, 12 * s, 0, 19 * s);
+      shape.bezierCurveTo(12 * s, 12 * s, 18 * s, 5 * s, 18 * s, -2 * s);
+      shape.bezierCurveTo(18 * s, -2 * s, 18 * s, -15 * s, 10 * s, -15 * s);
+      shape.bezierCurveTo(5 * s, -15 * s, 0, -3 * s, 0, 0);
+      const geo = new THREE.ExtrudeGeometry(shape, {
+        depth: 0.35,
+        bevelEnabled: true,
+        bevelThickness: 0.12,
+        bevelSize: 0.08,
+        bevelSegments: 2,
+        curveSegments: 6,
+      });
+      // Flip upright (heart points down by default in this parametric)
+      geo.rotateX(Math.PI);
+      geo.rotateZ(Math.PI);
+      return geo;
     }
     case 4: {
       return new THREE.TorusGeometry(0.7, 0.3, 16, 32);
