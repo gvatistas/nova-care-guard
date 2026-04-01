@@ -61,112 +61,159 @@ const EngineBackground: FC = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const W = 200, H = 100;
-    canvas.width = W;
-    canvas.height = H;
-
-    const activeNodes = new Float32Array(ENGINE_NODES.length).fill(0);
-    const pulses: { edge: number; progress: number; speed: number }[] = [];
-
-    let t = 0;
     let raf: number;
+    let t = 0;
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      ctx.scale(dpr, dpr);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Grid config
+    const spacing = 28;
 
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      t += 0.012;
+      t += 0.003;
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      ctx.clearRect(0, 0, w, h);
 
-      // Spawn pulses
-      if (Math.random() < 0.08) {
-        pulses.push({
-          edge: Math.floor(Math.random() * ENGINE_EDGES.length),
-          progress: 0,
-          speed: 0.008 + Math.random() * 0.015,
-        });
-      }
+      const cols = Math.ceil(w / spacing) + 1;
+      const rows = Math.ceil(h / spacing) + 1;
 
-      // Decay node brightness
-      for (let i = 0; i < activeNodes.length; i++) {
-        activeNodes[i] *= 0.96;
-      }
-
-      // Update pulses
-      for (let i = pulses.length - 1; i >= 0; i--) {
-        pulses[i].progress += pulses[i].speed;
-        if (pulses[i].progress >= 1) {
-          const target = ENGINE_EDGES[pulses[i].edge][1];
-          activeNodes[target] = 1;
-          pulses.splice(i, 1);
+      // Draw grid dots
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = c * spacing;
+          const y = r * spacing;
+          ctx.fillStyle = "rgba(209,213,219,0.25)";
+          ctx.fillRect(x - 0.5, y - 0.5, 1, 1);
         }
       }
 
-      ctx.clearRect(0, 0, W, H);
-
-      // Draw edges
-      ctx.lineWidth = 0.3;
-      ENGINE_EDGES.forEach(([a, b]) => {
-        const na = ENGINE_NODES[a], nb = ENGINE_NODES[b];
-        ctx.strokeStyle = `rgba(107,114,128,0.08)`;
+      // Horizontal scan lines (geometric)
+      for (let i = 0; i < 3; i++) {
+        const phase = (t * 0.4 + i * 0.33) % 1;
+        const scanY = phase * h;
+        const grad = ctx.createLinearGradient(0, 0, w, 0);
+        const alpha = 0.06 + Math.sin(t * 2 + i) * 0.02;
+        grad.addColorStop(0, `rgba(37,99,235,0)`);
+        grad.addColorStop(0.2, `rgba(37,99,235,${alpha})`);
+        grad.addColorStop(0.8, `rgba(37,99,235,${alpha})`);
+        grad.addColorStop(1, `rgba(37,99,235,0)`);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 0.5;
         ctx.beginPath();
-        ctx.moveTo(na.x, na.y);
-        ctx.lineTo(nb.x, nb.y);
+        ctx.moveTo(0, scanY);
+        ctx.lineTo(w, scanY);
         ctx.stroke();
-      });
+      }
 
-      // Draw pulses traveling along edges
-      pulses.forEach((p) => {
-        const [a, b] = ENGINE_EDGES[p.edge];
-        const na = ENGINE_NODES[a], nb = ENGINE_NODES[b];
-        const x = na.x + (nb.x - na.x) * p.progress;
-        const y = na.y + (nb.y - na.y) * p.progress;
-        const grd = ctx.createRadialGradient(x, y, 0, x, y, 4);
-        grd.addColorStop(0, `rgba(8,145,178,0.5)`);
-        grd.addColorStop(1, `rgba(8,145,178,0)`);
+      // Animated geometric circuit paths
+      const paths: { sx: number; sy: number; segments: { dx: number; dy: number }[]; phase: number }[] = [
+        { sx: 0.1, sy: 0.2, segments: [{ dx: 0.15, dy: 0 }, { dx: 0, dy: 0.15 }, { dx: 0.2, dy: 0 }, { dx: 0, dy: 0.1 }, { dx: 0.15, dy: 0 }], phase: 0 },
+        { sx: 0.8, sy: 0.1, segments: [{ dx: 0, dy: 0.2 }, { dx: -0.25, dy: 0 }, { dx: 0, dy: 0.15 }, { dx: -0.15, dy: 0 }], phase: 0.5 },
+        { sx: 0.3, sy: 0.7, segments: [{ dx: 0.2, dy: 0 }, { dx: 0, dy: -0.15 }, { dx: 0.2, dy: 0 }, { dx: 0, dy: 0.2 }], phase: 0.25 },
+        { sx: 0.05, sy: 0.5, segments: [{ dx: 0.3, dy: 0 }, { dx: 0, dy: 0.25 }, { dx: 0.2, dy: 0 }], phase: 0.7 },
+        { sx: 0.6, sy: 0.85, segments: [{ dx: 0, dy: -0.3 }, { dx: 0.2, dy: 0 }, { dx: 0, dy: -0.15 }], phase: 0.4 },
+      ];
+
+      paths.forEach((path) => {
+        const totalLen = path.segments.reduce((s, seg) => s + Math.abs(seg.dx || seg.dy), 0);
+        let cx = path.sx * w;
+        let cy = path.sy * h;
+
+        // Draw static path
+        ctx.strokeStyle = "rgba(37,99,235,0.06)";
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        path.segments.forEach((seg) => {
+          cx += seg.dx * w;
+          cy += seg.dy * h;
+          ctx.lineTo(cx, cy);
+        });
+        ctx.stroke();
+
+        // Draw junction nodes
+        cx = path.sx * w;
+        cy = path.sy * h;
+        path.segments.forEach((seg) => {
+          ctx.fillStyle = "rgba(37,99,235,0.08)";
+          ctx.beginPath();
+          ctx.arc(cx, cy, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+          cx += seg.dx * w;
+          cy += seg.dy * h;
+        });
+
+        // Animated pulse along path
+        const progress = ((t * 0.5 + path.phase) % 1);
+        const targetDist = progress * totalLen;
+        let traveled = 0;
+        let px = path.sx * w;
+        let py = path.sy * h;
+
+        for (const seg of path.segments) {
+          const segLen = Math.abs(seg.dx || seg.dy);
+          if (traveled + segLen >= targetDist) {
+            const frac = (targetDist - traveled) / segLen;
+            px += seg.dx * w * frac;
+            py += seg.dy * h * frac;
+            break;
+          }
+          px += seg.dx * w;
+          py += seg.dy * h;
+          traveled += segLen;
+        }
+
+        // Pulse glow
+        const grd = ctx.createRadialGradient(px, py, 0, px, py, 12);
+        grd.addColorStop(0, "rgba(37,99,235,0.2)");
+        grd.addColorStop(1, "rgba(37,99,235,0)");
         ctx.fillStyle = grd;
         ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.arc(px, py, 12, 0, Math.PI * 2);
         ctx.fill();
-        // Core dot
-        ctx.fillStyle = `rgba(8,145,178,0.8)`;
+
+        // Pulse core
+        ctx.fillStyle = "rgba(37,99,235,0.5)";
         ctx.beginPath();
-        ctx.arc(x, y, 1, 0, Math.PI * 2);
+        ctx.arc(px, py, 2, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // Draw nodes
-      ENGINE_NODES.forEach((n, i) => {
-        const brightness = activeNodes[i];
-        // Glow
-        if (brightness > 0.1) {
-          const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 6);
-          grd.addColorStop(0, `rgba(8,145,178,${brightness * 0.3})`);
-          grd.addColorStop(1, `rgba(8,145,178,0)`);
-          ctx.fillStyle = grd;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, 6, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        // Dot
-        const r = 0.8 + brightness * 0.8;
-        const alpha = 0.12 + brightness * 0.5;
-        ctx.fillStyle = brightness > 0.3
-          ? `rgba(8,145,178,${alpha})`
-          : `rgba(107,114,128,${alpha})`;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-        ctx.fill();
-      });
+      // Corner brackets (high-tech frame accents)
+      const bracketLen = 20;
+      ctx.strokeStyle = "rgba(37,99,235,0.1)";
+      ctx.lineWidth = 1;
+      // Top-left
+      ctx.beginPath(); ctx.moveTo(0, bracketLen); ctx.lineTo(0, 0); ctx.lineTo(bracketLen, 0); ctx.stroke();
+      // Top-right
+      ctx.beginPath(); ctx.moveTo(w - bracketLen, 0); ctx.lineTo(w, 0); ctx.lineTo(w, bracketLen); ctx.stroke();
+      // Bottom-left
+      ctx.beginPath(); ctx.moveTo(0, h - bracketLen); ctx.lineTo(0, h); ctx.lineTo(bracketLen, h); ctx.stroke();
+      // Bottom-right
+      ctx.beginPath(); ctx.moveTo(w - bracketLen, h); ctx.lineTo(w, h); ctx.lineTo(w, h - bracketLen); ctx.stroke();
     };
     animate();
 
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
   }, []);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.35 }}>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.7 }}>
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
-        style={{ imageRendering: "auto" }}
       />
     </div>
   );
