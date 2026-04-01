@@ -334,7 +334,7 @@ const PatientNarrativeSection = () => {
 
           {/* ── RIGHT: With Medient ── */}
           <motion.div
-            className="flex flex-col items-center relative"
+            className="flex flex-col items-center relative flex-1"
             animate={{
               opacity: activeSide === "right" ? 1 : 0.25,
               scale: activeSide === "right" ? 1 : 0.97,
