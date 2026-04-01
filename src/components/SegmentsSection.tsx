@@ -253,14 +253,10 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return mergeGeometries(nodes);
     }
     case 3: {
-      // Clinics — Hospital building
-      return createHospitalGeo();
-    }
-    case 4: {
       // Patients — Person/human figure
       return createPersonGeo();
     }
-    case 5: {
+    case 4: {
       // Insurers — Shield with dollar sign
       return createShieldGeo();
     }
