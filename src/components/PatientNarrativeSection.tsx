@@ -251,15 +251,14 @@ const PatientNarrativeSection = () => {
               <p className="text-sm mt-0.5" style={{ color: "#6B7280" }}>Female · BMI 28.4 · Smoker (12 pk-yr)</p>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-px mt-2">
-            {[{ l: "BP", v: "138/88" }, { l: "A1c", v: "6.1%" }, { l: "LDL", v: "142" }, { l: "Risk", v: "Elevated" }].map((x) => (
+          <div className="grid grid-cols-3 gap-px mt-2">
+            {[{ l: "BP", v: "138/88" }, { l: "A1c", v: "6.1%" }, { l: "LDL", v: "142" }].map((x) => (
               <div key={x.l} className="py-2.5 border text-center" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
                 <p className="text-[10px] uppercase tracking-[0.1em]" style={{ color: "#6B7280" }}>{x.l}</p>
-                <p className="text-[15px] mt-0.5" style={{ color: x.l === "Risk" ? "#D97706" : "#111827" }}>{x.v}</p>
+                <p className="text-[15px] mt-0.5" style={{ color: "#111827" }}>{x.v}</p>
               </div>
             ))}
           </div>
-          <p className="text-xs mt-4 tracking-wide text-center" style={{ color: "#6B7280" }}>Routine visit · 3 undetected risk factors in chart</p>
         </motion.div>
 
         {/* ── FORK ── */}
