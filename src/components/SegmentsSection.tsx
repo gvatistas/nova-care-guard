@@ -175,90 +175,61 @@ function createShieldGeo(): THREE.BufferGeometry {
   return mergeGeometries([shield, bar, sTop, sBot]);
 }
 
-/* ── Build segment-specific geometry ── */
+/* ── Build segment-specific geometry — clean, broad silhouettes ── */
 function buildSegmentGeo(index: number): THREE.BufferGeometry {
   switch (index) {
     case 0: {
-      // Frontier Labs — Brain
-      const leftHemi = new THREE.SphereGeometry(0.55, 12, 10, 0, Math.PI);
-      leftHemi.translate(-0.12, 0, 0);
-      const rightHemi = new THREE.SphereGeometry(0.55, 12, 10, 0, Math.PI);
-      rightHemi.rotateY(Math.PI);
-      rightHemi.translate(0.12, 0, 0);
-      const cerebellum = new THREE.SphereGeometry(0.28, 8, 6);
-      cerebellum.translate(0, -0.38, -0.18);
-      const stem = new THREE.CylinderGeometry(0.08, 0.06, 0.35, 6);
-      stem.translate(0, -0.62, -0.1);
-      const fold1 = new THREE.TorusGeometry(0.48, 0.04, 6, 20);
-      fold1.rotateX(Math.PI / 2);
-      fold1.translate(0, 0.05, 0);
-      const fold2 = new THREE.TorusGeometry(0.42, 0.035, 6, 18);
-      fold2.rotateX(Math.PI / 2);
-      fold2.rotateZ(Math.PI / 4);
-      fold2.translate(0, -0.05, 0);
-      return mergeGeometries([leftHemi, rightHemi, cerebellum, stem, fold1, fold2]);
+      // Frontier Labs — Brain: two clean hemispheres
+      const left = new THREE.SphereGeometry(0.7, 16, 12, 0, Math.PI);
+      left.translate(-0.1, 0, 0);
+      const right = new THREE.SphereGeometry(0.7, 16, 12, 0, Math.PI);
+      right.rotateY(Math.PI);
+      right.translate(0.1, 0, 0);
+      const stem = new THREE.CylinderGeometry(0.08, 0.06, 0.4, 6);
+      stem.translate(0, -0.7, -0.1);
+      return mergeGeometries([left, right, stem]);
     }
     case 1: {
-      // Clinical AI Products — Circuit board / chip
-      const chip = new THREE.BoxGeometry(1, 0.12, 1);
-      const core = new THREE.BoxGeometry(0.4, 0.25, 0.4);
-      core.translate(0, 0.1, 0);
-      // Pins
-      const pins: THREE.BufferGeometry[] = [chip, core];
-      for (let i = -2; i <= 2; i++) {
-        const pin = new THREE.BoxGeometry(0.05, 0.08, 0.3);
-        pin.translate(i * 0.18, -0.1, 0.65);
-        pins.push(pin);
-        const pin2 = pin.clone();
-        pin2.translate(0, 0, -1.3);
-        pins.push(pin2);
-        const pin3 = new THREE.BoxGeometry(0.3, 0.08, 0.05);
-        pin3.translate(0.65, -0.1, i * 0.18);
-        pins.push(pin3);
-        const pin4 = pin3.clone();
-        pin4.translate(-1.3, 0, 0);
-        pins.push(pin4);
-      }
-      return mergeGeometries(pins);
+      // Clinical AI — Chip: flat board with raised core
+      const board = new THREE.BoxGeometry(1.4, 0.1, 1.4);
+      const core = new THREE.BoxGeometry(0.5, 0.3, 0.5);
+      core.translate(0, 0.15, 0);
+      return mergeGeometries([board, core]);
     }
     case 2: {
-      // Clinical Networks — Connected nodes / network graph
-      const nodes: THREE.BufferGeometry[] = [];
-      const positions = [
-        [0, 0.6, 0], [-0.5, 0.1, 0.3], [0.5, 0.1, 0.3],
-        [-0.3, -0.5, -0.2], [0.3, -0.5, -0.2], [0, 0, -0.5],
-      ];
-      positions.forEach(([x, y, z]) => {
-        const node = new THREE.SphereGeometry(0.12, 8, 6);
-        node.translate(x!, y!, z!);
-        nodes.push(node);
-      });
-      // Edges as thin cylinders
-      const pairs = [[0,1],[0,2],[1,2],[1,3],[2,4],[3,4],[0,5],[3,5],[4,5]];
-      pairs.forEach(([a, b]) => {
-        const pa = positions[a!]!;
-        const pb = positions[b!]!;
-        const mid = [(pa[0]!+pb[0]!)/2, (pa[1]!+pb[1]!)/2, (pa[2]!+pb[2]!)/2];
-        const dx = pb[0]!-pa[0]!, dy = pb[1]!-pa[1]!, dz = pb[2]!-pa[2]!;
-        const len = Math.sqrt(dx*dx + dy*dy + dz*dz);
-        const edge = new THREE.CylinderGeometry(0.02, 0.02, len, 4);
-        // Orient along the connection
-        const dir = new THREE.Vector3(dx, dy, dz).normalize();
-        const up = new THREE.Vector3(0, 1, 0);
-        const quat = new THREE.Quaternion().setFromUnitVectors(up, dir);
-        edge.applyQuaternion(quat);
-        edge.translate(mid[0]!, mid[1]!, mid[2]!);
-        nodes.push(edge);
-      });
-      return mergeGeometries(nodes);
+      // Clinical Networks & Clinics — Hospital: broad building with cross
+      const main = new THREE.BoxGeometry(1.2, 1.0, 0.7);
+      const wingL = new THREE.BoxGeometry(0.5, 0.7, 0.6);
+      wingL.translate(-0.7, -0.15, 0);
+      const wingR = new THREE.BoxGeometry(0.5, 0.7, 0.6);
+      wingR.translate(0.7, -0.15, 0);
+      const crossV = new THREE.BoxGeometry(0.06, 0.3, 0.06);
+      crossV.translate(0, 0.7, 0);
+      const crossH = new THREE.BoxGeometry(0.22, 0.06, 0.06);
+      crossH.translate(0, 0.76, 0);
+      return mergeGeometries([main, wingL, wingR, crossV, crossH]);
     }
     case 3: {
-      // Patients — Person/human figure
-      return createPersonGeo();
+      // Patients — Person: head + torso
+      const head = new THREE.SphereGeometry(0.3, 12, 10);
+      head.translate(0, 0.8, 0);
+      const body = new THREE.CylinderGeometry(0.25, 0.4, 0.9, 10);
+      body.translate(0, 0.1, 0);
+      return mergeGeometries([head, body]);
     }
     case 4: {
-      // Insurers — Shield with dollar sign
-      return createShieldGeo();
+      // Insurers — Shield
+      const pts: THREE.Vector2[] = [
+        new THREE.Vector2(0, -1.0),
+        new THREE.Vector2(0.55, -0.5),
+        new THREE.Vector2(0.65, 0),
+        new THREE.Vector2(0.55, 0.45),
+        new THREE.Vector2(0.3, 0.75),
+        new THREE.Vector2(0, 1.0),
+      ];
+      const shield = new THREE.LatheGeometry(pts, 16);
+      shield.scale(1, 1, 0.35);
+      return shield;
     }
     default:
       return new THREE.IcosahedronGeometry(1, 1);
