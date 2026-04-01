@@ -147,7 +147,7 @@ const PipelineSection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.4, duration: 0.6 }}
           className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-0 border overflow-hidden"
-          style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
+          style={{ borderColor: "#E5E7EB", background: "transparent" }}>
           <div className="relative p-8 md:p-12 flex items-center justify-center border-b md:border-b-0 md:border-r" style={{ minHeight: "320px", borderColor: "#E5E7EB" }}>
             <div className="w-full max-w-[280px] aspect-square relative">
               {stages.map((_, i) => (
@@ -190,7 +190,7 @@ const PipelineSection = () => {
             { name: "FHIR R4", status: "Native", color: "#059669" },
             { name: "HL7 CDS Hooks", status: "Supported", color: "#059669" },
           ].map((c) => (
-            <div key={c.name} className="p-4 text-center" style={{ background: "#FFFFFF" }}>
+            <div key={c.name} className="p-4 text-center" style={{ background: "transparent" }}>
               <span className="text-[11px] font-medium uppercase block mb-1" style={{ letterSpacing: "0.1em", color: "#6B7280" }}>{c.name}</span>
               <span className="text-[13px] font-medium" style={{ color: c.color, letterSpacing: "0.05em" }}>{c.status}</span>
             </div>
