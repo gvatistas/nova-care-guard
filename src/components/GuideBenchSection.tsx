@@ -315,13 +315,6 @@ const GuideBenchSection = () => {
               transition={{ delay: 1 }}
               className="mt-8"
             >
-              <a
-                href="#"
-                className="inline-block text-[13px] font-medium uppercase border px-8 py-3.5 transition-all duration-300 hover:bg-[#111827] hover:text-white hover:border-[#111827]"
-                style={{ letterSpacing: "0.05em", color: "#111827", borderColor: "#374151" }}
-              >
-                View on GitHub
-              </a>
             </motion.div>
           </motion.div>
         </div>
