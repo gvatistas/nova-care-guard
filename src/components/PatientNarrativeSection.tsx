@@ -294,8 +294,8 @@ const PatientNarrativeSection = () => {
           </div>
         </motion.div>
 
-        {/* ── TWO LANES — alternating focus ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mt-6">
+        {/* ── TWO LANES + ENGINE SIDEBAR ── */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-6 md:gap-10 mt-6">
 
           {/* ── LEFT: Without Medient ── */}
           <motion.div
