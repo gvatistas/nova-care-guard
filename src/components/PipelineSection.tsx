@@ -96,7 +96,7 @@ const PipelineSection = () => {
               Compilation Pipeline
             </p>
             <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
-              Five stages. <span style={{ color: "#6B7280" }}>Verified at every gate.</span>
+              How it works.
             </h2>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
