@@ -183,9 +183,6 @@ const GuideBenchSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <p className="text-[12px] font-medium uppercase mb-3" style={{ letterSpacing: "0.1em", color: "#6B7280" }}>
-            Verification Lab
-          </p>
           <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
             GuideBench
           </h2>
