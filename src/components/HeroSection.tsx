@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import FacetedCrownLogo from "./FacetedCrownLogo";
 
-const BG = 0x0B1120;
+const BG = 0xE5E7EB;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -68,7 +68,7 @@ const HeroSection = () => {
         fragmentShader: `
           varying float vFade;
           void main() {
-            gl_FragColor = vec4(0.15, 0.22, 0.38, vFade * 0.06);
+            gl_FragColor = vec4(0.42, 0.44, 0.50, vFade * 0.06);
           }
         `,
       });
@@ -87,7 +87,7 @@ const HeroSection = () => {
       dotGeo.setAttribute("position", new THREE.Float32BufferAttribute(dotPositions, 3));
       dotGeo.setAttribute("alpha", new THREE.Float32BufferAttribute(dotAlphas, 1));
       const dotMat = new THREE.ShaderMaterial({
-        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+        transparent: true, depthWrite: false, blending: THREE.NormalBlending,
         uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
         vertexShader: `
           attribute float alpha;
@@ -111,7 +111,7 @@ const HeroSection = () => {
             if (d > 1.0) discard;
             float core = exp(-d * d * 5.0) * vAlpha;
             float halo = (1.0 - d * d) * vAlpha * 0.15;
-            gl_FragColor = vec4(0.18, 0.30, 0.55, (core + halo) * 0.35);
+            gl_FragColor = vec4(0.26, 0.27, 0.31, (core + halo) * 0.35);
           }
         `,
       });
@@ -190,7 +190,7 @@ const HeroSection = () => {
       buildBranch(root.gx, root.gz, root.y, 0, 0.3 + (ri % 3) * 0.15, ri * 1337 + 42);
     });
 
-    // ─── Edge lines (decision paths) — cobalt/cyan/teal palette ───
+    // ─── Edge lines — grayscale palette ───
     const pathEdgePos: number[] = [];
     const pathEdgeOutcome: number[] = [];
     allEdges.forEach(e => {
@@ -204,7 +204,7 @@ const HeroSection = () => {
     pathEdgeGeo.setAttribute("position", new THREE.Float32BufferAttribute(pathEdgePos, 3));
     pathEdgeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(pathEdgeOutcome, 1));
     const pathEdgeMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
         attribute float outcome;
@@ -225,14 +225,14 @@ const HeroSection = () => {
         void main() {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(180.0, 300.0, vDist));
           float pulse = 0.6 + 0.4 * sin(uTime * 2.0 + vDist * 0.06);
-          vec3 cobalt = vec3(0.145, 0.388, 0.922);
-          vec3 cyan   = vec3(0.024, 0.714, 0.831);
-          vec3 teal   = vec3(0.078, 0.722, 0.651);
-          vec3 slate  = vec3(0.35, 0.42, 0.52);
+          // Grayscale tones: charcoal → medium gray → cool gray
+          vec3 dark    = vec3(0.216, 0.255, 0.318);
+          vec3 medium  = vec3(0.420, 0.447, 0.502);
+          vec3 light   = vec3(0.612, 0.639, 0.686);
           vec3 col;
-          if (vOutcome < 0.33) col = mix(cobalt, cyan, vOutcome * 3.0);
-          else if (vOutcome < 0.66) col = mix(cyan, teal, (vOutcome - 0.33) * 3.0);
-          else col = mix(teal, slate, (vOutcome - 0.66) * 3.0);
+          if (vOutcome < 0.33) col = mix(dark, medium, vOutcome * 3.0);
+          else if (vOutcome < 0.66) col = mix(medium, light, (vOutcome - 0.33) * 3.0);
+          else col = mix(light, dark, (vOutcome - 0.66) * 3.0);
           gl_FragColor = vec4(col, fade * pulse * 0.18);
         }
       `,
@@ -240,7 +240,7 @@ const HeroSection = () => {
     scene.add(new THREE.LineSegments(pathEdgeGeo, pathEdgeMat));
     disposables.push(pathEdgeGeo, pathEdgeMat);
 
-    // ─── Active decision nodes — cobalt/cyan/teal ───
+    // ─── Active decision nodes — grayscale ───
     const activeNodePos: number[] = [];
     const activeNodeOutcome: number[] = [];
     const activeNodeDepth: number[] = [];
@@ -256,7 +256,7 @@ const HeroSection = () => {
     activeNodeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(activeNodeOutcome, 1));
     activeNodeGeo.setAttribute("depth", new THREE.Float32BufferAttribute(activeNodeDepth, 1));
     const activeNodeMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
         attribute float outcome;
@@ -287,14 +287,13 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 cobalt = vec3(0.145, 0.388, 0.922);
-          vec3 cyan   = vec3(0.024, 0.714, 0.831);
-          vec3 teal   = vec3(0.078, 0.722, 0.651);
-          vec3 slate  = vec3(0.4, 0.48, 0.55);
+          vec3 dark    = vec3(0.067, 0.094, 0.153);
+          vec3 medium  = vec3(0.420, 0.447, 0.502);
+          vec3 light   = vec3(0.612, 0.639, 0.686);
           vec3 col;
-          if (vOutcome < 0.33) col = mix(cobalt, cyan, vOutcome * 3.0);
-          else if (vOutcome < 0.66) col = mix(cyan, teal, (vOutcome - 0.33) * 3.0);
-          else col = mix(teal, slate, (vOutcome - 0.66) * 3.0);
+          if (vOutcome < 0.33) col = mix(dark, medium, vOutcome * 3.0);
+          else if (vOutcome < 0.66) col = mix(medium, light, (vOutcome - 0.33) * 3.0);
+          else col = mix(light, dark, (vOutcome - 0.66) * 3.0);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
           gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.65);
         }
@@ -303,7 +302,7 @@ const HeroSection = () => {
     scene.add(new THREE.Points(activeNodeGeo, activeNodeMat));
     disposables.push(activeNodeGeo, activeNodeMat);
 
-    // ─── PULSE PARTICLES — cobalt/cyan/teal only ───
+    // ─── PULSE PARTICLES — grayscale ───
     const PULSE_COUNT = 400;
     const pulsePos = new Float32Array(PULSE_COUNT * 3);
     const pulseProgress = new Float32Array(PULSE_COUNT);
@@ -327,7 +326,7 @@ const HeroSection = () => {
     pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulsePos, 3));
     pulseGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(pulseOutcomeArr, 1));
     const pulseMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
         attribute float outcome;
@@ -354,14 +353,13 @@ const HeroSection = () => {
           float core = exp(-d * d * 2.5);
           float glow = exp(-d * 0.8) * 0.6;
           float outer = exp(-d * 0.4) * 0.2;
-          vec3 cobalt = vec3(0.145, 0.388, 0.922);
-          vec3 cyan   = vec3(0.024, 0.714, 0.831);
-          vec3 teal   = vec3(0.078, 0.722, 0.651);
-          vec3 slate  = vec3(0.45, 0.52, 0.58);
+          vec3 dark    = vec3(0.067, 0.094, 0.153);
+          vec3 medium  = vec3(0.420, 0.447, 0.502);
+          vec3 light   = vec3(0.612, 0.639, 0.686);
           vec3 col;
-          if (vOutcome < 0.33) col = mix(cobalt, cyan, vOutcome * 3.0);
-          else if (vOutcome < 0.66) col = mix(cyan, teal, (vOutcome - 0.33) * 3.0);
-          else col = mix(teal, slate, (vOutcome - 0.66) * 3.0);
+          if (vOutcome < 0.33) col = mix(dark, medium, vOutcome * 3.0);
+          else if (vOutcome < 0.66) col = mix(medium, light, (vOutcome - 0.33) * 3.0);
+          else col = mix(light, dark, (vOutcome - 0.66) * 3.0);
           float bright = core + glow + outer;
           gl_FragColor = vec4(col * bright, bright * vAlpha * 0.8);
         }
@@ -370,14 +368,14 @@ const HeroSection = () => {
     scene.add(new THREE.Points(pulseGeo, pulseMat));
     disposables.push(pulseGeo, pulseMat);
 
-    // ─── RIPPLE RINGS — cobalt/cyan/teal ───
+    // ─── RIPPLE RINGS — grayscale ───
     const RING_COUNT = 8;
     const radarRings: THREE.Mesh[] = [];
     const radarMats: THREE.ShaderMaterial[] = [];
     PATH_ROOTS.slice(0, RING_COUNT).forEach((root, i) => {
       const ringGeo = new THREE.RingGeometry(0.3, 0.8, 48);
       const ringMat = new THREE.ShaderMaterial({
-        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+        transparent: true, depthWrite: false, blending: THREE.NormalBlending,
         side: THREE.DoubleSide,
         uniforms: { uTime: { value: 0 }, uPhase: { value: i * 0.9 } },
         vertexShader: `
@@ -398,11 +396,7 @@ const HeroSection = () => {
             float t = mod(uTime * 0.5 + uPhase, 6.0);
             float fade = (1.0 - t / 6.0);
             float ring = smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
-            vec3 cobalt = vec3(0.145, 0.388, 0.922);
-            vec3 cyan   = vec3(0.024, 0.714, 0.831);
-            vec3 teal   = vec3(0.078, 0.722, 0.651);
-            float cycle = fract(uPhase * 0.33);
-            vec3 col = cycle < 0.33 ? mix(cobalt, cyan, cycle * 3.0) : cycle < 0.66 ? mix(cyan, teal, (cycle - 0.33) * 3.0) : mix(teal, cobalt, (cycle - 0.66) * 3.0);
+            vec3 col = vec3(0.42, 0.44, 0.50);
             gl_FragColor = vec4(col, ring * fade * fade * 0.08);
           }
         `,
@@ -420,7 +414,7 @@ const HeroSection = () => {
     // ─── SCAN WAVE ───
     const scanGeo = new THREE.PlaneGeometry(200, 50, 1, 1);
     const scanMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
       side: THREE.DoubleSide,
       uniforms: { uTime: { value: 0 } },
       vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
@@ -429,7 +423,7 @@ const HeroSection = () => {
         void main() {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 2.5);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 1.5);
-          gl_FragColor = vec4(0.12, 0.2, 0.42, xF * yF * 0.012);
+          gl_FragColor = vec4(0.42, 0.44, 0.50, xF * yF * 0.012);
         }
       `,
     });
@@ -440,7 +434,7 @@ const HeroSection = () => {
     // ─── Horizon glow ───
     const horizonGeo = new THREE.PlaneGeometry(400, 12, 1, 1);
     const horizonMat = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
       side: THREE.DoubleSide,
       uniforms: { uTime: { value: 0 } },
       vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
@@ -451,7 +445,7 @@ const HeroSection = () => {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 1.2);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 6.0);
           float pulse = 0.8 + 0.2 * sin(uTime * 0.5);
-          gl_FragColor = vec4(0.1, 0.22, 0.55, xF * yF * 0.07 * pulse);
+          gl_FragColor = vec4(0.35, 0.38, 0.45, xF * yF * 0.07 * pulse);
         }
       `,
     });
@@ -475,8 +469,8 @@ const HeroSection = () => {
     const dustGeo = new THREE.BufferGeometry();
     dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
     const dustMat = new THREE.PointsMaterial({
-      size: 0.1, color: 0x2563EB, transparent: true, opacity: 0.03,
-      sizeAttenuation: true, blending: THREE.AdditiveBlending,
+      size: 0.1, color: 0x6B7280, transparent: true, opacity: 0.03,
+      sizeAttenuation: true, blending: THREE.NormalBlending,
     });
     scene.add(new THREE.Points(dustGeo, dustMat));
     disposables.push(dustGeo, dustMat);
@@ -587,12 +581,12 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen overflow-hidden" style={{ background: "linear-gradient(180deg, #0F172A 0%, #1E293B 100%)" }}>
+    <section className="relative h-screen overflow-hidden" style={{ background: "#E5E7EB" }}>
       <div ref={mountRef} className="absolute inset-0 z-0" />
 
-      {/* Deep vignette */}
+      {/* Subtle vignette for text readability */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.75) 35%, rgba(15,23,42,0.45) 65%, rgba(15,23,42,0.15) 85%, transparent 100%)",
+        background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(229,231,235,0.85) 0%, rgba(229,231,235,0.6) 35%, rgba(229,231,235,0.3) 65%, transparent 100%)",
       }} />
 
       {/* Film grain */}
@@ -614,8 +608,7 @@ const HeroSection = () => {
                fontSize: "clamp(2.5rem, 5vw, 4rem)",
                lineHeight: 1.08,
                letterSpacing: "-0.03em",
-               color: "#FFFFFF",
-               textShadow: "0 0 60px rgba(15,23,42,1), 0 0 120px rgba(15,23,42,0.95), 0 2px 40px rgba(15,23,42,0.9)",
+               color: "#111827",
              }}
           >
             Unlocking proactive healthcare for all.
@@ -630,8 +623,7 @@ const HeroSection = () => {
               maxWidth: 1280,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              color: "rgba(226,232,240,0.7)",
-              textShadow: "0 0 30px rgba(15,23,42,1), 0 0 60px rgba(15,23,42,0.95)",
+              color: "#374151",
             }}
           >
             <p>
@@ -650,19 +642,18 @@ const HeroSection = () => {
           >
             <a
               href="#contact"
-              className="group relative text-[13px] font-semibold uppercase text-white px-8 py-3.5 transition-all duration-500 overflow-hidden"
-              style={{ letterSpacing: "0.08em", backgroundColor: "#2563EB" }}
+              className="group relative text-[13px] font-semibold uppercase text-white px-8 py-3.5 transition-all duration-500 overflow-hidden hover:bg-[#374151]"
+              style={{ letterSpacing: "0.08em", backgroundColor: "#111827" }}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10">Request Demo</span>
             </a>
             <a
               href="#pipeline"
-              className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden border"
-              style={{ letterSpacing: "0.08em", color: "#FFFFFF", borderColor: "rgba(255,255,255,0.4)" }}
+              className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden border hover:bg-[#111827] hover:text-white hover:border-[#111827]"
+              style={{ letterSpacing: "0.08em", color: "#374151", borderColor: "#374151" }}
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="relative z-10 group-hover:text-white transition-colors duration-300">Read White Paper</span>
+              <span className="relative z-10 transition-colors duration-300">Read White Paper</span>
             </a>
           </motion.div>
         </div>
@@ -675,13 +666,13 @@ const HeroSection = () => {
         transition={{ delay: 2.5, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] font-medium uppercase" style={{ letterSpacing: "0.3em", color: "rgba(148,163,184,0.3)" }}>
+        <span className="text-[10px] font-medium uppercase" style={{ letterSpacing: "0.3em", color: "rgba(107,114,128,0.5)" }}>
           Scroll to explore
         </span>
         <motion.span
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ color: "rgba(148,163,184,0.3)" }}
+          style={{ color: "rgba(107,114,128,0.5)" }}
           className="text-sm"
         >
           ▾

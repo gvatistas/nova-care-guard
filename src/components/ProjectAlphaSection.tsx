@@ -1,7 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 
-const GREEN = "#14B8A6";
+const GREEN = "#059669";
 const RED = "#E11D48";
 
 const QUEBEC_OUTLINE = "M60,20 L90,10 L130,8 L170,15 L200,10 L240,5 L280,12 L320,8 L360,15 L380,25 L390,45 L385,70 L375,95 L360,115 L340,130 L315,140 L285,148 L250,150 L215,148 L180,142 L150,135 L125,125 L105,110 L85,90 L70,65 L58,40 Z";
@@ -79,23 +79,23 @@ const ProjectAlphaSection = () => {
   const adherence = Math.round(45 + (greenCount / totalClinics) * 49);
 
   return (
-    <section id="project-alpha" ref={ref} className="relative py-24 md:py-32">
+    <section id="project-alpha" ref={ref} className="relative py-24 md:py-32" style={{ background: "#FFFFFF" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }} className="mb-8">
-          <h2 className="font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#0F172A" }}>
+          <h2 className="font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#111827" }}>
             Project Alpha
           </h2>
-          <p className="font-light mt-2" style={{ color: "#334155", fontSize: "1.125rem" }}>
-            Real-time deployment monitoring across <span style={{ color: "#0F172A" }} className="font-normal">5 Quebec health networks, 20 clinical sites</span>.
+          <p className="font-light mt-2" style={{ color: "#374151", fontSize: "1.125rem" }}>
+            Real-time deployment monitoring across <span style={{ color: "#111827" }} className="font-normal">5 Quebec health networks, 20 clinical sites</span>.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.2 }}
-            className="lg:col-span-2 relative border overflow-hidden" style={{ minHeight: 420, borderColor: "#E2E8F0", background: "#FFFFFF" }}>
+            className="lg:col-span-2 relative border overflow-hidden" style={{ minHeight: 420, borderColor: "#E5E7EB", background: "#FFFFFF" }}>
             <div className="absolute inset-0 pointer-events-none z-0"
-              style={{ backgroundImage: `linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px)`, backgroundSize: "35px 35px" }} />
+              style={{ backgroundImage: `linear-gradient(rgba(107,114,128,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(107,114,128,0.03) 1px, transparent 1px)`, backgroundSize: "35px 35px" }} />
 
             <svg viewBox="30 0 420 170" className="w-full h-full relative z-5" preserveAspectRatio="xMidYMid meet">
               <defs>
@@ -103,12 +103,12 @@ const ProjectAlphaSection = () => {
                 <filter id="greenGlow"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
               </defs>
 
-              <path d={QUEBEC_OUTLINE} fill="#2563EB" fillOpacity="0.03" stroke="#2563EB" strokeWidth="0.8" opacity="0.2" />
+              <path d={QUEBEC_OUTLINE} fill="#6B7280" fillOpacity="0.03" stroke="#9CA3AF" strokeWidth="0.8" opacity="0.3" />
 
               {regions.map((region, i) => (
                 <g key={i}>
-                  <path d={region.path} fill="#2563EB" fillOpacity="0.04" stroke="#2563EB" strokeWidth="0.6" opacity="0.2" />
-                  <text x={region.cx} y={region.cy - 18} textAnchor="middle" fontFamily="'Inter', system-ui, sans-serif" fontSize="4" letterSpacing="1.5" fill="#64748B" opacity="0.7">{region.label}</text>
+                  <path d={region.path} fill="#6B7280" fillOpacity="0.04" stroke="#9CA3AF" strokeWidth="0.6" opacity="0.2" />
+                  <text x={region.cx} y={region.cy - 18} textAnchor="middle" fontFamily="'Inter', system-ui, sans-serif" fontSize="4" letterSpacing="1.5" fill="#6B7280" opacity="0.7">{region.label}</text>
                 </g>
               ))}
 
@@ -120,7 +120,7 @@ const ProjectAlphaSection = () => {
                 return (
                   <g key={`conn-${i}`}>
                     <line x1={r1.cx} y1={r1.cy} x2={r2.cx} y2={r2.cy}
-                      stroke={bothActive ? GREEN : "#2563EB"} strokeWidth={bothActive ? 0.6 : 0.3}
+                      stroke={bothActive ? GREEN : "#9CA3AF"} strokeWidth={bothActive ? 0.6 : 0.3}
                       opacity={bothActive ? 0.4 : 0.08} strokeDasharray={bothActive ? "none" : "2 4"} />
                     {bothActive && (
                       <circle r="1.5" fill={GREEN} opacity="0.7" filter="url(#greenGlow)">
@@ -138,14 +138,14 @@ const ProjectAlphaSection = () => {
                 const hub = regions[ri]!;
                 return (
                   <line key={`cl-${ri}-${ci}`} x1={clinic.x} y1={clinic.y} x2={hub.cx} y2={hub.cy}
-                    stroke={state === "active" ? GREEN : "#2563EB"} strokeWidth="0.3"
+                    stroke={state === "active" ? GREEN : "#9CA3AF"} strokeWidth="0.3"
                     opacity={state === "active" ? 0.3 : 0.06} />
                 );
               }))}
 
               {allClinics.map((regionClinics, ri) => regionClinics.map((clinic, ci) => {
                 const state = getClinicState(ri, ci);
-                const color = state === "active" ? GREEN : state === "deploying" ? "#06B6D4" : "#E2E8F0";
+                const color = state === "active" ? GREEN : state === "deploying" ? "#D97706" : "#D1D5DB";
                 return (
                   <g key={`c-${ri}-${ci}`}>
                     {state === "active" && (
@@ -173,8 +173,8 @@ const ProjectAlphaSection = () => {
                 const allGreen = regionGreenCount === 4;
                 return (
                   <g key={`hub-${i}`}>
-                    <circle cx={r.cx} cy={r.cy} r="5" fill={allGreen ? GREEN : "#2563EB"} opacity={allGreen ? 0.15 : 0.05} />
-                    <circle cx={r.cx} cy={r.cy} r="2" fill={allGreen ? GREEN : "#2563EB"} opacity={allGreen ? 0.9 : 0.3}
+                    <circle cx={r.cx} cy={r.cy} r="5" fill={allGreen ? GREEN : "#6B7280"} opacity={allGreen ? 0.15 : 0.05} />
+                    <circle cx={r.cx} cy={r.cy} r="2" fill={allGreen ? GREEN : "#6B7280"} opacity={allGreen ? 0.9 : 0.3}
                       filter={allGreen ? "url(#greenGlow)" : undefined} />
                     {allGreen && (
                       <circle cx={r.cx} cy={r.cy} r="5" fill="none" stroke={GREEN} strokeWidth="0.4" opacity="0.4">
@@ -189,51 +189,51 @@ const ProjectAlphaSection = () => {
 
             <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between z-20">
               <div className="flex items-center gap-3">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: greenCount === totalClinics ? GREEN : "#06B6D4" }} />
-                <span className="font-mono" style={{ fontSize: "0.875rem", color: "#64748B" }}>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: greenCount === totalClinics ? GREEN : "#D97706" }} />
+                <span className="font-mono" style={{ fontSize: "0.875rem", color: "#6B7280" }}>
                   {counterDisplay}/{totalClinics} clinics deployed
                 </span>
               </div>
-              <div className="flex items-center gap-4 font-mono" style={{ fontSize: "0.75rem", color: "#64748B" }}>
+              <div className="flex items-center gap-4 font-mono" style={{ fontSize: "0.75rem", color: "#6B7280" }}>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: GREEN }} /> Active</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#06B6D4" }} /> Deploying</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#E2E8F0" }} /> Pending</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#D97706" }} /> Deploying</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#D1D5DB" }} /> Pending</span>
               </div>
-              <span className="font-mono tracking-[0.1em]" style={{ fontSize: "0.875rem", color: greenCount === totalClinics ? GREEN : "#06B6D4" }}>
+              <span className="font-mono tracking-[0.1em]" style={{ fontSize: "0.875rem", color: greenCount === totalClinics ? GREEN : "#D97706" }}>
                 {greenCount === totalClinics ? "FULLY OPERATIONAL" : "DEPLOYING..."}
               </span>
             </div>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.4 }} className="flex flex-col gap-5">
-            <div className="border p-6 flex-1" style={{ borderColor: "#E2E8F0", background: "#FFFFFF" }}>
-              <h3 className="font-mono tracking-[0.2em] uppercase mb-4" style={{ fontSize: "0.875rem", color: "#64748B" }}>Preventive Service Adherence</h3>
+            <div className="border p-6 flex-1" style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
+              <h3 className="font-mono tracking-[0.2em] uppercase mb-4" style={{ fontSize: "0.875rem", color: "#6B7280" }}>Preventive Service Adherence</h3>
               <div className="flex items-end gap-4 h-48">
-                <div className="flex-1 h-full relative overflow-hidden border" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
+                <div className="flex-1 h-full relative overflow-hidden border" style={{ background: "#F9FAFB", borderColor: "#E5E7EB" }}>
                   <motion.div className="absolute bottom-0 left-0 right-0"
                     initial={{ height: "0%" }}
                     animate={inView ? { height: `${adherence}%` } : {}}
                     transition={{ duration: 2, ease: "easeOut", delay: 0.5 }}
-                    style={{ background: `linear-gradient(to top, ${GREEN}40, rgba(37,99,235,0.1))`, borderTop: `1px solid rgba(37,99,235,0.2)` }} />
+                    style={{ background: `linear-gradient(to top, ${GREEN}40, rgba(107,114,128,0.1))`, borderTop: `1px solid rgba(107,114,128,0.2)` }} />
                   {[25, 50, 75, 100].map((tick) => (
                     <div key={tick} className="absolute left-0 right-0" style={{ bottom: `${tick}%` }}>
-                      <div className="w-full h-px" style={{ backgroundColor: "#E2E8F0" }} />
+                      <div className="w-full h-px" style={{ backgroundColor: "#E5E7EB" }} />
                     </div>
                   ))}
                 </div>
                 <div className="flex flex-col justify-between h-full text-right">
                   {[100, 75, 50, 25, 0].map((v) => (
-                    <span key={v} className="font-mono" style={{ fontSize: "0.75rem", color: "#64748B" }}>{v}%</span>
+                    <span key={v} className="font-mono" style={{ fontSize: "0.75rem", color: "#6B7280" }}>{v}%</span>
                   ))}
                 </div>
               </div>
               <div className="mt-3 text-center">
-                <span className="font-mono font-light" style={{ fontSize: "3rem", color: adherence >= 90 ? GREEN : "#0F172A" }}>{adherence}%</span>
-                <span className="font-mono ml-2 tracking-[0.1em]" style={{ fontSize: "0.875rem", color: "#64748B" }}>CURRENT</span>
+                <span className="font-mono font-light" style={{ fontSize: "3rem", color: adherence >= 90 ? GREEN : "#111827" }}>{adherence}%</span>
+                <span className="font-mono ml-2 tracking-[0.1em]" style={{ fontSize: "0.875rem", color: "#6B7280" }}>CURRENT</span>
               </div>
             </div>
 
-            <div className="border p-6" style={{ borderColor: "#E2E8F0", background: "#FFFFFF" }}>
+            <div className="border p-6" style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
               <div className="mb-4">
                 <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.15rem", color: GREEN }}>90% INTAKE TIME REDUCTION</div>
               </div>
@@ -245,7 +245,7 @@ const ProjectAlphaSection = () => {
         </div>
 
         <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1.5 }}
-          className="mt-6 text-center max-w-3xl mx-auto" style={{ fontSize: "1rem", color: "#334155", fontFamily: "Inter, sans-serif", lineHeight: 1.7 }}>
+          className="mt-6 text-center max-w-3xl mx-auto" style={{ fontSize: "1rem", color: "#374151", fontFamily: "Inter, sans-serif", lineHeight: 1.7 }}>
           Enabling nurses to close 10x more care gaps per session — turning reactive visits into proactive prevention at scale.
         </motion.p>
       </div>

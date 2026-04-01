@@ -2,8 +2,6 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, type FC } from "react";
 import * as THREE from "three";
 
-const ACCENT = "#2563EB";
-
 const segments = [
   {
     name: "Frontier Labs",
@@ -55,7 +53,7 @@ const segments = [
   },
 ];
 
-/* ── 3D Hologram for each segment ── */
+/* ── 3D Hologram for each segment — GRAYSCALE ── */
 const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isActive }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<{ renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; group: THREE.Group; animId: number } | null>(null);
@@ -79,10 +77,11 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const group = new THREE.Group();
     scene.add(group);
 
-    const wireMat = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.5 });
-    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.15 });
-    const facetMat = new THREE.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
-    const pointMat = new THREE.PointsMaterial({ color: 0x2563EB, size: 0.03, transparent: true, opacity: 0.5 });
+    // Grayscale materials — machined steel look
+    const wireMat = new THREE.LineBasicMaterial({ color: 0x6B7280, transparent: true, opacity: 0.5 });
+    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x9CA3AF, transparent: true, opacity: 0.15 });
+    const facetMat = new THREE.MeshBasicMaterial({ color: 0x374151, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
+    const pointMat = new THREE.PointsMaterial({ color: 0x6B7280, size: 0.03, transparent: true, opacity: 0.5 });
 
     let geo: THREE.BufferGeometry;
     switch (index) {
@@ -123,7 +122,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     }
     const pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0x2563EB, size: 0.02, transparent: true, opacity: 0.3 });
+    const pMat = new THREE.PointsMaterial({ color: 0x9CA3AF, size: 0.02, transparent: true, opacity: 0.3 });
     group.add(new THREE.Points(pGeo, pMat));
 
     let t = 0;
@@ -182,13 +181,13 @@ const SegmentsSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <p className="text-[11px] font-medium uppercase mb-3" style={{ letterSpacing: "0.12em", color: "#64748B" }}>
+          <p className="text-[11px] font-medium uppercase mb-3" style={{ letterSpacing: "0.12em", color: "#6B7280" }}>
             Deployment Architecture
           </p>
-          <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#0F172A" }}>
+          <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
             Market Architecture
           </h2>
-          <p className="mt-3 text-base max-w-2xl" style={{ color: "#334155" }}>
+          <p className="mt-3 text-base max-w-2xl" style={{ color: "#374151" }}>
             One compiled artifact. Six deployment surfaces.
           </p>
         </motion.div>
@@ -197,7 +196,7 @@ const SegmentsSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-0">
 
           {/* Left — Segment list */}
-          <div className="border-r" style={{ borderColor: "#E2E8F0" }}>
+          <div className="border-r" style={{ borderColor: "#E5E7EB" }}>
             {segments.map((seg, i) => {
               const isActive = selected === i;
               return (
@@ -209,18 +208,18 @@ const SegmentsSection = () => {
                   onClick={() => setSelected(i)}
                   className="w-full text-left px-6 py-5 border-b transition-all duration-300 cursor-pointer"
                   style={{
-                    borderColor: "#E2E8F0",
-                    background: isActive ? "rgba(37,99,235,0.04)" : "transparent",
-                    borderLeft: isActive ? `2px solid ${ACCENT}` : "2px solid transparent",
+                    borderColor: "#E5E7EB",
+                    background: isActive ? "rgba(17,24,39,0.03)" : "transparent",
+                    borderLeft: isActive ? "2px solid #111827" : "2px solid transparent",
                   }}
                 >
                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
-                    style={{ color: isActive ? ACCENT : "#64748B" }}
+                    style={{ color: isActive ? "#111827" : "#6B7280" }}
                   >
                     {seg.short}
                   </p>
                   <p className="text-sm font-medium"
-                    style={{ color: isActive ? "#0F172A" : "#334155", letterSpacing: "-0.01em" }}
+                    style={{ color: isActive ? "#111827" : "#374151", letterSpacing: "-0.01em" }}
                   >
                     {seg.name}
                   </p>
@@ -248,7 +247,7 @@ const SegmentsSection = () => {
                   {/* 3D Hologram */}
                   <div className="relative flex items-center justify-center p-8" style={{ minHeight: 320 }}>
                     <div className="absolute inset-0 pointer-events-none" style={{
-                      background: "radial-gradient(ellipse at center, rgba(37,99,235,0.04) 0%, transparent 60%)",
+                      background: "radial-gradient(ellipse at center, rgba(107,114,128,0.04) 0%, transparent 60%)",
                     }} />
                     {isActive && <SegmentHologram index={i} isActive={isActive} />}
                   </div>
@@ -260,25 +259,25 @@ const SegmentsSection = () => {
                       animate={isActive ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.5, delay: 0.15 }}
                     >
-                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: ACCENT }}>
+                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: "#6B7280" }}>
                         {seg.short}
                       </p>
-                      <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#0F172A" }}>
+                      <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#111827" }}>
                         {seg.name}
                       </h3>
-                      <p className="text-sm leading-relaxed mb-6" style={{ color: "#334155" }}>
+                      <p className="text-sm leading-relaxed mb-6" style={{ color: "#374151" }}>
                         {seg.value}
                       </p>
-                      <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#64748B" }}>
+                      <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#6B7280" }}>
                         {seg.desc}
                       </p>
 
-                      {/* Key metric */}
-                      <div className="border p-5 inline-block" style={{ borderColor: "#E2E8F0", background: "#F8FAFC" }}>
-                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#2563EB" }}>
+                      {/* Key metric — color used here because it's DATA */}
+                      <div className="border p-5 inline-block" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
+                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#059669" }}>
                           {seg.stat}
                         </p>
-                        <p className="text-[10px] uppercase tracking-[0.1em] mt-1" style={{ color: "#64748B" }}>
+                        <p className="text-[10px] uppercase tracking-[0.1em] mt-1" style={{ color: "#6B7280" }}>
                           {seg.statLabel}
                         </p>
                       </div>
