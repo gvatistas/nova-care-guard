@@ -86,6 +86,8 @@ const PipelineSection = () => {
 
   return (
     <section id="pipeline" ref={ref} className="relative py-24 md:py-32" style={{ background: "#FFFFFF" }}>
+      <div className="absolute inset-0 pointer-events-none z-0"
+        style={{ backgroundImage: `linear-gradient(rgba(107,114,128,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(107,114,128,0.07) 1px, transparent 1px)`, backgroundSize: "35px 35px" }} />
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
