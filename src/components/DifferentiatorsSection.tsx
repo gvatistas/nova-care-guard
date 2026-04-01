@@ -55,17 +55,17 @@ const DifferentiatorsSection = () => {
   const diff = differentiators[activeDiff];
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#F8FAFC" }}>
+    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#F3F4F6" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-6">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="lg:col-span-7">
-            <h2 className="font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#0F172A" }}>
-              Not another AI wrapper. <span style={{ color: "#64748B" }}>A compiler.</span>
+            <h2 className="font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#111827" }}>
+              Not another AI wrapper. <span style={{ color: "#6B7280" }}>A compiler.</span>
             </h2>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="lg:col-span-5 flex items-end">
-            <p className="font-light leading-relaxed" style={{ color: "#334155", fontSize: "1.125rem" }}>
-              Every clinical AI product generates answers probabilistically. Medient is the only platform that <span className="font-normal" style={{ color: "#0F172A" }}>compiles guidelines into verified, deterministic logic</span>.
+            <p className="font-light leading-relaxed" style={{ color: "#374151", fontSize: "1.125rem" }}>
+              Every clinical AI product generates answers probabilistically. Medient is the only platform that <span className="font-normal" style={{ color: "#111827" }}>compiles guidelines into verified, deterministic logic</span>.
             </p>
           </motion.div>
         </div>
@@ -75,7 +75,7 @@ const DifferentiatorsSection = () => {
           {differentiators.map((d, i) => (
             <button key={d.id} onClick={() => setActiveDiff(i)}
               className={`font-mono tracking-wide px-4 py-2.5 border transition-all duration-400 ${
-                activeDiff === i ? "border-[#2563EB] bg-[#2563EB]/5 text-[#0F172A]" : "border-[#E2E8F0] text-[#64748B] hover:text-[#334155] hover:border-[#CBD5E1]"
+                activeDiff === i ? "border-[#111827] bg-[#111827]/5 text-[#111827]" : "border-[#E5E7EB] text-[#6B7280] hover:text-[#374151] hover:border-[#9CA3AF]"
               }`}
               style={{ fontSize: "1rem" }}>
               <span className="mr-2" style={{ fontSize: "0.875rem" }}>{d.icon}</span>{d.label}
@@ -85,32 +85,32 @@ const DifferentiatorsSection = () => {
 
         <motion.div key={activeDiff} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="border overflow-hidden" style={{ borderColor: "#E2E8F0", background: "#FFFFFF" }}>
+          className="border overflow-hidden" style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
           <div className="px-6 md:px-8 py-4 flex items-center gap-4"
-            style={{ background: "#F8FAFC", borderBottom: "1px solid #E2E8F0" }}>
-            <span style={{ fontSize: "1.5rem", color: "#2563EB" }}>{diff.icon}</span>
-            <h3 className="font-mono font-light" style={{ fontSize: "1.5rem", color: "#0F172A" }}>{diff.headline}</h3>
+            style={{ background: "#F9FAFB", borderBottom: "1px solid #E5E7EB" }}>
+            <span style={{ fontSize: "1.5rem", color: "#374151" }}>{diff.icon}</span>
+            <h3 className="font-mono font-light" style={{ fontSize: "1.5rem", color: "#111827" }}>{diff.headline}</h3>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            <div className="px-6 md:px-8 py-5 md:py-6 border-b lg:border-b-0 lg:border-r" style={{ borderColor: "#E2E8F0" }}>
-              <p className="leading-[1.7]" style={{ color: "#334155", fontSize: "1.125rem" }}>{diff.description}</p>
+            <div className="px-6 md:px-8 py-5 md:py-6 border-b lg:border-b-0 lg:border-r" style={{ borderColor: "#E5E7EB" }}>
+              <p className="leading-[1.7]" style={{ color: "#374151", fontSize: "1.125rem" }}>{diff.description}</p>
             </div>
 
-            <div className="grid grid-cols-1 divide-y" style={{ borderColor: "#E2E8F0" }}>
-              <div className="px-6 md:px-8 py-3 flex items-center justify-between" style={{ borderColor: "#E2E8F0" }}>
-                <span className="font-mono tracking-[0.2em] uppercase" style={{ fontSize: "0.875rem", color: "#64748B" }}>Metric</span>
+            <div className="grid grid-cols-1 divide-y" style={{ borderColor: "#E5E7EB" }}>
+              <div className="px-6 md:px-8 py-3 flex items-center justify-between" style={{ borderColor: "#E5E7EB" }}>
+                <span className="font-mono tracking-[0.2em] uppercase" style={{ fontSize: "0.875rem", color: "#6B7280" }}>Metric</span>
                 <div className="flex items-center gap-8">
-                  <span className="font-mono tracking-[0.15em] uppercase" style={{ fontSize: "0.875rem", color: "#0F172A" }}>Medient</span>
-                  <span className="font-mono tracking-[0.15em] uppercase w-20 text-right" style={{ fontSize: "0.875rem", color: "#94A3B8" }}>Others</span>
+                  <span className="font-mono tracking-[0.15em] uppercase" style={{ fontSize: "0.875rem", color: "#111827" }}>Medient</span>
+                  <span className="font-mono tracking-[0.15em] uppercase w-20 text-right" style={{ fontSize: "0.875rem", color: "#9CA3AF" }}>Others</span>
                 </div>
               </div>
               {diff.comparison.map((row, ri) => (
-                <div key={ri} className="px-6 md:px-8 py-3.5 md:py-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors duration-300" style={{ borderColor: "#E2E8F0" }}>
-                  <span style={{ color: "#334155", fontSize: "1.125rem" }}>{row.metric}</span>
+                <div key={ri} className="px-6 md:px-8 py-3.5 md:py-4 flex items-center justify-between hover:bg-[#F9FAFB] transition-colors duration-300" style={{ borderColor: "#E5E7EB" }}>
+                  <span style={{ color: "#374151", fontSize: "1.125rem" }}>{row.metric}</span>
                   <div className="flex items-center gap-8">
-                    <span className="font-mono font-light" style={{ fontSize: "1.125rem", color: "#0F172A" }}>{row.medient}</span>
-                    <span className="font-mono w-20 text-right" style={{ fontSize: "1rem", color: "#94A3B8" }}>{row.others}</span>
+                    <span className="font-mono font-light" style={{ fontSize: "1.125rem", color: "#111827" }}>{row.medient}</span>
+                    <span className="font-mono w-20 text-right" style={{ fontSize: "1rem", color: "#9CA3AF" }}>{row.others}</span>
                   </div>
                 </div>
               ))}
