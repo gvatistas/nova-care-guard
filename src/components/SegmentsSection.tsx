@@ -62,112 +62,54 @@ const segments = [
   },
 ];
 
-/* ── Helper: merge BufferGeometries manually ── */
-function mergeGeometries(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
-  let totalVerts = 0;
-  let totalIdx = 0;
-  geos.forEach(g => {
-    totalVerts += g.attributes.position!.count;
-    if (g.index) totalIdx += g.index.count;
-    else totalIdx += g.attributes.position!.count;
-  });
-  const pos = new Float32Array(totalVerts * 3);
-  const indices: number[] = [];
-  let vOffset = 0;
-  geos.forEach(g => {
-    const p = g.attributes.position!;
-    for (let i = 0; i < p.count; i++) {
-      pos[(vOffset + i) * 3] = p.getX(i);
-      pos[(vOffset + i) * 3 + 1] = p.getY(i);
-      pos[(vOffset + i) * 3 + 2] = p.getZ(i);
-    }
-    if (g.index) {
-      for (let i = 0; i < g.index.count; i++) {
-        indices.push(g.index.array[i]! + vOffset);
-      }
-    } else {
-      for (let i = 0; i < p.count; i++) {
-        indices.push(vOffset + i);
-      }
-    }
-    vOffset += p.count;
-  });
-  const merged = new THREE.BufferGeometry();
-  merged.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  merged.setIndex(indices);
-  merged.computeVertexNormals();
-  return merged;
-}
-
-/* ── Build segment-specific geometry — clean, simple silhouettes ── */
+/* ── Build segment-specific geometry — single clean shapes ── */
 function buildSegmentGeo(index: number): THREE.BufferGeometry {
   switch (index) {
     case 0: {
-      // Frontier Labs — Brain: smooth full sphere with a subtle center groove
-      const brain = new THREE.SphereGeometry(0.8, 24, 18);
-      // Slight squash to make it brain-shaped (wider than tall)
-      brain.scale(1.1, 0.95, 0.9);
-      return brain;
+      // Frontier Labs — Icosahedron (neural/crystalline)
+      return new THREE.IcosahedronGeometry(1, 1);
     }
     case 1: {
-      // Clinical AI — Chip: flat board with raised core
-      const board = new THREE.BoxGeometry(1.4, 0.12, 1.4);
-      const core = new THREE.BoxGeometry(0.5, 0.3, 0.5);
-      core.translate(0, 0.18, 0);
-      return mergeGeometries([board, core]);
+      // Clinical AI — Octahedron (precision/logic)
+      return new THREE.OctahedronGeometry(1, 0);
     }
     case 2: {
-      // Clinical Networks & Clinics — Hospital: clean building with cross
-      const main = new THREE.BoxGeometry(1.2, 1.0, 0.7);
-      const wingL = new THREE.BoxGeometry(0.5, 0.7, 0.6);
-      wingL.translate(-0.7, -0.15, 0);
-      const wingR = new THREE.BoxGeometry(0.5, 0.7, 0.6);
-      wingR.translate(0.7, -0.15, 0);
-      const crossV = new THREE.BoxGeometry(0.06, 0.3, 0.06);
-      crossV.translate(0, 0.7, 0);
-      const crossH = new THREE.BoxGeometry(0.22, 0.06, 0.06);
-      crossH.translate(0, 0.76, 0);
-      return mergeGeometries([main, wingL, wingR, crossV, crossH]);
+      // Clinics — Dodecahedron (complex network)
+      return new THREE.DodecahedronGeometry(1, 0);
     }
     case 3: {
-      // Patients — Person: clean head + rounded torso
-      const head = new THREE.SphereGeometry(0.3, 16, 12);
-      head.translate(0, 0.75, 0);
-      const torso = new THREE.SphereGeometry(0.45, 16, 12);
-      torso.scale(0.8, 1.2, 0.6);
-      torso.translate(0, 0, 0);
-      return mergeGeometries([head, torso]);
+      // Patients — Human head profile via LatheGeometry
+      const pts: THREE.Vector2[] = [
+        new THREE.Vector2(0, -0.7),    // chin bottom
+        new THREE.Vector2(0.35, -0.6), // jaw
+        new THREE.Vector2(0.48, -0.3), // cheek
+        new THREE.Vector2(0.52, 0),    // ear level
+        new THREE.Vector2(0.5, 0.25),  // temple
+        new THREE.Vector2(0.48, 0.5),  // forehead
+        new THREE.Vector2(0.4, 0.7),   // top curve
+        new THREE.Vector2(0.25, 0.85), // crown
+        new THREE.Vector2(0, 0.9),     // top
+      ];
+      const head = new THREE.LatheGeometry(pts, 32);
+      return head;
     }
     case 4: {
-      // Pharmacies — Rx bottle: clean cylinder + cap
-      const bottle = new THREE.CylinderGeometry(0.4, 0.4, 1.0, 16);
-      const cap = new THREE.CylinderGeometry(0.42, 0.42, 0.15, 16);
-      cap.translate(0, 0.575, 0);
-      return mergeGeometries([bottle, cap]);
+      // Pharmacies — Torus (Rx ring/cycle)
+      return new THREE.TorusGeometry(0.7, 0.3, 16, 32);
     }
     case 5: {
-      // Insurers — Shield: clean rounded shield
-      const pts: THREE.Vector2[] = [
-        new THREE.Vector2(0, -1.0),
-        new THREE.Vector2(0.55, -0.5),
-        new THREE.Vector2(0.65, 0),
-        new THREE.Vector2(0.55, 0.45),
-        new THREE.Vector2(0.3, 0.75),
-        new THREE.Vector2(0, 1.0),
-      ];
-      const shield = new THREE.LatheGeometry(pts, 24);
-      shield.scale(1, 1, 0.35);
-      return shield;
+      // Insurers — Tetrahedron (stability/foundation)
+      return new THREE.TetrahedronGeometry(1, 1);
     }
     default:
       return new THREE.IcosahedronGeometry(1, 1);
   }
 }
 
-/* ── 3D Hologram for each segment — GRAYSCALE ── */
+/* ── 3D Hologram for each segment ── */
 const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isActive }) => {
   const mountRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<{ renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; group: THREE.Group; animId: number } | null>(null);
+  const sceneRef = useRef<{ renderer: THREE.WebGLRenderer; animId: number } | null>(null);
 
   useEffect(() => {
     const el = mountRef.current;
@@ -183,80 +125,129 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 100);
+    camera.position.set(0, 0, 5);
 
     const group = new THREE.Group();
     scene.add(group);
 
-    // Clean machined-steel materials
-    const wireMat = new THREE.LineBasicMaterial({ color: 0x6B7280, transparent: true, opacity: 0.5 });
-    const facetMat = new THREE.MeshBasicMaterial({ color: 0x374151, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
-    const pointMat = new THREE.PointsMaterial({ color: 0x6B7280, size: 0.04, transparent: true, opacity: 0.5 });
+    const accent = SEGMENT_COLORS[index].accent;
+    const accentColor = new THREE.Color(accent);
+    const dimColor = new THREE.Color(0x6B7280);
 
     const geo = buildSegmentGeo(index);
 
-    // Auto-scale to fit: normalize geometry so it fits in a unit sphere
+    // Auto-scale
     geo.computeBoundingBox();
-    const bb = geo.boundingBox!;
     const size = new THREE.Vector3();
-    bb.getSize(size);
+    geo.boundingBox!.getSize(size);
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scaleFactor = 1.8 / maxDim;
-    geo.scale(scaleFactor, scaleFactor, scaleFactor);
-    // Re-center
+    const sf = 1.6 / maxDim;
+    geo.scale(sf, sf, sf);
     geo.computeBoundingBox();
-    const bb2 = geo.boundingBox!;
     const center = new THREE.Vector3();
-    bb2.getCenter(center);
+    geo.boundingBox!.getCenter(center);
     geo.translate(-center.x, -center.y, -center.z);
 
-    camera.position.set(0, 0, 4.2);
-
+    // Wireframe edges with accent color
     const edges = new THREE.EdgesGeometry(geo);
-    const wireframe = new THREE.LineSegments(edges, wireMat);
-    group.add(wireframe);
+    const wireMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.6 });
+    group.add(new THREE.LineSegments(edges, wireMat));
 
-    const mesh = new THREE.Mesh(geo, facetMat);
-    group.add(mesh);
+    // Semi-transparent face fill
+    const facetMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+    group.add(new THREE.Mesh(geo, facetMat));
 
-    const points = new THREE.Points(geo, pointMat);
-    group.add(points);
+    // Vertex dots
+    const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.05, transparent: true, opacity: 0.7 });
+    group.add(new THREE.Points(geo, pointMat));
+
+    // Orbit ring
+    const ringGeo = new THREE.RingGeometry(1.15, 1.17, 64);
+    const ringMat = new THREE.MeshBasicMaterial({ color: dimColor, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    group.add(ring);
+
+    // Scanning line (horizontal plane)
+    const scanGeo = new THREE.PlaneGeometry(3, 0.01);
+    const scanMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+    const scanLine = new THREE.Mesh(scanGeo, scanMat);
+    group.add(scanLine);
+
+    // Orbiting particle
+    const orbGeo = new THREE.SphereGeometry(0.04, 8, 8);
+    const orbMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.9 });
+    const orbiter = new THREE.Mesh(orbGeo, orbMat);
+    group.add(orbiter);
 
     let t = 0;
     let animId: number;
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      t += 0.004;
-      group.rotation.y = t * 0.5;
-      group.rotation.x = Math.sin(t * 0.3) * 0.15;
-      const s = 1 + Math.sin(t * 1.5) * 0.03;
+      t += 0.008;
+
+      // Per-segment animation style
+      switch (index) {
+        case 0: // Icosahedron — steady spin + breathe
+          group.rotation.y = t * 0.4;
+          group.rotation.x = t * 0.2;
+          break;
+        case 1: // Octahedron — snap rotation
+          group.rotation.y = t * 0.3;
+          group.rotation.z = Math.sin(t * 0.5) * 0.3;
+          break;
+        case 2: // Dodecahedron — tumble
+          group.rotation.y = t * 0.35;
+          group.rotation.x = Math.sin(t * 0.25) * 0.4;
+          break;
+        case 3: // Head — slow majestic rotation
+          group.rotation.y = t * 0.25;
+          group.rotation.x = Math.sin(t * 0.15) * 0.1;
+          break;
+        case 4: // Torus — tilt + spin
+          group.rotation.x = Math.PI / 5 + Math.sin(t * 0.3) * 0.15;
+          group.rotation.y = t * 0.5;
+          break;
+        case 5: // Tetrahedron — wobble
+          group.rotation.y = t * 0.4;
+          group.rotation.x = t * 0.15;
+          group.rotation.z = Math.sin(t * 0.4) * 0.2;
+          break;
+      }
+
+      // Breathe scale
+      const s = 1 + Math.sin(t * 1.2) * 0.025;
       group.scale.set(s, s, s);
-      wireMat.opacity = 0.3 + Math.sin(t * 2) * 0.15;
-      pointMat.opacity = 0.3 + Math.sin(t * 2.5) * 0.2;
+
+      // Scan line sweeps up and down
+      const scanY = Math.sin(t * 0.8) * 1.0;
+      scanLine.position.y = scanY;
+      scanMat.opacity = 0.12 + Math.sin(t * 1.6) * 0.08;
+
+      // Orbit ring subtle tilt
+      ring.rotation.x = Math.PI / 2 + Math.sin(t * 0.2) * 0.1;
+
+      // Orbiting particle
+      orbiter.position.x = Math.cos(t * 1.5) * 1.15;
+      orbiter.position.z = Math.sin(t * 1.5) * 1.15;
+      orbiter.position.y = Math.sin(t * 0.8) * 0.2;
+
+      // Pulse wireframe opacity
+      wireMat.opacity = 0.4 + Math.sin(t * 2) * 0.2;
+      pointMat.opacity = 0.5 + Math.sin(t * 2.5) * 0.2;
+
       renderer.render(scene, camera);
     };
     animate();
 
-    sceneRef.current = { renderer, scene, camera, group, animId };
+    sceneRef.current = { renderer, animId };
 
     return () => {
       cancelAnimationFrame(animId);
       renderer.dispose();
-      if (el.contains(renderer.domElement)) {
-        el.removeChild(renderer.domElement);
-      }
+      if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
     };
   }, [index]);
-
-  useEffect(() => {
-    if (!sceneRef.current) return;
-    const { group } = sceneRef.current;
-    group.traverse((child) => {
-      if (child instanceof THREE.LineSegments) {
-        const mat = child.material as THREE.LineBasicMaterial;
-        mat.opacity = isActive ? mat.opacity : mat.opacity * 0.6;
-      }
-    });
-  }, [isActive]);
 
   return <div ref={mountRef} className="w-full h-full" />;
 };
