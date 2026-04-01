@@ -5,25 +5,25 @@ const PATHWAYS = [
   {
     id: "lung",
     label: "LUNG CANCER",
-    color: "#00d4aa",
+    color: "#2563EB",
     nodes: ["Age ≥ 50?", "≥ 20 pack-years?", "LDCT Eligible", "USPSTF A — ORDER LDCT"],
   },
   {
     id: "colorectal",
     label: "COLORECTAL CANCER",
-    color: "#f59e0b",
+    color: "#06B6D4",
     nodes: ["Age ≥ 45?", "Family Hx?", "Risk Stratified", "COLONOSCOPY DUE"],
   },
   {
     id: "cardio",
     label: "CARDIOVASCULAR",
-    color: "#ef4444",
+    color: "#14B8A6",
     nodes: ["BP > 130/80?", "10yr ASCVD ≥ 7.5%?", "Statin Candidate", "ACC/AHA PROTOCOL"],
   },
   {
     id: "diabetes",
     label: "TYPE 2 DIABETES",
-    color: "#a855f7",
+    color: "#F59E0B",
     nodes: ["BMI ≥ 25?", "A1C ≥ 5.7?", "Prediabetes Flag", "ADA SCREENING"],
   },
 ];
@@ -35,14 +35,12 @@ const STATS = [
   { value: "1 Compiled Output", desc: "Per patient encounter" },
 ];
 
-// Diamond shape as SVG path centered at (0,0) with given size
 const diamondPath = (s: number) =>
   `M 0 ${-s} L ${s} 0 L 0 ${s} L ${-s} 0 Z`;
 
 const DecisionTreeSection = () => {
   const [hoveredPathway, setHoveredPathway] = useState<string | null>(null);
 
-  // Layout constants
   const colWidth = 220;
   const totalWidth = colWidth * 4 + 60;
   const nodeSpacingY = 100;
@@ -55,14 +53,14 @@ const DecisionTreeSection = () => {
   const getColX = (i: number) => (totalWidth / 2) - ((3 * colWidth) / 2) + i * colWidth + colWidth / 2 - 30;
 
   return (
-    <section className="py-24 md:py-32 px-6" style={{ backgroundColor: "#1a1d21" }}>
+    <section className="py-24 md:py-32 px-6" style={{ backgroundColor: "#131B2E" }}>
       <div className="max-w-6xl mx-auto">
-        {/* Headings */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="font-mono text-3xl md:text-4xl font-light text-white text-center mb-4"
+          className="font-mono text-3xl md:text-4xl font-light text-center mb-4"
+          style={{ color: "#E2E8F0" }}
         >
           Clinical Decision Architecture
         </motion.h2>
@@ -71,7 +69,8 @@ const DecisionTreeSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.15 }}
-          className="text-center text-white/50 text-lg mb-16 font-sans"
+          className="text-center text-lg mb-16 font-sans"
+          style={{ color: "#94A3B8" }}
         >
           Real-time guideline compilation across multiple disease pathways
         </motion.p>
@@ -97,14 +96,13 @@ const DecisionTreeSection = () => {
               ))}
               <filter id="glow-white" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="6" result="blur" />
-                <feFlood floodColor="#ffffff" floodOpacity="0.5" />
+                <feFlood floodColor="#2563EB" floodOpacity="0.5" />
                 <feComposite in2="blur" operator="in" />
                 <feMerge>
                   <feMergeNode />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
-              {/* Animated dash pattern */}
               <style>{`
                 @keyframes dashFlow {
                   to { stroke-dashoffset: -20; }
@@ -116,14 +114,12 @@ const DecisionTreeSection = () => {
               `}</style>
             </defs>
 
-            {/* Top node: PATIENT DATA INGESTED */}
-            <circle cx={totalWidth / 2 - 30} cy={startNodeY} r={14} fill="none" stroke="#ffffff" strokeWidth={2} filter="url(#glow-white)" />
-            <circle cx={totalWidth / 2 - 30} cy={startNodeY} r={5} fill="#ffffff" />
-            <text x={totalWidth / 2 - 30} y={startNodeY - 24} textAnchor="middle" fill="#ffffff" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
+            <circle cx={totalWidth / 2 - 30} cy={startNodeY} r={14} fill="none" stroke="#2563EB" strokeWidth={2} filter="url(#glow-white)" />
+            <circle cx={totalWidth / 2 - 30} cy={startNodeY} r={5} fill="#2563EB" />
+            <text x={totalWidth / 2 - 30} y={startNodeY - 24} textAnchor="middle" fill="#E2E8F0" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
               PATIENT DATA INGESTED
             </text>
 
-            {/* Branches from top to each pathway */}
             {PATHWAYS.map((p, i) => {
               const cx = getColX(i);
               const opacity = hoveredPathway === null ? 1 : hoveredPathway === p.id ? 1 : 0.2;
@@ -134,25 +130,19 @@ const DecisionTreeSection = () => {
                   onMouseEnter={() => setHoveredPathway(p.id)}
                   onMouseLeave={() => setHoveredPathway(null)}
                 >
-                  {/* Line from top node to first pathway node */}
                   <line
                     x1={totalWidth / 2 - 30} y1={startNodeY + 14}
                     x2={cx} y2={pathwayStartY - 30}
                     stroke={p.color} strokeWidth={1.5} className="flow-line" opacity={0.6}
                   />
-
-                  {/* Pathway label */}
                   <text x={cx} y={pathwayStartY - 42} textAnchor="middle" fill={p.color} fontSize={9} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.15em" fontWeight={500}>
                     {p.label}
                   </text>
-
-                  {/* Decision nodes */}
                   {p.nodes.map((label, ni) => {
                     const ny = pathwayStartY + ni * nodeSpacingY;
                     const isLast = ni === p.nodes.length - 1;
                     return (
                       <g key={ni}>
-                        {/* Connection line to next node */}
                         {ni < p.nodes.length - 1 && (
                           <line
                             x1={cx} y1={ny + 22}
@@ -160,7 +150,6 @@ const DecisionTreeSection = () => {
                             stroke={p.color} strokeWidth={1.2} className="flow-line" opacity={0.5}
                           />
                         )}
-                        {/* Diamond node */}
                         <path
                           d={diamondPath(isLast ? 24 : 20)}
                           transform={`translate(${cx}, ${ny})`}
@@ -169,11 +158,10 @@ const DecisionTreeSection = () => {
                           strokeWidth={isLast ? 2 : 1.5}
                           filter={isLast ? `url(#glow-${p.id})` : undefined}
                         />
-                        {/* Node label */}
                         <text
                           x={cx} y={ny + 4}
                           textAnchor="middle"
-                          fill="#ffffff"
+                          fill="#E2E8F0"
                           fontSize={8}
                           fontFamily="'JetBrains Mono', monospace"
                         >
@@ -187,8 +175,6 @@ const DecisionTreeSection = () => {
                       </g>
                     );
                   })}
-
-                  {/* Line from last node to bottom convergence */}
                   <line
                     x1={cx} y1={pathwayStartY + 3 * nodeSpacingY + 24}
                     x2={totalWidth / 2 - 30} y2={bottomNodeY - 18}
@@ -198,25 +184,22 @@ const DecisionTreeSection = () => {
               );
             })}
 
-            {/* Bottom convergence node */}
-            <circle cx={totalWidth / 2 - 30} cy={bottomNodeY} r={16} fill="none" stroke="#ffffff" strokeWidth={2} filter="url(#glow-white)" />
-            <circle cx={totalWidth / 2 - 30} cy={bottomNodeY} r={6} fill="#ffffff" />
-            <text x={totalWidth / 2 - 30} y={bottomNodeY + 34} textAnchor="middle" fill="#ffffff" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
+            <circle cx={totalWidth / 2 - 30} cy={bottomNodeY} r={16} fill="none" stroke="#2563EB" strokeWidth={2} filter="url(#glow-white)" />
+            <circle cx={totalWidth / 2 - 30} cy={bottomNodeY} r={6} fill="#2563EB" />
+            <text x={totalWidth / 2 - 30} y={bottomNodeY + 34} textAnchor="middle" fill="#E2E8F0" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
               COMPILED CLINICAL ACTION PLAN
             </text>
           </svg>
         </div>
 
-        {/* Mobile: stacked vertical pathways */}
+        {/* Mobile */}
         <div className="md:hidden space-y-10">
-          {/* Top node */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-white mb-2">
-              <div className="w-3 h-3 rounded-full bg-white" />
+            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#2563EB" }}>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#2563EB" }} />
             </div>
-            <p className="font-mono text-[10px] tracking-[0.15em] text-white">PATIENT DATA INGESTED</p>
+            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#E2E8F0" }}>PATIENT DATA INGESTED</p>
           </div>
-
           {PATHWAYS.map((p) => (
             <div key={p.id} className="border-l-2 ml-6 pl-6 pb-4" style={{ borderColor: p.color + "60" }}>
               <p className="font-mono text-xs tracking-[0.15em] mb-4" style={{ color: p.color }}>{p.label}</p>
@@ -230,34 +213,32 @@ const DecisionTreeSection = () => {
                         backgroundColor: ni === p.nodes.length - 1 ? p.color + "30" : "transparent",
                       }}
                     />
-                    <span className="font-mono text-[10px] text-white/80">{label}</span>
+                    <span className="font-mono text-[10px]" style={{ color: "rgba(226,232,240,0.8)" }}>{label}</span>
                   </div>
                 ))}
               </div>
             </div>
           ))}
-
-          {/* Bottom node */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-white mb-2">
-              <div className="w-3 h-3 rounded-full bg-white" />
+            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#2563EB" }}>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#2563EB" }} />
             </div>
-            <p className="font-mono text-[10px] tracking-[0.15em] text-white">COMPILED CLINICAL ACTION PLAN</p>
+            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#E2E8F0" }}>COMPILED CLINICAL ACTION PLAN</p>
           </div>
         </div>
 
-        {/* Stats bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 border-t border-white/10 pt-10"
+          className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 border-t pt-10"
+          style={{ borderColor: "#1E293B" }}
         >
           {STATS.map((s, i) => (
             <div key={i} className="text-center">
-              <p className="font-mono text-sm text-white tracking-wide">{s.value}</p>
-              <p className="text-xs text-white/40 mt-1 font-sans">{s.desc}</p>
+              <p className="font-mono text-sm tracking-wide" style={{ color: "#E2E8F0" }}>{s.value}</p>
+              <p className="text-xs mt-1 font-sans" style={{ color: "#94A3B8" }}>{s.desc}</p>
             </div>
           ))}
         </motion.div>

@@ -39,19 +39,19 @@ const GeometricWireframe = ({ stageIdx, isActive }: { stageIdx: number; isActive
   return (
     <svg viewBox="0 0 200 140" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       {stage.fills.map((f, i) => (
-        <motion.polygon key={`f${i}`} points={f.points} fill="white"
+        <motion.polygon key={`f${i}`} points={f.points} fill="#2563EB"
           initial={{ opacity: 0 }} animate={{ opacity: isActive ? f.opacity : f.opacity * 0.3 }}
           transition={{ duration: 0.6, delay: i * 0.05 }} />
       ))}
       {stage.paths.map((d, i) => (
-        <motion.path key={`p${i}`} d={d} fill="none" stroke="white"
+        <motion.path key={`p${i}`} d={d} fill="none" stroke="#2563EB"
           strokeWidth={isActive ? (i === 0 ? 1.2 : 0.7) : 0.4} strokeLinejoin="miter"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: isActive ? 1 : 0.6, opacity: isActive ? (i === 0 ? 0.6 : 0.4) : 0.1 }}
           transition={{ duration: 0.6, delay: i * 0.06 }} />
       ))}
       {isActive && (
-        <circle cx="100" cy="62" r="3" fill="white" opacity="0.5">
+        <circle cx="100" cy="62" r="3" fill="#2563EB" opacity="0.5">
           <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="0.5;0.2;0.5" dur="2s" repeatCount="indefinite" />
         </circle>
@@ -61,10 +61,10 @@ const GeometricWireframe = ({ stageIdx, isActive }: { stageIdx: number; isActive
 };
 
 const StageBadge = ({ stage }: { stage: typeof stages[0] }) => (
-  <span className="inline-flex items-center gap-1.5 text-sm text-white/50">
-    {stage.badgeType === "pulse" && <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-white/70" />}
-    {stage.badgeType === "check" && <Check size={14} strokeWidth={2.5} className="text-white/50" />}
-    {stage.badgeType === "lock" && <Lock size={14} strokeWidth={2} className="text-white/50" />}
+  <span className="inline-flex items-center gap-1.5 text-sm" style={{ color: "#94A3B8" }}>
+    {stage.badgeType === "pulse" && <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#06B6D4" }} />}
+    {stage.badgeType === "check" && <Check size={14} strokeWidth={2.5} style={{ color: "#06B6D4" }} />}
+    {stage.badgeType === "lock" && <Lock size={14} strokeWidth={2} style={{ color: "#94A3B8" }} />}
     {stage.badge}
   </span>
 );
@@ -87,7 +87,7 @@ const PipelineSection = () => {
   return (
     <section id="pipeline" ref={ref} className="relative py-24 md:py-32">
       <div className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+        backgroundImage: "linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px)",
         backgroundSize: "60px 60px",
       }} />
 
@@ -95,21 +95,21 @@ const PipelineSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }} className="lg:col-span-7">
-            <p className="text-[12px] font-medium uppercase text-white/30 mb-3" style={{ letterSpacing: "0.1em" }}>
+            <p className="text-[12px] font-medium uppercase mb-3" style={{ letterSpacing: "0.1em", color: "#94A3B8" }}>
               Compilation Pipeline
             </p>
-            <h2 className="text-white font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em" }}>
-              Five stages. <span className="text-white/45">Verified at every gate.</span>
+            <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#E2E8F0" }}>
+              Five stages. <span style={{ color: "#94A3B8" }}>Verified at every gate.</span>
             </h2>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.1, duration: 0.6 }} className="lg:col-span-5 flex items-end">
             <div className="flex flex-row flex-wrap items-center gap-5">
               {["Zero hallucination.", "Zero inference."].map((text) => (
-                <span key={text} className="inline-flex items-center gap-2 text-white/60">
+                <span key={text} className="inline-flex items-center gap-2" style={{ color: "#94A3B8" }}>
                   <span
                     className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
-                    style={{ background: "#c8d6e5", boxShadow: "0 0 8px rgba(200,214,229,0.7)" }}
+                    style={{ background: "#06B6D4", boxShadow: "0 0 8px rgba(6,182,212,0.7)" }}
                   />
                   {text}
                 </span>
@@ -120,8 +120,8 @@ const PipelineSection = () => {
 
         {/* Timeline */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="relative mb-8">
-          <div className="h-px w-full bg-white/[0.08]" />
-          <motion.div className="absolute top-0 left-0 h-px bg-white/40"
+          <div className="h-px w-full" style={{ backgroundColor: "#1E293B" }} />
+          <motion.div className="absolute top-0 left-0 h-px" style={{ backgroundColor: "#2563EB" }}
             animate={{ width: `${((currentIdx + 1) / 5) * 100}%` }} transition={{ duration: 0.6 }} />
           <div className="absolute top-0 left-0 w-full flex justify-between" style={{ transform: "translateY(-50%)" }}>
             {stages.map((stage, i) => {
@@ -132,13 +132,13 @@ const PipelineSection = () => {
                   onMouseEnter={() => setHoveredStage(i)} onMouseLeave={() => setHoveredStage(null)}
                   onClick={() => { setActiveStage(i); setHoveredStage(null); }}>
                   <div className="w-3 h-3 rotate-45 transition-all duration-300" style={{
-                    backgroundColor: isActive ? "white" : isPast ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.1)",
-                    border: isActive ? "none" : "1px solid rgba(255,255,255,0.2)",
-                    boxShadow: isActive ? "0 0 12px rgba(255,255,255,0.3)" : "none",
+                    backgroundColor: isActive ? "#2563EB" : isPast ? "rgba(37,99,235,0.5)" : "#1E293B",
+                    border: isActive ? "none" : "1px solid #1E293B",
+                    boxShadow: isActive ? "0 0 12px rgba(37,99,235,0.5)" : "none",
                     transform: `rotate(45deg) ${isActive ? "scale(1.3)" : "scale(1)"}`,
                   }} />
                   <span className="mt-3 text-[12px] font-medium uppercase transition-all duration-300" style={{
-                    color: isActive ? "white" : "rgba(255,255,255,0.3)", letterSpacing: "0.05em",
+                    color: isActive ? "#E2E8F0" : "#94A3B8", letterSpacing: "0.05em",
                   }}>{stage.name}</span>
                 </button>
               );
@@ -149,9 +149,9 @@ const PipelineSection = () => {
         {/* Content */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-0 border border-white/[0.08] overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.01)" }}>
-          <div className="relative p-8 md:p-12 flex items-center justify-center border-b md:border-b-0 md:border-r border-white/[0.06]" style={{ minHeight: "320px" }}>
+          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-0 border overflow-hidden"
+          style={{ borderColor: "#1E293B", background: "rgba(19,27,46,0.5)" }}>
+          <div className="relative p-8 md:p-12 flex items-center justify-center border-b md:border-b-0 md:border-r" style={{ minHeight: "320px", borderColor: "#1E293B" }}>
             <div className="w-full max-w-[280px] aspect-square relative">
               {stages.map((_, i) => (
                 <div key={i} className="absolute inset-0 transition-opacity duration-500" style={{ opacity: i === currentIdx ? 1 : 0 }}>
@@ -159,25 +159,25 @@ const PipelineSection = () => {
                 </div>
               ))}
             </div>
-            <div className="absolute bottom-6 left-8 text-[4rem] text-white/[0.04] font-light" style={{ lineHeight: 1 }}>{current.num}</div>
+            <div className="absolute bottom-6 left-8 text-[4rem] font-light" style={{ lineHeight: 1, color: "rgba(37,99,235,0.08)" }}>{current.num}</div>
           </div>
 
           <div className="p-8 md:p-12 flex flex-col justify-center">
             <motion.div key={currentIdx} initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
               <div className="flex items-center gap-3 mb-2">
-                <span className="w-8 h-8 flex items-center justify-center border border-white/20 rotate-45">
-                  <span className="-rotate-45 text-white text-sm">{current.num}</span>
+                <span className="w-8 h-8 flex items-center justify-center border rotate-45" style={{ borderColor: "#2563EB" }}>
+                  <span className="-rotate-45 text-sm" style={{ color: "#E2E8F0" }}>{current.num}</span>
                 </span>
-                <span className="text-[12px] font-medium text-white/30 uppercase" style={{ letterSpacing: "0.05em" }}>{current.short}</span>
+                <span className="text-[12px] font-medium uppercase" style={{ letterSpacing: "0.05em", color: "#94A3B8" }}>{current.short}</span>
               </div>
-              <h3 className="text-white font-semibold text-xl mb-4" style={{ letterSpacing: "-0.02em" }}>{current.name}</h3>
-              <p className="text-white/50 text-base mb-5" style={{ lineHeight: 1.7, letterSpacing: "-0.01em" }}>{current.desc}</p>
+              <h3 className="font-semibold text-xl mb-4" style={{ letterSpacing: "-0.02em", color: "#E2E8F0" }}>{current.name}</h3>
+              <p className="text-base mb-5" style={{ lineHeight: 1.7, letterSpacing: "-0.01em", color: "#94A3B8" }}>{current.desc}</p>
               <StageBadge stage={current} />
               <div className="flex items-center gap-2 mt-6">
                 {stages.map((_, i) => (
                   <div key={i} className="h-1 rounded-full transition-all duration-500" style={{
                     width: i === currentIdx ? "24px" : "6px",
-                    backgroundColor: i === currentIdx ? "white" : i < currentIdx ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.08)",
+                    backgroundColor: i === currentIdx ? "#2563EB" : i < currentIdx ? "rgba(37,99,235,0.4)" : "#1E293B",
                   }} />
                 ))}
               </div>
@@ -187,15 +187,15 @@ const PipelineSection = () => {
 
         {/* Compliance bar */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}
-          className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06]">
+          className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px" style={{ backgroundColor: "#1E293B" }}>
           {[
-            { name: "SOC 2 Type II", status: "In Progress", color: "#999" },
-            { name: "HIPAA", status: "Compliant", color: "#e5e5e5" },
-            { name: "FHIR R4", status: "Native", color: "#e5e5e5" },
-            { name: "HL7 CDS Hooks", status: "Supported", color: "#e5e5e5" },
+            { name: "SOC 2 Type II", status: "In Progress", color: "#94A3B8" },
+            { name: "HIPAA", status: "Compliant", color: "#06B6D4" },
+            { name: "FHIR R4", status: "Native", color: "#06B6D4" },
+            { name: "HL7 CDS Hooks", status: "Supported", color: "#06B6D4" },
           ].map((c) => (
-            <div key={c.name} className="p-4 text-center" style={{ background: "#1a1d21" }}>
-              <span className="text-[11px] font-medium uppercase text-white/25 block mb-1" style={{ letterSpacing: "0.1em" }}>{c.name}</span>
+            <div key={c.name} className="p-4 text-center" style={{ background: "#131B2E" }}>
+              <span className="text-[11px] font-medium uppercase block mb-1" style={{ letterSpacing: "0.1em", color: "#94A3B8" }}>{c.name}</span>
               <span className="text-[13px] font-medium" style={{ color: c.color, letterSpacing: "0.05em" }}>{c.status}</span>
             </div>
           ))}

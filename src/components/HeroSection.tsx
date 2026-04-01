@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import FacetedCrownLogo from "./FacetedCrownLogo";
 
-const BG = 0x030405;
+const BG = 0x0B1120;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -68,7 +68,7 @@ const HeroSection = () => {
         fragmentShader: `
           varying float vFade;
           void main() {
-            gl_FragColor = vec4(0.25, 0.25, 0.3, vFade * 0.05);
+            gl_FragColor = vec4(0.15, 0.22, 0.38, vFade * 0.06);
           }
         `,
       });
@@ -111,7 +111,7 @@ const HeroSection = () => {
             if (d > 1.0) discard;
             float core = exp(-d * d * 5.0) * vAlpha;
             float halo = (1.0 - d * d) * vAlpha * 0.15;
-            gl_FragColor = vec4(0.35, 0.36, 0.4, (core + halo) * 0.35);
+            gl_FragColor = vec4(0.18, 0.30, 0.55, (core + halo) * 0.35);
           }
         `,
       });
@@ -128,11 +128,7 @@ const HeroSection = () => {
     scene.add(ceiling.group);
 
     // ─── DECISION PATHS ON THE GRID DOTS ───
-    // Build paths that travel across the grid dot intersections
-    // Each path starts from a root dot and branches outward through neighboring dots
-    
     const HALF_W = GRID_W / 2;
-    // Grid coordinate → world position
     const gridToWorld = (gx: number, gz: number, y: number) =>
       new THREE.Vector3(gx * SPACING, y, -gz * SPACING);
 
@@ -143,14 +139,12 @@ const HeroSection = () => {
     const activeNodes = new Map<string, PathNode>();
     const nodeKey = (gx: number, gz: number, y: number) => `${gx},${gz},${y < 0 ? 'f' : 'c'}`;
 
-    // Seeded random
     const seeded = (s: number) => {
       let h = Math.imul(s ^ 0x5bd1e995, 0x5bd1e995);
       h = ((h >>> 13) ^ h) * 0x5bd1e995;
       return ((h >>> 15) ^ h) >>> 0;
     };
 
-    // Build branching paths from root grid positions
     const PATH_ROOTS = [
       { gx: -10, gz: 8, y: -18 },
       { gx: 12, gz: 18, y: -18 },
@@ -160,7 +154,6 @@ const HeroSection = () => {
       { gx: 18, gz: 80, y: -18 },
       { gx: -8, gz: 95, y: -18 },
       { gx: 10, gz: 110, y: -18 },
-      // Ceiling paths
       { gx: 8, gz: 12, y: 18 },
       { gx: -18, gz: 28, y: 18 },
       { gx: 15, gz: 45, y: 18 },
@@ -185,7 +178,6 @@ const HeroSection = () => {
           const ngz = gz + dz;
           if (ngx < -HALF_W || ngx > HALF_W || ngz > GRID_D) continue;
 
-          // outcome: 0 = resolved/green, 1 = alert/red — most resolve, few stay red
           const rng = (s % 100) / 100;
           const childOutcome = rng > 0.82 ? 0.9 + rng * 0.1 : Math.max(0, outcome * 0.5 - depth * 0.03);
           const childNode: PathNode = { gx: ngx, gz: ngz, y, outcome: childOutcome, depth: depth + 1 };
@@ -195,11 +187,10 @@ const HeroSection = () => {
           buildBranch(ngx, ngz, y, depth + 1, childOutcome, s);
         }
       };
-      // Start mostly neutral/slightly alert
       buildBranch(root.gx, root.gz, root.y, 0, 0.3 + (ri % 3) * 0.15, ri * 1337 + 42);
     });
 
-    // ─── Edge lines connecting grid dots (decision paths) ───
+    // ─── Edge lines (decision paths) — cobalt/cyan/teal palette ───
     const pathEdgePos: number[] = [];
     const pathEdgeOutcome: number[] = [];
     allEdges.forEach(e => {
@@ -234,16 +225,14 @@ const HeroSection = () => {
         void main() {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(180.0, 300.0, vDist));
           float pulse = 0.6 + 0.4 * sin(uTime * 2.0 + vDist * 0.06);
-          vec3 blue   = vec3(0.2, 0.4, 0.75);
-          vec3 green  = vec3(0.15, 0.7, 0.4);
-          vec3 grey   = vec3(0.45, 0.42, 0.4);
-          vec3 orange = vec3(0.9, 0.5, 0.18);
-          vec3 red    = vec3(0.8, 0.2, 0.15);
+          vec3 cobalt = vec3(0.145, 0.388, 0.922);
+          vec3 cyan   = vec3(0.024, 0.714, 0.831);
+          vec3 teal   = vec3(0.078, 0.722, 0.651);
+          vec3 slate  = vec3(0.35, 0.42, 0.52);
           vec3 col;
-          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
-          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
-          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
-          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
+          if (vOutcome < 0.33) col = mix(cobalt, cyan, vOutcome * 3.0);
+          else if (vOutcome < 0.66) col = mix(cyan, teal, (vOutcome - 0.33) * 3.0);
+          else col = mix(teal, slate, (vOutcome - 0.66) * 3.0);
           gl_FragColor = vec4(col, fade * pulse * 0.18);
         }
       `,
@@ -251,7 +240,7 @@ const HeroSection = () => {
     scene.add(new THREE.LineSegments(pathEdgeGeo, pathEdgeMat));
     disposables.push(pathEdgeGeo, pathEdgeMat);
 
-    // ─── Highlighted grid nodes — glow on active decision points ───
+    // ─── Active decision nodes — cobalt/cyan/teal ───
     const activeNodePos: number[] = [];
     const activeNodeOutcome: number[] = [];
     const activeNodeDepth: number[] = [];
@@ -298,16 +287,14 @@ const HeroSection = () => {
           float core = exp(-d * d * 4.0);
           float halo = exp(-d * d * 1.2) * 0.35;
           float glow = exp(-d * 0.6) * 0.2;
-          vec3 blue   = vec3(0.18, 0.35, 0.7);
-          vec3 green  = vec3(0.2, 0.75, 0.45);
-          vec3 grey   = vec3(0.5, 0.48, 0.45);
-          vec3 orange = vec3(1.0, 0.6, 0.2);
-          vec3 red    = vec3(0.9, 0.22, 0.15);
+          vec3 cobalt = vec3(0.145, 0.388, 0.922);
+          vec3 cyan   = vec3(0.024, 0.714, 0.831);
+          vec3 teal   = vec3(0.078, 0.722, 0.651);
+          vec3 slate  = vec3(0.4, 0.48, 0.55);
           vec3 col;
-          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
-          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
-          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
-          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
+          if (vOutcome < 0.33) col = mix(cobalt, cyan, vOutcome * 3.0);
+          else if (vOutcome < 0.66) col = mix(cyan, teal, (vOutcome - 0.33) * 3.0);
+          else col = mix(teal, slate, (vOutcome - 0.66) * 3.0);
           vec3 color = col * (core + halo * 0.7 + glow * 0.4);
           gl_FragColor = vec4(color, (core + halo + glow) * vAlpha * 0.65);
         }
@@ -316,7 +303,7 @@ const HeroSection = () => {
     scene.add(new THREE.Points(activeNodeGeo, activeNodeMat));
     disposables.push(activeNodeGeo, activeNodeMat);
 
-    // ─── PULSE PARTICLES — traveling along decision path edges on the grid ───
+    // ─── PULSE PARTICLES — cobalt/cyan/teal only ───
     const PULSE_COUNT = 400;
     const pulsePos = new Float32Array(PULSE_COUNT * 3);
     const pulseProgress = new Float32Array(PULSE_COUNT);
@@ -367,16 +354,14 @@ const HeroSection = () => {
           float core = exp(-d * d * 2.5);
           float glow = exp(-d * 0.8) * 0.6;
           float outer = exp(-d * 0.4) * 0.2;
-          vec3 blue   = vec3(0.2, 0.4, 0.75);
-          vec3 green  = vec3(0.2, 0.85, 0.5);
-          vec3 grey   = vec3(0.55, 0.52, 0.48);
-          vec3 orange = vec3(1.0, 0.6, 0.2);
-          vec3 red    = vec3(0.9, 0.25, 0.15);
+          vec3 cobalt = vec3(0.145, 0.388, 0.922);
+          vec3 cyan   = vec3(0.024, 0.714, 0.831);
+          vec3 teal   = vec3(0.078, 0.722, 0.651);
+          vec3 slate  = vec3(0.45, 0.52, 0.58);
           vec3 col;
-          if (vOutcome < 0.25) col = mix(blue, green, vOutcome * 4.0);
-          else if (vOutcome < 0.5) col = mix(green, grey, (vOutcome - 0.25) * 4.0);
-          else if (vOutcome < 0.75) col = mix(grey, orange, (vOutcome - 0.5) * 4.0);
-          else col = mix(orange, red, (vOutcome - 0.75) * 4.0);
+          if (vOutcome < 0.33) col = mix(cobalt, cyan, vOutcome * 3.0);
+          else if (vOutcome < 0.66) col = mix(cyan, teal, (vOutcome - 0.33) * 3.0);
+          else col = mix(teal, slate, (vOutcome - 0.66) * 3.0);
           float bright = core + glow + outer;
           gl_FragColor = vec4(col * bright, bright * vAlpha * 0.8);
         }
@@ -385,7 +370,7 @@ const HeroSection = () => {
     scene.add(new THREE.Points(pulseGeo, pulseMat));
     disposables.push(pulseGeo, pulseMat);
 
-    // ─── RIPPLE RINGS — expand from root nodes on the grid ───
+    // ─── RIPPLE RINGS — cobalt/cyan/teal ───
     const RING_COUNT = 8;
     const radarRings: THREE.Mesh[] = [];
     const radarMats: THREE.ShaderMaterial[] = [];
@@ -413,11 +398,11 @@ const HeroSection = () => {
             float t = mod(uTime * 0.5 + uPhase, 6.0);
             float fade = (1.0 - t / 6.0);
             float ring = smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
-            vec3 blue = vec3(0.25, 0.45, 0.85);
-            vec3 green = vec3(0.2, 0.8, 0.45);
-            vec3 orange = vec3(0.9, 0.5, 0.15);
+            vec3 cobalt = vec3(0.145, 0.388, 0.922);
+            vec3 cyan   = vec3(0.024, 0.714, 0.831);
+            vec3 teal   = vec3(0.078, 0.722, 0.651);
             float cycle = fract(uPhase * 0.33);
-            vec3 col = cycle < 0.33 ? mix(blue, green, cycle * 3.0) : cycle < 0.66 ? mix(green, orange, (cycle - 0.33) * 3.0) : mix(orange, blue, (cycle - 0.66) * 3.0);
+            vec3 col = cycle < 0.33 ? mix(cobalt, cyan, cycle * 3.0) : cycle < 0.66 ? mix(cyan, teal, (cycle - 0.33) * 3.0) : mix(teal, cobalt, (cycle - 0.66) * 3.0);
             gl_FragColor = vec4(col, ring * fade * fade * 0.08);
           }
         `,
@@ -432,7 +417,7 @@ const HeroSection = () => {
       disposables.push(ringGeo, ringMat);
     });
 
-    // ─── SCAN WAVE — vertical plane sweeping through corridor ───
+    // ─── SCAN WAVE ───
     const scanGeo = new THREE.PlaneGeometry(200, 50, 1, 1);
     const scanMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -444,7 +429,7 @@ const HeroSection = () => {
         void main() {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 2.5);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 1.5);
-          gl_FragColor = vec4(0.2, 0.22, 0.25, xF * yF * 0.012);
+          gl_FragColor = vec4(0.12, 0.2, 0.42, xF * yF * 0.012);
         }
       `,
     });
@@ -466,7 +451,7 @@ const HeroSection = () => {
           float xF = exp(-pow((vUv.x - 0.5) * 2.0, 2.0) * 1.2);
           float yF = exp(-pow((vUv.y - 0.5) * 2.0, 2.0) * 6.0);
           float pulse = 0.8 + 0.2 * sin(uTime * 0.5);
-          gl_FragColor = vec4(0.3, 0.35, 0.42, xF * yF * 0.07 * pulse);
+          gl_FragColor = vec4(0.1, 0.22, 0.55, xF * yF * 0.07 * pulse);
         }
       `,
     });
@@ -490,7 +475,7 @@ const HeroSection = () => {
     const dustGeo = new THREE.BufferGeometry();
     dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
     const dustMat = new THREE.PointsMaterial({
-      size: 0.1, color: 0x555550, transparent: true, opacity: 0.04,
+      size: 0.1, color: 0x2563EB, transparent: true, opacity: 0.03,
       sizeAttenuation: true, blending: THREE.AdditiveBlending,
     });
     scene.add(new THREE.Points(dustGeo, dustMat));
@@ -531,25 +516,21 @@ const HeroSection = () => {
 
       const time = t * 3;
 
-      // Grid uniforms
       [floor.lineMat, floor.dotMat, ceiling.lineMat, ceiling.dotMat].forEach(m => {
         (m.uniforms as any).uTime.value = time;
         (m.uniforms as any).uCamZ.value = camZ;
       });
 
-      // Decision path uniforms
       (pathEdgeMat.uniforms as any).uTime.value = time;
       (pathEdgeMat.uniforms as any).uCamZ.value = camZ;
       (activeNodeMat.uniforms as any).uTime.value = time;
       (activeNodeMat.uniforms as any).uCamZ.value = camZ;
 
-      // Radar rings
       radarMats.forEach((m, i) => {
         m.uniforms.uTime.value = time;
         radarRings[i].lookAt(camera.position);
       });
 
-      // Pulse particles — travel along grid path edges
       const pArr = pulseGeo.attributes.position.array as Float32Array;
       for (let i = 0; i < PULSE_COUNT; i++) {
         pulseProgress[i] += pulseSpeed[i];
@@ -570,17 +551,14 @@ const HeroSection = () => {
       (pulseMat.uniforms as any).uTime.value = time;
       (pulseMat.uniforms as any).uCamZ.value = camZ;
 
-      // Scan wave
       (scanMat.uniforms as any).uTime.value = t;
       const scanZ = camZ - 40 - Math.sin(t * 0.6) * 80;
       scanPlane.position.set(0, 0, scanZ);
       scanPlane.rotation.y = Math.sin(t * 0.3) * 0.15;
 
-      // Horizon
       (horizonMat.uniforms as any).uTime.value = time;
       horizonPlane.position.z = camZ - 300;
 
-      // Dust
       const dArr = dustGeo.attributes.position.array as Float32Array;
       for (let i = 0; i < DUST_COUNT; i++) {
         dArr[i * 3] += dustVel[i * 3];
@@ -614,7 +592,7 @@ const HeroSection = () => {
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(3,4,5,0.88) 0%, rgba(3,4,5,0.75) 35%, rgba(3,4,5,0.45) 65%, rgba(3,4,5,0.15) 85%, transparent 100%)",
+        background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(11,17,32,0.88) 0%, rgba(11,17,32,0.75) 35%, rgba(11,17,32,0.45) 65%, rgba(11,17,32,0.15) 85%, transparent 100%)",
       }} />
 
       {/* Film grain */}
@@ -631,12 +609,13 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.3 }}
-            className="text-white font-light"
+            className="font-light"
              style={{
                fontSize: "clamp(2.5rem, 5vw, 4rem)",
                lineHeight: 1.08,
                letterSpacing: "-0.03em",
-               textShadow: "0 0 60px rgba(0,0,0,1), 0 0 120px rgba(5,7,8,0.95), 0 2px 40px rgba(0,0,0,0.9)",
+               color: "#E2E8F0",
+               textShadow: "0 0 60px rgba(11,17,32,1), 0 0 120px rgba(11,17,32,0.95), 0 2px 40px rgba(11,17,32,0.9)",
              }}
           >
             Unlocking proactive healthcare for all.
@@ -646,12 +625,13 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="mt-8 text-lg text-white/70"
+            className="mt-8 text-lg"
             style={{
               maxWidth: 1280,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              textShadow: "0 0 30px rgba(0,0,0,1), 0 0 60px rgba(5,7,8,0.95)",
+              color: "#94A3B8",
+              textShadow: "0 0 30px rgba(11,17,32,1), 0 0 60px rgba(11,17,32,0.95)",
             }}
           >
             <p>
@@ -671,19 +651,17 @@ const HeroSection = () => {
             <a
               href="#contact"
               className="group relative text-[13px] font-semibold uppercase text-white px-8 py-3.5 transition-all duration-500 overflow-hidden"
-              style={{ letterSpacing: "0.08em" }}
+              style={{ letterSpacing: "0.08em", backgroundColor: "#2563EB" }}
             >
-              <span className="absolute inset-0 border border-white/30 bg-white/10 backdrop-blur-sm transition-all duration-500 group-hover:border-white/50 group-hover:bg-white/20" />
-              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.06] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="relative z-10 group-hover:text-white transition-colors duration-300">Request Demo</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="relative z-10">Request Demo</span>
             </a>
             <a
               href="#pipeline"
-              className="group relative text-[13px] font-medium uppercase text-white/90 px-8 py-3.5 transition-all duration-500 overflow-hidden"
-              style={{ letterSpacing: "0.08em" }}
+              className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden border"
+              style={{ letterSpacing: "0.08em", color: "#E2E8F0", borderColor: "#2563EB" }}
             >
-              <span className="absolute inset-0 border border-white/20 bg-white/[0.05] backdrop-blur-sm transition-all duration-500 group-hover:border-white/40 group-hover:bg-white/15" />
-              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#2563EB]/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Read White Paper</span>
             </a>
           </motion.div>
@@ -697,13 +675,14 @@ const HeroSection = () => {
         transition={{ delay: 2.5, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] font-medium uppercase text-white/15" style={{ letterSpacing: "0.3em" }}>
+        <span className="text-[10px] font-medium uppercase" style={{ letterSpacing: "0.3em", color: "rgba(148,163,184,0.3)" }}>
           Scroll to explore
         </span>
         <motion.span
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="text-white/15 text-sm"
+          style={{ color: "rgba(148,163,184,0.3)" }}
+          className="text-sm"
         >
           ▾
         </motion.span>
