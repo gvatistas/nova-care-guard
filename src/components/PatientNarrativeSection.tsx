@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, type FC } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { User } from "lucide-react";
 
 const POSITIVE = "#059669";
 const RED = "#E11D48";
