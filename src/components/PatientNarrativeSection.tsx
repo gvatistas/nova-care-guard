@@ -403,17 +403,6 @@ const PatientNarrativeSection = () => {
             }}
             transition={{ duration: 0.4 }}
           />
-          {/* Fork node */}
-          <motion.div
-            className="relative mx-auto rounded-full"
-            animate={{
-              width: 8,
-              height: 8,
-              background: "#111827",
-              boxShadow: "0 0 10px rgba(17,24,39,0.3)",
-            }}
-            transition={{ duration: 0.4 }}
-          />
           {/* Horizontal bar */}
           <div className="relative mx-auto" style={{ width: "60%", maxWidth: "600px", height: 2 }}>
             {/* Inactive track */}
