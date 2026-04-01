@@ -392,32 +392,23 @@ const PatientNarrativeSection = () => {
 
         {/* ── Decision tree fork ── */}
         <div className="flex justify-center mt-2">
-          <svg width="100%" height="80" viewBox="0 0 600 80" preserveAspectRatio="xMidYMid meet" className="overflow-visible max-w-5xl">
+          <svg width="100%" height="50" viewBox="0 0 600 50" preserveAspectRatio="xMidYMid meet" className="overflow-visible max-w-5xl">
             {/* Center stem down */}
-            <line x1="300" y1="0" x2="300" y2="30" stroke="#E5E7EB" strokeWidth="1" />
+            <line x1="300" y1="0" x2="300" y2="20" stroke="#E5E7EB" strokeWidth="1" />
             {/* Fork node */}
-            <circle cx="300" cy="30" r="3" fill="#E5E7EB" stroke="#D1D5DB" strokeWidth="0.5" />
+            <circle cx="300" cy="20" r="3" fill="#E5E7EB" stroke="#D1D5DB" strokeWidth="0.5" />
             {/* Horizontal bar */}
-            <line x1="150" y1="30" x2="450" y2="30" stroke="#E5E7EB" strokeWidth="1" />
-            {/* Left vertical drop */}
-            <line x1="150" y1="30" x2="150" y2="70" stroke="#E5E7EB" strokeWidth="1" />
+            <line x1="150" y1="20" x2="450" y2="20" stroke="#E5E7EB" strokeWidth="1" />
+            {/* Left vertical drop — extends to bottom edge flowing into column */}
+            <line x1="150" y1="20" x2="150" y2="50" stroke="#E5E7EB" strokeWidth="1" />
             {/* Right vertical drop */}
-            <line x1="450" y1="30" x2="450" y2="70" stroke="#E5E7EB" strokeWidth="1" />
-            {/* Left endpoint */}
-            <circle cx="150" cy="70" r="2.5" fill="#E5E7EB" />
-            {/* Right endpoint */}
-            <circle cx="450" cy="70" r="2.5" fill="#E5E7EB" />
-
-            {/* Left label */}
-            <text x="150" y="78" textAnchor="middle" fill="#9CA3AF" fontSize="8" fontFamily="monospace" letterSpacing="0.1em" dy="6">WITHOUT MEDIENT</text>
-            {/* Right label */}
-            <text x="450" y="78" textAnchor="middle" fill="#9CA3AF" fontSize="8" fontFamily="monospace" letterSpacing="0.1em" dy="6">WITH MEDIENT</text>
+            <line x1="450" y1="20" x2="450" y2="50" stroke="#E5E7EB" strokeWidth="1" />
 
             {/* Active branch highlight */}
             <motion.path
               d={activeSide === "left"
-                ? "M 300,0 L 300,30 L 150,30 L 150,70"
-                : "M 300,0 L 300,30 L 450,30 L 450,70"
+                ? "M 300,0 L 300,20 L 150,20 L 150,50"
+                : "M 300,0 L 300,20 L 450,20 L 450,50"
               }
               fill="none"
               stroke="#374151"
@@ -435,8 +426,8 @@ const PatientNarrativeSection = () => {
               initial={false}
               animate={
                 activeSide === "left"
-                  ? { cx: [300, 300, 150, 150], cy: [0, 30, 30, 70], opacity: [0, 1, 1, 1] }
-                  : { cx: [300, 300, 450, 450], cy: [0, 30, 30, 70], opacity: [0, 1, 1, 1] }
+                  ? { cx: [300, 300, 150, 150], cy: [0, 20, 20, 50], opacity: [0, 1, 1, 1] }
+                  : { cx: [300, 300, 450, 450], cy: [0, 20, 20, 50], opacity: [0, 1, 1, 1] }
               }
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               key={activeSide}
@@ -450,8 +441,8 @@ const PatientNarrativeSection = () => {
               initial={false}
               animate={
                 activeSide === "left"
-                  ? { cx: [300, 300, 150, 150], cy: [0, 30, 30, 70], opacity: [0, 0.3, 0.2, 0] }
-                  : { cx: [300, 300, 450, 450], cy: [0, 30, 30, 70], opacity: [0, 0.3, 0.2, 0] }
+                  ? { cx: [300, 300, 150, 150], cy: [0, 20, 20, 50], opacity: [0, 0.3, 0.2, 0] }
+                  : { cx: [300, 300, 450, 450], cy: [0, 20, 20, 50], opacity: [0, 0.3, 0.2, 0] }
               }
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               key={`glow-${activeSide}`}
