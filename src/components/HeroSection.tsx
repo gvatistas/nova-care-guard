@@ -147,29 +147,19 @@ const HeroSection = () => {
       depthWrite: false,
       uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
       vertexShader: `
-        attribute float outcome;
-        varying float vOut, vDist;
+        varying float vDist;
         uniform float uCamZ;
         void main() {
-          vOut = outcome;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           vDist = abs(wp.z - uCamZ);
           gl_Position = projectionMatrix * viewMatrix * wp;
         }
       `,
       fragmentShader: `
-        varying float vOut, vDist;
-        uniform float uTime;
+        varying float vDist;
         void main() {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 280.0, vDist));
-          float pulse = 0.7 + 0.3 * sin(uTime * 2.0 + vDist * 0.05);
-          vec3 red = vec3(0.88, 0.15, 0.15);
-          vec3 amber = vec3(0.85, 0.55, 0.1);
-          vec3 green = vec3(0.02, 0.59, 0.42);
-          vec3 col;
-          if (vOut < 0.5) col = mix(red, amber, vOut * 2.0);
-          else col = mix(amber, green, (vOut - 0.5) * 2.0);
-          gl_FragColor = vec4(col, fade * pulse * 0.12);
+          gl_FragColor = vec4(0.72, 0.74, 0.78, fade * 0.1);
         }
       `,
     });
