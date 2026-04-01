@@ -83,7 +83,7 @@ const ProjectAlphaSection = () => {
       <div className="relative max-w-[1440px] mx-auto px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }} className="mb-8">
-          <h2 className="font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#111827" }}>
+          <h2 className="font-mono font-normal leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#111827" }}>
             Project Alpha.
           </h2>
           <p className="font-light mt-2" style={{ color: "#374151", fontSize: "1.125rem" }}>

@@ -390,7 +390,7 @@ const SegmentsSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
+          <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
             Value propositions across our customer base.
           </h2>
           <p className="mt-3 text-base max-w-2xl" style={{ color: "#374151" }}>
