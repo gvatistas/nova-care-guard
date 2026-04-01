@@ -391,68 +391,22 @@ const PatientNarrativeSection = () => {
         </motion.div>
 
         {/* ── Decision tree fork ── */}
-        <div className="flex justify-center mt-2">
-          <svg width="100%" height="50" viewBox="0 0 600 50" preserveAspectRatio="xMidYMid meet" className="overflow-visible max-w-5xl">
-            {/* Center stem down */}
-            <line x1="300" y1="0" x2="300" y2="20" stroke="#E5E7EB" strokeWidth="1" />
-            {/* Fork node */}
-            <circle cx="300" cy="20" r="3" fill="#E5E7EB" stroke="#D1D5DB" strokeWidth="0.5" />
-            {/* Horizontal bar */}
-            <line x1="150" y1="20" x2="450" y2="20" stroke="#E5E7EB" strokeWidth="1" />
-            {/* Left vertical drop — extends to bottom edge flowing into column */}
-            <line x1="150" y1="20" x2="150" y2="50" stroke="#E5E7EB" strokeWidth="1" />
-            {/* Right vertical drop */}
-            <line x1="450" y1="20" x2="450" y2="50" stroke="#E5E7EB" strokeWidth="1" />
-
-            {/* Active branch highlight */}
-            <motion.path
-              d={activeSide === "left"
-                ? "M 300,0 L 300,20 L 150,20 L 150,50"
-                : "M 300,0 L 300,20 L 450,20 L 450,50"
-              }
-              fill="none"
-              stroke="#374151"
-              strokeWidth="1.5"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 0.6 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              key={`path-${activeSide}`}
-            />
-
-            {/* Animated traveling dot */}
-            <motion.circle
-              r="4"
-              fill="#111827"
-              initial={false}
-              animate={
-                activeSide === "left"
-                  ? { cx: [300, 300, 150, 150], cy: [0, 20, 20, 50], opacity: [0, 1, 1, 1] }
-                  : { cx: [300, 300, 450, 450], cy: [0, 20, 20, 50], opacity: [0, 1, 1, 1] }
-              }
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              key={activeSide}
-            />
-            {/* Glow */}
-            <motion.circle
-              r="8"
-              fill="none"
-              stroke="#111827"
-              strokeWidth="1"
-              initial={false}
-              animate={
-                activeSide === "left"
-                  ? { cx: [300, 300, 150, 150], cy: [0, 20, 20, 50], opacity: [0, 0.3, 0.2, 0] }
-                  : { cx: [300, 300, 450, 450], cy: [0, 20, 20, 50], opacity: [0, 0.3, 0.2, 0] }
-              }
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              key={`glow-${activeSide}`}
-            />
-          </svg>
+        <div className="relative mt-2">
+          {/* Center stem */}
+          <div className="mx-auto w-px h-5" style={{ background: "#E5E7EB" }} />
+          {/* Fork node */}
+          <div className="mx-auto w-1.5 h-1.5 rounded-full" style={{ background: "#E5E7EB", border: "0.5px solid #D1D5DB" }} />
+          {/* Horizontal bar spanning across both columns */}
+          <div className="mx-auto h-px" style={{ background: "#E5E7EB", width: "60%", maxWidth: "600px" }} />
+          {/* Two vertical drops into columns */}
+          <div className="flex justify-between mx-auto" style={{ width: "60%", maxWidth: "600px" }}>
+            <div className="w-px h-8" style={{ background: activeSide === "left" ? "#374151" : "#E5E7EB", transition: "background 0.5s" }} />
+            <div className="w-px h-8" style={{ background: activeSide === "right" ? "#374151" : "#E5E7EB", transition: "background 0.5s" }} />
+          </div>
         </div>
 
-
         {/* ── TWO LANES ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mt-0">
 
           {/* ── LEFT: Without Medient ── */}
           <motion.div
