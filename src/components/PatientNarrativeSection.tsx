@@ -363,6 +363,7 @@ const PatientNarrativeSection = () => {
               <ScreeningNode label="LDCT Scan" sublabel="Order generated with full provenance trail" color={GREEN} status="Ordered" delay={0.8} inView={inView} />
             </div>
 
+            <div className="flex-1" />
             <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1.4 }}
               className="mt-6 border p-4 text-center w-full max-w-sm relative z-10" style={{ borderColor: `${POSITIVE}25`, background: "#F0FDF4" }}>
               <p className="text-xs uppercase tracking-[0.15em] mb-1" style={{ color: POSITIVE }}>Same Visit</p>
