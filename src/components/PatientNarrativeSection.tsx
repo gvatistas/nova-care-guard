@@ -33,60 +33,118 @@ const FACET_FILLS = [
   [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#E5E7EB" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#D1D5DB" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#E5E7EB" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#F3F4F6" }],
 ];
 
-/* ── Background: geometric line pattern (SVG-based, no canvas) ── */
+/* ── Animated geometric decision-network background ── */
 const EngineBackground: FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf: number;
+    let t = 0;
+
+    // Node positions in % coordinates
+    const nodes = [
+      { x: 10, y: 8 }, { x: 30, y: 12 }, { x: 50, y: 6 }, { x: 70, y: 14 }, { x: 90, y: 8 },
+      { x: 5, y: 25 }, { x: 20, y: 28 }, { x: 40, y: 22 }, { x: 60, y: 30 }, { x: 80, y: 24 }, { x: 95, y: 28 },
+      { x: 15, y: 42 }, { x: 35, y: 38 }, { x: 55, y: 44 }, { x: 75, y: 40 }, { x: 92, y: 42 },
+      { x: 8, y: 58 }, { x: 28, y: 55 }, { x: 48, y: 60 }, { x: 68, y: 56 }, { x: 88, y: 58 },
+      { x: 12, y: 74 }, { x: 32, y: 70 }, { x: 52, y: 76 }, { x: 72, y: 72 }, { x: 90, y: 74 },
+      { x: 6, y: 90 }, { x: 25, y: 88 }, { x: 45, y: 92 }, { x: 65, y: 86 }, { x: 85, y: 92 },
+    ];
+    const edges: [number, number][] = [
+      [0,1],[1,2],[2,3],[3,4],[0,6],[1,6],[1,7],[2,7],[2,8],[3,8],[3,9],[4,9],[4,10],
+      [5,6],[6,7],[7,8],[8,9],[9,10],
+      [5,11],[6,12],[7,12],[8,13],[9,14],[10,15],
+      [11,12],[12,13],[13,14],[14,15],
+      [11,16],[11,17],[12,17],[13,18],[14,19],[15,20],
+      [16,17],[17,18],[18,19],[19,20],
+      [16,21],[17,22],[18,23],[19,24],[20,25],
+      [21,22],[22,23],[23,24],[24,25],
+      [21,26],[22,27],[23,28],[24,29],[25,30],
+      [26,27],[27,28],[28,29],[29,30],
+    ];
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      ctx.scale(dpr, dpr);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const animate = () => {
+      raf = requestAnimationFrame(animate);
+      t += 0.004;
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw edges
+      edges.forEach(([a, b], i) => {
+        const ax = nodes[a].x * w / 100, ay = nodes[a].y * h / 100;
+        const bx = nodes[b].x * w / 100, by = nodes[b].y * h / 100;
+        ctx.strokeStyle = "rgba(5,150,105,0.08)";
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+
+        // Traveling pulse dot along each edge
+        const speed = 0.3 + (i % 5) * 0.08;
+        const phase = (i * 0.17 + t * speed) % 1;
+        const px = ax + (bx - ax) * phase;
+        const py = ay + (by - ay) * phase;
+        const alpha = Math.sin(phase * Math.PI) * 0.6;
+        ctx.fillStyle = `rgba(5,150,105,${alpha})`;
+        ctx.beginPath();
+        ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Draw nodes as small diamonds
+      nodes.forEach((n, i) => {
+        const nx = n.x * w / 100;
+        const ny = n.y * h / 100;
+        const pulse = Math.sin(t * 2 + i * 0.5) * 0.5 + 0.5;
+        const sz = 2.5 + pulse * 1;
+
+        ctx.save();
+        ctx.translate(nx, ny);
+        ctx.rotate(Math.PI / 4);
+        ctx.fillStyle = `rgba(5,150,105,${0.06 + pulse * 0.06})`;
+        ctx.fillRect(-sz, -sz, sz * 2, sz * 2);
+        ctx.strokeStyle = `rgba(5,150,105,${0.15 + pulse * 0.1})`;
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(-sz, -sz, sz * 2, sz * 2);
+        ctx.restore();
+      });
+
+      // Corner brackets
+      const bl = 16;
+      ctx.strokeStyle = "rgba(5,150,105,0.12)";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, bl); ctx.lineTo(0, 0); ctx.lineTo(bl, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w - bl, 0); ctx.lineTo(w, 0); ctx.lineTo(w, bl); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, h - bl); ctx.lineTo(0, h); ctx.lineTo(bl, h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w - bl, h); ctx.lineTo(w, h); ctx.lineTo(w, h - bl); ctx.stroke();
+    };
+    animate();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.5 }}>
-      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 100">
-        {/* Primary diagonal grid */}
-        {Array.from({ length: 12 }).map((_, i) => (
-          <line key={`d1-${i}`} x1={i * 20 - 20} y1="0" x2={i * 20 + 40} y2="100"
-            stroke="#9CA3AF" strokeWidth="0.15" opacity="0.4" />
-        ))}
-        {Array.from({ length: 12 }).map((_, i) => (
-          <line key={`d2-${i}`} x1={i * 20 + 20} y1="0" x2={i * 20 - 40} y2="100"
-            stroke="#9CA3AF" strokeWidth="0.15" opacity="0.3" />
-        ))}
-        {/* Horizontal structure lines */}
-        {[15, 35, 50, 65, 85].map((y) => (
-          <line key={`h-${y}`} x1="0" y1={y} x2="200" y2={y}
-            stroke="#D1D5DB" strokeWidth="0.2" opacity="0.3" />
-        ))}
-        {/* Hexagonal / diamond nodes at intersections */}
-        {[
-          [30, 15], [70, 15], [110, 15], [150, 15],
-          [50, 35], [90, 35], [130, 35], [170, 35],
-          [20, 50], [60, 50], [100, 50], [140, 50], [180, 50],
-          [40, 65], [80, 65], [120, 65], [160, 65],
-          [30, 85], [70, 85], [110, 85], [150, 85],
-        ].map(([x, y], i) => (
-          <g key={`n-${i}`}>
-            <polygon
-              points={`${x},${y - 2.5} ${x + 2.5},${y} ${x},${y + 2.5} ${x - 2.5},${y}`}
-              fill="none" stroke="#9CA3AF" strokeWidth="0.3" opacity="0.35"
-            />
-          </g>
-        ))}
-        {/* Accent connecting lines between diamond nodes */}
-        {[
-          [30, 15, 50, 35], [70, 15, 50, 35], [70, 15, 90, 35],
-          [110, 15, 90, 35], [110, 15, 130, 35], [150, 15, 130, 35], [150, 15, 170, 35],
-          [50, 35, 60, 50], [90, 35, 100, 50], [130, 35, 140, 50], [170, 35, 180, 50],
-          [50, 35, 20, 50], [90, 35, 60, 50], [130, 35, 100, 50],
-          [20, 50, 40, 65], [60, 50, 40, 65], [60, 50, 80, 65],
-          [100, 50, 80, 65], [100, 50, 120, 65], [140, 50, 120, 65], [140, 50, 160, 65],
-          [40, 65, 30, 85], [80, 65, 70, 85], [120, 65, 110, 85], [160, 65, 150, 85],
-          [40, 65, 70, 85], [80, 65, 110, 85], [120, 65, 150, 85],
-        ].map(([x1, y1, x2, y2], i) => (
-          <line key={`c-${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
-            stroke="#6B7280" strokeWidth="0.2" opacity="0.2" />
-        ))}
-        {/* Corner brackets */}
-        <polyline points="0,8 0,0 8,0" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
-        <polyline points="192,0 200,0 200,8" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
-        <polyline points="0,92 0,100 8,100" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
-        <polyline points="192,100 200,100 200,92" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
-      </svg>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.7 }}>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </div>
   );
 };
