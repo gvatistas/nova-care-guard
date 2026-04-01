@@ -90,29 +90,25 @@ function mergeGeometries(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
   return merged;
 }
 
-/* ── Build segment-specific geometry — clean, broad silhouettes ── */
+/* ── Build segment-specific geometry — clean, simple silhouettes ── */
 function buildSegmentGeo(index: number): THREE.BufferGeometry {
   switch (index) {
     case 0: {
-      // Frontier Labs — Brain: two clean hemispheres
-      const left = new THREE.SphereGeometry(0.7, 16, 12, 0, Math.PI);
-      left.translate(-0.1, 0, 0);
-      const right = new THREE.SphereGeometry(0.7, 16, 12, 0, Math.PI);
-      right.rotateY(Math.PI);
-      right.translate(0.1, 0, 0);
-      const stem = new THREE.CylinderGeometry(0.08, 0.06, 0.4, 6);
-      stem.translate(0, -0.7, -0.1);
-      return mergeGeometries([left, right, stem]);
+      // Frontier Labs — Brain: smooth full sphere with a subtle center groove
+      const brain = new THREE.SphereGeometry(0.8, 24, 18);
+      // Slight squash to make it brain-shaped (wider than tall)
+      brain.scale(1.1, 0.95, 0.9);
+      return brain;
     }
     case 1: {
       // Clinical AI — Chip: flat board with raised core
-      const board = new THREE.BoxGeometry(1.4, 0.1, 1.4);
+      const board = new THREE.BoxGeometry(1.4, 0.12, 1.4);
       const core = new THREE.BoxGeometry(0.5, 0.3, 0.5);
-      core.translate(0, 0.15, 0);
+      core.translate(0, 0.18, 0);
       return mergeGeometries([board, core]);
     }
     case 2: {
-      // Clinical Networks & Clinics — Hospital: broad building with cross
+      // Clinical Networks & Clinics — Hospital: clean building with cross
       const main = new THREE.BoxGeometry(1.2, 1.0, 0.7);
       const wingL = new THREE.BoxGeometry(0.5, 0.7, 0.6);
       wingL.translate(-0.7, -0.15, 0);
@@ -125,24 +121,23 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return mergeGeometries([main, wingL, wingR, crossV, crossH]);
     }
     case 3: {
-      // Patients — Person: head + torso
-      const head = new THREE.SphereGeometry(0.3, 12, 10);
-      head.translate(0, 0.8, 0);
-      const body = new THREE.CylinderGeometry(0.25, 0.4, 0.9, 10);
-      body.translate(0, 0.1, 0);
-      return mergeGeometries([head, body]);
+      // Patients — Person: clean head + rounded torso
+      const head = new THREE.SphereGeometry(0.3, 16, 12);
+      head.translate(0, 0.75, 0);
+      const torso = new THREE.SphereGeometry(0.45, 16, 12);
+      torso.scale(0.8, 1.2, 0.6);
+      torso.translate(0, 0, 0);
+      return mergeGeometries([head, torso]);
     }
     case 4: {
-      // Pharmacies — Rx bottle
-      const bottle = new THREE.CylinderGeometry(0.4, 0.4, 1.0, 12);
-      const cap = new THREE.CylinderGeometry(0.35, 0.42, 0.2, 12);
-      cap.translate(0, 0.6, 0);
-      const label = new THREE.BoxGeometry(0.6, 0.4, 0.02);
-      label.translate(0, 0, 0.4);
-      return mergeGeometries([bottle, cap, label]);
+      // Pharmacies — Rx bottle: clean cylinder + cap
+      const bottle = new THREE.CylinderGeometry(0.4, 0.4, 1.0, 16);
+      const cap = new THREE.CylinderGeometry(0.42, 0.42, 0.15, 16);
+      cap.translate(0, 0.575, 0);
+      return mergeGeometries([bottle, cap]);
     }
     case 5: {
-      // Insurers — Shield
+      // Insurers — Shield: clean rounded shield
       const pts: THREE.Vector2[] = [
         new THREE.Vector2(0, -1.0),
         new THREE.Vector2(0.55, -0.5),
@@ -151,7 +146,7 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
         new THREE.Vector2(0.3, 0.75),
         new THREE.Vector2(0, 1.0),
       ];
-      const shield = new THREE.LatheGeometry(pts, 16);
+      const shield = new THREE.LatheGeometry(pts, 24);
       shield.scale(1, 1, 0.35);
       return shield;
     }
