@@ -118,73 +118,70 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
   }
 }
 
-/* ── Human wireframe body data (low-poly vertex mesh) ── */
-const BODY_VERTS: [number, number, number][] = [
-  // Head (0-7)
-  [0, 1.7, 0], [-0.12, 1.65, 0.1], [0.12, 1.65, 0.1], [-0.12, 1.65, -0.1], [0.12, 1.65, -0.1],
-  [-0.14, 1.55, 0.12], [0.14, 1.55, 0.12], [0, 1.5, 0.14],
-  // Neck (8-9)
-  [-0.06, 1.42, 0], [0.06, 1.42, 0],
-  // Shoulders (10-11)
-  [-0.38, 1.35, 0], [0.38, 1.35, 0],
-  // Upper chest (12-15)
-  [-0.3, 1.25, 0.12], [0.3, 1.25, 0.12], [-0.3, 1.25, -0.1], [0.3, 1.25, -0.1],
-  // Mid torso (16-19)
-  [-0.25, 1.05, 0.14], [0.25, 1.05, 0.14], [-0.25, 1.05, -0.12], [0.25, 1.05, -0.12],
-  // Waist (20-23)
-  [-0.2, 0.85, 0.1], [0.2, 0.85, 0.1], [-0.2, 0.85, -0.08], [0.2, 0.85, -0.08],
-  // Hips (24-27)
-  [-0.22, 0.72, 0.06], [0.22, 0.72, 0.06], [-0.22, 0.72, -0.06], [0.22, 0.72, -0.06],
-  // Upper arms (28-29)
-  [-0.52, 1.15, 0], [0.52, 1.15, 0],
-  // Elbows (30-31)
-  [-0.6, 0.95, 0.04], [0.6, 0.95, -0.04],
-  // Forearms (32-33)
-  [-0.62, 0.75, 0.02], [0.62, 0.75, -0.02],
-  // Hands (34-35)
-  [-0.58, 0.58, 0.04], [0.58, 0.58, -0.04],
-  // Upper legs (36-37)
-  [-0.16, 0.55, 0.04], [0.16, 0.55, 0.04],
-  // Knees (38-39)
-  [-0.15, 0.35, 0.06], [0.15, 0.35, 0.06],
-  // Lower legs (40-41)
-  [-0.14, 0.15, 0.03], [0.14, 0.15, 0.03],
-  // Feet (42-43)
-  [-0.16, 0.02, 0.08], [0.16, 0.02, 0.08],
-  // Extra mesh vertices for torso density (44-49)
-  [0, 1.3, 0.14], [0, 1.1, 0.16], [0, 0.9, 0.12], [0, 1.3, -0.12], [0, 1.1, -0.14], [0, 0.9, -0.1],
-  // Inner leg (50-53)
-  [-0.08, 0.45, 0.02], [0.08, 0.45, 0.02], [-0.1, 0.25, 0.04], [0.1, 0.25, 0.04],
+/* ── Human head wireframe data (low-poly vertex mesh) ── */
+const HEAD_VERTS: [number, number, number][] = [
+  // Crown (0-5)
+  [0, 1.0, 0],
+  [-0.3, 0.9, 0.2], [0.3, 0.9, 0.2], [-0.3, 0.9, -0.2], [0.3, 0.9, -0.2],
+  [0, 0.95, 0.3],
+  // Upper skull (6-13)
+  [-0.42, 0.7, 0.28], [0.42, 0.7, 0.28], [-0.42, 0.7, -0.28], [0.42, 0.7, -0.28],
+  [-0.35, 0.75, 0.35], [0.35, 0.75, 0.35], [-0.35, 0.75, -0.35], [0.35, 0.75, -0.35],
+  // Mid skull / temple (14-21)
+  [-0.48, 0.5, 0.3], [0.48, 0.5, 0.3], [-0.48, 0.5, -0.3], [0.48, 0.5, -0.3],
+  [-0.45, 0.5, 0.0], [0.45, 0.5, 0.0],
+  [0, 0.55, 0.45], [0, 0.55, -0.42],
+  // Eye line (22-27)
+  [-0.35, 0.38, 0.35], [0.35, 0.38, 0.35],
+  [-0.18, 0.4, 0.4], [0.18, 0.4, 0.4],
+  [-0.38, 0.38, -0.3], [0.38, 0.38, -0.3],
+  // Cheek / nose (28-33)
+  [-0.38, 0.22, 0.3], [0.38, 0.22, 0.3],
+  [0, 0.28, 0.48], // nose bridge
+  [0, 0.15, 0.5],  // nose tip
+  [-0.4, 0.22, -0.25], [0.4, 0.22, -0.25],
+  // Jaw (34-41)
+  [-0.35, 0.05, 0.25], [0.35, 0.05, 0.25],
+  [-0.35, 0.05, -0.2], [0.35, 0.05, -0.2],
+  [-0.2, -0.08, 0.2], [0.2, -0.08, 0.2],
+  [0, -0.12, 0.22], // chin
+  [0, -0.05, -0.18], // back jaw
+  // Neck (42-45)
+  [-0.2, -0.25, 0.12], [0.2, -0.25, 0.12],
+  [-0.2, -0.25, -0.12], [0.2, -0.25, -0.12],
+  // Extra structural (46-49)
+  [0, 0.7, 0.42], [0, 0.38, -0.4],
+  [-0.45, 0.35, 0], [0.45, 0.35, 0],
 ];
 
-const BODY_EDGES: [number, number][] = [
-  // Head mesh
-  [0,1],[0,2],[0,3],[0,4],[1,2],[3,4],[1,5],[2,6],[1,7],[2,7],[5,7],[6,7],[5,6],
-  [3,5],[4,6],
-  // Head to neck
-  [5,8],[6,9],[7,8],[7,9],[8,9],
-  // Neck to shoulders
-  [8,10],[9,11],[8,12],[9,13],
-  // Shoulder structure
-  [10,12],[10,14],[11,13],[11,15],[12,13],[14,15],[12,44],[13,44],[14,47],[15,47],
-  // Chest to mid torso
-  [12,16],[13,17],[14,18],[15,19],[16,17],[18,19],[44,45],[47,48],
-  [16,45],[17,45],[18,48],[19,48],
-  // Mid torso to waist
-  [16,20],[17,21],[18,22],[19,23],[20,21],[22,23],[45,46],[48,49],
-  [20,46],[21,46],[22,49],[23,49],
-  // Waist to hips
-  [20,24],[21,25],[22,26],[23,27],[24,25],[26,27],[24,26],[25,27],
-  // Arms
-  [10,28],[28,30],[30,32],[32,34],[11,29],[29,31],[31,33],[33,35],
-  // Hips to upper legs
-  [24,36],[25,37],[26,36],[27,37],
-  // Legs
-  [36,50],[37,51],[36,38],[37,39],[50,52],[51,53],[38,40],[39,41],[52,40],[53,41],
-  [40,42],[41,43],
-  // Cross braces for density
-  [12,14],[13,15],[16,18],[17,19],[20,22],[21,23],
-  [38,39],[40,41],[42,43],[50,51],[52,53],
+const HEAD_EDGES: [number, number][] = [
+  // Crown connections
+  [0,1],[0,2],[0,3],[0,4],[0,5],[1,2],[3,4],[1,3],[2,4],[1,5],[2,5],
+  // Crown to upper skull
+  [1,6],[1,10],[2,7],[2,11],[3,8],[3,12],[4,9],[4,13],[5,10],[5,11],
+  // Upper skull ring
+  [6,7],[6,10],[7,11],[8,9],[8,12],[9,13],[10,11],[12,13],[6,8],[7,9],
+  // Upper to mid skull
+  [6,14],[7,15],[8,16],[9,17],[6,18],[7,19],[10,20],[11,20],[12,21],[13,21],
+  [14,18],[15,19],[16,18],[17,19],[14,20],[15,20],[16,21],[17,21],
+  // Mid skull ring
+  [14,15],[16,17],[18,19],
+  // To eye line
+  [14,22],[15,23],[20,24],[20,25],[22,24],[23,25],[16,26],[17,27],
+  [46,10],[46,11],[46,20],[47,21],[47,26],[47,27],
+  [18,48],[19,49],[48,22],[49,23],[48,26],[49,27],
+  // Eye to cheek/nose
+  [22,28],[23,29],[24,30],[25,30],[30,31],[26,32],[27,33],
+  [22,30],[23,30],[28,31],[29,31],
+  // Cheek connections
+  [28,29],[32,33],[28,32],[29,33],[48,28],[49,29],[48,32],[49,33],
+  // To jaw
+  [28,34],[29,35],[32,36],[33,37],[31,40],[34,38],[35,39],[38,40],[39,40],
+  [34,36],[35,37],[36,37],[38,39],
+  [36,41],[37,41],[41,40],
+  // Jaw to neck
+  [34,42],[35,43],[36,44],[37,45],[38,42],[39,43],[40,42],[40,43],[41,44],[41,45],
+  [42,43],[44,45],[42,44],[43,45],
 ];
 
 function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial; pulseRings: THREE.Mesh[]; heartGlow: THREE.Mesh } {
@@ -192,12 +189,12 @@ function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wi
 
   // Center vertically
   const positions: number[] = [];
-  const cy = 0.86;
-  BODY_VERTS.forEach(([x, y, z]) => positions.push(x, y - cy, z));
+  const cy = 0.4;
+  HEAD_VERTS.forEach(([x, y, z]) => positions.push(x, y - cy, z));
 
   // Edge lines
   const linePositions: number[] = [];
-  BODY_EDGES.forEach(([a, b]) => {
+  HEAD_EDGES.forEach(([a, b]) => {
     linePositions.push(positions[a * 3], positions[a * 3 + 1], positions[a * 3 + 2]);
     linePositions.push(positions[b * 3], positions[b * 3 + 1], positions[b * 3 + 2]);
   });
@@ -209,14 +206,14 @@ function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wi
   // Vertex points
   const pointGeo = new THREE.BufferGeometry();
   pointGeo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.06, transparent: true, opacity: 0.8, sizeAttenuation: true });
+  const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.04, transparent: true, opacity: 0.8, sizeAttenuation: true });
   group.add(new THREE.Points(pointGeo, pointMat));
 
-  // Pulse rings at key body scan points (head, chest, waist)
+  // Pulse rings scanning the head (top, eyes, jaw)
   const ringPositions = [
-    { y: 1.7 - cy, scale: 0.18 },  // Head
-    { y: 1.25 - cy, scale: 0.35 }, // Chest
-    { y: 0.85 - cy, scale: 0.25 }, // Waist
+    { y: 0.85 - cy, scale: 0.35 },
+    { y: 0.4 - cy, scale: 0.45 },
+    { y: 0.0 - cy, scale: 0.35 },
   ];
   const pulseRings: THREE.Mesh[] = [];
   ringPositions.forEach(({ y, scale }) => {
@@ -229,15 +226,14 @@ function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wi
     pulseRings.push(ring);
   });
 
-  // Heart glow sphere at chest center
-  const heartGeo = new THREE.SphereGeometry(0.08, 16, 16);
+  // Glow at center of head (brain area)
+  const heartGeo = new THREE.SphereGeometry(0.1, 16, 16);
   const heartMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0 });
   const heartGlow = new THREE.Mesh(heartGeo, heartMat);
-  heartGlow.position.set(0, 1.25 - cy, 0.12);
+  heartGlow.position.set(0, 0.55 - cy, 0);
   group.add(heartGlow);
 
-  // Scale to fit
-  group.scale.set(1.4, 1.4, 1.4);
+  group.scale.set(1.6, 1.6, 1.6);
 
   return { group, wireMat, pointMat, pulseRings, heartGlow };
 }
