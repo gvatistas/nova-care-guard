@@ -1,293 +1,458 @@
-import { type FC } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import * as THREE from "three";
 
-/* ── Diagnostic card data ── */
-const CARDS: {
-  label: string;
-  status: string;
-  statusLabel: string;
-  color: string;
-  // Position relative to silhouette viewBox (0-400 x, 0-700 y)
-  anchorX: number;
-  anchorY: number;
-  cardSide: "left" | "right";
-}[] = [
-  {
-    label: "Depression Screen",
-    status: "OPTIMIZED",
-    statusLabel: "PHQ-9 due",
-    color: "#EA580C",
-    anchorX: 200,
-    anchorY: 65,
-    cardSide: "right",
-  },
-  {
-    label: "LDCT Screening",
-    status: "COMPILED",
-    statusLabel: "Scheduled",
-    color: "#059669",
-    anchorX: 240,
-    anchorY: 195,
-    cardSide: "right",
-  },
-  {
-    label: "BP + Lipid Panel",
-    status: "MISSED",
-    statusLabel: "Unreviewed",
-    color: "#DC2626",
-    anchorX: 160,
-    anchorY: 210,
-    cardSide: "left",
-  },
-  {
-    label: "HbA1c",
-    status: "FLAGGED",
-    statusLabel: "6.1% Pre-diabetic",
-    color: "#D97706",
-    anchorX: 135,
-    anchorY: 290,
-    cardSide: "left",
-  },
-  {
-    label: "Colonoscopy",
-    status: "VERIFIED",
-    statusLabel: "Age + risk matched",
-    color: "#0D9488",
-    anchorX: 230,
-    anchorY: 380,
-    cardSide: "right",
-  },
-];
+const BG = 0xe5e7eb;
 
-/* ── Scan line animation ── */
-const ScanLine: FC = () => (
-  <motion.rect
-    x="100"
-    y="0"
-    width="200"
-    height="2"
-    rx="1"
-    fill="#9CA3AF"
-    opacity={0.3}
-    animate={{ y: [20, 580, 20] }}
-    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-  />
-);
-
-/* ── Human silhouette path ── */
-const SILHOUETTE_PATH = `
-  M 200,20
-  C 220,20 240,35 240,60
-  C 240,85 225,95 215,100
-  L 220,105
-  C 265,115 290,140 290,170
-  L 290,260
-  C 290,270 285,275 280,275
-  L 260,275
-  L 265,440
-  C 267,460 260,470 245,470
-  L 230,470
-  C 220,470 215,460 215,450
-  L 210,320
-  L 200,320
-  L 190,320
-  L 185,450
-  C 185,460 180,470 170,470
-  L 155,470
-  C 140,470 133,460 135,440
-  L 140,275
-  L 120,275
-  C 115,275 110,270 110,260
-  L 110,170
-  C 110,140 135,115 180,105
-  L 185,100
-  C 175,95 160,85 160,60
-  C 160,35 180,20 200,20
-  Z
-`;
-
-/* ── Diagnostic Card Component ── */
-const DiagCard: FC<{
-  card: typeof CARDS[0];
-  index: number;
-}> = ({ card, index }) => {
-  // Card positions outside silhouette
-  const cardX = card.cardSide === "right" ? 310 : -110;
-  const cardY = card.anchorY - 20;
-  const lineEndX = card.cardSide === "right" ? 310 : 90;
-
-  return (
-    <motion.g
-      initial={{ opacity: 0, x: card.cardSide === "right" ? 20 : -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: 0.8 + index * 0.3 }}
-    >
-      {/* Dashed connecting line */}
-      <line
-        x1={card.anchorX}
-        y1={card.anchorY}
-        x2={lineEndX}
-        y2={cardY + 20}
-        stroke="#9CA3AF"
-        strokeWidth="1"
-        strokeDasharray="4 3"
-        opacity={0.5}
-      />
-      {/* Small dot on body */}
-      <circle cx={card.anchorX} cy={card.anchorY} r="3" fill={card.color} opacity={0.8} />
-      <circle cx={card.anchorX} cy={card.anchorY} r="6" fill={card.color} opacity={0.15} />
-
-      {/* Card background */}
-      <foreignObject x={cardX} y={cardY} width="200" height="56">
-        <div
-          style={{
-            background: "#FFFFFF",
-            border: "1px solid #E5E7EB",
-            borderRadius: "6px",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-            display: "flex",
-            overflow: "hidden",
-            height: "100%",
-          }}
-        >
-          {/* Color bar */}
-          <div style={{ width: 3, background: card.color, flexShrink: 0 }} />
-          <div style={{ padding: "8px 10px", flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: card.color,
-                  display: "inline-block",
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#111827", letterSpacing: "-0.01em" }}>
-                {card.label}
-              </span>
-            </div>
-            <p style={{ fontSize: 9.5, color: card.color, fontWeight: 500, marginTop: 3, letterSpacing: "0.02em" }}>
-              {card.status} → {card.statusLabel}
-            </p>
-          </div>
-        </div>
-      </foreignObject>
-    </motion.g>
-  );
-};
-
-/* ── Main Hero Section ── */
 const HeroSection = () => {
+  const mountRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = mountRef.current;
+    if (!container) return;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(BG, 1);
+    container.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(BG, 0.004);
+    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 800);
+    camera.position.set(0, 0, 0);
+    camera.lookAt(0, 0, -100);
+
+    const disposables: { dispose: () => void }[] = [];
+
+    // ─── Grid floor + ceiling ───
+    const GRID_W = 60;
+    const GRID_D = 120;
+    const SPACING = 2.5;
+
+    const createGridPlane = (yOffset: number, flip: boolean) => {
+      const group = new THREE.Group();
+      const positions: number[] = [];
+      // Longitudinal lines
+      for (let x = -GRID_W / 2; x <= GRID_W / 2; x += 2) {
+        const xp = x * SPACING;
+        positions.push(xp, 0, 0, xp, 0, -GRID_D * SPACING);
+      }
+      // Lateral lines
+      for (let z = 0; z <= GRID_D; z += 2) {
+        const zp = -z * SPACING;
+        positions.push((-GRID_W / 2) * SPACING, 0, zp, (GRID_W / 2) * SPACING, 0, zp);
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+      const mat = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        uniforms: { uCamZ: { value: 0 } },
+        vertexShader: `
+          varying float vFade;
+          uniform float uCamZ;
+          void main() {
+            vec4 wp = modelMatrix * vec4(position, 1.0);
+            float d = abs(wp.z - uCamZ);
+            vFade = smoothstep(0.0, 30.0, d) * (1.0 - smoothstep(180.0, 280.0, d));
+            gl_Position = projectionMatrix * viewMatrix * wp;
+          }
+        `,
+        fragmentShader: `
+          varying float vFade;
+          void main() {
+            gl_FragColor = vec4(0.42, 0.44, 0.50, vFade * 0.05);
+          }
+        `,
+      });
+      group.add(new THREE.LineSegments(geo, mat));
+      disposables.push(geo, mat);
+      group.position.y = yOffset;
+      if (flip) group.scale.y = -1;
+      return { group, mat };
+    };
+
+    const floor = createGridPlane(-16, false);
+    const ceiling = createGridPlane(16, true);
+    scene.add(floor.group, ceiling.group);
+
+    // ─── Decision tree generation ───
+    const HALF_W = GRID_W / 2;
+    const gridToWorld = (gx: number, gz: number, y: number) =>
+      new THREE.Vector3(gx * SPACING, y, -gz * SPACING);
+
+    interface Edge { from: number[]; to: number[]; outcome: number }
+    interface Node { pos: number[]; outcome: number; depth: number }
+
+    const allEdges: Edge[] = [];
+    const allNodes: Node[] = [];
+
+    const seeded = (s: number) => {
+      let h = Math.imul(s ^ 0x5bd1e995, 0x5bd1e995);
+      h = ((h >>> 13) ^ h) * 0x5bd1e995;
+      return ((h >>> 15) ^ h) >>> 0;
+    };
+
+    const ROOTS = [
+      { gx: -8, gz: 6, y: -16 },
+      { gx: 10, gz: 14, y: -16 },
+      { gx: -18, gz: 30, y: -16 },
+      { gx: 4, gz: 45, y: -16 },
+      { gx: -14, gz: 60, y: -16 },
+      { gx: 16, gz: 75, y: -16 },
+      { gx: -6, gz: 90, y: -16 },
+      { gx: 6, gz: 10, y: 16 },
+      { gx: -16, gz: 25, y: 16 },
+      { gx: 14, gz: 42, y: 16 },
+      { gx: -4, gz: 58, y: 16 },
+      { gx: 18, gz: 72, y: 16 },
+    ];
+
+    ROOTS.forEach((root, ri) => {
+      const build = (gx: number, gz: number, y: number, depth: number, outcome: number, seed: number) => {
+        if (depth > 6 || gx < -HALF_W || gx > HALF_W || gz > GRID_D) return;
+        const pos = [gx * SPACING, y, -gz * SPACING];
+        allNodes.push({ pos, outcome, depth });
+        const branches = depth < 2 ? 3 : seeded(seed + depth) % 3 === 0 ? 3 : 2;
+        for (let b = 0; b < branches; b++) {
+          const s = seeded(seed * 31 + b * 97 + depth * 13);
+          const dz = 2 + (s % 3);
+          const dx = ((s >> 4) % 5) - 2;
+          const ngx = gx + dx;
+          const ngz = gz + dz;
+          if (ngx < -HALF_W || ngx > HALF_W || ngz > GRID_D) continue;
+          const childOutcome = (s % 100) / 100 > 0.8 ? 0.9 : Math.max(0, outcome * 0.5);
+          const childPos = [ngx * SPACING, y, -ngz * SPACING];
+          allEdges.push({ from: pos, to: childPos, outcome: childOutcome });
+          allNodes.push({ pos: childPos, outcome: childOutcome, depth: depth + 1 });
+          build(ngx, ngz, y, depth + 1, childOutcome, s);
+        }
+      };
+      build(root.gx, root.gz, root.y, 0, 0.3 + (ri % 3) * 0.15, ri * 1337 + 42);
+    });
+
+    // ─── Edge lines ───
+    const edgePos: number[] = [];
+    const edgeOut: number[] = [];
+    allEdges.forEach((e) => {
+      edgePos.push(...e.from, ...e.to);
+      edgeOut.push(e.outcome, e.outcome);
+    });
+    const edgeGeo = new THREE.BufferGeometry();
+    edgeGeo.setAttribute("position", new THREE.Float32BufferAttribute(edgePos, 3));
+    edgeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(edgeOut, 1));
+    const edgeMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
+      vertexShader: `
+        attribute float outcome;
+        varying float vOut, vDist;
+        uniform float uCamZ;
+        void main() {
+          vOut = outcome;
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          vDist = abs(wp.z - uCamZ);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `,
+      fragmentShader: `
+        varying float vOut, vDist;
+        uniform float uTime;
+        void main() {
+          float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 280.0, vDist));
+          float pulse = 0.7 + 0.3 * sin(uTime * 2.0 + vDist * 0.05);
+          vec3 col = mix(vec3(0.22, 0.25, 0.32), vec3(0.55, 0.58, 0.64), vOut);
+          gl_FragColor = vec4(col, fade * pulse * 0.14);
+        }
+      `,
+    });
+    scene.add(new THREE.LineSegments(edgeGeo, edgeMat));
+    disposables.push(edgeGeo, edgeMat);
+
+    // ─── Decision nodes ───
+    const nodePos: number[] = [];
+    const nodeOut: number[] = [];
+    const nodeDepth: number[] = [];
+    allNodes.forEach((n) => {
+      nodePos.push(...n.pos);
+      nodeOut.push(n.outcome);
+      nodeDepth.push(n.depth);
+    });
+    const nodeGeo = new THREE.BufferGeometry();
+    nodeGeo.setAttribute("position", new THREE.Float32BufferAttribute(nodePos, 3));
+    nodeGeo.setAttribute("outcome", new THREE.Float32BufferAttribute(nodeOut, 1));
+    nodeGeo.setAttribute("depth", new THREE.Float32BufferAttribute(nodeDepth, 1));
+    const nodeMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: { uTime: { value: 0 }, uCamZ: { value: 0 } },
+      vertexShader: `
+        attribute float outcome, depth;
+        varying float vOut, vAlpha;
+        uniform float uTime, uCamZ;
+        void main() {
+          vOut = outcome;
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          float d = abs(wp.z - uCamZ);
+          float df = smoothstep(5.0, 20.0, d) * (1.0 - smoothstep(140.0, 240.0, d));
+          float pulse = 0.5 + 0.5 * sin(uTime * 2.5 + depth * 1.8 + position.x * 0.4);
+          vAlpha = df * pulse;
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          float sz = mix(7.0, 3.5, depth / 6.0);
+          gl_PointSize = max(2.0, sz * df * (140.0 / -mv.z));
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        varying float vOut, vAlpha;
+        void main() {
+          float d = length(gl_PointCoord - 0.5) * 2.0;
+          if (d > 1.0) discard;
+          float core = exp(-d * d * 4.0);
+          float halo = exp(-d * d * 1.2) * 0.3;
+          vec3 col = mix(vec3(0.07, 0.09, 0.15), vec3(0.55, 0.58, 0.64), vOut);
+          gl_FragColor = vec4(col * (core + halo), (core + halo) * vAlpha * 0.6);
+        }
+      `,
+    });
+    scene.add(new THREE.Points(nodeGeo, nodeMat));
+    disposables.push(nodeGeo, nodeMat);
+
+    // ─── Traveling pulses along edges ───
+    const PULSE_COUNT = 300;
+    const pulsePositions = new Float32Array(PULSE_COUNT * 3);
+    const pulseProgress = new Float32Array(PULSE_COUNT);
+    const pulseEdgeIdx = new Int32Array(PULSE_COUNT);
+    const pulseSpeed = new Float32Array(PULSE_COUNT);
+    const totalEdges = edgePos.length / 6;
+
+    for (let i = 0; i < PULSE_COUNT; i++) {
+      pulseEdgeIdx[i] = Math.floor(Math.random() * totalEdges);
+      pulseProgress[i] = Math.random();
+      pulseSpeed[i] = 0.005 + Math.random() * 0.015;
+    }
+    const pulseGeo = new THREE.BufferGeometry();
+    pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulsePositions, 3));
+    const pulseMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: { uCamZ: { value: 0 } },
+      vertexShader: `
+        varying float vAlpha;
+        uniform float uCamZ;
+        void main() {
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          float d = abs(wp.z - uCamZ);
+          vAlpha = smoothstep(5.0, 15.0, d) * (1.0 - smoothstep(150.0, 260.0, d));
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = max(3.0, 8.0 * vAlpha * (130.0 / -mv.z));
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        varying float vAlpha;
+        void main() {
+          float d = length(gl_PointCoord - 0.5) * 2.0;
+          if (d > 1.0) discard;
+          float core = exp(-d * d * 2.5);
+          float glow = exp(-d * 0.7) * 0.5;
+          vec3 col = vec3(0.42, 0.45, 0.52);
+          float bright = core + glow;
+          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.7);
+        }
+      `,
+    });
+    scene.add(new THREE.Points(pulseGeo, pulseMat));
+    disposables.push(pulseGeo, pulseMat);
+
+    // ─── Ambient dust ───
+    const DUST = 400;
+    const dustPos = new Float32Array(DUST * 3);
+    const dustVel = new Float32Array(DUST * 3);
+    for (let i = 0; i < DUST; i++) {
+      dustPos[i * 3] = (Math.random() - 0.5) * 100;
+      dustPos[i * 3 + 1] = (Math.random() - 0.5) * 30;
+      dustPos[i * 3 + 2] = -Math.random() * 220;
+      dustVel[i * 3] = (Math.random() - 0.5) * 0.003;
+      dustVel[i * 3 + 1] = (Math.random() - 0.5) * 0.002;
+      dustVel[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
+    }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+    const dustMat = new THREE.PointsMaterial({
+      size: 0.08,
+      color: 0x6b7280,
+      transparent: true,
+      opacity: 0.025,
+      sizeAttenuation: true,
+    });
+    scene.add(new THREE.Points(dustGeo, dustMat));
+    disposables.push(dustGeo, dustMat);
+
+    // ─── Mouse + resize ───
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    const onMouseMove = (e: MouseEvent) => {
+      mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener("mousemove", onMouseMove);
+    const onResize = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener("resize", onResize);
+
+    // ─── Animation loop ───
+    let raf = 0;
+    let frame = 0;
+
+    const animate = () => {
+      raf = requestAnimationFrame(animate);
+      frame++;
+      const t = frame * 0.001;
+
+      mouse.x += (mouse.tx - mouse.x) * 0.015;
+      mouse.y += (mouse.ty - mouse.y) * 0.015;
+
+      const camZ = -t * 3;
+      camera.position.z = camZ;
+      camera.position.x = mouse.x * 3;
+      camera.position.y = mouse.y * -1.5;
+      camera.lookAt(camera.position.x * 0.3, 0, camZ - 100);
+
+      const time = t * 3;
+
+      // Update uniforms
+      [floor.mat, ceiling.mat].forEach((m) => {
+        (m.uniforms as any).uCamZ.value = camZ;
+      });
+      (edgeMat.uniforms as any).uTime.value = time;
+      (edgeMat.uniforms as any).uCamZ.value = camZ;
+      (nodeMat.uniforms as any).uTime.value = time;
+      (nodeMat.uniforms as any).uCamZ.value = camZ;
+      (pulseMat.uniforms as any).uCamZ.value = camZ;
+
+      // Animate pulses along edges
+      const pArr = pulseGeo.attributes.position.array as Float32Array;
+      for (let i = 0; i < PULSE_COUNT; i++) {
+        pulseProgress[i] += pulseSpeed[i];
+        if (pulseProgress[i] > 1) {
+          pulseProgress[i] = 0;
+          pulseEdgeIdx[i] = Math.floor(Math.random() * totalEdges);
+        }
+        const ei = pulseEdgeIdx[i] * 6;
+        const pr = pulseProgress[i];
+        pArr[i * 3] = edgePos[ei] + (edgePos[ei + 3] - edgePos[ei]) * pr;
+        pArr[i * 3 + 1] = edgePos[ei + 1] + (edgePos[ei + 4] - edgePos[ei + 1]) * pr;
+        pArr[i * 3 + 2] = edgePos[ei + 2] + (edgePos[ei + 5] - edgePos[ei + 2]) * pr;
+      }
+      pulseGeo.attributes.position.needsUpdate = true;
+
+      // Animate dust
+      const dArr = dustGeo.attributes.position.array as Float32Array;
+      for (let i = 0; i < DUST; i++) {
+        dArr[i * 3] += dustVel[i * 3];
+        dArr[i * 3 + 1] += dustVel[i * 3 + 1];
+        dArr[i * 3 + 2] += dustVel[i * 3 + 2];
+        if (dArr[i * 3 + 2] > camZ + 10) {
+          dArr[i * 3] = (Math.random() - 0.5) * 100;
+          dArr[i * 3 + 1] = (Math.random() - 0.5) * 30;
+          dArr[i * 3 + 2] = camZ - 160 - Math.random() * 60;
+        }
+      }
+      dustGeo.attributes.position.needsUpdate = true;
+
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("mousemove", onMouseMove);
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
+      disposables.forEach((d) => d.dispose());
+    };
+  }, []);
+
   return (
-    <section className="relative min-h-screen overflow-hidden" style={{ background: "#E5E7EB" }}>
-      <div className="relative z-10 flex h-screen w-full items-center">
-        <div className="max-w-[1440px] mx-auto px-8 w-full grid grid-cols-1 lg:grid-cols-[45%_55%] gap-8 items-center">
+    <section className="relative h-screen overflow-hidden" style={{ background: "#E5E7EB" }}>
+      <div ref={mountRef} className="absolute inset-0 z-0" />
 
-          {/* ── Left: Text + Buttons ── */}
-          <div className="flex flex-col justify-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="font-light"
-              style={{
-                fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)",
-                lineHeight: 1.08,
-                letterSpacing: "-0.03em",
-                color: "#111827",
-              }}
-            >
-              Unlocking proactive healthcare for all.
-            </motion.h1>
+      {/* Central vignette for text readability */}
+      <div
+        className="absolute inset-0 z-[5] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 50% 45% at 50% 48%, rgba(229,231,235,0.88) 0%, rgba(229,231,235,0.55) 40%, rgba(229,231,235,0.2) 70%, transparent 100%)",
+        }}
+      />
 
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="mt-6 text-base"
-              style={{ lineHeight: 1.7, letterSpacing: "-0.01em", color: "#374151", maxWidth: 480 }}
-            >
+      {/* Hero content */}
+      <div className="relative z-10 flex h-full w-full items-center justify-center">
+        <div className="max-w-3xl flex flex-col items-center text-center px-6">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.3 }}
+            className="font-light"
+            style={{
+              fontSize: "clamp(2.5rem, 5vw, 4rem)",
+              lineHeight: 1.08,
+              letterSpacing: "-0.03em",
+              color: "#111827",
+            }}
+          >
+            Unlocking proactive healthcare for all.
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="mt-8 text-lg"
+            style={{
+              maxWidth: 1280,
+              lineHeight: 1.7,
+              letterSpacing: "-0.01em",
+              color: "#374151",
+            }}
+          >
+            <p>
               Medient compiles all clinical guidelines into deterministic,
               verified decision infrastructure; bridging AI and
               evidence-based care across all data sources, EHRs and
               patient encounters.
-            </motion.p>
+            </p>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-10 flex flex-row gap-5"
-            >
-              <a
-                href="#contact"
-                className="group relative text-[13px] font-semibold uppercase text-white px-8 py-3.5 transition-all duration-500 overflow-hidden hover:bg-[#374151]"
-                style={{ letterSpacing: "0.08em", backgroundColor: "#111827" }}
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                <span className="relative z-10">Request Demo</span>
-              </a>
-              <a
-                href="#pipeline"
-                className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden border hover:bg-[#111827] hover:text-white hover:border-[#111827]"
-                style={{ letterSpacing: "0.08em", color: "#374151", borderColor: "#374151" }}
-              >
-                <span className="relative z-10 transition-colors duration-300">Read White Paper</span>
-              </a>
-            </motion.div>
-          </div>
-
-          {/* ── Right: Patient Scan Visual ── */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.4 }}
-            className="hidden lg:flex items-center justify-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="mt-12 flex flex-row gap-6"
           >
-            <svg
-              viewBox="-120 -10 640 520"
-              className="w-full"
-              style={{ maxHeight: "80vh", maxWidth: 600 }}
+            <a
+              href="#contact"
+              className="group relative text-[13px] font-semibold uppercase text-white px-8 py-3.5 transition-all duration-500 overflow-hidden hover:bg-[#374151]"
+              style={{ letterSpacing: "0.08em", backgroundColor: "#111827" }}
             >
-              {/* Scan grid overlay */}
-              <defs>
-                <pattern id="scan-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#9CA3AF" strokeWidth="0.4" opacity="0.15" />
-                </pattern>
-                <clipPath id="body-clip">
-                  <path d={SILHOUETTE_PATH} />
-                </clipPath>
-              </defs>
-
-              {/* Silhouette */}
-              <path
-                d={SILHOUETTE_PATH}
-                fill="#374151"
-                opacity={0.6}
-              />
-
-              {/* Grid inside body */}
-              <rect
-                x="100"
-                y="10"
-                width="210"
-                height="470"
-                fill="url(#scan-grid)"
-                clipPath="url(#body-clip)"
-              />
-
-              {/* Scan line */}
-              <g clipPath="url(#body-clip)">
-                <ScanLine />
-              </g>
-
-              {/* Diagnostic cards */}
-              {CARDS.map((card, i) => (
-                <DiagCard key={card.label} card={card} index={i} />
-              ))}
-            </svg>
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="relative z-10">Request Demo</span>
+            </a>
+            <a
+              href="#pipeline"
+              className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden border hover:bg-[#111827] hover:text-white hover:border-[#111827]"
+              style={{ letterSpacing: "0.08em", color: "#374151", borderColor: "#374151" }}
+            >
+              <span className="relative z-10 transition-colors duration-300">Read White Paper</span>
+            </a>
           </motion.div>
         </div>
       </div>
@@ -299,7 +464,10 @@ const HeroSection = () => {
         transition={{ delay: 2.5, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] font-medium uppercase" style={{ letterSpacing: "0.3em", color: "rgba(107,114,128,0.5)" }}>
+        <span
+          className="text-[10px] font-medium uppercase"
+          style={{ letterSpacing: "0.3em", color: "rgba(107,114,128,0.5)" }}
+        >
           Scroll to explore
         </span>
         <motion.span
