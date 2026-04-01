@@ -456,29 +456,6 @@ const HeroSection = () => {
           </motion.div>
         </div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
-      >
-        <span
-          className="text-[10px] font-medium uppercase"
-          style={{ letterSpacing: "0.3em", color: "rgba(107,114,128,0.5)" }}
-        >
-          Scroll to explore
-        </span>
-        <motion.span
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ color: "rgba(107,114,128,0.5)" }}
-          className="text-sm"
-        >
-          ▾
-        </motion.span>
-      </motion.div>
     </section>
   );
 };
