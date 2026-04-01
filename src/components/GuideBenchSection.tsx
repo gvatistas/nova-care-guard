@@ -11,11 +11,10 @@ const guidelines = [
 ];
 
 const benchmarks = [
-  { label: "Medient", score: 98.7, color: "#c8d6e5" },
-  { label: "Industry Avg", score: 72.3, color: "rgba(255,255,255,0.12)" },
+  { label: "Medient", score: 98.7, color: "#2563EB" },
+  { label: "Industry Avg", score: 72.3, color: "#1E293B" },
 ];
 
-/* ── Verification brain — shapeshifting geometric entity ── */
 const SHAPES = [
   "M 50,15 L 90,5 L 130,15 L 150,50 L 130,85 L 90,95 L 50,85 L 30,50 Z",
   "M 90,5 L 150,30 L 160,70 L 130,95 L 50,95 L 20,70 L 30,30 Z",
@@ -48,7 +47,6 @@ const VerificationBrain: FC<{ activeRow: number }> = ({ activeRow }) => {
   }, []);
 
   const nextIdx = (idx + 1) % SHAPES.length;
-  // Pulse intensity based on active row verification
   const pulseIntensity = 0.3 + (activeRow % 6) * 0.1;
 
   return (
@@ -61,59 +59,54 @@ const VerificationBrain: FC<{ activeRow: number }> = ({ activeRow }) => {
             <feMerge><feMergeNode in="blur1" /><feMergeNode in="blur2" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <radialGradient id="brain-inner" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            <stop offset="0%" stopColor="#2563EB" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="brain-sweep" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0">
+            <stop offset="0%" stopColor="#2563EB" stopOpacity="0">
               <animate attributeName="stopOpacity" values="0;0.12;0" dur="3.5s" repeatCount="indefinite" />
             </stop>
-            <stop offset="50%" stopColor="#ffffff" stopOpacity="0.06">
+            <stop offset="50%" stopColor="#2563EB" stopOpacity="0.06">
               <animate attributeName="stopOpacity" values="0.06;0.2;0.06" dur="3.5s" repeatCount="indefinite" />
             </stop>
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="0">
+            <stop offset="100%" stopColor="#2563EB" stopOpacity="0">
               <animate attributeName="stopOpacity" values="0;0.08;0" dur="3.5s" repeatCount="indefinite" />
             </stop>
           </linearGradient>
         </defs>
 
-        {/* Orbital rings */}
         <g style={{ transformOrigin: "90px 50px", transform: `rotate(${rotation}deg)` }}>
-          <circle cx="90" cy="50" r="46" fill="none" stroke="white" strokeWidth="0.3" opacity="0.05" strokeDasharray="6 10" />
-          <circle cx="90" cy="50" r="42" fill="none" stroke="white" strokeWidth="0.2" opacity="0.03" strokeDasharray="3 18" />
+          <circle cx="90" cy="50" r="46" fill="none" stroke="#2563EB" strokeWidth="0.3" opacity="0.08" strokeDasharray="6 10" />
+          <circle cx="90" cy="50" r="42" fill="none" stroke="#06B6D4" strokeWidth="0.2" opacity="0.05" strokeDasharray="3 18" />
         </g>
         <g style={{ transformOrigin: "90px 50px", transform: `rotate(${-rotation * 0.7}deg)` }}>
-          <circle cx="90" cy="50" r="50" fill="none" stroke="white" strokeWidth="0.15" opacity="0.04" strokeDasharray="2 14" />
+          <circle cx="90" cy="50" r="50" fill="none" stroke="#2563EB" strokeWidth="0.15" opacity="0.06" strokeDasharray="2 14" />
         </g>
 
-        {/* Shape morph */}
         <AnimatePresence mode="wait">
           <motion.g key={idx} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.06 }} transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}>
             <motion.path d={SHAPES[idx]} fill="url(#brain-inner)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.5 }} />
             <motion.path d={SHAPES[idx]} fill="url(#brain-sweep)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} />
-            {/* Facets */}
-            <motion.path d={SHAPES[idx]} fill="white" initial={{ opacity: 0 }} animate={{ opacity: [0, 0.03, 0.02] }} transition={{ duration: 1 }} />
+            <motion.path d={SHAPES[idx]} fill="#2563EB" initial={{ opacity: 0 }} animate={{ opacity: [0, 0.03, 0.02] }} transition={{ duration: 1 }} />
           </motion.g>
         </AnimatePresence>
 
-        {/* Outline */}
         <motion.path
-          d={SHAPES[idx]} fill="none" stroke="#b8c4d0" strokeWidth="1" strokeLinejoin="miter"
+          d={SHAPES[idx]} fill="none" stroke="#2563EB" strokeWidth="1" strokeLinejoin="miter"
           filter="url(#brain-glow)"
           initial={false} animate={{ d: SHAPES[nextIdx] }}
           transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }}
         />
         <motion.path
-          d={SHAPES[nextIdx]} fill="none" stroke="white" strokeWidth="0.2" strokeLinejoin="miter"
+          d={SHAPES[nextIdx]} fill="none" stroke="#06B6D4" strokeWidth="0.2" strokeLinejoin="miter"
           initial={false} animate={{ d: SHAPES[(nextIdx + 1) % SHAPES.length] }}
-          transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }} opacity={0.04}
+          transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }} opacity={0.06}
         />
 
-        {/* Inner structure lines */}
         <AnimatePresence mode="wait">
           <motion.g key={`s${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
             {INNER_LINES[idx]?.map((d, i) => (
-              <motion.path key={i} d={d} fill="none" stroke="#8899aa" strokeWidth="0.4"
+              <motion.path key={i} d={d} fill="none" stroke="#06B6D4" strokeWidth="0.4"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: [0, 0.3, 0.15] }}
                 transition={{ duration: 1.2, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -122,26 +115,23 @@ const VerificationBrain: FC<{ activeRow: number }> = ({ activeRow }) => {
           </motion.g>
         </AnimatePresence>
 
-        {/* Core pulse — intensity tied to verification */}
-        <circle cx="90" cy="50" r="2" fill="white" opacity={pulseIntensity}>
+        <circle cx="90" cy="50" r="2" fill="#2563EB" opacity={pulseIntensity}>
           <animate attributeName="r" values="1;5;1" dur="3.5s" repeatCount="indefinite" />
           <animate attributeName="opacity" values={`${pulseIntensity};0.05;${pulseIntensity}`} dur="3.5s" repeatCount="indefinite" />
         </circle>
-        <circle cx="90" cy="50" r="1" fill="white" opacity="0.8">
+        <circle cx="90" cy="50" r="1" fill="#06B6D4" opacity="0.8">
           <animate attributeName="r" values="0.5;2;0.5" dur="3.5s" repeatCount="indefinite" />
         </circle>
 
-        {/* Satellite dots */}
         {[0, 60, 120, 180, 240, 300].map((angle, i) => (
           <g key={i} style={{ transformOrigin: "90px 50px", transform: `rotate(${angle + rotation * 1.5}deg)` }}>
-            <circle cx="130" cy="50" r="0.7" fill="white" opacity={0.15 + (i % 3) * 0.08}>
+            <circle cx="130" cy="50" r="0.7" fill="#2563EB" opacity={0.15 + (i % 3) * 0.08}>
               <animate attributeName="opacity" values={`${0.1 + i * 0.03};0.03;${0.1 + i * 0.03}`} dur={`${2.5 + i * 0.2}s`} repeatCount="indefinite" />
             </circle>
           </g>
         ))}
       </svg>
 
-      {/* Active verification label */}
       <motion.div
         className="absolute bottom-2 text-center"
         key={activeRow}
@@ -150,7 +140,7 @@ const VerificationBrain: FC<{ activeRow: number }> = ({ activeRow }) => {
         exit={{ opacity: 0, y: -5 }}
         transition={{ duration: 0.4 }}
       >
-        <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+        <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: "#94A3B8" }}>
           Verifying: {guidelines[activeRow % guidelines.length].name.split(' ')[0]}
         </p>
       </motion.div>
@@ -178,7 +168,6 @@ const GuideBenchSection = () => {
     requestAnimationFrame(step);
   }, [inView]);
 
-  // Cycle through rows to show brain "verifying" each
   useEffect(() => {
     if (!inView) return;
     const interval = setInterval(() => setActiveRow(p => (p + 1) % guidelines.length), 2800);
@@ -186,29 +175,27 @@ const GuideBenchSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden" style={{ background: "#1a1d21" }}>
+    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden" style={{ background: "#131B2E" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <p className="text-[12px] font-medium uppercase text-white/25 mb-3" style={{ letterSpacing: "0.1em" }}>
+          <p className="text-[12px] font-medium uppercase mb-3" style={{ letterSpacing: "0.1em", color: "#94A3B8" }}>
             Verification Lab
           </p>
-          <h2 className="text-white font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em" }}>
+          <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#E2E8F0" }}>
             GuideBench
           </h2>
-          <p className="text-white/45 mt-2 text-lg max-w-2xl" style={{ letterSpacing: "-0.01em" }}>
+          <p className="mt-2 text-lg max-w-2xl" style={{ letterSpacing: "-0.01em", color: "#94A3B8" }}>
             The open-source clinical decision logic evaluation framework.
-            <span className="text-white/70 font-medium"> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
+            <span className="font-medium" style={{ color: "#E2E8F0" }}> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Counter + brain + benchmark chart */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
@@ -216,26 +203,24 @@ const GuideBenchSection = () => {
             className="flex flex-col items-center justify-center"
           >
             <div className="text-center mb-4">
-                <div className="text-7xl font-semibold tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#4ade80" }}>
+              <div className="text-7xl font-semibold tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#2563EB" }}>
                 {counter}%
               </div>
-              <p className="text-[12px] font-medium uppercase text-white/25 mt-3" style={{ letterSpacing: "0.1em" }}>
+              <p className="text-[12px] font-medium uppercase mt-3" style={{ letterSpacing: "0.1em", color: "#94A3B8" }}>
                 Aggregate Fidelity Score
               </p>
             </div>
 
-            {/* Shapeshifting verification brain */}
             <VerificationBrain activeRow={activeRow} />
 
-            {/* Benchmark bars */}
             <div className="w-full space-y-3">
               {benchmarks.map((b) => (
                 <div key={b.label}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[12px] font-medium text-white/35" style={{ letterSpacing: "0.05em" }}>{b.label}</span>
-                    <span className="text-[13px] font-semibold text-white/60">{b.score}%</span>
+                    <span className="text-[12px] font-medium" style={{ letterSpacing: "0.05em", color: "#94A3B8" }}>{b.label}</span>
+                    <span className="text-[13px] font-semibold" style={{ color: "#E2E8F0" }}>{b.score}%</span>
                   </div>
-                  <div className="h-1.5 bg-white/[0.04]">
+                  <div className="h-1.5" style={{ background: "#0B1120" }}>
                     <motion.div
                       className="h-full"
                       initial={{ width: 0 }}
@@ -249,99 +234,96 @@ const GuideBenchSection = () => {
             </div>
           </motion.div>
 
-          {/* Data table */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
           >
-            <div className="border border-white/[0.08] overflow-hidden" style={{ background: "#1e2227" }}>
-              {/* Table header */}
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.08]" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="border overflow-hidden" style={{ borderColor: "#1E293B", background: "#0B1120" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b" style={{ borderColor: "#1E293B", background: "rgba(37,99,235,0.03)" }}>
                 {["Guideline", "Patients", "Fidelity", "Status"].map((h) => (
-                  <span key={h} className="text-[11px] font-semibold uppercase text-white/40" style={{ letterSpacing: "0.12em" }}>
+                  <span key={h} className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.12em", color: "#94A3B8" }}>
                     {h}
                   </span>
                 ))}
               </div>
 
-              {/* Table rows */}
               {guidelines.map((g, i) => (
                 <motion.div
                   key={g.name}
                   initial={{ opacity: 0, x: 10 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.5 + i * 0.08 }}
-                  className={`grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b border-white/[0.04] transition-all duration-500 group cursor-default ${
-                    activeRow === i ? "bg-white/[0.04]" : "hover:bg-white/[0.02]"
-                  }`}
+                  className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b transition-all duration-500 group cursor-default"
+                  style={{
+                    borderColor: "#1E293B20",
+                    backgroundColor: activeRow === i ? "rgba(37,99,235,0.06)" : "transparent",
+                  }}
                 >
-                  <span className={`text-sm font-medium transition-colors duration-300 ${activeRow === i ? "text-white" : "text-white/80 group-hover:text-white"}`} style={{ letterSpacing: "-0.01em" }}>{g.name}</span>
-                  <span className="text-white/45 text-sm tabular-nums font-mono">{g.patients}</span>
+                  <span className="text-sm font-medium transition-colors duration-300" style={{ letterSpacing: "-0.01em", color: activeRow === i ? "#E2E8F0" : "rgba(226,232,240,0.8)" }}>{g.name}</span>
+                  <span className="text-sm tabular-nums font-mono" style={{ color: "#94A3B8" }}>{g.patients}</span>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#1E293B" }}>
                       <motion.div
                         className="h-full rounded-full"
-                        style={{ background: activeRow === i ? "linear-gradient(90deg, #c8d6e5, #ffffff)" : "linear-gradient(90deg, #5a6a7a, #8899aa)" }}
+                        style={{ background: activeRow === i ? "linear-gradient(90deg, #2563EB, #06B6D4)" : "linear-gradient(90deg, #1E293B, #2563EB60)" }}
                         initial={{ width: 0 }}
                         animate={inView ? { width: `${g.fidelity}%` } : {}}
                         transition={{ duration: 1.2, delay: 0.6 + i * 0.1, ease: "easeOut" }}
                       />
                     </div>
-                    <span className={`font-semibold text-sm tabular-nums font-mono transition-colors duration-300 ${activeRow === i ? "text-white" : "text-white/70"}`}>{g.fidelity}%</span>
+                    <span className="font-semibold text-sm tabular-nums font-mono transition-colors duration-300" style={{ color: activeRow === i ? "#E2E8F0" : "#94A3B8" }}>{g.fidelity}%</span>
                   </div>
                   <span className="inline-flex items-center gap-1.5">
                     <motion.span
                       className="w-1.5 h-1.5 rounded-full"
                       animate={{
-                        background: activeRow === i ? "#ffffff" : "#5a6a7a",
-                        boxShadow: activeRow === i ? "0 0 8px rgba(255,255,255,0.5)" : "0 0 4px rgba(90,106,122,0.3)",
+                        background: activeRow === i ? "#06B6D4" : "#1E293B",
+                        boxShadow: activeRow === i ? "0 0 8px rgba(6,182,212,0.5)" : "0 0 4px rgba(30,41,59,0.3)",
                       }}
                       transition={{ duration: 0.4 }}
                     />
-                    <span className={`text-[11px] font-semibold uppercase transition-colors duration-300 ${activeRow === i ? "text-white" : "text-white/40"}`} style={{ letterSpacing: "0.06em" }}>{g.status}</span>
+                    <span className="text-[11px] font-semibold uppercase transition-colors duration-300" style={{ letterSpacing: "0.06em", color: activeRow === i ? "#06B6D4" : "#94A3B8" }}>{g.status}</span>
                   </span>
                 </motion.div>
               ))}
 
-              {/* Table footer — aggregate */}
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t border-white/[0.08]" style={{ background: "rgba(255,255,255,0.02)" }}>
-                <span className="text-white/50 text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em" }}>Aggregate</span>
-                <span className="text-white/45 text-sm tabular-nums font-mono">750</span>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t" style={{ borderColor: "#1E293B", background: "rgba(37,99,235,0.03)" }}>
+                <span className="text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em", color: "#94A3B8" }}>Aggregate</span>
+                <span className="text-sm tabular-nums font-mono" style={{ color: "#94A3B8" }}>750</span>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#1E293B" }}>
                     <motion.div
                       className="h-full rounded-full"
-                      style={{ background: "linear-gradient(90deg, #c8d6e5, #ffffff)" }}
+                      style={{ background: "linear-gradient(90deg, #2563EB, #06B6D4)" }}
                       initial={{ width: 0 }}
                       animate={inView ? { width: "98.7%" } : {}}
                       transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
                     />
                   </div>
-                  <span className="text-white font-bold text-sm tabular-nums font-mono">98.7%</span>
+                  <span className="font-bold text-sm tabular-nums font-mono" style={{ color: "#E2E8F0" }}>98.7%</span>
                 </div>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#ffffff", boxShadow: "0 0 8px rgba(255,255,255,0.5)" }} />
-                  <span className="text-[11px] font-bold uppercase text-white/70" style={{ letterSpacing: "0.06em" }}>Live</span>
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#06B6D4", boxShadow: "0 0 8px rgba(6,182,212,0.5)" }} />
+                  <span className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.06em", color: "#06B6D4" }}>Live</span>
                 </span>
               </div>
             </div>
 
-            {/* Statement + CTA */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={inView ? { opacity: 1 } : {}}
               transition={{ delay: 1 }}
               className="mt-8"
             >
-              <p className="text-white font-semibold text-xl mb-6" style={{ letterSpacing: "-0.02em" }}>
+              <p className="font-semibold text-xl mb-6" style={{ letterSpacing: "-0.02em", color: "#E2E8F0" }}>
                 We wrote the test. Then we open-sourced it.
               </p>
               <a
                 href="#"
-                className="inline-block text-[13px] font-medium uppercase text-white border border-white/20 px-8 py-3.5 hover:bg-white hover:text-black transition-all duration-300"
-                style={{ letterSpacing: "0.05em" }}
+                className="inline-block text-[13px] font-medium uppercase border px-8 py-3.5 transition-all duration-300 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB]"
+                style={{ letterSpacing: "0.05em", color: "#E2E8F0", borderColor: "#2563EB" }}
               >
                 View on GitHub
               </a>

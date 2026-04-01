@@ -2,7 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, type FC } from "react";
 import * as THREE from "three";
 
-const ACCENT = "#c8d6e5";
+const ACCENT = "#2563EB";
 
 const segments = [
   {
@@ -79,10 +79,10 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const group = new THREE.Group();
     scene.add(group);
 
-    const wireMat = new THREE.LineBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.4 });
-    const wireMatDim = new THREE.LineBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.12 });
-    const facetMat = new THREE.MeshBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
-    const pointMat = new THREE.PointsMaterial({ color: 0xc8d6e5, size: 0.03, transparent: true, opacity: 0.5 });
+    const wireMat = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.4 });
+    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.12 });
+    const facetMat = new THREE.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+    const pointMat = new THREE.PointsMaterial({ color: 0x2563EB, size: 0.03, transparent: true, opacity: 0.5 });
 
     // Each segment gets a unique geometry
     let geo: THREE.BufferGeometry;
@@ -142,7 +142,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     }
     const pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0xc8d6e5, size: 0.02, transparent: true, opacity: 0.3 });
+    const pMat = new THREE.PointsMaterial({ color: 0x2563EB, size: 0.02, transparent: true, opacity: 0.3 });
     group.add(new THREE.Points(pGeo, pMat));
 
     let t = 0;
@@ -270,11 +270,11 @@ const SegmentsSection = () => {
                   <div className="relative flex items-center justify-center p-8" style={{ minHeight: 320 }}>
                     {/* Radial glow behind shape */}
                     <div className="absolute inset-0 pointer-events-none" style={{
-                      background: "radial-gradient(ellipse at center, rgba(200,214,229,0.06) 0%, transparent 60%)",
+                      background: "radial-gradient(ellipse at center, rgba(37,99,235,0.06) 0%, transparent 60%)",
                     }} />
                     {/* Scan lines overlay */}
                     <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(200,214,229,0.15) 3px, rgba(200,214,229,0.15) 4px)",
+                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(37,99,235,0.15) 3px, rgba(37,99,235,0.15) 4px)",
                     }} />
                     {isActive && <SegmentHologram index={i} isActive={isActive} />}
                   </div>
@@ -300,8 +300,8 @@ const SegmentsSection = () => {
                       </p>
 
                       {/* Key metric */}
-                      <div className="border border-white/[0.06] p-5 inline-block" style={{ background: "rgba(200,214,229,0.03)" }}>
-                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#4ade80" }}>
+                      <div className="border p-5 inline-block" style={{ borderColor: "#1E293B", background: "rgba(37,99,235,0.03)" }}>
+                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#06B6D4" }}>
                           {seg.stat}
                         </p>
                         <p className="text-[10px] uppercase tracking-[0.1em] text-white/30 mt-1">

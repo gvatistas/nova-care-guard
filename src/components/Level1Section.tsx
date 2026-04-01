@@ -1,9 +1,9 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 
-const RED = "#666666";
-const AMBER = "#999999";
-const WHITE = "#e5e5e5";
+const RED = "#E11D48";
+const AMBER = "#F59E0B";
+const WHITE = "#E2E8F0";
 
 const Level1Section = () => {
   const ref = useRef(null);

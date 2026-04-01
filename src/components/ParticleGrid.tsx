@@ -14,7 +14,7 @@ const ParticleGrid = () => {
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight * 5; // cover full page
+      canvas.height = window.innerHeight * 5;
     };
 
     const init = () => {
@@ -25,7 +25,7 @@ const ParticleGrid = () => {
       const rows = Math.ceil(canvas.height / spacing);
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-          if (Math.random() > 0.3) continue; // sparse
+          if (Math.random() > 0.3) continue;
           particles.push({
             x: i * spacing + Math.random() * 40 - 20,
             y: j * spacing + Math.random() * 40 - 20,
@@ -43,7 +43,7 @@ const ParticleGrid = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw grid lines
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.015)";
+      ctx.strokeStyle = "rgba(30, 41, 59, 0.4)";
       ctx.lineWidth = 0.5;
       const spacing = 120;
       for (let x = 0; x < canvas.width; x += spacing) {
@@ -66,20 +66,20 @@ const ParticleGrid = () => {
         p.pulse += 0.008;
 
         const pulseOpacity = p.opacity + Math.sin(p.pulse) * 0.02;
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, pulseOpacity)})`;
+        ctx.fillStyle = `rgba(37, 99, 235, ${Math.max(0, pulseOpacity * 1.5)})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // Connect nearby particles with faint lines
+      // Connect nearby particles
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 150) {
-            ctx.strokeStyle = `rgba(255, 255, 255, ${0.02 * (1 - dist / 150)})`;
+            ctx.strokeStyle = `rgba(37, 99, 235, ${0.015 * (1 - dist / 150)})`;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
