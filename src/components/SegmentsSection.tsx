@@ -36,6 +36,14 @@ const segments = [
     desc: "Consumer-facing preventive health AI that never hallucinates. Every recommendation traces to a verified clinical guideline, reviewed by a physician network.",
   },
   {
+    name: "Pharmacies",
+    short: "Rx Intelligence",
+    value: "Guideline-driven medication review and dispensing support",
+    stat: "23",
+    statLabel: "Guideline pathways",
+    desc: "Automated medication interaction checks and preventive screening prompts at the point of dispensing. Pharmacists get real-time, guideline-backed alerts that catch gaps before patients leave the counter.",
+  },
+  {
     name: "Insurers",
     short: "Preventive ROI",
     value: "Reduce downstream claims through upstream detection",
@@ -125,6 +133,15 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return mergeGeometries([head, body]);
     }
     case 4: {
+      // Pharmacies — Rx bottle
+      const bottle = new THREE.CylinderGeometry(0.4, 0.4, 1.0, 12);
+      const cap = new THREE.CylinderGeometry(0.35, 0.42, 0.2, 12);
+      cap.translate(0, 0.6, 0);
+      const label = new THREE.BoxGeometry(0.6, 0.4, 0.02);
+      label.translate(0, 0, 0.4);
+      return mergeGeometries([bottle, cap, label]);
+    }
+    case 5: {
       // Insurers — Shield
       const pts: THREE.Vector2[] = [
         new THREE.Vector2(0, -1.0),
