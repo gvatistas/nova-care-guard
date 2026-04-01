@@ -163,8 +163,13 @@ const HeroSection = () => {
         void main() {
           float fade = smoothstep(5.0, 25.0, vDist) * (1.0 - smoothstep(160.0, 280.0, vDist));
           float pulse = 0.7 + 0.3 * sin(uTime * 2.0 + vDist * 0.05);
-          vec3 col = mix(vec3(0.22, 0.25, 0.32), vec3(0.55, 0.58, 0.64), vOut);
-          gl_FragColor = vec4(col, fade * pulse * 0.14);
+          vec3 red = vec3(0.88, 0.15, 0.15);
+          vec3 amber = vec3(0.85, 0.55, 0.1);
+          vec3 green = vec3(0.02, 0.59, 0.42);
+          vec3 col;
+          if (vOut < 0.5) col = mix(red, amber, vOut * 2.0);
+          else col = mix(amber, green, (vOut - 0.5) * 2.0);
+          gl_FragColor = vec4(col, fade * pulse * 0.12);
         }
       `,
     });
@@ -197,10 +202,10 @@ const HeroSection = () => {
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
           float df = smoothstep(5.0, 20.0, d) * (1.0 - smoothstep(140.0, 240.0, d));
-          float pulse = 0.5 + 0.5 * sin(uTime * 2.5 + depth * 1.8 + position.x * 0.4);
+          float pulse = 0.5 + 0.5 * sin(uTime * 3.0 + depth * 2.0 + position.x * 0.5);
           vAlpha = df * pulse;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          float sz = mix(7.0, 3.5, depth / 6.0);
+          float sz = mix(8.0, 4.0, depth / 6.0);
           gl_PointSize = max(2.0, sz * df * (140.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
@@ -210,19 +215,27 @@ const HeroSection = () => {
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
-          float core = exp(-d * d * 4.0);
-          float halo = exp(-d * d * 1.2) * 0.3;
-          vec3 col = mix(vec3(0.07, 0.09, 0.15), vec3(0.55, 0.58, 0.64), vOut);
-          gl_FragColor = vec4(col * (core + halo), (core + halo) * vAlpha * 0.6);
+          float core = exp(-d * d * 3.0);
+          float halo = exp(-d * d * 0.8) * 0.4;
+          float glow = exp(-d * 0.5) * 0.15;
+          vec3 red = vec3(0.88, 0.15, 0.15);
+          vec3 amber = vec3(0.85, 0.55, 0.1);
+          vec3 green = vec3(0.02, 0.59, 0.42);
+          vec3 col;
+          if (vOut < 0.5) col = mix(red, amber, vOut * 2.0);
+          else col = mix(amber, green, (vOut - 0.5) * 2.0);
+          float bright = core + halo + glow;
+          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.7);
         }
       `,
     });
     scene.add(new THREE.Points(nodeGeo, nodeMat));
     disposables.push(nodeGeo, nodeMat);
 
-    // ─── Traveling pulses along edges ───
-    const PULSE_COUNT = 300;
+    // ─── Traveling pulses along edges — red→green transition ───
+    const PULSE_COUNT = 400;
     const pulsePositions = new Float32Array(PULSE_COUNT * 3);
+    const pulseProgressAttr = new Float32Array(PULSE_COUNT);
     const pulseProgress = new Float32Array(PULSE_COUNT);
     const pulseEdgeIdx = new Int32Array(PULSE_COUNT);
     const pulseSpeed = new Float32Array(PULSE_COUNT);
@@ -231,36 +244,48 @@ const HeroSection = () => {
     for (let i = 0; i < PULSE_COUNT; i++) {
       pulseEdgeIdx[i] = Math.floor(Math.random() * totalEdges);
       pulseProgress[i] = Math.random();
-      pulseSpeed[i] = 0.005 + Math.random() * 0.015;
+      pulseProgressAttr[i] = pulseProgress[i];
+      pulseSpeed[i] = 0.004 + Math.random() * 0.012;
     }
     const pulseGeo = new THREE.BufferGeometry();
     pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulsePositions, 3));
+    pulseGeo.setAttribute("progress", new THREE.BufferAttribute(pulseProgressAttr, 1));
     const pulseMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
-      uniforms: { uCamZ: { value: 0 } },
+      blending: THREE.AdditiveBlending,
+      uniforms: { uCamZ: { value: 0 }, uTime: { value: 0 } },
       vertexShader: `
-        varying float vAlpha;
-        uniform float uCamZ;
+        attribute float progress;
+        varying float vAlpha, vProgress;
+        uniform float uCamZ, uTime;
         void main() {
+          vProgress = progress;
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
           vAlpha = smoothstep(5.0, 15.0, d) * (1.0 - smoothstep(150.0, 260.0, d));
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = max(3.0, 8.0 * vAlpha * (130.0 / -mv.z));
+          float pulse = 1.0 + 0.3 * sin(uTime * 4.0 + position.z * 0.3);
+          gl_PointSize = max(3.0, 10.0 * vAlpha * pulse * (130.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
       `,
       fragmentShader: `
-        varying float vAlpha;
+        varying float vAlpha, vProgress;
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
-          float core = exp(-d * d * 2.5);
-          float glow = exp(-d * 0.7) * 0.5;
-          vec3 col = vec3(0.42, 0.45, 0.52);
-          float bright = core + glow;
-          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.7);
+          float core = exp(-d * d * 2.0);
+          float glow = exp(-d * 0.5) * 0.6;
+          float outer = exp(-d * 0.3) * 0.2;
+          vec3 red = vec3(0.95, 0.2, 0.15);
+          vec3 amber = vec3(0.9, 0.6, 0.1);
+          vec3 green = vec3(0.05, 0.75, 0.45);
+          vec3 col;
+          if (vProgress < 0.4) col = mix(red, amber, vProgress / 0.4);
+          else col = mix(amber, green, (vProgress - 0.4) / 0.6);
+          float bright = core + glow + outer;
+          gl_FragColor = vec4(col * bright * 1.2, bright * vAlpha * 0.85);
         }
       `,
     });
@@ -336,9 +361,11 @@ const HeroSection = () => {
       (nodeMat.uniforms as any).uTime.value = time;
       (nodeMat.uniforms as any).uCamZ.value = camZ;
       (pulseMat.uniforms as any).uCamZ.value = camZ;
+      (pulseMat.uniforms as any).uTime.value = time;
 
       // Animate pulses along edges
       const pArr = pulseGeo.attributes.position.array as Float32Array;
+      const progArr = pulseGeo.attributes.progress.array as Float32Array;
       for (let i = 0; i < PULSE_COUNT; i++) {
         pulseProgress[i] += pulseSpeed[i];
         if (pulseProgress[i] > 1) {
@@ -350,8 +377,10 @@ const HeroSection = () => {
         pArr[i * 3] = edgePos[ei] + (edgePos[ei + 3] - edgePos[ei]) * pr;
         pArr[i * 3 + 1] = edgePos[ei + 1] + (edgePos[ei + 4] - edgePos[ei + 1]) * pr;
         pArr[i * 3 + 2] = edgePos[ei + 2] + (edgePos[ei + 5] - edgePos[ei + 2]) * pr;
+        progArr[i] = pr;
       }
       pulseGeo.attributes.position.needsUpdate = true;
+      pulseGeo.attributes.progress.needsUpdate = true;
 
       // Animate dust
       const dArr = dustGeo.attributes.position.array as Float32Array;
