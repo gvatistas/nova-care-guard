@@ -202,10 +202,10 @@ const HeroSection = () => {
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float d = abs(wp.z - uCamZ);
           float df = smoothstep(5.0, 20.0, d) * (1.0 - smoothstep(140.0, 240.0, d));
-          float pulse = 0.5 + 0.5 * sin(uTime * 2.5 + depth * 1.8 + position.x * 0.4);
+          float pulse = 0.5 + 0.5 * sin(uTime * 3.0 + depth * 2.0 + position.x * 0.5);
           vAlpha = df * pulse;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          float sz = mix(7.0, 3.5, depth / 6.0);
+          float sz = mix(8.0, 4.0, depth / 6.0);
           gl_PointSize = max(2.0, sz * df * (140.0 / -mv.z));
           gl_Position = projectionMatrix * mv;
         }
@@ -215,10 +215,17 @@ const HeroSection = () => {
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           if (d > 1.0) discard;
-          float core = exp(-d * d * 4.0);
-          float halo = exp(-d * d * 1.2) * 0.3;
-          vec3 col = mix(vec3(0.07, 0.09, 0.15), vec3(0.55, 0.58, 0.64), vOut);
-          gl_FragColor = vec4(col * (core + halo), (core + halo) * vAlpha * 0.6);
+          float core = exp(-d * d * 3.0);
+          float halo = exp(-d * d * 0.8) * 0.4;
+          float glow = exp(-d * 0.5) * 0.15;
+          vec3 red = vec3(0.88, 0.15, 0.15);
+          vec3 amber = vec3(0.85, 0.55, 0.1);
+          vec3 green = vec3(0.02, 0.59, 0.42);
+          vec3 col;
+          if (vOut < 0.5) col = mix(red, amber, vOut * 2.0);
+          else col = mix(amber, green, (vOut - 0.5) * 2.0);
+          float bright = core + halo + glow;
+          gl_FragColor = vec4(col * bright, bright * vAlpha * 0.7);
         }
       `,
     });
