@@ -118,6 +118,106 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
   }
 }
 
+/* ── Human wireframe body data (low-poly vertex mesh) ── */
+const BODY_VERTS: [number, number, number][] = [
+  // Head (0-7)
+  [0, 1.7, 0], [-0.12, 1.65, 0.1], [0.12, 1.65, 0.1], [-0.12, 1.65, -0.1], [0.12, 1.65, -0.1],
+  [-0.14, 1.55, 0.12], [0.14, 1.55, 0.12], [0, 1.5, 0.14],
+  // Neck (8-9)
+  [-0.06, 1.42, 0], [0.06, 1.42, 0],
+  // Shoulders (10-11)
+  [-0.38, 1.35, 0], [0.38, 1.35, 0],
+  // Upper chest (12-15)
+  [-0.3, 1.25, 0.12], [0.3, 1.25, 0.12], [-0.3, 1.25, -0.1], [0.3, 1.25, -0.1],
+  // Mid torso (16-19)
+  [-0.25, 1.05, 0.14], [0.25, 1.05, 0.14], [-0.25, 1.05, -0.12], [0.25, 1.05, -0.12],
+  // Waist (20-23)
+  [-0.2, 0.85, 0.1], [0.2, 0.85, 0.1], [-0.2, 0.85, -0.08], [0.2, 0.85, -0.08],
+  // Hips (24-27)
+  [-0.22, 0.72, 0.06], [0.22, 0.72, 0.06], [-0.22, 0.72, -0.06], [0.22, 0.72, -0.06],
+  // Upper arms (28-29)
+  [-0.52, 1.15, 0], [0.52, 1.15, 0],
+  // Elbows (30-31)
+  [-0.6, 0.95, 0.04], [0.6, 0.95, -0.04],
+  // Forearms (32-33)
+  [-0.62, 0.75, 0.02], [0.62, 0.75, -0.02],
+  // Hands (34-35)
+  [-0.58, 0.58, 0.04], [0.58, 0.58, -0.04],
+  // Upper legs (36-37)
+  [-0.16, 0.55, 0.04], [0.16, 0.55, 0.04],
+  // Knees (38-39)
+  [-0.15, 0.35, 0.06], [0.15, 0.35, 0.06],
+  // Lower legs (40-41)
+  [-0.14, 0.15, 0.03], [0.14, 0.15, 0.03],
+  // Feet (42-43)
+  [-0.16, 0.02, 0.08], [0.16, 0.02, 0.08],
+  // Extra mesh vertices for torso density (44-49)
+  [0, 1.3, 0.14], [0, 1.1, 0.16], [0, 0.9, 0.12], [0, 1.3, -0.12], [0, 1.1, -0.14], [0, 0.9, -0.1],
+  // Inner leg (50-53)
+  [-0.08, 0.45, 0.02], [0.08, 0.45, 0.02], [-0.1, 0.25, 0.04], [0.1, 0.25, 0.04],
+];
+
+const BODY_EDGES: [number, number][] = [
+  // Head mesh
+  [0,1],[0,2],[0,3],[0,4],[1,2],[3,4],[1,5],[2,6],[1,7],[2,7],[5,7],[6,7],[5,6],
+  [3,5],[4,6],
+  // Head to neck
+  [5,8],[6,9],[7,8],[7,9],[8,9],
+  // Neck to shoulders
+  [8,10],[9,11],[8,12],[9,13],
+  // Shoulder structure
+  [10,12],[10,14],[11,13],[11,15],[12,13],[14,15],[12,44],[13,44],[14,47],[15,47],
+  // Chest to mid torso
+  [12,16],[13,17],[14,18],[15,19],[16,17],[18,19],[44,45],[47,48],
+  [16,45],[17,45],[18,48],[19,48],
+  // Mid torso to waist
+  [16,20],[17,21],[18,22],[19,23],[20,21],[22,23],[45,46],[48,49],
+  [20,46],[21,46],[22,49],[23,49],
+  // Waist to hips
+  [20,24],[21,25],[22,26],[23,27],[24,25],[26,27],[24,26],[25,27],
+  // Arms
+  [10,28],[28,30],[30,32],[32,34],[11,29],[29,31],[31,33],[33,35],
+  // Hips to upper legs
+  [24,36],[25,37],[26,36],[27,37],
+  // Legs
+  [36,50],[37,51],[36,38],[37,39],[50,52],[51,53],[38,40],[39,41],[52,40],[53,41],
+  [40,42],[41,43],
+  // Cross braces for density
+  [12,14],[13,15],[16,18],[17,19],[20,22],[21,23],
+  [38,39],[40,41],[42,43],[50,51],[52,53],
+];
+
+function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial } {
+  const group = new THREE.Group();
+
+  // Center vertically
+  const positions: number[] = [];
+  const cy = 0.86; // vertical center offset
+  BODY_VERTS.forEach(([x, y, z]) => positions.push(x, y - cy, z));
+
+  // Edge lines
+  const linePositions: number[] = [];
+  BODY_EDGES.forEach(([a, b]) => {
+    linePositions.push(positions[a * 3], positions[a * 3 + 1], positions[a * 3 + 2]);
+    linePositions.push(positions[b * 3], positions[b * 3 + 1], positions[b * 3 + 2]);
+  });
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
+  const wireMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.5 });
+  group.add(new THREE.LineSegments(lineGeo, wireMat));
+
+  // Vertex points
+  const pointGeo = new THREE.BufferGeometry();
+  pointGeo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.06, transparent: true, opacity: 0.8, sizeAttenuation: true });
+  group.add(new THREE.Points(pointGeo, pointMat));
+
+  // Scale to fit
+  group.scale.set(1.4, 1.4, 1.4);
+
+  return { group, wireMat, pointMat };
+}
+
 /* ── 3D Hologram for each segment ── */
 const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isActive }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -146,32 +246,43 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const accentColor = new THREE.Color(accent);
     const dimColor = new THREE.Color(0x6B7280);
 
-    const geo = buildSegmentGeo(index);
+    let wireMat: THREE.LineBasicMaterial;
+    let pointMat: THREE.PointsMaterial;
 
-    // Auto-scale
-    geo.computeBoundingBox();
-    const size = new THREE.Vector3();
-    geo.boundingBox!.getSize(size);
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const sf = 1.6 / maxDim;
-    geo.scale(sf, sf, sf);
-    geo.computeBoundingBox();
-    const center = new THREE.Vector3();
-    geo.boundingBox!.getCenter(center);
-    geo.translate(-center.x, -center.y, -center.z);
+    if (index === 3) {
+      // Custom wireframe human body
+      const human = buildHumanWireframe(accentColor);
+      group.add(human.group);
+      wireMat = human.wireMat;
+      pointMat = human.pointMat;
+    } else {
+      const geo = buildSegmentGeo(index);
 
-    // Wireframe edges with accent color
-    const edges = new THREE.EdgesGeometry(geo);
-    const wireMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.6 });
-    group.add(new THREE.LineSegments(edges, wireMat));
+      // Auto-scale
+      geo.computeBoundingBox();
+      const size = new THREE.Vector3();
+      geo.boundingBox!.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const sf = 1.6 / maxDim;
+      geo.scale(sf, sf, sf);
+      geo.computeBoundingBox();
+      const center = new THREE.Vector3();
+      geo.boundingBox!.getCenter(center);
+      geo.translate(-center.x, -center.y, -center.z);
 
-    // Semi-transparent face fill
-    const facetMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
-    group.add(new THREE.Mesh(geo, facetMat));
+      // Wireframe edges with accent color
+      const edges = new THREE.EdgesGeometry(geo);
+      wireMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.6 });
+      group.add(new THREE.LineSegments(edges, wireMat));
 
-    // Vertex dots
-    const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.05, transparent: true, opacity: 0.7 });
-    group.add(new THREE.Points(geo, pointMat));
+      // Semi-transparent face fill
+      const facetMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+      group.add(new THREE.Mesh(geo, facetMat));
+
+      // Vertex dots
+      pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.05, transparent: true, opacity: 0.7 });
+      group.add(new THREE.Points(geo, pointMat));
+    }
 
     // Orbit ring
     const ringGeo = new THREE.RingGeometry(1.15, 1.17, 64);
@@ -180,7 +291,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     ring.rotation.x = Math.PI / 2;
     group.add(ring);
 
-    // Scanning line (horizontal plane)
+    // Scanning line
     const scanGeo = new THREE.PlaneGeometry(3, 0.01);
     const scanMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
     const scanLine = new THREE.Mesh(scanGeo, scanMat);
@@ -198,29 +309,28 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
       animId = requestAnimationFrame(animate);
       t += 0.008;
 
-      // Per-segment animation style
       switch (index) {
-        case 0: // Icosahedron — steady spin + breathe
+        case 0:
           group.rotation.y = t * 0.4;
           group.rotation.x = t * 0.2;
           break;
-        case 1: // Octahedron — snap rotation
+        case 1:
           group.rotation.y = t * 0.3;
           group.rotation.z = Math.sin(t * 0.5) * 0.3;
           break;
-        case 2: // Dodecahedron — tumble
+        case 2:
           group.rotation.y = t * 0.35;
           group.rotation.x = Math.sin(t * 0.25) * 0.4;
           break;
-        case 3: // Head — slow majestic rotation
-          group.rotation.y = t * 0.25;
-          group.rotation.x = Math.sin(t * 0.15) * 0.1;
+        case 3: // Human — slow rotation, slight sway
+          group.rotation.y = t * 0.2;
+          group.rotation.x = Math.sin(t * 0.12) * 0.08;
           break;
-        case 4: // Torus — tilt + spin
+        case 4:
           group.rotation.x = Math.PI / 5 + Math.sin(t * 0.3) * 0.15;
           group.rotation.y = t * 0.5;
           break;
-        case 5: // Tetrahedron — wobble
+        case 5:
           group.rotation.y = t * 0.4;
           group.rotation.x = t * 0.15;
           group.rotation.z = Math.sin(t * 0.4) * 0.2;
