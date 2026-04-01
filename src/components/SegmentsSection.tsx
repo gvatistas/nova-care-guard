@@ -133,6 +133,15 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return mergeGeometries([head, body]);
     }
     case 4: {
+      // Pharmacies — Rx bottle
+      const bottle = new THREE.CylinderGeometry(0.4, 0.4, 1.0, 12);
+      const cap = new THREE.CylinderGeometry(0.35, 0.42, 0.2, 12);
+      cap.translate(0, 0.6, 0);
+      const label = new THREE.BoxGeometry(0.6, 0.4, 0.02);
+      label.translate(0, 0, 0.4);
+      return mergeGeometries([bottle, cap, label]);
+    }
+    case 5: {
       // Insurers — Shield
       const pts: THREE.Vector2[] = [
         new THREE.Vector2(0, -1.0),
