@@ -172,8 +172,8 @@ const CTASection = () => {
               style={{
                 letterSpacing: "0.05em",
                 color: "#F9FAFB",
-                background: "linear-gradient(135deg, rgba(96,165,250,0.2), rgba(96,165,250,0.08))",
-                border: "1px solid rgba(96,165,250,0.25)",
+                background: "linear-gradient(135deg, rgba(156,163,175,0.2), rgba(156,163,175,0.08))",
+                border: "1px solid rgba(156,163,175,0.25)",
                 backdropFilter: "blur(12px)",
               }}
             >
