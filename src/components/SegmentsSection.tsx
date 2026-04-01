@@ -187,12 +187,12 @@ const BODY_EDGES: [number, number][] = [
   [38,39],[40,41],[42,43],[50,51],[52,53],
 ];
 
-function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial } {
+function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial; pulseRings: THREE.Mesh[]; heartGlow: THREE.Mesh } {
   const group = new THREE.Group();
 
   // Center vertically
   const positions: number[] = [];
-  const cy = 0.86; // vertical center offset
+  const cy = 0.86;
   BODY_VERTS.forEach(([x, y, z]) => positions.push(x, y - cy, z));
 
   // Edge lines
@@ -212,10 +212,34 @@ function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wi
   const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.06, transparent: true, opacity: 0.8, sizeAttenuation: true });
   group.add(new THREE.Points(pointGeo, pointMat));
 
+  // Pulse rings at key body scan points (head, chest, waist)
+  const ringPositions = [
+    { y: 1.7 - cy, scale: 0.18 },  // Head
+    { y: 1.25 - cy, scale: 0.35 }, // Chest
+    { y: 0.85 - cy, scale: 0.25 }, // Waist
+  ];
+  const pulseRings: THREE.Mesh[] = [];
+  ringPositions.forEach(({ y, scale }) => {
+    const ringGeo = new THREE.RingGeometry(scale * 0.9, scale, 32);
+    const ringMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.y = y;
+    ring.rotation.x = Math.PI / 2;
+    group.add(ring);
+    pulseRings.push(ring);
+  });
+
+  // Heart glow sphere at chest center
+  const heartGeo = new THREE.SphereGeometry(0.08, 16, 16);
+  const heartMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0 });
+  const heartGlow = new THREE.Mesh(heartGeo, heartMat);
+  heartGlow.position.set(0, 1.25 - cy, 0.12);
+  group.add(heartGlow);
+
   // Scale to fit
   group.scale.set(1.4, 1.4, 1.4);
 
-  return { group, wireMat, pointMat };
+  return { group, wireMat, pointMat, pulseRings, heartGlow };
 }
 
 /* ── 3D Hologram for each segment ── */
