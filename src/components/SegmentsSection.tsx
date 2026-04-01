@@ -187,12 +187,12 @@ const BODY_EDGES: [number, number][] = [
   [38,39],[40,41],[42,43],[50,51],[52,53],
 ];
 
-function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial } {
+function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial; pulseRings: THREE.Mesh[]; heartGlow: THREE.Mesh } {
   const group = new THREE.Group();
 
   // Center vertically
   const positions: number[] = [];
-  const cy = 0.86; // vertical center offset
+  const cy = 0.86;
   BODY_VERTS.forEach(([x, y, z]) => positions.push(x, y - cy, z));
 
   // Edge lines
@@ -212,10 +212,34 @@ function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wi
   const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.06, transparent: true, opacity: 0.8, sizeAttenuation: true });
   group.add(new THREE.Points(pointGeo, pointMat));
 
+  // Pulse rings at key body scan points (head, chest, waist)
+  const ringPositions = [
+    { y: 1.7 - cy, scale: 0.18 },  // Head
+    { y: 1.25 - cy, scale: 0.35 }, // Chest
+    { y: 0.85 - cy, scale: 0.25 }, // Waist
+  ];
+  const pulseRings: THREE.Mesh[] = [];
+  ringPositions.forEach(({ y, scale }) => {
+    const ringGeo = new THREE.RingGeometry(scale * 0.9, scale, 32);
+    const ringMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.y = y;
+    ring.rotation.x = Math.PI / 2;
+    group.add(ring);
+    pulseRings.push(ring);
+  });
+
+  // Heart glow sphere at chest center
+  const heartGeo = new THREE.SphereGeometry(0.08, 16, 16);
+  const heartMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0 });
+  const heartGlow = new THREE.Mesh(heartGeo, heartMat);
+  heartGlow.position.set(0, 1.25 - cy, 0.12);
+  group.add(heartGlow);
+
   // Scale to fit
   group.scale.set(1.4, 1.4, 1.4);
 
-  return { group, wireMat, pointMat };
+  return { group, wireMat, pointMat, pulseRings, heartGlow };
 }
 
 /* ── 3D Hologram for each segment ── */
@@ -248,13 +272,16 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
 
     let wireMat: THREE.LineBasicMaterial;
     let pointMat: THREE.PointsMaterial;
+    let humanPulseRings: THREE.Mesh[] = [];
+    let humanHeartGlow: THREE.Mesh | null = null;
 
     if (index === 3) {
-      // Custom wireframe human body
       const human = buildHumanWireframe(accentColor);
       group.add(human.group);
       wireMat = human.wireMat;
       pointMat = human.pointMat;
+      humanPulseRings = human.pulseRings;
+      humanHeartGlow = human.heartGlow;
     } else {
       const geo = buildSegmentGeo(index);
 
@@ -322,10 +349,26 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
           group.rotation.y = t * 0.35;
           group.rotation.x = Math.sin(t * 0.25) * 0.4;
           break;
-        case 3: // Human — slow rotation, slight sway
-          group.rotation.y = t * 0.2;
-          group.rotation.x = Math.sin(t * 0.12) * 0.08;
+        case 3: {
+          // Human — slow rotation with breathing sway
+          group.rotation.y = t * 0.25;
+          group.rotation.x = Math.sin(t * 0.15) * 0.06;
+          // Heartbeat pulse
+          const heartbeat = Math.pow(Math.max(0, Math.sin(t * 3.5)), 8);
+          if (humanHeartGlow) {
+            (humanHeartGlow.material as THREE.MeshBasicMaterial).opacity = heartbeat * 0.7;
+            humanHeartGlow.scale.setScalar(1 + heartbeat * 1.5);
+          }
+          // Sequential ring pulses scanning the body
+          humanPulseRings.forEach((ring, ri) => {
+            const phase = (t * 0.6 + ri * 0.8) % 2.4;
+            const ringAlpha = phase < 1 ? Math.sin(phase * Math.PI) * 0.25 : 0;
+            const ringScale = 1 + (phase < 1 ? phase * 0.4 : 0);
+            (ring.material as THREE.MeshBasicMaterial).opacity = ringAlpha;
+            ring.scale.setScalar(ringScale);
+          });
           break;
+        }
         case 4:
           group.rotation.x = Math.PI / 5 + Math.sin(t * 0.3) * 0.15;
           group.rotation.y = t * 0.5;
