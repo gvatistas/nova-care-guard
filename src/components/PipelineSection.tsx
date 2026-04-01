@@ -113,7 +113,7 @@ const PipelineSection = () => {
         </div>
 
         {/* Timeline */}
-        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="relative mb-8">
+        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="relative mb-8 mt-6">
           <div className="h-px w-full" style={{ backgroundColor: "#E5E7EB" }} />
           <motion.div className="absolute top-0 left-0 h-px" style={{ backgroundColor: "#111827" }}
             animate={{ width: `${((currentIdx + 1) / 5) * 100}%` }} transition={{ duration: 0.6 }} />
