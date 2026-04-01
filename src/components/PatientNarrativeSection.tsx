@@ -343,11 +343,63 @@ const PatientNarrativeSection = () => {
           </div>
         </motion.div>
 
-        {/* ── FORK ── */}
+        {/* ── Decision tree fork ── */}
         <div className="flex justify-center mt-2">
-          <div className="relative h-10 w-px" style={{ background: "#E5E7EB" }}>
-            <PulseDot color="#374151" delay={0.3} duration={0.8} />
-          </div>
+          <svg width="280" height="60" viewBox="0 0 280 60" className="overflow-visible">
+            {/* Center stem */}
+            <line x1="140" y1="0" x2="140" y2="24" stroke="#E5E7EB" strokeWidth="1" />
+            {/* Fork node */}
+            <circle cx="140" cy="24" r="3" fill="#E5E7EB" stroke="#D1D5DB" strokeWidth="0.5" />
+            {/* Left branch */}
+            <path d="M 140,24 Q 140,40 70,52" fill="none" stroke="#E5E7EB" strokeWidth="1" />
+            {/* Right branch */}
+            <path d="M 140,24 Q 140,40 210,52" fill="none" stroke="#E5E7EB" strokeWidth="1" />
+            {/* Left endpoint */}
+            <circle cx="70" cy="52" r="2.5" fill="#E5E7EB" />
+            {/* Right endpoint */}
+            <circle cx="210" cy="52" r="2.5" fill="#E5E7EB" />
+
+            {/* Animated traveling dot */}
+            <motion.circle
+              r="4"
+              fill="#111827"
+              initial={false}
+              animate={
+                activeSide === "left"
+                  ? { cx: [140, 140, 70], cy: [0, 24, 52], opacity: [0, 1, 1] }
+                  : { cx: [140, 140, 210], cy: [0, 24, 52], opacity: [0, 1, 1] }
+              }
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              key={activeSide}
+            />
+            {/* Glow around dot */}
+            <motion.circle
+              r="8"
+              fill="none"
+              initial={false}
+              animate={
+                activeSide === "left"
+                  ? { cx: [140, 140, 70], cy: [0, 24, 52], opacity: [0, 0.3, 0] }
+                  : { cx: [140, 140, 210], cy: [0, 24, 52], opacity: [0, 0.3, 0] }
+              }
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              key={`glow-${activeSide}`}
+              stroke="#111827"
+              strokeWidth="1"
+            />
+
+            {/* Active branch highlight */}
+            <motion.path
+              d={activeSide === "left" ? "M 140,24 Q 140,40 70,52" : "M 140,24 Q 140,40 210,52"}
+              fill="none"
+              stroke="#374151"
+              strokeWidth="1.5"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 0.6 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+              key={`path-${activeSide}`}
+            />
+          </svg>
         </div>
 
 
