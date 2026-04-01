@@ -325,10 +325,12 @@ const PatientNarrativeSection = () => {
             </div>
 
             <div className="flex-1" />
-            <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1.4 }}
-              className="mt-6 border p-4 text-center w-full max-w-sm" style={{ borderColor: `${RED}25`, background: "#FFF1F2" }}>
-              <p className="text-xs uppercase tracking-[0.15em] mb-1" style={{ color: `${RED}AA` }}>18 Months Later</p>
-              <p className="text-sm" style={{ color: "#374151" }}>Late-stage diagnosis · <span style={{ color: RED }}>$288K+ treatment cost</span></p>
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={inView ? { opacity: 1, scale: 1 } : {}} transition={{ delay: 1.4, duration: 0.5 }}
+              className="mt-6 border-2 p-5 text-center w-full max-w-sm" style={{ borderColor: RED, background: `${RED}12`, boxShadow: `0 0 20px ${RED}15, inset 0 0 12px ${RED}08` }}>
+              <p className="text-xs uppercase tracking-[0.15em] mb-1.5 font-bold" style={{ color: RED }}>18 Months Later</p>
+              <p className="text-base font-semibold" style={{ color: "#111827" }}>Late-stage diagnosis</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: RED }}>$288K+</p>
+              <p className="text-[11px] uppercase tracking-[0.1em] mt-0.5" style={{ color: `${RED}BB` }}>treatment cost</p>
             </motion.div>
           </motion.div>
 
