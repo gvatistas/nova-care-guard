@@ -33,56 +33,141 @@ const FACET_FILLS = [
   [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#E5E7EB" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#D1D5DB" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#E5E7EB" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#F3F4F6" }],
 ];
 
-/* ── Background Shapeshifting Engine — grayscale ── */
+/* ── Background: animated decision-graph network ── */
+const ENGINE_NODES: { x: number; y: number }[] = [
+  { x: 20, y: 15 }, { x: 50, y: 8 }, { x: 80, y: 18 }, { x: 110, y: 10 }, { x: 140, y: 16 }, { x: 170, y: 6 },
+  { x: 10, y: 35 }, { x: 35, y: 30 }, { x: 65, y: 38 }, { x: 95, y: 28 }, { x: 125, y: 35 }, { x: 155, y: 30 }, { x: 185, y: 38 },
+  { x: 25, y: 55 }, { x: 55, y: 50 }, { x: 85, y: 55 }, { x: 115, y: 48 }, { x: 145, y: 55 }, { x: 175, y: 50 },
+  { x: 15, y: 72 }, { x: 45, y: 68 }, { x: 75, y: 75 }, { x: 105, y: 65 }, { x: 135, y: 72 }, { x: 165, y: 68 },
+  { x: 30, y: 90 }, { x: 60, y: 85 }, { x: 90, y: 92 }, { x: 120, y: 82 }, { x: 150, y: 88 }, { x: 180, y: 94 },
+];
+const ENGINE_EDGES: [number, number][] = [
+  [0,1],[1,2],[2,3],[3,4],[4,5],[0,7],[1,7],[1,8],[2,8],[2,9],[3,9],[3,10],[4,10],[4,11],[5,11],[5,12],
+  [6,7],[7,8],[8,9],[9,10],[10,11],[11,12],
+  [6,13],[7,14],[8,14],[8,15],[9,15],[9,16],[10,16],[10,17],[11,17],[11,18],[12,18],
+  [13,14],[14,15],[15,16],[16,17],[17,18],
+  [13,19],[13,20],[14,20],[15,21],[15,22],[16,22],[16,23],[17,23],[17,24],[18,24],
+  [19,20],[20,21],[21,22],[22,23],[23,24],
+  [19,25],[20,26],[21,26],[21,27],[22,27],[22,28],[23,28],[23,29],[24,29],[24,30],
+  [25,26],[26,27],[27,28],[28,29],[29,30],
+];
+
 const EngineBackground: FC = () => {
-  const [idx, setIdx] = useState(0);
-  const [rotation, setRotation] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => setIdx((p) => (p + 1) % (MORPH_SHAPES.length - 1)), 3200);
-    return () => clearInterval(interval);
-  }, []);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-  useEffect(() => {
-    let raf: number;
+    const W = 200, H = 100;
+    canvas.width = W;
+    canvas.height = H;
+
+    const activeNodes = new Float32Array(ENGINE_NODES.length).fill(0);
+    const pulses: { edge: number; progress: number; speed: number }[] = [];
+
     let t = 0;
-    const spin = () => { t += 0.002; setRotation(t * 12); raf = requestAnimationFrame(spin); };
-    raf = requestAnimationFrame(spin);
+    let raf: number;
+
+    const animate = () => {
+      raf = requestAnimationFrame(animate);
+      t += 0.012;
+
+      // Spawn pulses
+      if (Math.random() < 0.08) {
+        pulses.push({
+          edge: Math.floor(Math.random() * ENGINE_EDGES.length),
+          progress: 0,
+          speed: 0.008 + Math.random() * 0.015,
+        });
+      }
+
+      // Decay node brightness
+      for (let i = 0; i < activeNodes.length; i++) {
+        activeNodes[i] *= 0.96;
+      }
+
+      // Update pulses
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        pulses[i].progress += pulses[i].speed;
+        if (pulses[i].progress >= 1) {
+          const target = ENGINE_EDGES[pulses[i].edge][1];
+          activeNodes[target] = 1;
+          pulses.splice(i, 1);
+        }
+      }
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw edges
+      ctx.lineWidth = 0.3;
+      ENGINE_EDGES.forEach(([a, b]) => {
+        const na = ENGINE_NODES[a], nb = ENGINE_NODES[b];
+        ctx.strokeStyle = `rgba(107,114,128,0.08)`;
+        ctx.beginPath();
+        ctx.moveTo(na.x, na.y);
+        ctx.lineTo(nb.x, nb.y);
+        ctx.stroke();
+      });
+
+      // Draw pulses traveling along edges
+      pulses.forEach((p) => {
+        const [a, b] = ENGINE_EDGES[p.edge];
+        const na = ENGINE_NODES[a], nb = ENGINE_NODES[b];
+        const x = na.x + (nb.x - na.x) * p.progress;
+        const y = na.y + (nb.y - na.y) * p.progress;
+        const grd = ctx.createRadialGradient(x, y, 0, x, y, 4);
+        grd.addColorStop(0, `rgba(8,145,178,0.5)`);
+        grd.addColorStop(1, `rgba(8,145,178,0)`);
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        // Core dot
+        ctx.fillStyle = `rgba(8,145,178,0.8)`;
+        ctx.beginPath();
+        ctx.arc(x, y, 1, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Draw nodes
+      ENGINE_NODES.forEach((n, i) => {
+        const brightness = activeNodes[i];
+        // Glow
+        if (brightness > 0.1) {
+          const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 6);
+          grd.addColorStop(0, `rgba(8,145,178,${brightness * 0.3})`);
+          grd.addColorStop(1, `rgba(8,145,178,0)`);
+          ctx.fillStyle = grd;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // Dot
+        const r = 0.8 + brightness * 0.8;
+        const alpha = 0.12 + brightness * 0.5;
+        ctx.fillStyle = brightness > 0.3
+          ? `rgba(8,145,178,${alpha})`
+          : `rgba(107,114,128,${alpha})`;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    };
+    animate();
+
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const nextIdx = (idx + 1) % MORPH_SHAPES.length;
-
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.06 }}>
-      <svg width="100%" height="100%" viewBox="0 0 200 110" preserveAspectRatio="xMidYMid slice" className="absolute inset-0">
-        <g style={{ transformOrigin: "100px 55px", transform: `rotate(${rotation}deg)` }}>
-          <circle cx="100" cy="55" r="52" fill="none" stroke="#6B7280" strokeWidth="0.4" strokeDasharray="8 12" />
-          <circle cx="100" cy="55" r="48" fill="none" stroke="#9CA3AF" strokeWidth="0.25" strokeDasharray="3 20" />
-        </g>
-        <g style={{ transformOrigin: "100px 55px", transform: `rotate(${-rotation * 0.6}deg)` }}>
-          <circle cx="100" cy="55" r="56" fill="none" stroke="#9CA3AF" strokeWidth="0.2" strokeDasharray="2 16" />
-        </g>
-        <AnimatePresence mode="wait">
-          <motion.g key={idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }}>
-            {FACET_FILLS[idx]?.map((f, i) => (
-              <motion.path key={i} d={f.d} fill="#6B7280" initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0.3] }} transition={{ duration: 1, delay: i * 0.1 }} />
-            ))}
-          </motion.g>
-        </AnimatePresence>
-        <motion.path d={MORPH_SHAPES[idx]} fill="none" stroke="#6B7280" strokeWidth="1.5" strokeLinejoin="miter" initial={false} animate={{ d: MORPH_SHAPES[nextIdx] }} transition={{ duration: 2.8, ease: [0.22, 1, 0.36, 1] }} />
-        <AnimatePresence mode="wait">
-          <motion.g key={`s${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
-            {INNER_STRUCTURES[idx]?.map((d, i) => (
-              <motion.path key={i} d={d} fill="none" stroke="#9CA3AF" strokeWidth="0.6" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: [0, 0.6, 0.3] }} transition={{ duration: 1.2, delay: i * 0.12 }} />
-            ))}
-          </motion.g>
-        </AnimatePresence>
-        <circle cx="100" cy="55" r="2" fill="#6B7280" opacity="0.5">
-          <animate attributeName="r" values="1;6;1" dur="3.2s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3.2s" repeatCount="indefinite" />
-        </circle>
-      </svg>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.35 }}>
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ imageRendering: "auto" }}
+      />
     </div>
   );
 };
