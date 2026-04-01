@@ -156,7 +156,7 @@ const PipelineSection = () => {
             <div className="absolute bottom-6 left-8 text-[4rem] font-light" style={{ lineHeight: 1, color: "rgba(107,114,128,0.08)" }}>{current.num}</div>
           </div>
 
-          <div className="p-8 md:p-12 flex flex-col justify-center">
+          <div className="p-8 md:p-12 pt-12 md:pt-16 flex flex-col justify-center">
             <motion.div key={currentIdx} initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
               <div className="flex items-center gap-3 mb-2">
                 <span className="w-8 h-8 flex items-center justify-center border rotate-45" style={{ borderColor: "#374151" }}>
