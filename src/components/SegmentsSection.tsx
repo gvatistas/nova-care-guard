@@ -79,10 +79,10 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const group = new THREE.Group();
     scene.add(group);
 
-    const wireMat = new THREE.LineBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.4 });
-    const wireMatDim = new THREE.LineBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.12 });
-    const facetMat = new THREE.MeshBasicMaterial({ color: 0xc8d6e5, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
-    const pointMat = new THREE.PointsMaterial({ color: 0xc8d6e5, size: 0.03, transparent: true, opacity: 0.5 });
+    const wireMat = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.4 });
+    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.12 });
+    const facetMat = new THREE.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+    const pointMat = new THREE.PointsMaterial({ color: 0x2563EB, size: 0.03, transparent: true, opacity: 0.5 });
 
     // Each segment gets a unique geometry
     let geo: THREE.BufferGeometry;
