@@ -255,16 +255,15 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 100);
-    camera.position.set(0, 0, 4.5);
+    camera.position.set(0, 0, 3);
 
     const group = new THREE.Group();
     scene.add(group);
 
-    // Grayscale materials — machined steel look
+    // Clean machined-steel materials
     const wireMat = new THREE.LineBasicMaterial({ color: 0x6B7280, transparent: true, opacity: 0.5 });
-    const wireMatDim = new THREE.LineBasicMaterial({ color: 0x9CA3AF, transparent: true, opacity: 0.15 });
     const facetMat = new THREE.MeshBasicMaterial({ color: 0x374151, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
-    const pointMat = new THREE.PointsMaterial({ color: 0x6B7280, size: 0.03, transparent: true, opacity: 0.5 });
+    const pointMat = new THREE.PointsMaterial({ color: 0x6B7280, size: 0.04, transparent: true, opacity: 0.5 });
 
     const geo = buildSegmentGeo(index);
 
@@ -277,27 +276,6 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
 
     const points = new THREE.Points(geo, pointMat);
     group.add(points);
-
-    const innerGeo = geo.clone();
-    innerGeo.scale(0.6, 0.6, 0.6);
-    const innerEdges = new THREE.EdgesGeometry(innerGeo);
-    const innerWire = new THREE.LineSegments(innerEdges, wireMatDim);
-    group.add(innerWire);
-
-    const particleCount = 40;
-    const pPositions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
-      const r = 1.3 + Math.random() * 0.6;
-      pPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      pPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pPositions[i * 3 + 2] = r * Math.cos(phi);
-    }
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0x9CA3AF, size: 0.02, transparent: true, opacity: 0.3 });
-    group.add(new THREE.Points(pGeo, pMat));
 
     let t = 0;
     let animId: number;
