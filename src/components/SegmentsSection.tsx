@@ -255,9 +255,6 @@ const SegmentsSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <p className="text-[11px] font-medium uppercase mb-3" style={{ letterSpacing: "0.12em", color: "#6B7280" }}>
-            Deployment Architecture
-          </p>
           <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
             Market Architecture
           </h2>
