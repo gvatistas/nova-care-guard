@@ -117,7 +117,7 @@ const CTASection = () => {
       ref={ref}
       onMouseMove={handleMouseMove}
       className="relative py-24 md:py-32 overflow-hidden"
-      style={{ backgroundColor: "#0B0F1A" }}
+      style={{ backgroundColor: "#1C1C1C" }}
     >
       {/* Animated network canvas */}
       <canvas
