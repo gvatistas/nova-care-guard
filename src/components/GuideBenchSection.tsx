@@ -204,7 +204,7 @@ const GuideBenchSection = () => {
           >
             <div className="text-center mb-4">
               {/* Fidelity score — DATA, so color is earned */}
-              <div className="text-7xl font-semibold tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#059669" }}>
+              <div className="text-7xl font-semibold tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#2563EB" }}>
                 {counter}%
               </div>
               <p className="text-[12px] font-medium uppercase mt-3" style={{ letterSpacing: "0.1em", color: "#6B7280" }}>
@@ -280,12 +280,12 @@ const GuideBenchSection = () => {
                     <motion.span
                       className="w-1.5 h-1.5 rounded-full"
                       animate={{
-                        background: activeRow === i ? "#059669" : "#D1D5DB",
-                        boxShadow: activeRow === i ? "0 0 8px rgba(5,150,105,0.4)" : "none",
+                        background: activeRow === i ? "#2563EB" : "#D1D5DB",
+                        boxShadow: activeRow === i ? "0 0 8px rgba(37,99,235,0.4)" : "none",
                       }}
                       transition={{ duration: 0.4 }}
                     />
-                    <span className="text-[11px] font-semibold uppercase transition-colors duration-300" style={{ letterSpacing: "0.06em", color: activeRow === i ? "#059669" : "#6B7280" }}>{g.status}</span>
+                    <span className="text-[11px] font-semibold uppercase transition-colors duration-300" style={{ letterSpacing: "0.06em", color: activeRow === i ? "#2563EB" : "#6B7280" }}>{g.status}</span>
                   </span>
                 </motion.div>
               ))}
@@ -306,8 +306,8 @@ const GuideBenchSection = () => {
                   <span className="font-bold text-sm tabular-nums font-mono" style={{ color: "#111827" }}>98.7%</span>
                 </div>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#059669", boxShadow: "0 0 8px rgba(5,150,105,0.4)" }} />
-                  <span className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.06em", color: "#059669" }}>Live</span>
+                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#2563EB", boxShadow: "0 0 8px rgba(37,99,235,0.4)" }} />
+                   <span className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.06em", color: "#2563EB" }}>Live</span>
                 </span>
               </div>
             </div>
