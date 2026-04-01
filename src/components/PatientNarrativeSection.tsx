@@ -293,8 +293,8 @@ const PatientNarrativeSection = () => {
           </div>
         </motion.div>
 
-        {/* ── TWO LANES + ENGINE SIDEBAR ── */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-6 md:gap-10 mt-6">
+        {/* ── TWO LANES ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mt-6">
 
           {/* ── LEFT: Without Medient ── */}
           <motion.div
@@ -370,31 +370,6 @@ const PatientNarrativeSection = () => {
             </motion.div>
           </motion.div>
         </div>
-
-          {/* ── ENGINE SIDEBAR — right of "With Medient" ── */}
-          <motion.div
-            className="hidden md:flex flex-col items-center justify-center"
-            initial={{ opacity: 0, x: 10 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 1.2, duration: 0.6 }}
-          >
-            <div className="border p-4 flex flex-col items-center gap-4 sticky top-1/3" style={{ borderColor: "#E5E7EB", background: "#FFFFFF", width: 140 }}>
-              <ShapeshiftingLogo size={100} />
-              <div className="text-center">
-                <p className="text-[10px] uppercase tracking-[0.15em] mb-1" style={{ color: "#6B7280" }}>Medient Engine</p>
-                <p className="text-[11px] leading-snug" style={{ color: "#374151" }}>Compiled clinical decision infrastructure analyzing 23 guideline pathways in &lt;0.3s</p>
-              </div>
-              {/* Pulse line connecting to right lane */}
-              <div className="w-full flex justify-center">
-                <motion.div
-                  className="w-1 h-1 rounded-full"
-                  style={{ background: POSITIVE }}
-                  animate={{ boxShadow: [`0 0 4px ${POSITIVE}`, `0 0 16px ${POSITIVE}`, `0 0 4px ${POSITIVE}`] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-              </div>
-            </div>
-          </motion.div>
       </div>
     </section>
   );
