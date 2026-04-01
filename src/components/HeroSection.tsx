@@ -441,32 +441,33 @@ const HeroSection = () => {
           >
             <a
               href="#contact"
-              className="group relative text-[13px] font-semibold uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden backdrop-blur-md rounded-sm"
+              className="group relative text-[13px] font-semibold uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden backdrop-blur-lg rounded-sm"
               style={{
                 letterSpacing: "0.08em",
-                color: "#FFFFFF",
-                background: "linear-gradient(135deg, rgba(55,65,81,0.6), rgba(17,24,39,0.45))",
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.08)",
+                color: "rgba(17,24,39,0.8)",
+                background: "linear-gradient(135deg, rgba(255,255,255,0.35), rgba(229,231,235,0.2))",
+                border: "1px solid rgba(17,24,39,0.08)",
+                boxShadow: "0 4px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "linear-gradient(135deg, rgba(107,114,128,0.3), rgba(55,65,81,0.5))" }} />
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "rgba(255,255,255,0.15)" }} />
               <span className="relative z-10">Request Demo</span>
             </a>
             <a
               href="#pipeline"
-              className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden backdrop-blur-md rounded-sm"
+              className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden backdrop-blur-lg rounded-sm"
               style={{
                 letterSpacing: "0.08em",
-                color: "#374151",
-                background: "linear-gradient(135deg, rgba(229,231,235,0.5), rgba(209,213,219,0.3))",
-                border: "1px solid rgba(107,114,128,0.2)",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.15)",
+                color: "rgba(17,24,39,0.8)",
+                background: "linear-gradient(135deg, rgba(255,255,255,0.35), rgba(229,231,235,0.2))",
+                border: "1px solid rgba(17,24,39,0.08)",
+                boxShadow: "0 4px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
             >
-              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "linear-gradient(135deg, rgba(156,163,175,0.25), rgba(107,114,128,0.2))" }} />
-              <span className="relative z-10 transition-colors duration-300 group-hover:text-[#111827]">Read White Paper</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "rgba(255,255,255,0.15)" }} />
+              <span className="relative z-10">Read White Paper</span>
             </a>
           </motion.div>
         </div>
