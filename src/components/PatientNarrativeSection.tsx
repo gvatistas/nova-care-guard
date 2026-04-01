@@ -355,9 +355,7 @@ const PatientNarrativeSection = () => {
             </motion.div>
 
             <div className="w-full max-w-sm flex flex-col items-center gap-0 relative z-10">
-              <ScreeningNode label="BP + Lipid Panel" sublabel="Auto-flagged from EHR — guideline-matched" color={GREEN} status="Compiled" delay={0.5} inView={inView} />
-              <Connector color={GREEN} />
-              <ScreeningNode label="Colonoscopy" sublabel="ACS guideline triggered — order auto-generated" color={GREEN} status="Scheduled" delay={0.6} inView={inView} />
+              <ScreeningNode label="Colonoscopy" sublabel="ACS guideline triggered — order auto-generated" color={GREEN} status="Scheduled" delay={0.5} inView={inView} />
               <Connector color={GREEN} />
               <ScreeningNode label="Lung Cancer Screening" sublabel="20 pack-year history detected — USPSTF Grade A" color={GREEN} status="Detected" delay={0.7} inView={inView} />
               <Connector color={GREEN} />
