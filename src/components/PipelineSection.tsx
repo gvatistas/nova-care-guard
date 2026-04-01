@@ -166,7 +166,7 @@ const PipelineSection = () => {
               </div>
               <h3 className="font-semibold text-xl mb-4" style={{ letterSpacing: "-0.02em", color: "#111827" }}>{current.name}</h3>
               <p className="text-base mb-5" style={{ lineHeight: 1.7, letterSpacing: "-0.01em", color: "#374151" }}>{current.desc}</p>
-              <StageBadge stage={current} />
+              
               <div className="flex items-center gap-2 mt-6">
                 {stages.map((_, i) => (
                   <div key={i} className="h-1 rounded-full transition-all duration-500" style={{
