@@ -245,7 +245,7 @@ const ProjectAlphaSection = () => {
         </div>
 
         <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1.5 }}
-          className="mt-6 text-center max-w-3xl mx-auto" style={{ fontSize: "1rem", color: "#374151", fontFamily: "Inter, sans-serif", lineHeight: 1.7 }}>
+          className="mt-6 text-center max-w-full mx-auto whitespace-nowrap" style={{ fontSize: "1rem", color: "#374151", fontFamily: "Inter, sans-serif", lineHeight: 1.7 }}>
           Enabling nurses to close 10x more care gaps per session — turning reactive visits into proactive prevention at scale.
         </motion.p>
       </div>
