@@ -95,7 +95,7 @@ const ProjectAlphaSection = () => {
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.2 }}
             className="lg:col-span-2 relative border overflow-hidden" style={{ minHeight: 420, borderColor: "#E5E7EB", background: "#FFFFFF" }}>
             <div className="absolute inset-0 pointer-events-none z-0"
-              style={{ backgroundImage: `linear-gradient(rgba(107,114,128,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(107,114,128,0.03) 1px, transparent 1px)`, backgroundSize: "35px 35px" }} />
+              style={{ backgroundImage: `linear-gradient(rgba(107,114,128,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(107,114,128,0.07) 1px, transparent 1px)`, backgroundSize: "35px 35px" }} />
 
             <svg viewBox="30 0 420 170" className="w-full h-full relative z-5" preserveAspectRatio="xMidYMid meet">
               <defs>
