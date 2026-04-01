@@ -103,27 +103,34 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return new THREE.DodecahedronGeometry(1, 0);
     }
     case 3: {
-      // Patients — 3D heart shape via ExtrudeGeometry
-      const shape = new THREE.Shape();
-      const s = 0.06;
-      shape.moveTo(0, 0);
-      shape.bezierCurveTo(0, -3 * s, -5 * s, -15 * s, -10 * s, -15 * s);
-      shape.bezierCurveTo(-18 * s, -15 * s, -18 * s, -2 * s, -18 * s, -2 * s);
-      shape.bezierCurveTo(-18 * s, 5 * s, -12 * s, 12 * s, 0, 19 * s);
-      shape.bezierCurveTo(12 * s, 12 * s, 18 * s, 5 * s, 18 * s, -2 * s);
-      shape.bezierCurveTo(18 * s, -2 * s, 18 * s, -15 * s, 10 * s, -15 * s);
-      shape.bezierCurveTo(5 * s, -15 * s, 0, -3 * s, 0, 0);
-      const geo = new THREE.ExtrudeGeometry(shape, {
-        depth: 0.35,
-        bevelEnabled: true,
-        bevelThickness: 0.12,
-        bevelSize: 0.08,
-        bevelSegments: 2,
-        curveSegments: 6,
-      });
-      // Flip upright (heart points down by default in this parametric)
-      geo.rotateX(Math.PI);
-      geo.rotateZ(Math.PI);
+      // Patients — true 3D heart via deformed sphere (no flat surfaces)
+      const geo = new THREE.SphereGeometry(1, 24, 24);
+      const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        let x = pos.getX(i);
+        let y = pos.getY(i);
+        let z = pos.getZ(i);
+        // Spherical coords
+        const r = Math.sqrt(x * x + y * y + z * z);
+        const theta = Math.atan2(z, x); // azimuth
+        const phi = Math.acos(y / r);   // polar
+        // Heart parametric deformation
+        const st = Math.sin(theta);
+        const ct = Math.cos(theta);
+        const sp = Math.sin(phi);
+        const cp = Math.cos(phi);
+        // Cardioid-inspired radial modulation
+        const heartR = r * (0.8 + 0.2 * Math.abs(st)) * (1 - 0.15 * cp);
+        // Create the top cleft
+        const cleft = Math.max(0, cp) * Math.max(0, -ct) * 0.35;
+        // Create bottom point
+        const pointiness = Math.max(0, -cp) * 0.4;
+        const nx = heartR * sp * ct * (1 + pointiness * 0.3);
+        const ny = heartR * cp - pointiness * r * 0.5 + cleft * r;
+        const nz = heartR * sp * st * (1 + pointiness * 0.3) * 0.85;
+        pos.setXYZ(i, nx, ny, nz);
+      }
+      geo.computeVertexNormals();
       return geo;
     }
     case 4: {
