@@ -45,53 +45,6 @@ const segments = [
   },
 ];
 
-/* ── Helper: build a brain-like shape from layered icospheres ── */
-function createBrainGeo(): THREE.Group {
-  const g = new THREE.Group();
-  // Left hemisphere
-  const leftGeo = new THREE.SphereGeometry(0.55, 10, 8, 0, Math.PI);
-  leftGeo.translate(-0.15, 0, 0);
-  // Right hemisphere
-  const rightGeo = new THREE.SphereGeometry(0.55, 10, 8, 0, Math.PI);
-  rightGeo.translate(0.15, 0, 0);
-  rightGeo.rotateY(Math.PI);
-  // Cerebellum
-  const cerebGeo = new THREE.SphereGeometry(0.3, 8, 6);
-  cerebGeo.translate(0, -0.35, -0.2);
-  // Folds (torus wraps)
-  const fold1 = new THREE.TorusGeometry(0.5, 0.06, 6, 16);
-  fold1.rotateX(Math.PI / 2);
-  const fold2 = new THREE.TorusGeometry(0.45, 0.05, 6, 16);
-  fold2.rotateZ(Math.PI / 3);
-  fold2.rotateX(Math.PI / 2.5);
-  return g; // we'll merge below
-}
-
-/* ── Helper: build a hospital-like structure ── */
-function createHospitalGeo(): THREE.BufferGeometry {
-  // Main building
-  const main = new THREE.BoxGeometry(0.9, 1.2, 0.6);
-  main.translate(0, 0, 0);
-  // Wing left
-  const wingL = new THREE.BoxGeometry(0.5, 0.8, 0.5);
-  wingL.translate(-0.6, -0.2, 0);
-  // Wing right
-  const wingR = new THREE.BoxGeometry(0.5, 0.8, 0.5);
-  wingR.translate(0.6, -0.2, 0);
-  // Tower
-  const tower = new THREE.BoxGeometry(0.3, 0.5, 0.3);
-  tower.translate(0, 0.85, 0);
-  // Cross on top
-  const crossV = new THREE.BoxGeometry(0.06, 0.25, 0.06);
-  crossV.translate(0, 1.22, 0);
-  const crossH = new THREE.BoxGeometry(0.18, 0.06, 0.06);
-  crossH.translate(0, 1.28, 0);
-
-  // Merge into one
-  const merged = mergeGeometries([main, wingL, wingR, tower, crossV, crossH]);
-  return merged;
-}
-
 /* ── Helper: merge BufferGeometries manually ── */
 function mergeGeometries(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
   let totalVerts = 0;
@@ -104,7 +57,6 @@ function mergeGeometries(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
   const pos = new Float32Array(totalVerts * 3);
   const indices: number[] = [];
   let vOffset = 0;
-  let iOffset = 0;
   geos.forEach(g => {
     const p = g.attributes.position!;
     for (let i = 0; i < p.count; i++) {
@@ -128,51 +80,6 @@ function mergeGeometries(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
   merged.setIndex(indices);
   merged.computeVertexNormals();
   return merged;
-}
-
-/* ── Helper: create a person/human silhouette shape ── */
-function createPersonGeo(): THREE.BufferGeometry {
-  // Head
-  const head = new THREE.SphereGeometry(0.25, 10, 8);
-  head.translate(0, 0.75, 0);
-  // Body (tapered cylinder)
-  const body = new THREE.CylinderGeometry(0.2, 0.35, 0.7, 8);
-  body.translate(0, 0.15, 0);
-  // Arms
-  const armL = new THREE.CylinderGeometry(0.06, 0.06, 0.6, 6);
-  armL.rotateZ(Math.PI / 6);
-  armL.translate(-0.4, 0.2, 0);
-  const armR = new THREE.CylinderGeometry(0.06, 0.06, 0.6, 6);
-  armR.rotateZ(-Math.PI / 6);
-  armR.translate(0.4, 0.2, 0);
-  // Heart indicator
-  const heart = new THREE.SphereGeometry(0.1, 8, 6);
-  heart.translate(0.08, 0.35, 0.2);
-  return mergeGeometries([head, body, armL, armR, heart]);
-}
-
-/* ── Helper: create a shield shape for insurers ── */
-function createShieldGeo(): THREE.BufferGeometry {
-  // Shield body using lathe
-  const pts: THREE.Vector2[] = [];
-  pts.push(new THREE.Vector2(0, -0.9));
-  pts.push(new THREE.Vector2(0.5, -0.5));
-  pts.push(new THREE.Vector2(0.6, 0));
-  pts.push(new THREE.Vector2(0.55, 0.4));
-  pts.push(new THREE.Vector2(0.3, 0.7));
-  pts.push(new THREE.Vector2(0, 0.95));
-  const shield = new THREE.LatheGeometry(pts, 12);
-  shield.scale(1, 1, 0.4);
-  // Dollar sign approximation — a vertical bar
-  const bar = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 6);
-  bar.translate(0, 0, 0.22);
-  // S-curve approximation with torus arcs
-  const sTop = new THREE.TorusGeometry(0.15, 0.035, 6, 8, Math.PI);
-  sTop.translate(0, 0.15, 0.22);
-  const sBot = new THREE.TorusGeometry(0.15, 0.035, 6, 8, Math.PI);
-  sBot.rotateY(Math.PI);
-  sBot.translate(0, -0.15, 0.22);
-  return mergeGeometries([shield, bar, sTop, sBot]);
 }
 
 /* ── Build segment-specific geometry — clean, broad silhouettes ── */
