@@ -259,7 +259,7 @@ const SegmentsSection = () => {
             Value propositions across our customer base
           </h2>
           <p className="mt-3 text-base max-w-2xl" style={{ color: "#374151" }}>
-            One compiled artifact. Six deployment surfaces.
+            One pipeline. Six deployment surfaces.
           </p>
         </motion.div>
 
