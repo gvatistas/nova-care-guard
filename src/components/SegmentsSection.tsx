@@ -351,22 +351,22 @@ const SegmentsSection = () => {
                       animate={isActive ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.5, delay: 0.15 }}
                     >
-                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: "#6B7280" }}>
-                        {seg.short}
-                      </p>
-                      <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#111827" }}>
-                        {seg.name}
-                      </h3>
-                      <p className="text-sm leading-relaxed mb-6" style={{ color: "#374151" }}>
-                        {seg.value}
-                      </p>
-                      <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#6B7280" }}>
-                        {seg.desc}
-                      </p>
+                       <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: SEGMENT_COLORS[i].accent }}>
+                         {seg.short}
+                       </p>
+                       <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#111827" }}>
+                         {seg.name}
+                       </h3>
+                       <p className="text-sm leading-relaxed mb-6" style={{ color: "#374151" }}>
+                         {seg.value}
+                       </p>
+                       <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#6B7280" }}>
+                         {seg.desc}
+                       </p>
 
-                      {/* Key metric — color used here because it's DATA */}
-                      <div className="border p-5 inline-block" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
-                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#059669" }}>
+                       {/* Key metric */}
+                       <div className="border p-5 inline-block" style={{ borderColor: SEGMENT_COLORS[i].border, background: SEGMENT_COLORS[i].bg }}>
+                         <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: SEGMENT_COLORS[i].accent }}>
                           {seg.stat}
                         </p>
                         <p className="text-[10px] uppercase tracking-[0.1em] mt-1" style={{ color: "#6B7280" }}>
