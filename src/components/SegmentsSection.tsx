@@ -142,7 +142,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     }
     const pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0xc8d6e5, size: 0.02, transparent: true, opacity: 0.3 });
+    const pMat = new THREE.PointsMaterial({ color: 0x2563EB, size: 0.02, transparent: true, opacity: 0.3 });
     group.add(new THREE.Points(pGeo, pMat));
 
     let t = 0;
