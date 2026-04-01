@@ -320,7 +320,7 @@ const SegmentsSection = () => {
           className="mb-16"
         >
           <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
-            Value propositions across our customer base
+            Value propositions across our customer base.
           </h2>
           <p className="mt-3 text-base max-w-2xl" style={{ color: "#374151" }}>
             One pipeline. Six deployment surfaces.
