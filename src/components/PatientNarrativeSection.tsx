@@ -33,192 +33,63 @@ const FACET_FILLS = [
   [{ d: "M 65,40 L 100,15 L 100,90 Z", fill: "#E5E7EB" }, { d: "M 100,15 L 135,40 L 100,90 Z", fill: "#D1D5DB" }, { d: "M 50,90 L 65,40 L 100,90 Z", fill: "#E5E7EB" }, { d: "M 135,40 L 150,90 L 100,90 Z", fill: "#F3F4F6" }],
 ];
 
-/* ── Background: animated decision-graph network ── */
-const ENGINE_NODES: { x: number; y: number }[] = [
-  { x: 20, y: 15 }, { x: 50, y: 8 }, { x: 80, y: 18 }, { x: 110, y: 10 }, { x: 140, y: 16 }, { x: 170, y: 6 },
-  { x: 10, y: 35 }, { x: 35, y: 30 }, { x: 65, y: 38 }, { x: 95, y: 28 }, { x: 125, y: 35 }, { x: 155, y: 30 }, { x: 185, y: 38 },
-  { x: 25, y: 55 }, { x: 55, y: 50 }, { x: 85, y: 55 }, { x: 115, y: 48 }, { x: 145, y: 55 }, { x: 175, y: 50 },
-  { x: 15, y: 72 }, { x: 45, y: 68 }, { x: 75, y: 75 }, { x: 105, y: 65 }, { x: 135, y: 72 }, { x: 165, y: 68 },
-  { x: 30, y: 90 }, { x: 60, y: 85 }, { x: 90, y: 92 }, { x: 120, y: 82 }, { x: 150, y: 88 }, { x: 180, y: 94 },
-];
-const ENGINE_EDGES: [number, number][] = [
-  [0,1],[1,2],[2,3],[3,4],[4,5],[0,7],[1,7],[1,8],[2,8],[2,9],[3,9],[3,10],[4,10],[4,11],[5,11],[5,12],
-  [6,7],[7,8],[8,9],[9,10],[10,11],[11,12],
-  [6,13],[7,14],[8,14],[8,15],[9,15],[9,16],[10,16],[10,17],[11,17],[11,18],[12,18],
-  [13,14],[14,15],[15,16],[16,17],[17,18],
-  [13,19],[13,20],[14,20],[15,21],[15,22],[16,22],[16,23],[17,23],[17,24],[18,24],
-  [19,20],[20,21],[21,22],[22,23],[23,24],
-  [19,25],[20,26],[21,26],[21,27],[22,27],[22,28],[23,28],[23,29],[24,29],[24,30],
-  [25,26],[26,27],[27,28],[28,29],[29,30],
-];
-
+/* ── Background: geometric line pattern (SVG-based, no canvas) ── */
 const EngineBackground: FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let raf: number;
-    let t = 0;
-
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2);
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
-      ctx.scale(dpr, dpr);
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    // Grid config
-    const spacing = 28;
-
-    const animate = () => {
-      raf = requestAnimationFrame(animate);
-      t += 0.003;
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      ctx.clearRect(0, 0, w, h);
-
-      const cols = Math.ceil(w / spacing) + 1;
-      const rows = Math.ceil(h / spacing) + 1;
-
-      // Draw grid dots
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const x = c * spacing;
-          const y = r * spacing;
-          ctx.fillStyle = "rgba(209,213,219,0.25)";
-          ctx.fillRect(x - 0.5, y - 0.5, 1, 1);
-        }
-      }
-
-      // Horizontal scan lines (geometric)
-      for (let i = 0; i < 3; i++) {
-        const phase = (t * 0.4 + i * 0.33) % 1;
-        const scanY = phase * h;
-        const grad = ctx.createLinearGradient(0, 0, w, 0);
-        const alpha = 0.06 + Math.sin(t * 2 + i) * 0.02;
-        grad.addColorStop(0, `rgba(37,99,235,0)`);
-        grad.addColorStop(0.2, `rgba(37,99,235,${alpha})`);
-        grad.addColorStop(0.8, `rgba(37,99,235,${alpha})`);
-        grad.addColorStop(1, `rgba(37,99,235,0)`);
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(0, scanY);
-        ctx.lineTo(w, scanY);
-        ctx.stroke();
-      }
-
-      // Animated geometric circuit paths
-      const paths: { sx: number; sy: number; segments: { dx: number; dy: number }[]; phase: number }[] = [
-        { sx: 0.1, sy: 0.2, segments: [{ dx: 0.15, dy: 0 }, { dx: 0, dy: 0.15 }, { dx: 0.2, dy: 0 }, { dx: 0, dy: 0.1 }, { dx: 0.15, dy: 0 }], phase: 0 },
-        { sx: 0.8, sy: 0.1, segments: [{ dx: 0, dy: 0.2 }, { dx: -0.25, dy: 0 }, { dx: 0, dy: 0.15 }, { dx: -0.15, dy: 0 }], phase: 0.5 },
-        { sx: 0.3, sy: 0.7, segments: [{ dx: 0.2, dy: 0 }, { dx: 0, dy: -0.15 }, { dx: 0.2, dy: 0 }, { dx: 0, dy: 0.2 }], phase: 0.25 },
-        { sx: 0.05, sy: 0.5, segments: [{ dx: 0.3, dy: 0 }, { dx: 0, dy: 0.25 }, { dx: 0.2, dy: 0 }], phase: 0.7 },
-        { sx: 0.6, sy: 0.85, segments: [{ dx: 0, dy: -0.3 }, { dx: 0.2, dy: 0 }, { dx: 0, dy: -0.15 }], phase: 0.4 },
-      ];
-
-      paths.forEach((path) => {
-        const totalLen = path.segments.reduce((s, seg) => s + Math.abs(seg.dx || seg.dy), 0);
-        let cx = path.sx * w;
-        let cy = path.sy * h;
-
-        // Draw static path
-        ctx.strokeStyle = "rgba(37,99,235,0.06)";
-        ctx.lineWidth = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        path.segments.forEach((seg) => {
-          cx += seg.dx * w;
-          cy += seg.dy * h;
-          ctx.lineTo(cx, cy);
-        });
-        ctx.stroke();
-
-        // Draw junction nodes
-        cx = path.sx * w;
-        cy = path.sy * h;
-        path.segments.forEach((seg) => {
-          ctx.fillStyle = "rgba(37,99,235,0.08)";
-          ctx.beginPath();
-          ctx.arc(cx, cy, 1.5, 0, Math.PI * 2);
-          ctx.fill();
-          cx += seg.dx * w;
-          cy += seg.dy * h;
-        });
-
-        // Animated pulse along path
-        const progress = ((t * 0.5 + path.phase) % 1);
-        const targetDist = progress * totalLen;
-        let traveled = 0;
-        let px = path.sx * w;
-        let py = path.sy * h;
-
-        for (const seg of path.segments) {
-          const segLen = Math.abs(seg.dx || seg.dy);
-          if (traveled + segLen >= targetDist) {
-            const frac = (targetDist - traveled) / segLen;
-            px += seg.dx * w * frac;
-            py += seg.dy * h * frac;
-            break;
-          }
-          px += seg.dx * w;
-          py += seg.dy * h;
-          traveled += segLen;
-        }
-
-        // Pulse glow
-        const grd = ctx.createRadialGradient(px, py, 0, px, py, 12);
-        grd.addColorStop(0, "rgba(37,99,235,0.2)");
-        grd.addColorStop(1, "rgba(37,99,235,0)");
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(px, py, 12, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Pulse core
-        ctx.fillStyle = "rgba(37,99,235,0.5)";
-        ctx.beginPath();
-        ctx.arc(px, py, 2, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // Corner brackets (high-tech frame accents)
-      const bracketLen = 20;
-      ctx.strokeStyle = "rgba(37,99,235,0.1)";
-      ctx.lineWidth = 1;
-      // Top-left
-      ctx.beginPath(); ctx.moveTo(0, bracketLen); ctx.lineTo(0, 0); ctx.lineTo(bracketLen, 0); ctx.stroke();
-      // Top-right
-      ctx.beginPath(); ctx.moveTo(w - bracketLen, 0); ctx.lineTo(w, 0); ctx.lineTo(w, bracketLen); ctx.stroke();
-      // Bottom-left
-      ctx.beginPath(); ctx.moveTo(0, h - bracketLen); ctx.lineTo(0, h); ctx.lineTo(bracketLen, h); ctx.stroke();
-      // Bottom-right
-      ctx.beginPath(); ctx.moveTo(w - bracketLen, h); ctx.lineTo(w, h); ctx.lineTo(w, h - bracketLen); ctx.stroke();
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.7 }}>
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-      />
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.5 }}>
+      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 100">
+        {/* Primary diagonal grid */}
+        {Array.from({ length: 12 }).map((_, i) => (
+          <line key={`d1-${i}`} x1={i * 20 - 20} y1="0" x2={i * 20 + 40} y2="100"
+            stroke="#9CA3AF" strokeWidth="0.15" opacity="0.4" />
+        ))}
+        {Array.from({ length: 12 }).map((_, i) => (
+          <line key={`d2-${i}`} x1={i * 20 + 20} y1="0" x2={i * 20 - 40} y2="100"
+            stroke="#9CA3AF" strokeWidth="0.15" opacity="0.3" />
+        ))}
+        {/* Horizontal structure lines */}
+        {[15, 35, 50, 65, 85].map((y) => (
+          <line key={`h-${y}`} x1="0" y1={y} x2="200" y2={y}
+            stroke="#D1D5DB" strokeWidth="0.2" opacity="0.3" />
+        ))}
+        {/* Hexagonal / diamond nodes at intersections */}
+        {[
+          [30, 15], [70, 15], [110, 15], [150, 15],
+          [50, 35], [90, 35], [130, 35], [170, 35],
+          [20, 50], [60, 50], [100, 50], [140, 50], [180, 50],
+          [40, 65], [80, 65], [120, 65], [160, 65],
+          [30, 85], [70, 85], [110, 85], [150, 85],
+        ].map(([x, y], i) => (
+          <g key={`n-${i}`}>
+            <polygon
+              points={`${x},${y - 2.5} ${x + 2.5},${y} ${x},${y + 2.5} ${x - 2.5},${y}`}
+              fill="none" stroke="#9CA3AF" strokeWidth="0.3" opacity="0.35"
+            />
+          </g>
+        ))}
+        {/* Accent connecting lines between diamond nodes */}
+        {[
+          [30, 15, 50, 35], [70, 15, 50, 35], [70, 15, 90, 35],
+          [110, 15, 90, 35], [110, 15, 130, 35], [150, 15, 130, 35], [150, 15, 170, 35],
+          [50, 35, 60, 50], [90, 35, 100, 50], [130, 35, 140, 50], [170, 35, 180, 50],
+          [50, 35, 20, 50], [90, 35, 60, 50], [130, 35, 100, 50],
+          [20, 50, 40, 65], [60, 50, 40, 65], [60, 50, 80, 65],
+          [100, 50, 80, 65], [100, 50, 120, 65], [140, 50, 120, 65], [140, 50, 160, 65],
+          [40, 65, 30, 85], [80, 65, 70, 85], [120, 65, 110, 85], [160, 65, 150, 85],
+          [40, 65, 70, 85], [80, 65, 110, 85], [120, 65, 150, 85],
+        ].map(([x1, y1, x2, y2], i) => (
+          <line key={`c-${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
+            stroke="#6B7280" strokeWidth="0.2" opacity="0.2" />
+        ))}
+        {/* Corner brackets */}
+        <polyline points="0,8 0,0 8,0" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
+        <polyline points="192,0 200,0 200,8" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
+        <polyline points="0,92 0,100 8,100" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
+        <polyline points="192,100 200,100 200,92" fill="none" stroke="#6B7280" strokeWidth="0.4" opacity="0.3" />
+      </svg>
     </div>
   );
 };
-
 /* ── Small Shapeshifting Crown Logo — grayscale ── */
 const ShapeshiftingLogo: FC<{ size?: number }> = ({ size = 120 }) => {
   const [idx, setIdx] = useState(0);
