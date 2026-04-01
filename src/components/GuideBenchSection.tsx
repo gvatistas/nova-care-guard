@@ -204,7 +204,7 @@ const GuideBenchSection = () => {
           >
             <div className="text-center mb-4">
               {/* Fidelity score — DATA, so color is earned */}
-              <div className="text-7xl font-semibold tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#2563EB" }}>
+              <div className="text-5xl font-normal tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#2563EB" }}>
                 {counter}%
               </div>
               <p className="text-[12px] font-medium uppercase mt-3" style={{ letterSpacing: "0.1em", color: "#6B7280" }}>
