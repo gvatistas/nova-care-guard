@@ -325,6 +325,7 @@ const PatientNarrativeSection = () => {
               <ScreeningNode label="LDCT Scan" sublabel="USPSTF Grade A — eligible but never ordered" color={RED} status="Missed" delay={0.8} inView={inView} critical />
             </div>
 
+            <div className="flex-1" />
             <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 1.4 }}
               className="mt-6 border p-4 text-center w-full max-w-sm" style={{ borderColor: `${RED}25`, background: "#FFF1F2" }}>
               <p className="text-xs uppercase tracking-[0.15em] mb-1" style={{ color: `${RED}AA` }}>18 Months Later</p>
