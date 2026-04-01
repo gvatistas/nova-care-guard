@@ -14,7 +14,7 @@ const CTASection = () => {
             Bridging the gap between AI and evidence-based care.
           </h2>
           <p className="text-lg mb-8 max-w-3xl" style={{ lineHeight: 1.7, letterSpacing: "-0.01em", color: "#374151" }}>
-            Our healthcare system wasn't built for prevention. We're changing that: replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it's too late.
+            Replacing outdated, reactive workflows with intelligent clinical infrastructure that catches what matters before it's too late.
           </p>
 
           <div className="flex flex-col sm:flex-row items-start gap-4">
