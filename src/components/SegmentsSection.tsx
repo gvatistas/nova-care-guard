@@ -310,7 +310,7 @@ const SegmentsSection = () => {
   const [selected, setSelected] = useState<number>(0);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#FFFFFF" }}>
+    <section ref={ref} className="relative py-16 md:py-24" style={{ background: "#FFFFFF" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         {/* Header */}
         <motion.div
