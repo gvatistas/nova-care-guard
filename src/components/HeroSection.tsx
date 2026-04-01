@@ -361,9 +361,11 @@ const HeroSection = () => {
       (nodeMat.uniforms as any).uTime.value = time;
       (nodeMat.uniforms as any).uCamZ.value = camZ;
       (pulseMat.uniforms as any).uCamZ.value = camZ;
+      (pulseMat.uniforms as any).uTime.value = time;
 
       // Animate pulses along edges
       const pArr = pulseGeo.attributes.position.array as Float32Array;
+      const progArr = pulseGeo.attributes.progress.array as Float32Array;
       for (let i = 0; i < PULSE_COUNT; i++) {
         pulseProgress[i] += pulseSpeed[i];
         if (pulseProgress[i] > 1) {
@@ -375,8 +377,10 @@ const HeroSection = () => {
         pArr[i * 3] = edgePos[ei] + (edgePos[ei + 3] - edgePos[ei]) * pr;
         pArr[i * 3 + 1] = edgePos[ei + 1] + (edgePos[ei + 4] - edgePos[ei + 1]) * pr;
         pArr[i * 3 + 2] = edgePos[ei + 2] + (edgePos[ei + 5] - edgePos[ei + 2]) * pr;
+        progArr[i] = pr;
       }
       pulseGeo.attributes.position.needsUpdate = true;
+      pulseGeo.attributes.progress.needsUpdate = true;
 
       // Animate dust
       const dArr = dustGeo.attributes.position.array as Float32Array;
