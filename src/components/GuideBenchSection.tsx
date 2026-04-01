@@ -318,9 +318,6 @@ const GuideBenchSection = () => {
               transition={{ delay: 1 }}
               className="mt-8"
             >
-              <p className="font-semibold text-xl mb-6" style={{ letterSpacing: "-0.02em", color: "#111827" }}>
-                We wrote the test. Then we open-sourced it.
-              </p>
               <a
                 href="#"
                 className="inline-block text-[13px] font-medium uppercase border px-8 py-3.5 transition-all duration-300 hover:bg-[#111827] hover:text-white hover:border-[#111827]"
