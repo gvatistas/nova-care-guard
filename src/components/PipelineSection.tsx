@@ -182,9 +182,8 @@ const PipelineSection = () => {
 
         {/* Compliance bar */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}
-          className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px" style={{ backgroundColor: "#E5E7EB" }}>
+          className="mt-8 grid grid-cols-3 gap-px" style={{ backgroundColor: "#E5E7EB" }}>
           {[
-            { name: "SOC 2 Type II", status: "In Progress", color: "#6B7280" },
             { name: "HIPAA", status: "Compliant", color: "#059669" },
             { name: "FHIR R4", status: "Native", color: "#059669" },
             { name: "HL7 CDS Hooks", status: "Supported", color: "#059669" },
