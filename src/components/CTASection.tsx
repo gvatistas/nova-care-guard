@@ -150,7 +150,7 @@ const CTASection = () => {
           />
 
           <h2
-            className="font-semibold text-3xl md:text-4xl mb-4"
+            className="font-normal text-3xl md:text-4xl mb-4"
             style={{ letterSpacing: "-0.03em", color: "#F9FAFB" }}
           >
             Bridging the gap between AI and evidence-based care.
