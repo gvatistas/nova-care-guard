@@ -280,8 +280,8 @@ const GuideBenchSection = () => {
                     <motion.span
                       className="w-1.5 h-1.5 rounded-full"
                       animate={{
-                        background: activeRow === i ? "#059669" : "#D1D5DB",
-                        boxShadow: activeRow === i ? "0 0 8px rgba(5,150,105,0.4)" : "none",
+                        background: activeRow === i ? "#2563EB" : "#D1D5DB",
+                        boxShadow: activeRow === i ? "0 0 8px rgba(37,99,235,0.4)" : "none",
                       }}
                       transition={{ duration: 0.4 }}
                     />
