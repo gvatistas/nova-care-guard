@@ -8,7 +8,7 @@ const SEGMENT_COLORS = [
   { accent: "#059669", bg: "rgba(5,150,105,0.04)", border: "rgba(5,150,105,0.15)" },     // Green — Clinics
   { accent: "#0891B2", bg: "rgba(8,145,178,0.04)", border: "rgba(8,145,178,0.15)" },     // Cyan — Patients
   { accent: "#D97706", bg: "rgba(217,119,6,0.04)", border: "rgba(217,119,6,0.15)" },     // Amber — Pharmacies
-  { accent: "#374151", bg: "rgba(55,65,81,0.04)", border: "rgba(55,65,81,0.15)" },       // Dark grey — Insurers
+  { accent: "#92400E", bg: "rgba(146,64,14,0.04)", border: "rgba(146,64,14,0.15)" },       // Brown — Insurers
 ];
 
 const segments = [
