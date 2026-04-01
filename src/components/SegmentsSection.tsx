@@ -2,6 +2,15 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, type FC } from "react";
 import * as THREE from "three";
 
+const SEGMENT_COLORS = [
+  { accent: "#7C3AED", bg: "rgba(124,58,237,0.04)", border: "rgba(124,58,237,0.15)" },  // Purple — Labs
+  { accent: "#2563EB", bg: "rgba(37,99,235,0.04)", border: "rgba(37,99,235,0.15)" },     // Blue — AI Products
+  { accent: "#059669", bg: "rgba(5,150,105,0.04)", border: "rgba(5,150,105,0.15)" },     // Green — Clinics
+  { accent: "#0891B2", bg: "rgba(8,145,178,0.04)", border: "rgba(8,145,178,0.15)" },     // Cyan — Patients
+  { accent: "#D97706", bg: "rgba(217,119,6,0.04)", border: "rgba(217,119,6,0.15)" },     // Amber — Pharmacies
+  { accent: "#DC2626", bg: "rgba(220,38,38,0.04)", border: "rgba(220,38,38,0.15)" },     // Red — Insurers
+];
+
 const segments = [
   {
     name: "Frontier Labs",
@@ -289,23 +298,23 @@ const SegmentsSection = () => {
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.2 + i * 0.06 }}
                   onClick={() => setSelected(i)}
-                  className="w-full text-left px-6 py-5 border-b transition-all duration-300 cursor-pointer"
-                  style={{
-                    borderColor: "#E5E7EB",
-                    background: isActive ? "rgba(17,24,39,0.03)" : "transparent",
-                    borderLeft: isActive ? "2px solid #111827" : "2px solid transparent",
-                  }}
-                >
-                  <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
-                    style={{ color: isActive ? "#111827" : "#6B7280" }}
-                  >
-                    {seg.short}
-                  </p>
-                  <p className="text-sm font-medium"
-                    style={{ color: isActive ? "#111827" : "#374151", letterSpacing: "-0.01em" }}
-                  >
-                    {seg.name}
-                  </p>
+                   className="w-full text-left px-6 py-5 border-b transition-all duration-300 cursor-pointer"
+                   style={{
+                     borderColor: "#E5E7EB",
+                     background: isActive ? SEGMENT_COLORS[i].bg : "transparent",
+                     borderLeft: isActive ? `2px solid ${SEGMENT_COLORS[i].accent}` : "2px solid transparent",
+                   }}
+                 >
+                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
+                     style={{ color: isActive ? SEGMENT_COLORS[i].accent : "#6B7280" }}
+                   >
+                     {seg.short}
+                   </p>
+                   <p className="text-sm font-medium"
+                     style={{ color: isActive ? "#111827" : "#374151", letterSpacing: "-0.01em" }}
+                   >
+                     {seg.name}
+                   </p>
                 </motion.button>
               );
             })}
@@ -342,22 +351,22 @@ const SegmentsSection = () => {
                       animate={isActive ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.5, delay: 0.15 }}
                     >
-                      <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: "#6B7280" }}>
-                        {seg.short}
-                      </p>
-                      <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#111827" }}>
-                        {seg.name}
-                      </h3>
-                      <p className="text-sm leading-relaxed mb-6" style={{ color: "#374151" }}>
-                        {seg.value}
-                      </p>
-                      <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#6B7280" }}>
-                        {seg.desc}
-                      </p>
+                       <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: SEGMENT_COLORS[i].accent }}>
+                         {seg.short}
+                       </p>
+                       <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#111827" }}>
+                         {seg.name}
+                       </h3>
+                       <p className="text-sm leading-relaxed mb-6" style={{ color: "#374151" }}>
+                         {seg.value}
+                       </p>
+                       <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#6B7280" }}>
+                         {seg.desc}
+                       </p>
 
-                      {/* Key metric — color used here because it's DATA */}
-                      <div className="border p-5 inline-block" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
-                        <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: "#059669" }}>
+                       {/* Key metric */}
+                       <div className="border p-5 inline-block" style={{ borderColor: SEGMENT_COLORS[i].border, background: SEGMENT_COLORS[i].bg }}>
+                         <p className="text-3xl font-light" style={{ letterSpacing: "-0.02em", color: SEGMENT_COLORS[i].accent }}>
                           {seg.stat}
                         </p>
                         <p className="text-[10px] uppercase tracking-[0.1em] mt-1" style={{ color: "#6B7280" }}>
