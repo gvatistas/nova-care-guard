@@ -118,85 +118,102 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
   }
 }
 
-/* ── Human head wireframe data (low-poly vertex mesh) ── */
-const HEAD_VERTS: [number, number, number][] = [
-  // Crown (0-5)
-  [0, 1.0, 0],
-  [-0.3, 0.9, 0.2], [0.3, 0.9, 0.2], [-0.3, 0.9, -0.2], [0.3, 0.9, -0.2],
-  [0, 0.95, 0.3],
-  // Upper skull (6-13)
-  [-0.42, 0.7, 0.28], [0.42, 0.7, 0.28], [-0.42, 0.7, -0.28], [0.42, 0.7, -0.28],
-  [-0.35, 0.75, 0.35], [0.35, 0.75, 0.35], [-0.35, 0.75, -0.35], [0.35, 0.75, -0.35],
-  // Mid skull / temple (14-21)
-  [-0.48, 0.5, 0.3], [0.48, 0.5, 0.3], [-0.48, 0.5, -0.3], [0.48, 0.5, -0.3],
-  [-0.45, 0.5, 0.0], [0.45, 0.5, 0.0],
-  [0, 0.55, 0.45], [0, 0.55, -0.42],
-  // Eye line (22-27)
-  [-0.35, 0.38, 0.35], [0.35, 0.38, 0.35],
-  [-0.18, 0.4, 0.4], [0.18, 0.4, 0.4],
-  [-0.38, 0.38, -0.3], [0.38, 0.38, -0.3],
-  // Cheek / nose (28-33)
-  [-0.38, 0.22, 0.3], [0.38, 0.22, 0.3],
-  [0, 0.28, 0.48], // nose bridge
-  [0, 0.15, 0.5],  // nose tip
-  [-0.4, 0.22, -0.25], [0.4, 0.22, -0.25],
-  // Jaw (34-41)
-  [-0.35, 0.05, 0.25], [0.35, 0.05, 0.25],
-  [-0.35, 0.05, -0.2], [0.35, 0.05, -0.2],
-  [-0.2, -0.08, 0.2], [0.2, -0.08, 0.2],
-  [0, -0.12, 0.22], // chin
-  [0, -0.05, -0.18], // back jaw
-  // Neck (42-45)
-  [-0.2, -0.25, 0.12], [0.2, -0.25, 0.12],
-  [-0.2, -0.25, -0.12], [0.2, -0.25, -0.12],
-  // Extra structural (46-49)
-  [0, 0.7, 0.42], [0, 0.38, -0.4],
-  [-0.45, 0.35, 0], [0.45, 0.35, 0],
-];
+/* ── Heart wireframe data (low-poly vertex mesh) ── */
+function generateHeartVerts(): [number, number, number][] {
+  const verts: [number, number, number][] = [];
+  // Generate heart shape using parametric formula across multiple layers
+  const layers = 7;
+  const pointsPerLayer = 12;
+  
+  for (let l = 0; l < layers; l++) {
+    const v = (l / (layers - 1)) * Math.PI; // 0 to PI
+    const rScale = Math.sin(v); // radius scale per layer
+    const y = Math.cos(v) * 0.6; // vertical position
+    
+    for (let p = 0; p < pointsPerLayer; p++) {
+      const t = (p / pointsPerLayer) * Math.PI * 2;
+      // Heart curve in polar: r = 1 - sin(t)
+      const heartR = (1 - Math.sin(t)) * 0.35 * rScale;
+      const x = heartR * Math.cos(t);
+      const z = heartR * Math.sin(t) * 0.5; // flatten z for depth
+      verts.push([x, y + 0.15, z]);
+    }
+  }
+  
+  // Bottom tip
+  verts.push([0, -0.55, 0]);
+  // Top cleft
+  verts.push([-0.12, 0.65, 0]);
+  verts.push([0.12, 0.65, 0]);
+  // Top bumps
+  verts.push([-0.28, 0.7, 0]);
+  verts.push([0.05, 0.55, 0]);
+  verts.push([0.28, 0.7, 0]);
+  
+  return verts;
+}
 
-const HEAD_EDGES: [number, number][] = [
-  // Crown connections
-  [0,1],[0,2],[0,3],[0,4],[0,5],[1,2],[3,4],[1,3],[2,4],[1,5],[2,5],
-  // Crown to upper skull
-  [1,6],[1,10],[2,7],[2,11],[3,8],[3,12],[4,9],[4,13],[5,10],[5,11],
-  // Upper skull ring
-  [6,7],[6,10],[7,11],[8,9],[8,12],[9,13],[10,11],[12,13],[6,8],[7,9],
-  // Upper to mid skull
-  [6,14],[7,15],[8,16],[9,17],[6,18],[7,19],[10,20],[11,20],[12,21],[13,21],
-  [14,18],[15,19],[16,18],[17,19],[14,20],[15,20],[16,21],[17,21],
-  // Mid skull ring
-  [14,15],[16,17],[18,19],
-  // To eye line
-  [14,22],[15,23],[20,24],[20,25],[22,24],[23,25],[16,26],[17,27],
-  [46,10],[46,11],[46,20],[47,21],[47,26],[47,27],
-  [18,48],[19,49],[48,22],[49,23],[48,26],[49,27],
-  // Eye to cheek/nose
-  [22,28],[23,29],[24,30],[25,30],[30,31],[26,32],[27,33],
-  [22,30],[23,30],[28,31],[29,31],
-  // Cheek connections
-  [28,29],[32,33],[28,32],[29,33],[48,28],[49,29],[48,32],[49,33],
-  // To jaw
-  [28,34],[29,35],[32,36],[33,37],[31,40],[34,38],[35,39],[38,40],[39,40],
-  [34,36],[35,37],[36,37],[38,39],
-  [36,41],[37,41],[41,40],
-  // Jaw to neck
-  [34,42],[35,43],[36,44],[37,45],[38,42],[39,43],[40,42],[40,43],[41,44],[41,45],
-  [42,43],[44,45],[42,44],[43,45],
-];
+const HEART_VERTS = generateHeartVerts();
+
+function generateHeartEdges(vertCount: number, pointsPerLayer: number, layers: number): [number, number][] {
+  const edges: [number, number][] = [];
+  
+  // Connect within each layer
+  for (let l = 0; l < layers; l++) {
+    const base = l * pointsPerLayer;
+    for (let p = 0; p < pointsPerLayer; p++) {
+      edges.push([base + p, base + ((p + 1) % pointsPerLayer)]);
+    }
+  }
+  
+  // Connect between layers
+  for (let l = 0; l < layers - 1; l++) {
+    const base = l * pointsPerLayer;
+    const nextBase = (l + 1) * pointsPerLayer;
+    for (let p = 0; p < pointsPerLayer; p++) {
+      edges.push([base + p, nextBase + p]);
+      edges.push([base + p, nextBase + ((p + 1) % pointsPerLayer)]);
+    }
+  }
+  
+  // Connect to bottom tip
+  const tipIdx = layers * pointsPerLayer;
+  const lastLayerBase = (layers - 1) * pointsPerLayer;
+  for (let p = 0; p < pointsPerLayer; p++) {
+    edges.push([lastLayerBase + p, tipIdx]);
+  }
+  
+  // Connect top extras
+  const cleftL = tipIdx + 1;
+  const cleftR = tipIdx + 2;
+  const bumpL = tipIdx + 3;
+  const bumpM = tipIdx + 4;
+  const bumpR = tipIdx + 5;
+  // Connect cleft/bump vertices to first layer
+  for (let p = 0; p < pointsPerLayer; p++) {
+    if (p < pointsPerLayer / 2) edges.push([p, cleftL]);
+    else edges.push([p, cleftR]);
+  }
+  edges.push([cleftL, bumpL], [cleftR, bumpR], [cleftL, bumpM], [cleftR, bumpM], [bumpL, bumpR]);
+  
+  return edges;
+}
+
+const HEART_EDGES = generateHeartEdges(HEART_VERTS.length, 12, 7);
 
 function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial; pulseRings: THREE.Mesh[]; heartGlow: THREE.Mesh } {
   const group = new THREE.Group();
 
-  // Center vertically
   const positions: number[] = [];
-  const cy = 0.4;
-  HEAD_VERTS.forEach(([x, y, z]) => positions.push(x, y - cy, z));
+  HEART_VERTS.forEach(([x, y, z]) => positions.push(x, y, z));
 
   // Edge lines
   const linePositions: number[] = [];
-  HEAD_EDGES.forEach(([a, b]) => {
-    linePositions.push(positions[a * 3], positions[a * 3 + 1], positions[a * 3 + 2]);
-    linePositions.push(positions[b * 3], positions[b * 3 + 1], positions[b * 3 + 2]);
+  HEART_EDGES.forEach(([a, b]) => {
+    if (a < HEART_VERTS.length && b < HEART_VERTS.length) {
+      linePositions.push(positions[a * 3], positions[a * 3 + 1], positions[a * 3 + 2]);
+      linePositions.push(positions[b * 3], positions[b * 3 + 1], positions[b * 3 + 2]);
+    }
   });
   const lineGeo = new THREE.BufferGeometry();
   lineGeo.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
@@ -209,15 +226,10 @@ function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wi
   const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.04, transparent: true, opacity: 0.8, sizeAttenuation: true });
   group.add(new THREE.Points(pointGeo, pointMat));
 
-  // Pulse rings scanning the head (top, eyes, jaw)
-  const ringPositions = [
-    { y: 0.85 - cy, scale: 0.35 },
-    { y: 0.4 - cy, scale: 0.45 },
-    { y: 0.0 - cy, scale: 0.35 },
-  ];
+  // Pulse rings around the heart
   const pulseRings: THREE.Mesh[] = [];
-  ringPositions.forEach(({ y, scale }) => {
-    const ringGeo = new THREE.RingGeometry(scale * 0.9, scale, 32);
+  [0.4, 0.0, -0.35].forEach((y) => {
+    const ringGeo = new THREE.RingGeometry(0.38, 0.42, 32);
     const ringMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.position.y = y;
@@ -226,14 +238,14 @@ function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wi
     pulseRings.push(ring);
   });
 
-  // Glow at center of head (brain area)
-  const heartGeo = new THREE.SphereGeometry(0.1, 16, 16);
+  // Glow at center
+  const heartGeo = new THREE.SphereGeometry(0.12, 16, 16);
   const heartMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0 });
   const heartGlow = new THREE.Mesh(heartGeo, heartMat);
-  heartGlow.position.set(0, 0.55 - cy, 0);
+  heartGlow.position.set(0, 0.1, 0);
   group.add(heartGlow);
 
-  group.scale.set(1.6, 1.6, 1.6);
+  group.scale.set(1.8, 1.8, 1.8);
 
   return { group, wireMat, pointMat, pulseRings, heartGlow };
 }
