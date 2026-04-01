@@ -359,7 +359,7 @@ const SegmentsSection = () => {
           </div>
 
           {/* Right — 3D hologram + detail */}
-          <div className="relative min-h-[480px]">
+          <div className="relative min-h-[400px]">
             {segments.map((seg, i) => {
               const isActive = selected === i;
               return (
