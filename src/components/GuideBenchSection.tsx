@@ -285,7 +285,7 @@ const GuideBenchSection = () => {
                       }}
                       transition={{ duration: 0.4 }}
                     />
-                    <span className="text-[11px] font-semibold uppercase transition-colors duration-300" style={{ letterSpacing: "0.06em", color: activeRow === i ? "#059669" : "#6B7280" }}>{g.status}</span>
+                    <span className="text-[11px] font-semibold uppercase transition-colors duration-300" style={{ letterSpacing: "0.06em", color: activeRow === i ? "#2563EB" : "#6B7280" }}>{g.status}</span>
                   </span>
                 </motion.div>
               ))}
