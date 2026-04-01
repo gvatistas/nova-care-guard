@@ -450,7 +450,7 @@ const PatientNarrativeSection = () => {
               className="mt-6 border-2 p-5 text-center w-full max-w-sm" style={{ borderColor: RED, background: `${RED}12`, boxShadow: `0 0 20px ${RED}15, inset 0 0 12px ${RED}08` }}>
               <p className="text-xs uppercase tracking-[0.15em] mb-1.5 font-bold" style={{ color: RED }}>18 Months Later</p>
               <p className="text-base font-semibold" style={{ color: "#111827" }}>Late-stage diagnosis</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: RED }}>$288K+</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: RED }}>$288,000</p>
               <p className="text-[11px] uppercase tracking-[0.1em] mt-0.5" style={{ color: `${RED}BB` }}>treatment cost</p>
             </motion.div>
           </motion.div>
