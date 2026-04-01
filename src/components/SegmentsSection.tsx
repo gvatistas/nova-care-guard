@@ -137,138 +137,6 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
   }
 }
 
-/* ── Heart wireframe data (low-poly vertex mesh) ── */
-function generateHeartVerts(): [number, number, number][] {
-  const verts: [number, number, number][] = [];
-  // Generate heart shape using parametric formula across multiple layers
-  const layers = 7;
-  const pointsPerLayer = 12;
-  
-  for (let l = 0; l < layers; l++) {
-    const v = (l / (layers - 1)) * Math.PI; // 0 to PI
-    const rScale = Math.sin(v); // radius scale per layer
-    const y = Math.cos(v) * 0.6; // vertical position
-    
-    for (let p = 0; p < pointsPerLayer; p++) {
-      const t = (p / pointsPerLayer) * Math.PI * 2;
-      // Heart curve in polar: r = 1 - sin(t)
-      const heartR = (1 - Math.sin(t)) * 0.35 * rScale;
-      const x = heartR * Math.cos(t);
-      const z = heartR * Math.sin(t) * 0.5; // flatten z for depth
-      verts.push([x, y + 0.15, z]);
-    }
-  }
-  
-  // Bottom tip
-  verts.push([0, -0.55, 0]);
-  // Top cleft
-  verts.push([-0.12, 0.65, 0]);
-  verts.push([0.12, 0.65, 0]);
-  // Top bumps
-  verts.push([-0.28, 0.7, 0]);
-  verts.push([0.05, 0.55, 0]);
-  verts.push([0.28, 0.7, 0]);
-  
-  return verts;
-}
-
-const HEART_VERTS = generateHeartVerts();
-
-function generateHeartEdges(vertCount: number, pointsPerLayer: number, layers: number): [number, number][] {
-  const edges: [number, number][] = [];
-  
-  // Connect within each layer
-  for (let l = 0; l < layers; l++) {
-    const base = l * pointsPerLayer;
-    for (let p = 0; p < pointsPerLayer; p++) {
-      edges.push([base + p, base + ((p + 1) % pointsPerLayer)]);
-    }
-  }
-  
-  // Connect between layers
-  for (let l = 0; l < layers - 1; l++) {
-    const base = l * pointsPerLayer;
-    const nextBase = (l + 1) * pointsPerLayer;
-    for (let p = 0; p < pointsPerLayer; p++) {
-      edges.push([base + p, nextBase + p]);
-      edges.push([base + p, nextBase + ((p + 1) % pointsPerLayer)]);
-    }
-  }
-  
-  // Connect to bottom tip
-  const tipIdx = layers * pointsPerLayer;
-  const lastLayerBase = (layers - 1) * pointsPerLayer;
-  for (let p = 0; p < pointsPerLayer; p++) {
-    edges.push([lastLayerBase + p, tipIdx]);
-  }
-  
-  // Connect top extras
-  const cleftL = tipIdx + 1;
-  const cleftR = tipIdx + 2;
-  const bumpL = tipIdx + 3;
-  const bumpM = tipIdx + 4;
-  const bumpR = tipIdx + 5;
-  // Connect cleft/bump vertices to first layer
-  for (let p = 0; p < pointsPerLayer; p++) {
-    if (p < pointsPerLayer / 2) edges.push([p, cleftL]);
-    else edges.push([p, cleftR]);
-  }
-  edges.push([cleftL, bumpL], [cleftR, bumpR], [cleftL, bumpM], [cleftR, bumpM], [bumpL, bumpR]);
-  
-  return edges;
-}
-
-const HEART_EDGES = generateHeartEdges(HEART_VERTS.length, 12, 7);
-
-function buildHumanWireframe(accentColor: THREE.Color): { group: THREE.Group; wireMat: THREE.LineBasicMaterial; pointMat: THREE.PointsMaterial; pulseRings: THREE.Mesh[]; heartGlow: THREE.Mesh } {
-  const group = new THREE.Group();
-
-  const positions: number[] = [];
-  HEART_VERTS.forEach(([x, y, z]) => positions.push(x, y, z));
-
-  // Edge lines
-  const linePositions: number[] = [];
-  HEART_EDGES.forEach(([a, b]) => {
-    if (a < HEART_VERTS.length && b < HEART_VERTS.length) {
-      linePositions.push(positions[a * 3], positions[a * 3 + 1], positions[a * 3 + 2]);
-      linePositions.push(positions[b * 3], positions[b * 3 + 1], positions[b * 3 + 2]);
-    }
-  });
-  const lineGeo = new THREE.BufferGeometry();
-  lineGeo.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
-  const wireMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.5 });
-  group.add(new THREE.LineSegments(lineGeo, wireMat));
-
-  // Vertex points
-  const pointGeo = new THREE.BufferGeometry();
-  pointGeo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.04, transparent: true, opacity: 0.8, sizeAttenuation: true });
-  group.add(new THREE.Points(pointGeo, pointMat));
-
-  // Pulse rings around the heart
-  const pulseRings: THREE.Mesh[] = [];
-  [0.4, 0.0, -0.35].forEach((y) => {
-    const ringGeo = new THREE.RingGeometry(0.38, 0.42, 32);
-    const ringMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.position.y = y;
-    ring.rotation.x = Math.PI / 2;
-    group.add(ring);
-    pulseRings.push(ring);
-  });
-
-  // Glow at center
-  const heartGeo = new THREE.SphereGeometry(0.12, 16, 16);
-  const heartMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.0 });
-  const heartGlow = new THREE.Mesh(heartGeo, heartMat);
-  heartGlow.position.set(0, 0.1, 0);
-  group.add(heartGlow);
-
-  group.scale.set(1.8, 1.8, 1.8);
-
-  return { group, wireMat, pointMat, pulseRings, heartGlow };
-}
-
 /* ── 3D Hologram for each segment ── */
 const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isActive }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -297,46 +165,32 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const accentColor = new THREE.Color(accent);
     const dimColor = new THREE.Color(0x6B7280);
 
-    let wireMat: THREE.LineBasicMaterial;
-    let pointMat: THREE.PointsMaterial;
-    let humanPulseRings: THREE.Mesh[] = [];
-    let humanHeartGlow: THREE.Mesh | null = null;
+    const geo = buildSegmentGeo(index);
 
-    if (index === 3) {
-      const human = buildHumanWireframe(accentColor);
-      group.add(human.group);
-      wireMat = human.wireMat;
-      pointMat = human.pointMat;
-      humanPulseRings = human.pulseRings;
-      humanHeartGlow = human.heartGlow;
-    } else {
-      const geo = buildSegmentGeo(index);
+    // Auto-scale
+    geo.computeBoundingBox();
+    const size = new THREE.Vector3();
+    geo.boundingBox!.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const sf = 1.6 / maxDim;
+    geo.scale(sf, sf, sf);
+    geo.computeBoundingBox();
+    const center = new THREE.Vector3();
+    geo.boundingBox!.getCenter(center);
+    geo.translate(-center.x, -center.y, -center.z);
 
-      // Auto-scale
-      geo.computeBoundingBox();
-      const size = new THREE.Vector3();
-      geo.boundingBox!.getSize(size);
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const sf = 1.6 / maxDim;
-      geo.scale(sf, sf, sf);
-      geo.computeBoundingBox();
-      const center = new THREE.Vector3();
-      geo.boundingBox!.getCenter(center);
-      geo.translate(-center.x, -center.y, -center.z);
+    // Wireframe edges with accent color
+    const edges = new THREE.EdgesGeometry(geo);
+    const wireMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.6 });
+    group.add(new THREE.LineSegments(edges, wireMat));
 
-      // Wireframe edges with accent color
-      const edges = new THREE.EdgesGeometry(geo);
-      wireMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.6 });
-      group.add(new THREE.LineSegments(edges, wireMat));
+    // Semi-transparent face fill
+    const facetMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+    group.add(new THREE.Mesh(geo, facetMat));
 
-      // Semi-transparent face fill
-      const facetMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
-      group.add(new THREE.Mesh(geo, facetMat));
-
-      // Vertex dots
-      pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.05, transparent: true, opacity: 0.7 });
-      group.add(new THREE.Points(geo, pointMat));
-    }
+    // Vertex dots
+    const pointMat = new THREE.PointsMaterial({ color: accentColor, size: 0.05, transparent: true, opacity: 0.7 });
+    group.add(new THREE.Points(geo, pointMat));
 
     // Orbit ring
     const ringGeo = new THREE.RingGeometry(1.15, 1.17, 64);
