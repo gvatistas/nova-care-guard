@@ -162,7 +162,6 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 100);
-    camera.position.set(0, 0, 3);
 
     const group = new THREE.Group();
     scene.add(group);
@@ -173,6 +172,22 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const pointMat = new THREE.PointsMaterial({ color: 0x6B7280, size: 0.04, transparent: true, opacity: 0.5 });
 
     const geo = buildSegmentGeo(index);
+
+    // Auto-scale to fit: normalize geometry so it fits in a unit sphere
+    geo.computeBoundingBox();
+    const bb = geo.boundingBox!;
+    const size = new THREE.Vector3();
+    bb.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scaleFactor = 1.6 / maxDim;
+    geo.scale(scaleFactor, scaleFactor, scaleFactor);
+    // Re-center
+    geo.computeBoundingBox();
+    const center = new THREE.Vector3();
+    geo.boundingBox!.getCenter(center);
+    geo.translate(-center.x, -center.y, -center.z);
+
+    camera.position.set(0, 0, 4.5);
 
     const edges = new THREE.EdgesGeometry(geo);
     const wireframe = new THREE.LineSegments(edges, wireMat);
