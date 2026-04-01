@@ -200,7 +200,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     const size = new THREE.Vector3();
     bb.getSize(size);
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scaleFactor = 1.6 / maxDim;
+    const scaleFactor = 2.4 / maxDim;
     geo.scale(scaleFactor, scaleFactor, scaleFactor);
     // Re-center
     geo.computeBoundingBox();
@@ -208,7 +208,7 @@ const SegmentHologram: FC<{ index: number; isActive: boolean }> = ({ index, isAc
     geo.boundingBox!.getCenter(center);
     geo.translate(-center.x, -center.y, -center.z);
 
-    camera.position.set(0, 0, 4.5);
+    camera.position.set(0, 0, 3.8);
 
     const edges = new THREE.EdgesGeometry(geo);
     const wireframe = new THREE.LineSegments(edges, wireMat);
