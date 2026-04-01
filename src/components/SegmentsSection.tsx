@@ -20,20 +20,12 @@ const segments = [
     desc: "Ship clinical decision support inside your product without building it. FHIR-native artifact drops into any EHR workflow. No inference, no hallucination, no liability.",
   },
   {
-    name: "Clinical Networks",
-    short: "Network Adherence",
-    value: "Unified screening protocol across every site",
+    name: "Clinical Networks & Clinics",
+    short: "Point of Care",
+    value: "Unified screening protocol from network-level down to the bedside",
     stat: "94%",
     statLabel: "Adherence rate",
-    desc: "One compiled artifact enforces consistent preventive care across hundreds of clinics. Network-wide visibility into screening gaps, with automated escalation.",
-  },
-  {
-    name: "Clinics",
-    short: "Point of Care",
-    value: "Real-time clinical decision support at the bedside",
-    stat: "90%",
-    statLabel: "Intake time reduction",
-    desc: "23 guideline pathways evaluated in under 0.3 seconds. Surfaces the right screening at the right visit — no physician memorization required.",
+    desc: "One compiled artifact enforces consistent preventive care across hundreds of clinics. 23 guideline pathways evaluated in under 0.3 seconds at every visit — network-wide visibility with automated escalation.",
   },
   {
     name: "Patients",
@@ -261,14 +253,10 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return mergeGeometries(nodes);
     }
     case 3: {
-      // Clinics — Hospital building
-      return createHospitalGeo();
-    }
-    case 4: {
       // Patients — Person/human figure
       return createPersonGeo();
     }
-    case 5: {
+    case 4: {
       // Insurers — Shield with dollar sign
       return createShieldGeo();
     }
