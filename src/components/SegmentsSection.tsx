@@ -270,7 +270,7 @@ const SegmentsSection = () => {
                   <div className="relative flex items-center justify-center p-8" style={{ minHeight: 320 }}>
                     {/* Radial glow behind shape */}
                     <div className="absolute inset-0 pointer-events-none" style={{
-                      background: "radial-gradient(ellipse at center, rgba(200,214,229,0.06) 0%, transparent 60%)",
+                      background: "radial-gradient(ellipse at center, rgba(37,99,235,0.06) 0%, transparent 60%)",
                     }} />
                     {/* Scan lines overlay */}
                     <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
