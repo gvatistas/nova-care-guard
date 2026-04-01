@@ -274,7 +274,7 @@ const SegmentsSection = () => {
                     }} />
                     {/* Scan lines overlay */}
                     <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(200,214,229,0.15) 3px, rgba(200,214,229,0.15) 4px)",
+                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(37,99,235,0.15) 3px, rgba(37,99,235,0.15) 4px)",
                     }} />
                     {isActive && <SegmentHologram index={i} isActive={isActive} />}
                   </div>
