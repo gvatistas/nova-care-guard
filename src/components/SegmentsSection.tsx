@@ -305,11 +305,6 @@ const SegmentsSection = () => {
                      borderLeft: isActive ? `2px solid ${SEGMENT_COLORS[i].accent}` : "2px solid transparent",
                    }}
                  >
-                   <p className="text-[10px] uppercase tracking-[0.12em] mb-1"
-                     style={{ color: isActive ? SEGMENT_COLORS[i].accent : "#6B7280" }}
-                   >
-                     {seg.short}
-                   </p>
                    <p className="text-sm font-medium"
                      style={{ color: isActive ? "#111827" : "#374151", letterSpacing: "-0.01em" }}
                    >
