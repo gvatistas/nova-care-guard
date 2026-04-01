@@ -103,48 +103,9 @@ function buildSegmentGeo(index: number): THREE.BufferGeometry {
       return new THREE.DodecahedronGeometry(1, 0);
     }
     case 3: {
-      // Patients — Full human figure (head + neck + torso + arms + legs)
-      const head = new THREE.SphereGeometry(0.22, 16, 12);
-      head.translate(0, 0.92, 0);
-
-      const neck = new THREE.CylinderGeometry(0.08, 0.1, 0.12, 8);
-      neck.translate(0, 0.75, 0);
-
-      const torso = new THREE.CylinderGeometry(0.18, 0.22, 0.55, 12);
-      torso.translate(0, 0.42, 0);
-
-      const hipJoint = new THREE.SphereGeometry(0.22, 10, 8);
-      hipJoint.translate(0, 0.14, 0);
-
-      // Arms
-      const armL = new THREE.CylinderGeometry(0.06, 0.055, 0.5, 8);
-      armL.translate(-0.28, 0.45, 0);
-      armL.rotateZ(0.15);
-      const armR = new THREE.CylinderGeometry(0.06, 0.055, 0.5, 8);
-      armR.translate(0.28, 0.45, 0);
-      armR.rotateZ(-0.15);
-
-      // Forearms
-      const foreL = new THREE.CylinderGeometry(0.05, 0.045, 0.42, 8);
-      foreL.translate(-0.32, 0.05, 0);
-      foreL.rotateZ(0.1);
-      const foreR = new THREE.CylinderGeometry(0.05, 0.045, 0.42, 8);
-      foreR.translate(0.32, 0.05, 0);
-      foreR.rotateZ(-0.1);
-
-      // Legs
-      const legL = new THREE.CylinderGeometry(0.09, 0.07, 0.55, 8);
-      legL.translate(-0.12, -0.18, 0);
-      const legR = new THREE.CylinderGeometry(0.09, 0.07, 0.55, 8);
-      legR.translate(0.12, -0.18, 0);
-
-      // Shins
-      const shinL = new THREE.CylinderGeometry(0.065, 0.055, 0.5, 8);
-      shinL.translate(-0.12, -0.7, 0);
-      const shinR = new THREE.CylinderGeometry(0.065, 0.055, 0.5, 8);
-      shinR.translate(0.12, -0.7, 0);
-
-      return mergeGeos([head, neck, torso, hipJoint, armL, armR, foreL, foreR, legL, legR, shinL, shinR]);
+      // Patients — Low-poly wireframe human body (vertex + edge mesh)
+      // We return a dummy geo; the actual rendering is custom in SegmentHologram
+      return null as unknown as THREE.BufferGeometry;
     }
     case 4: {
       return new THREE.TorusGeometry(0.7, 0.3, 16, 32);
