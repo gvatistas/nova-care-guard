@@ -84,7 +84,7 @@ const ProjectAlphaSection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }} className="mb-8">
           <h2 className="font-mono font-bold leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#111827" }}>
-            Project Alpha
+            Project Alpha.
           </h2>
           <p className="font-light mt-2" style={{ color: "#374151", fontSize: "1.125rem" }}>
             Real-time deployment monitoring across <span style={{ color: "#111827" }} className="font-normal">5 Quebec health networks, 20 clinical sites</span>.
