@@ -53,14 +53,14 @@ const DecisionTreeSection = () => {
   const getColX = (i: number) => (totalWidth / 2) - ((3 * colWidth) / 2) + i * colWidth + colWidth / 2 - 30;
 
   return (
-    <section className="py-24 md:py-32 px-6" style={{ backgroundColor: "#131B2E" }}>
+    <section className="py-24 md:py-32 px-6" style={{ backgroundColor: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="font-mono text-3xl md:text-4xl font-light text-center mb-4"
-          style={{ color: "#E2E8F0" }}
+          style={{ color: "#0F172A" }}
         >
           Clinical Decision Architecture
         </motion.h2>
@@ -70,7 +70,7 @@ const DecisionTreeSection = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.15 }}
           className="text-center text-lg mb-16 font-sans"
-          style={{ color: "#94A3B8" }}
+          style={{ color: "#64748B" }}
         >
           Real-time guideline compilation across multiple disease pathways
         </motion.p>
@@ -86,7 +86,7 @@ const DecisionTreeSection = () => {
               {PATHWAYS.map((p) => (
                 <filter key={`glow-${p.id}`} id={`glow-${p.id}`} x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur stdDeviation="4" result="blur" />
-                  <feFlood floodColor={p.color} floodOpacity="0.6" />
+                  <feFlood floodColor={p.color} floodOpacity="0.4" />
                   <feComposite in2="blur" operator="in" />
                   <feMerge>
                     <feMergeNode />
@@ -96,7 +96,7 @@ const DecisionTreeSection = () => {
               ))}
               <filter id="glow-white" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="6" result="blur" />
-                <feFlood floodColor="#2563EB" floodOpacity="0.5" />
+                <feFlood floodColor="#2563EB" floodOpacity="0.3" />
                 <feComposite in2="blur" operator="in" />
                 <feMerge>
                   <feMergeNode />
@@ -116,7 +116,7 @@ const DecisionTreeSection = () => {
 
             <circle cx={totalWidth / 2 - 30} cy={startNodeY} r={14} fill="none" stroke="#2563EB" strokeWidth={2} filter="url(#glow-white)" />
             <circle cx={totalWidth / 2 - 30} cy={startNodeY} r={5} fill="#2563EB" />
-            <text x={totalWidth / 2 - 30} y={startNodeY - 24} textAnchor="middle" fill="#E2E8F0" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
+            <text x={totalWidth / 2 - 30} y={startNodeY - 24} textAnchor="middle" fill="#0F172A" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
               PATIENT DATA INGESTED
             </text>
 
@@ -161,7 +161,7 @@ const DecisionTreeSection = () => {
                         <text
                           x={cx} y={ny + 4}
                           textAnchor="middle"
-                          fill="#E2E8F0"
+                          fill="#0F172A"
                           fontSize={8}
                           fontFamily="'JetBrains Mono', monospace"
                         >
@@ -186,7 +186,7 @@ const DecisionTreeSection = () => {
 
             <circle cx={totalWidth / 2 - 30} cy={bottomNodeY} r={16} fill="none" stroke="#2563EB" strokeWidth={2} filter="url(#glow-white)" />
             <circle cx={totalWidth / 2 - 30} cy={bottomNodeY} r={6} fill="#2563EB" />
-            <text x={totalWidth / 2 - 30} y={bottomNodeY + 34} textAnchor="middle" fill="#E2E8F0" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
+            <text x={totalWidth / 2 - 30} y={bottomNodeY + 34} textAnchor="middle" fill="#0F172A" fontSize={10} fontFamily="'JetBrains Mono', monospace" letterSpacing="0.1em">
               COMPILED CLINICAL ACTION PLAN
             </text>
           </svg>
@@ -198,7 +198,7 @@ const DecisionTreeSection = () => {
             <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#2563EB" }}>
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#2563EB" }} />
             </div>
-            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#E2E8F0" }}>PATIENT DATA INGESTED</p>
+            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#0F172A" }}>PATIENT DATA INGESTED</p>
           </div>
           {PATHWAYS.map((p) => (
             <div key={p.id} className="border-l-2 ml-6 pl-6 pb-4" style={{ borderColor: p.color + "60" }}>
@@ -213,7 +213,7 @@ const DecisionTreeSection = () => {
                         backgroundColor: ni === p.nodes.length - 1 ? p.color + "30" : "transparent",
                       }}
                     />
-                    <span className="font-mono text-[10px]" style={{ color: "rgba(226,232,240,0.8)" }}>{label}</span>
+                    <span className="font-mono text-[10px]" style={{ color: "#334155" }}>{label}</span>
                   </div>
                 ))}
               </div>
@@ -223,7 +223,7 @@ const DecisionTreeSection = () => {
             <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#2563EB" }}>
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#2563EB" }} />
             </div>
-            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#E2E8F0" }}>COMPILED CLINICAL ACTION PLAN</p>
+            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#0F172A" }}>COMPILED CLINICAL ACTION PLAN</p>
           </div>
         </div>
 
@@ -233,12 +233,12 @@ const DecisionTreeSection = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
           className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 border-t pt-10"
-          style={{ borderColor: "#1E293B" }}
+          style={{ borderColor: "#E2E8F0" }}
         >
           {STATS.map((s, i) => (
             <div key={i} className="text-center">
-              <p className="font-mono text-sm tracking-wide" style={{ color: "#E2E8F0" }}>{s.value}</p>
-              <p className="text-xs mt-1 font-sans" style={{ color: "#94A3B8" }}>{s.desc}</p>
+              <p className="font-mono text-sm tracking-wide" style={{ color: "#0F172A" }}>{s.value}</p>
+              <p className="text-xs mt-1 font-sans" style={{ color: "#64748B" }}>{s.desc}</p>
             </div>
           ))}
         </motion.div>

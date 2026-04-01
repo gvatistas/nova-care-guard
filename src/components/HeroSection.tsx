@@ -587,12 +587,12 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-screen overflow-hidden" style={{ background: "linear-gradient(180deg, #0F172A 0%, #1E293B 100%)" }}>
       <div ref={mountRef} className="absolute inset-0 z-0" />
 
       {/* Deep vignette */}
       <div className="absolute inset-0 z-[5] pointer-events-none" style={{
-        background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(11,17,32,0.88) 0%, rgba(11,17,32,0.75) 35%, rgba(11,17,32,0.45) 65%, rgba(11,17,32,0.15) 85%, transparent 100%)",
+        background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.75) 35%, rgba(15,23,42,0.45) 65%, rgba(15,23,42,0.15) 85%, transparent 100%)",
       }} />
 
       {/* Film grain */}
@@ -614,8 +614,8 @@ const HeroSection = () => {
                fontSize: "clamp(2.5rem, 5vw, 4rem)",
                lineHeight: 1.08,
                letterSpacing: "-0.03em",
-               color: "#E2E8F0",
-               textShadow: "0 0 60px rgba(11,17,32,1), 0 0 120px rgba(11,17,32,0.95), 0 2px 40px rgba(11,17,32,0.9)",
+               color: "#FFFFFF",
+               textShadow: "0 0 60px rgba(15,23,42,1), 0 0 120px rgba(15,23,42,0.95), 0 2px 40px rgba(15,23,42,0.9)",
              }}
           >
             Unlocking proactive healthcare for all.
@@ -630,8 +630,8 @@ const HeroSection = () => {
               maxWidth: 1280,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              color: "#94A3B8",
-              textShadow: "0 0 30px rgba(11,17,32,1), 0 0 60px rgba(11,17,32,0.95)",
+              color: "rgba(226,232,240,0.7)",
+              textShadow: "0 0 30px rgba(15,23,42,1), 0 0 60px rgba(15,23,42,0.95)",
             }}
           >
             <p>
@@ -659,9 +659,9 @@ const HeroSection = () => {
             <a
               href="#pipeline"
               className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden border"
-              style={{ letterSpacing: "0.08em", color: "#E2E8F0", borderColor: "#2563EB" }}
+              style={{ letterSpacing: "0.08em", color: "#FFFFFF", borderColor: "rgba(255,255,255,0.4)" }}
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#2563EB]/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               <span className="relative z-10 group-hover:text-white transition-colors duration-300">Read White Paper</span>
             </a>
           </motion.div>

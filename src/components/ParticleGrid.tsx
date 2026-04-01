@@ -43,7 +43,7 @@ const ParticleGrid = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw grid lines
-      ctx.strokeStyle = "rgba(30, 41, 59, 0.4)";
+      ctx.strokeStyle = "rgba(226, 232, 240, 0.35)";
       ctx.lineWidth = 0.5;
       const spacing = 120;
       for (let x = 0; x < canvas.width; x += spacing) {
@@ -66,7 +66,7 @@ const ParticleGrid = () => {
         p.pulse += 0.008;
 
         const pulseOpacity = p.opacity + Math.sin(p.pulse) * 0.02;
-        ctx.fillStyle = `rgba(37, 99, 235, ${Math.max(0, pulseOpacity * 1.5)})`;
+        ctx.fillStyle = `rgba(37, 99, 235, ${Math.max(0, pulseOpacity * 1.2)})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -79,7 +79,7 @@ const ParticleGrid = () => {
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 150) {
-            ctx.strokeStyle = `rgba(37, 99, 235, ${0.015 * (1 - dist / 150)})`;
+            ctx.strokeStyle = `rgba(37, 99, 235, ${0.01 * (1 - dist / 150)})`;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -105,7 +105,7 @@ const ParticleGrid = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.6 }}
+      style={{ opacity: 0.4 }}
     />
   );
 };

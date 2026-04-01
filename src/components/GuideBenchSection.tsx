@@ -12,7 +12,7 @@ const guidelines = [
 
 const benchmarks = [
   { label: "Medient", score: 98.7, color: "#2563EB" },
-  { label: "Industry Avg", score: 72.3, color: "#1E293B" },
+  { label: "Industry Avg", score: 72.3, color: "#E2E8F0" },
 ];
 
 const SHAPES = [
@@ -76,11 +76,11 @@ const VerificationBrain: FC<{ activeRow: number }> = ({ activeRow }) => {
         </defs>
 
         <g style={{ transformOrigin: "90px 50px", transform: `rotate(${rotation}deg)` }}>
-          <circle cx="90" cy="50" r="46" fill="none" stroke="#2563EB" strokeWidth="0.3" opacity="0.08" strokeDasharray="6 10" />
-          <circle cx="90" cy="50" r="42" fill="none" stroke="#06B6D4" strokeWidth="0.2" opacity="0.05" strokeDasharray="3 18" />
+          <circle cx="90" cy="50" r="46" fill="none" stroke="#2563EB" strokeWidth="0.3" opacity="0.15" strokeDasharray="6 10" />
+          <circle cx="90" cy="50" r="42" fill="none" stroke="#06B6D4" strokeWidth="0.2" opacity="0.1" strokeDasharray="3 18" />
         </g>
         <g style={{ transformOrigin: "90px 50px", transform: `rotate(${-rotation * 0.7}deg)` }}>
-          <circle cx="90" cy="50" r="50" fill="none" stroke="#2563EB" strokeWidth="0.15" opacity="0.06" strokeDasharray="2 14" />
+          <circle cx="90" cy="50" r="50" fill="none" stroke="#2563EB" strokeWidth="0.15" opacity="0.1" strokeDasharray="2 14" />
         </g>
 
         <AnimatePresence mode="wait">
@@ -100,7 +100,7 @@ const VerificationBrain: FC<{ activeRow: number }> = ({ activeRow }) => {
         <motion.path
           d={SHAPES[nextIdx]} fill="none" stroke="#06B6D4" strokeWidth="0.2" strokeLinejoin="miter"
           initial={false} animate={{ d: SHAPES[(nextIdx + 1) % SHAPES.length] }}
-          transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }} opacity={0.06}
+          transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }} opacity={0.1}
         />
 
         <AnimatePresence mode="wait">
@@ -140,7 +140,7 @@ const VerificationBrain: FC<{ activeRow: number }> = ({ activeRow }) => {
         exit={{ opacity: 0, y: -5 }}
         transition={{ duration: 0.4 }}
       >
-        <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: "#94A3B8" }}>
+        <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: "#64748B" }}>
           Verifying: {guidelines[activeRow % guidelines.length].name.split(' ')[0]}
         </p>
       </motion.div>
@@ -175,7 +175,7 @@ const GuideBenchSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden" style={{ background: "#131B2E" }}>
+    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden" style={{ background: "#FFFFFF" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -183,15 +183,15 @@ const GuideBenchSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <p className="text-[12px] font-medium uppercase mb-3" style={{ letterSpacing: "0.1em", color: "#94A3B8" }}>
+          <p className="text-[12px] font-medium uppercase mb-3" style={{ letterSpacing: "0.1em", color: "#64748B" }}>
             Verification Lab
           </p>
-          <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#E2E8F0" }}>
+          <h2 className="font-semibold text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#0F172A" }}>
             GuideBench
           </h2>
-          <p className="mt-2 text-lg max-w-2xl" style={{ letterSpacing: "-0.01em", color: "#94A3B8" }}>
+          <p className="mt-2 text-lg max-w-2xl" style={{ letterSpacing: "-0.01em", color: "#334155" }}>
             The open-source clinical decision logic evaluation framework.
-            <span className="font-medium" style={{ color: "#E2E8F0" }}> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
+            <span className="font-medium" style={{ color: "#0F172A" }}> 10 guidelines. 750+ synthetic patients. 4 fidelity metrics.</span>
           </p>
         </motion.div>
 
@@ -206,7 +206,7 @@ const GuideBenchSection = () => {
               <div className="text-7xl font-semibold tabular-nums" style={{ letterSpacing: "-0.04em", lineHeight: 1, color: "#2563EB" }}>
                 {counter}%
               </div>
-              <p className="text-[12px] font-medium uppercase mt-3" style={{ letterSpacing: "0.1em", color: "#94A3B8" }}>
+              <p className="text-[12px] font-medium uppercase mt-3" style={{ letterSpacing: "0.1em", color: "#64748B" }}>
                 Aggregate Fidelity Score
               </p>
             </div>
@@ -217,10 +217,10 @@ const GuideBenchSection = () => {
               {benchmarks.map((b) => (
                 <div key={b.label}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[12px] font-medium" style={{ letterSpacing: "0.05em", color: "#94A3B8" }}>{b.label}</span>
-                    <span className="text-[13px] font-semibold" style={{ color: "#E2E8F0" }}>{b.score}%</span>
+                    <span className="text-[12px] font-medium" style={{ letterSpacing: "0.05em", color: "#64748B" }}>{b.label}</span>
+                    <span className="text-[13px] font-semibold" style={{ color: "#0F172A" }}>{b.score}%</span>
                   </div>
-                  <div className="h-1.5" style={{ background: "#0B1120" }}>
+                  <div className="h-1.5" style={{ background: "#F1F5F9" }}>
                     <motion.div
                       className="h-full"
                       initial={{ width: 0 }}
@@ -240,10 +240,10 @@ const GuideBenchSection = () => {
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
           >
-            <div className="border overflow-hidden" style={{ borderColor: "#1E293B", background: "#0B1120" }}>
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b" style={{ borderColor: "#1E293B", background: "rgba(37,99,235,0.03)" }}>
+            <div className="border overflow-hidden" style={{ borderColor: "#E2E8F0", background: "#FFFFFF" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b" style={{ borderColor: "#E2E8F0", background: "#F8FAFC" }}>
                 {["Guideline", "Patients", "Fidelity", "Status"].map((h) => (
-                  <span key={h} className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.12em", color: "#94A3B8" }}>
+                  <span key={h} className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.12em", color: "#64748B" }}>
                     {h}
                   </span>
                 ))}
@@ -257,43 +257,43 @@ const GuideBenchSection = () => {
                   transition={{ delay: 0.5 + i * 0.08 }}
                   className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b transition-all duration-500 group cursor-default"
                   style={{
-                    borderColor: "#1E293B20",
-                    backgroundColor: activeRow === i ? "rgba(37,99,235,0.06)" : "transparent",
+                    borderColor: "#E2E8F020",
+                    backgroundColor: activeRow === i ? "rgba(37,99,235,0.04)" : "transparent",
                   }}
                 >
-                  <span className="text-sm font-medium transition-colors duration-300" style={{ letterSpacing: "-0.01em", color: activeRow === i ? "#E2E8F0" : "rgba(226,232,240,0.8)" }}>{g.name}</span>
-                  <span className="text-sm tabular-nums font-mono" style={{ color: "#94A3B8" }}>{g.patients}</span>
+                  <span className="text-sm font-medium transition-colors duration-300" style={{ letterSpacing: "-0.01em", color: activeRow === i ? "#0F172A" : "#334155" }}>{g.name}</span>
+                  <span className="text-sm tabular-nums font-mono" style={{ color: "#64748B" }}>{g.patients}</span>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#1E293B" }}>
+                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                       <motion.div
                         className="h-full rounded-full"
-                        style={{ background: activeRow === i ? "linear-gradient(90deg, #2563EB, #06B6D4)" : "linear-gradient(90deg, #1E293B, #2563EB60)" }}
+                        style={{ background: activeRow === i ? "linear-gradient(90deg, #2563EB, #06B6D4)" : "#E2E8F0" }}
                         initial={{ width: 0 }}
                         animate={inView ? { width: `${g.fidelity}%` } : {}}
                         transition={{ duration: 1.2, delay: 0.6 + i * 0.1, ease: "easeOut" }}
                       />
                     </div>
-                    <span className="font-semibold text-sm tabular-nums font-mono transition-colors duration-300" style={{ color: activeRow === i ? "#E2E8F0" : "#94A3B8" }}>{g.fidelity}%</span>
+                    <span className="font-semibold text-sm tabular-nums font-mono transition-colors duration-300" style={{ color: activeRow === i ? "#0F172A" : "#64748B" }}>{g.fidelity}%</span>
                   </div>
                   <span className="inline-flex items-center gap-1.5">
                     <motion.span
                       className="w-1.5 h-1.5 rounded-full"
                       animate={{
-                        background: activeRow === i ? "#06B6D4" : "#1E293B",
-                        boxShadow: activeRow === i ? "0 0 8px rgba(6,182,212,0.5)" : "0 0 4px rgba(30,41,59,0.3)",
+                        background: activeRow === i ? "#06B6D4" : "#E2E8F0",
+                        boxShadow: activeRow === i ? "0 0 8px rgba(6,182,212,0.4)" : "none",
                       }}
                       transition={{ duration: 0.4 }}
                     />
-                    <span className="text-[11px] font-semibold uppercase transition-colors duration-300" style={{ letterSpacing: "0.06em", color: activeRow === i ? "#06B6D4" : "#94A3B8" }}>{g.status}</span>
+                    <span className="text-[11px] font-semibold uppercase transition-colors duration-300" style={{ letterSpacing: "0.06em", color: activeRow === i ? "#06B6D4" : "#64748B" }}>{g.status}</span>
                   </span>
                 </motion.div>
               ))}
 
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t" style={{ borderColor: "#1E293B", background: "rgba(37,99,235,0.03)" }}>
-                <span className="text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em", color: "#94A3B8" }}>Aggregate</span>
-                <span className="text-sm tabular-nums font-mono" style={{ color: "#94A3B8" }}>750</span>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t" style={{ borderColor: "#E2E8F0", background: "#F8FAFC" }}>
+                <span className="text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em", color: "#64748B" }}>Aggregate</span>
+                <span className="text-sm tabular-nums font-mono" style={{ color: "#64748B" }}>750</span>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#1E293B" }}>
+                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                     <motion.div
                       className="h-full rounded-full"
                       style={{ background: "linear-gradient(90deg, #2563EB, #06B6D4)" }}
@@ -302,10 +302,10 @@ const GuideBenchSection = () => {
                       transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
                     />
                   </div>
-                  <span className="font-bold text-sm tabular-nums font-mono" style={{ color: "#E2E8F0" }}>98.7%</span>
+                  <span className="font-bold text-sm tabular-nums font-mono" style={{ color: "#0F172A" }}>98.7%</span>
                 </div>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#06B6D4", boxShadow: "0 0 8px rgba(6,182,212,0.5)" }} />
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#06B6D4", boxShadow: "0 0 8px rgba(6,182,212,0.4)" }} />
                   <span className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.06em", color: "#06B6D4" }}>Live</span>
                 </span>
               </div>
@@ -317,13 +317,13 @@ const GuideBenchSection = () => {
               transition={{ delay: 1 }}
               className="mt-8"
             >
-              <p className="font-semibold text-xl mb-6" style={{ letterSpacing: "-0.02em", color: "#E2E8F0" }}>
+              <p className="font-semibold text-xl mb-6" style={{ letterSpacing: "-0.02em", color: "#0F172A" }}>
                 We wrote the test. Then we open-sourced it.
               </p>
               <a
                 href="#"
                 className="inline-block text-[13px] font-medium uppercase border px-8 py-3.5 transition-all duration-300 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB]"
-                style={{ letterSpacing: "0.05em", color: "#E2E8F0", borderColor: "#2563EB" }}
+                style={{ letterSpacing: "0.05em", color: "#0F172A", borderColor: "#2563EB" }}
               >
                 View on GitHub
               </a>
