@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, type FC } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { User } from "lucide-react";
 
 const POSITIVE = "#059669";
 const RED = "#E11D48";
@@ -240,11 +241,7 @@ const PatientNarrativeSection = () => {
         >
           <div className="flex items-center gap-4 mb-4">
             <div className="w-14 h-14 rounded border flex items-center justify-center shrink-0" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
-              <svg viewBox="0 0 40 40" width="30" height="30">
-                <polygon points="20,4 30,12 28,26 20,32 12,26 10,12" fill="none" stroke="#9CA3AF" strokeWidth="0.8" opacity="0.4" />
-                <polygon points="20,8 26,14 24,24 20,28 16,24 14,14" fill="#9CA3AF" opacity="0.06" />
-                <circle cx="20" cy="15" r="4" fill="none" stroke="#9CA3AF" strokeWidth="0.6" opacity="0.3" />
-              </svg>
+              <User size={24} color="#6B7280" strokeWidth={1.5} />
             </div>
             <div>
               <h3 className="text-2xl font-light" style={{ letterSpacing: "-0.02em", color: "#111827" }}>Jane Doe, 52</h3>
