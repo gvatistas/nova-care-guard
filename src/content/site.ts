@@ -14,19 +14,104 @@ export const site = {
   },
 
   hero: {
-    eyebrow: "CERTA · THE DETERMINISTIC COMPILER FOR MEDICINE",
+    eyebrow: "CERTA HEALTH ／ FORMERLY PCARE+",
+    classified: { left: "CERTA ／ DOSSIER 01 · OPERATIONAL LAYER", right: "PALANTIR STARTUP FELLOW · COHORT 002" },
     h1: "The operational layer for AI in healthcare.",
     subhead:
-      "We make probabilistic models non-probabilistic, for clinical reasoning. Certa compiles published clinical guidelines into formally verified, FHIR-native decision artifacts that any AI agent can call as a tool. No inference at runtime. No hallucination. Every recommendation traceable to its source guideline, page and paragraph.",
-    primaryCta: { label: "TRY THE API", href: "/docs" },
+      "Certa makes probabilistic models behave deterministically inside the clinic. Published guidelines compile into verified, FHIR-native decision artifacts that any agent — Claude, ChatGPT, your in-house assistant — calls as a tool. No inference at runtime. No hallucination. Every recommendation traceable to its source page and paragraph.",
+    primaryCta: { label: "TRY THE API", href: "#contact" },
     secondaryCta: { label: "READ THE WHITEPAPER", href: "/whitepaper" },
     trust: [
-      "PALANTIR STARTUP FELLOW · COHORT 002",
-      "SEED $3M / $15M",
-      "SOC 2 TYPE II IN PROGRESS",
-      "FHIR R4 · MCP · CDS HOOKS",
+      "PALANTIR STARTUP FELLOW",
+      "SEED · $3M / $15M",
+      "SOC 2 TYPE II · IN PROGRESS",
+      "FHIR R4 ／ MCP ／ CDS HOOKS",
     ],
     dossier: { num: "Nº 01", label: "DETERMINISTIC CLINICAL REASONING" },
+  },
+
+  problem: {
+    classified: { left: "CERTA ／ DOSSIER 02 · THE PROBLEM", right: "FRONTIER MEDICINE" },
+    eyebrow: "02 · THE PROBLEM OF AI IN HEALTHCARE",
+    h1: "Generative models are wrong about medicine — quietly, repeatedly, at scale.",
+    lead:
+      "Frontier models reach roughly three-quarters of expert performance on rigorous clinical evaluation. The remaining quarter is where patients live. Inference is, by construction, a sample from a distribution: shrink the variance and you still have a tail, and in medicine the tail is where someone misses a screening, gets the wrong dose, or ends up in an ICU eighteen months later.",
+    pillars: [
+      {
+        k: "ACCURACY",
+        h: "A quarter of clinical answers fail expert review.",
+        b: "Across hundreds of millions of consumer health conversations a year, that residue is not noise. It is the product.",
+      },
+      {
+        k: "PROVENANCE",
+        h: "No source. No page. No paragraph.",
+        b: "Two clinicians ask the same question and receive two answers. Neither is auditable. Neither is reproducible. Neither is defensible to a regulator.",
+      },
+      {
+        k: "LIABILITY",
+        h: "The FDA now classifies non-transparent CDS as a medical device.",
+        b: "Disclaimers do not absorb the exposure. RAG, chain-of-thought, function calling — every retrofit still ends in a sample from a distribution.",
+      },
+    ],
+    closer:
+      "For clinical reasoning, you do not need a smaller distribution. You need a different object entirely.",
+  },
+
+  pricing: {
+    classified: { left: "CERTA ／ DOSSIER 08 · COMMERCIALS", right: "TIERED" },
+    eyebrow: "07 · PRICING",
+    h1: "Three commercial surfaces. One artifact underneath.",
+    sub: "Usage-metered API at the bottom. White-glove infrastructure at the top. Every tier ships with the same audit pack.",
+    tiers: [
+      {
+        name: "DEVELOPER",
+        tag: "API ACCESS",
+        price: "$0.04",
+        unit: "/ recommendation",
+        blurb: "Prototype against the live catalog. Pay only for verified recommendations returned. No floor.",
+        features: [
+          "Public catalog (40+ guidelines)",
+          "MCP, REST, Python, TS, Go SDKs",
+          "Audit pack on every response",
+          "Community support",
+        ],
+        cta: { label: "GET API KEY", href: "#contact" },
+        accent: "graphite",
+      },
+      {
+        name: "ENTERPRISE",
+        tag: "PRODUCTION",
+        price: "From $48K",
+        unit: "/ year",
+        blurb: "Volume-tiered for teams shipping clinical AI in production. SLAs, BAA, and a named clinical lead.",
+        features: [
+          "Full catalog + custom compilations",
+          "HIPAA BAA · SOC 2 Type II",
+          "<100ms p50 latency SLA",
+          "FHIR SDC artifact export",
+          "Dedicated solutions engineer",
+        ],
+        cta: { label: "REQUEST QUOTE", href: "#contact" },
+        accent: "bone",
+        featured: true,
+      },
+      {
+        name: "SOVEREIGN",
+        tag: "ON-PREM ／ AIR-GAP",
+        price: "Custom",
+        unit: "annual license",
+        blurb: "For health systems, payers, and governments that require artifacts running entirely inside their perimeter.",
+        features: [
+          "On-prem, air-gapped, or VPC deployment",
+          "FedRAMP Moderate (roadmap)",
+          "Bespoke guideline pipelines",
+          "Quarterly clinical-council review",
+          "24/7 named-on-call support",
+        ],
+        cta: { label: "TALK TO SALES", href: "#contact" },
+        accent: "blue",
+      },
+    ],
   },
 
   probabilism: {
