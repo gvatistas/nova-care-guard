@@ -79,21 +79,21 @@ const ProjectAlphaSection = () => {
   const adherence = Math.round(45 + (greenCount / totalClinics) * 49);
 
   return (
-    <section id="project-alpha" ref={ref} className="relative py-24 md:py-32" style={{ background: "#FFFFFF" }}>
+    <section id="project-alpha" ref={ref} className="relative py-24 md:py-32" style={{ background: "#1A2536" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }} className="mb-8">
-          <h2 className="font-mono font-normal leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#111827" }}>
+          <h2 className="font-mono font-normal leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#F3F4F6" }}>
             Project Alpha.
           </h2>
-          <p className="font-light mt-2" style={{ color: "#374151", fontSize: "1.125rem" }}>
-            Real-time deployment monitoring across <span style={{ color: "#111827" }} className="font-normal">5 Quebec health networks, 20 clinical sites</span>.
+          <p className="font-light mt-2" style={{ color: "#D1D5DB", fontSize: "1.125rem" }}>
+            Real-time deployment monitoring across <span style={{ color: "#F3F4F6" }} className="font-normal">5 Quebec health networks, 20 clinical sites</span>.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.2 }}
-            className="lg:col-span-2 relative border overflow-hidden" style={{ minHeight: 420, borderColor: "#E5E7EB", background: "#FFFFFF" }}>
+            className="lg:col-span-2 relative border overflow-hidden" style={{ minHeight: 420, borderColor: "#2A3548", background: "#1A2536" }}>
             <div className="absolute inset-0 pointer-events-none z-0"
               style={{ backgroundImage: `linear-gradient(rgba(107,114,128,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(107,114,128,0.07) 1px, transparent 1px)`, backgroundSize: "35px 35px" }} />
 
@@ -197,7 +197,7 @@ const ProjectAlphaSection = () => {
               <div className="flex items-center gap-4 font-mono" style={{ fontSize: "0.75rem", color: "#6B7280" }}>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: GREEN }} /> Active</span>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#D97706" }} /> Deploying</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#D1D5DB" }} /> Pending</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#3A4558" }} /> Pending</span>
               </div>
               <span className="font-mono tracking-[0.1em]" style={{ fontSize: "0.875rem", color: greenCount === totalClinics ? GREEN : "#D97706" }}>
                 {greenCount === totalClinics ? "FULLY OPERATIONAL" : "DEPLOYING..."}
@@ -206,10 +206,10 @@ const ProjectAlphaSection = () => {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.4 }} className="flex flex-col gap-5">
-            <div className="border p-6 flex-1" style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
+            <div className="border p-6 flex-1" style={{ borderColor: "#2A3548", background: "#1A2536" }}>
               <h3 className="font-mono tracking-[0.2em] uppercase mb-4" style={{ fontSize: "0.875rem", color: "#6B7280" }}>Preventive Service Adherence</h3>
               <div className="flex items-end gap-4 h-48">
-                <div className="flex-1 h-full relative overflow-hidden border" style={{ background: "#F9FAFB", borderColor: "#E5E7EB" }}>
+                <div className="flex-1 h-full relative overflow-hidden border" style={{ background: "#1F2B3E", borderColor: "#2A3548" }}>
                   <motion.div className="absolute bottom-0 left-0 right-0"
                     initial={{ height: "0%" }}
                     animate={inView ? { height: `${adherence}%` } : {}}
@@ -217,7 +217,7 @@ const ProjectAlphaSection = () => {
                     style={{ background: `linear-gradient(to top, ${GREEN}40, rgba(107,114,128,0.1))`, borderTop: `1px solid rgba(107,114,128,0.2)` }} />
                   {[25, 50, 75, 100].map((tick) => (
                     <div key={tick} className="absolute left-0 right-0" style={{ bottom: `${tick}%` }}>
-                      <div className="w-full h-px" style={{ backgroundColor: "#E5E7EB" }} />
+                      <div className="w-full h-px" style={{ backgroundColor: "#2A3548" }} />
                     </div>
                   ))}
                 </div>
@@ -233,7 +233,7 @@ const ProjectAlphaSection = () => {
               </div>
             </div>
 
-            <div className="border p-6" style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
+            <div className="border p-6" style={{ borderColor: "#2A3548", background: "#1A2536" }}>
               <div className="mb-4">
                 <div className="font-mono font-light tracking-[-0.02em]" style={{ fontSize: "1.15rem", color: GREEN }}>90% INTAKE TIME REDUCTION</div>
               </div>

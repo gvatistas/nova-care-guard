@@ -11,7 +11,7 @@ const guidelines = [
 ];
 
 const benchmarks = [
-  { label: "Medient", score: 98.7, color: "#374151" },
+  { label: "Medient", score: 98.7, color: "#D1D5DB" },
   { label: "Industry Avg", score: 72.3, color: "#E5E7EB" },
 ];
 
@@ -175,7 +175,7 @@ const GuideBenchSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden" style={{ background: "#F3F4F6" }}>
+    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden" style={{ background: "#141d2e" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -183,10 +183,10 @@ const GuideBenchSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
-            GuideBench. <span className="font-normal" style={{ color: "#9CA3AF" }}>The open-source clinical logic evaluation framework.</span>
+          <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#F3F4F6" }}>
+            GuideBench. <span className="font-normal" style={{ color: "#6B7280" }}>The open-source clinical logic evaluation framework.</span>
           </h2>
-          <p className="mt-2 text-lg max-w-2xl font-medium" style={{ letterSpacing: "-0.01em", color: "#111827" }}>
+          <p className="mt-2 text-lg max-w-2xl font-medium" style={{ letterSpacing: "-0.01em", color: "#F3F4F6" }}>
             10 guidelines. 750+ synthetic patients. 4 fidelity metrics.
           </p>
         </motion.div>
@@ -215,9 +215,9 @@ const GuideBenchSection = () => {
                 <div key={b.label}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[12px] font-medium" style={{ letterSpacing: "0.05em", color: "#6B7280" }}>{b.label}</span>
-                    <span className="text-[13px] font-semibold" style={{ color: "#111827" }}>{b.score}%</span>
+                    <span className="text-[13px] font-semibold" style={{ color: "#F3F4F6" }}>{b.score}%</span>
                   </div>
-                  <div className="h-1.5" style={{ background: "#E5E7EB" }}>
+                  <div className="h-1.5" style={{ background: "#2A3548" }}>
                     <motion.div
                       className="h-full"
                       initial={{ width: 0 }}
@@ -237,8 +237,8 @@ const GuideBenchSection = () => {
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
           >
-            <div className="border overflow-hidden" style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
+            <div className="border overflow-hidden" style={{ borderColor: "#2A3548", background: "#1A2536" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
                 {["Guideline", "Patients", "Fidelity", "Status"].map((h) => (
                   <span key={h} className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.12em", color: "#6B7280" }}>
                     {h}
@@ -254,14 +254,14 @@ const GuideBenchSection = () => {
                   transition={{ delay: 0.5 + i * 0.08 }}
                   className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-b transition-all duration-500 group cursor-default"
                   style={{
-                    borderColor: "#E5E7EB20",
+                    borderColor: "#FFFFFF20",
                     backgroundColor: activeRow === i ? "rgba(17,24,39,0.03)" : "transparent",
                   }}
                 >
                   <span className="text-sm font-medium transition-colors duration-300" style={{ letterSpacing: "-0.01em", color: activeRow === i ? "#111827" : "#374151" }}>{g.name}</span>
                   <span className="text-sm tabular-nums font-mono" style={{ color: "#6B7280" }}>{g.patients}</span>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#E5E7EB" }}>
+                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#2A3548" }}>
                       <motion.div
                         className="h-full rounded-full"
                         style={{ background: activeRow === i ? "#374151" : "#D1D5DB" }}
@@ -286,11 +286,11 @@ const GuideBenchSection = () => {
                 </motion.div>
               ))}
 
-              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
+              <div className="grid grid-cols-[1fr_80px_100px_100px] gap-4 px-6 py-4 border-t" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
                 <span className="text-sm font-semibold uppercase" style={{ letterSpacing: "0.06em", color: "#6B7280" }}>Aggregate</span>
                 <span className="text-sm tabular-nums font-mono" style={{ color: "#6B7280" }}>750</span>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#E5E7EB" }}>
+                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#2A3548" }}>
                     <motion.div
                       className="h-full rounded-full"
                       style={{ background: "#374151" }}
@@ -299,7 +299,7 @@ const GuideBenchSection = () => {
                       transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
                     />
                   </div>
-                  <span className="font-bold text-sm tabular-nums font-mono" style={{ color: "#111827" }}>98.7%</span>
+                  <span className="font-bold text-sm tabular-nums font-mono" style={{ color: "#F3F4F6" }}>98.7%</span>
                 </div>
                 <span className="inline-flex items-center gap-1.5">
                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#2563EB", boxShadow: "0 0 8px rgba(37,99,235,0.4)" }} />

@@ -407,7 +407,7 @@ const HeroSection = () => {
               fontSize: "clamp(2.5rem, 5vw, 4rem)",
               lineHeight: 1.08,
               letterSpacing: "-0.03em",
-              color: "#111827",
+              color: "#F3F4F6",
             }}
           >
             Unlocking proactive healthcare for all.
@@ -422,7 +422,7 @@ const HeroSection = () => {
               maxWidth: 1280,
               lineHeight: 1.7,
               letterSpacing: "-0.01em",
-              color: "#374151",
+              color: "#D1D5DB",
             }}
           >
             <p>
