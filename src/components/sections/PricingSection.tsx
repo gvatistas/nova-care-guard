@@ -12,13 +12,14 @@ const PricingSection = () => {
 
       <header className="max-w-4xl mb-14 md:mb-20">
         <EyebrowLabel>{c.eyebrow}</EyebrowLabel>
-        <h2 id="pricing-title" className="mt-4 text-display text-bone font-serif" style={{ fontWeight: 300 }}>
-          {c.h1}
+        <h2 id="pricing-title" className="mt-4 text-display text-bone font-serif" style={{ fontWeight: 300, textWrap: "balance" }}>
+          Three commercial surfaces.{" "}
+          <span className="italic text-bone/75">One artifact underneath.</span>
         </h2>
         <p className="mt-6 text-body-lg text-graphite max-w-2xl">{c.sub}</p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-px border border-rule" style={{ background: "hsl(var(--certa-rule))" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {(c.tiers as readonly { name: string; tag: string; price: string; unit: string; blurb: string; features: readonly string[]; cta: { label: string; href: string }; accent: string; featured?: boolean }[]).map((t, i) => {
           const accentColor =
             t.accent === "blue" ? "hsl(var(--signal-blue))" : t.accent === "bone" ? "hsl(var(--certa-bone))" : "hsl(var(--certa-graphite))";
@@ -29,11 +30,30 @@ const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative bg-carbon p-8 md:p-10 flex flex-col"
+              className="relative border border-rule bg-carbon flex flex-col"
               style={{
                 background: t.featured ? "hsl(var(--certa-obsidian))" : undefined,
               }}
             >
+              {/* corner ticks */}
+              {(["tl", "tr"] as const).map((p) => (
+                <span
+                  key={p}
+                  className="absolute pointer-events-none"
+                  style={{
+                    top: -1,
+                    left: p === "tl" ? -1 : "auto",
+                    right: p === "tr" ? -1 : "auto",
+                    width: 8,
+                    height: 8,
+                    borderTop: `1px solid ${accentColor}`,
+                    borderLeft: p === "tl" ? `1px solid ${accentColor}` : "none",
+                    borderRight: p === "tr" ? `1px solid ${accentColor}` : "none",
+                    opacity: 0.7,
+                  }}
+                />
+              ))}
+
               {t.featured && (
                 <span
                   className="absolute top-0 left-0 right-0 h-px"
@@ -42,44 +62,53 @@ const PricingSection = () => {
               )}
 
               {/* tier header */}
-              <div className="flex items-baseline justify-between mb-6">
+              <div className="flex items-baseline justify-between border-b border-rule px-7 py-4">
                 <span className="text-mono-eyebrow text-bone">{t.name}</span>
                 <span className="text-mono-eyebrow text-graphite/60">— {t.tag}</span>
               </div>
 
-              {/* price */}
-              <div className="border-t border-rule pt-6">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-serif text-bone tabular" style={{ fontWeight: 300, fontSize: "clamp(2.4rem, 4vw, 3.2rem)", letterSpacing: "-0.03em", lineHeight: 1 }}>
-                    {t.price}
-                  </span>
-                  <span className="text-mono-eyebrow text-graphite">{t.unit}</span>
+              <div className="px-7 py-7 flex-1 flex flex-col">
+                {/* price */}
+                <div>
+                  <div className="flex items-baseline gap-3">
+                    <span
+                      className="font-serif text-bone tabular"
+                      style={{
+                        fontWeight: 300,
+                        fontSize: "clamp(2.6rem, 4.4vw, 3.6rem)",
+                        letterSpacing: "-0.035em",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {t.price}
+                    </span>
+                    <span className="text-mono-eyebrow text-graphite">{t.unit}</span>
+                  </div>
+                  <p className="mt-4 text-body-sm text-graphite leading-relaxed">{t.blurb}</p>
                 </div>
-                <p className="mt-4 text-body-sm text-graphite leading-relaxed">{t.blurb}</p>
+
+                {/* features */}
+                <ul className="mt-8 space-y-3 flex-1">
+                  {t.features.map((f) => (
+                    <li key={f} className="flex items-start gap-3">
+                      <Check size={14} strokeWidth={1.5} className="mt-1 shrink-0" style={{ color: accentColor }} />
+                      <span className="text-body-sm text-bone/85">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href={t.cta.href}
+                  className="mt-10 inline-flex items-center justify-center gap-2 px-5 py-3 border text-mono-eyebrow transition-colors"
+                  style={{
+                    borderColor: t.featured ? accentColor : "hsl(var(--certa-rule-strong))",
+                    background: t.featured ? accentColor : "transparent",
+                    color: t.featured ? (t.accent === "bone" ? "hsl(var(--certa-ink))" : "hsl(var(--certa-bone))") : "hsl(var(--certa-bone))",
+                  }}
+                >
+                  {t.cta.label} →
+                </a>
               </div>
-
-              {/* features */}
-              <ul className="mt-8 space-y-3 flex-1">
-                {t.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3">
-                    <Check size={14} strokeWidth={1.5} className="mt-1 shrink-0" style={{ color: accentColor }} />
-                    <span className="text-body-sm text-bone/85">{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* cta */}
-              <a
-                href={t.cta.href}
-                className="mt-10 inline-flex items-center justify-center gap-2 px-5 py-3 border text-mono-eyebrow transition-colors"
-                style={{
-                  borderColor: t.featured ? accentColor : "hsl(var(--certa-rule-strong))",
-                  background: t.featured ? accentColor : "transparent",
-                  color: t.featured ? (t.accent === "bone" ? "hsl(var(--certa-ink))" : "hsl(var(--certa-bone))") : "hsl(var(--certa-bone))",
-                }}
-              >
-                {t.cta.label} →
-              </a>
             </motion.article>
           );
         })}
