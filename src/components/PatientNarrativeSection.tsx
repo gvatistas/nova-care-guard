@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type FC } from "react";
+import React, { useRef, useState, useEffect, type FC } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { User } from "lucide-react";
 import { site } from "@/content/site";
