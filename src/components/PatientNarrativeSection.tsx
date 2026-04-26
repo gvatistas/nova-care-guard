@@ -289,10 +289,10 @@ const PatientNarrativeSection = () => {
           </div>
           <dl className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-x-6 gap-y-2">
             {data.auditPack.map((row) => (
-              <>
-                <dt key={`${row.k}-k`} className="text-mono-eyebrow text-graphite/70">{row.k}</dt>
-                <dd key={`${row.k}-v`} className="text-mono-code text-bone break-all">{row.v}</dd>
-              </>
+              <React.Fragment key={row.k}>
+                <dt className="text-mono-eyebrow text-graphite/70">{row.k}</dt>
+                <dd className="text-mono-code text-bone break-all">{row.v}</dd>
+              </React.Fragment>
             ))}
           </dl>
         </motion.div>
