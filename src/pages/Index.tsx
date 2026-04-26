@@ -22,6 +22,50 @@ const ScrollReveal = ({ children, delay = 0 }: { children: React.ReactNode; dela
   </motion.div>
 );
 
+/* Editorial illustration block — Palantir-style poster */
+const PosterBlock = ({
+  src,
+  eyebrow,
+  title,
+  caption,
+}: {
+  src: string;
+  eyebrow: string;
+  title: string;
+  caption: string;
+}) => (
+  <section className="py-20 md:py-28 px-6" style={{ background: "#141d2e" }}>
+    <div className="max-w-6xl mx-auto">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.15)" }} />
+        <span className="text-[11px] uppercase tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.5)" }}>
+          {eyebrow}
+        </span>
+        <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.15)" }} />
+      </div>
+      <h2
+        className="text-3xl md:text-5xl font-light mb-10 max-w-3xl"
+        style={{ color: "#FFFFFF", letterSpacing: "-0.02em", lineHeight: 1.1 }}
+      >
+        {title}
+      </h2>
+      <div
+        className="relative overflow-hidden border"
+        style={{ borderColor: "rgba(255,255,255,0.1)", background: "#0F1827" }}
+      >
+        <img src={src} alt={title} className="w-full h-auto block" loading="lazy" />
+      </div>
+      <p
+        className="mt-6 text-[13px] uppercase tracking-[0.12em]"
+        style={{ color: "rgba(255,255,255,0.4)" }}
+      >
+        {caption}
+      </p>
+    </div>
+  </section>
+);
+
+
 const Index = () => {
   return (
     <div className="min-h-screen bg-background relative">
@@ -29,6 +73,14 @@ const Index = () => {
       <div className="relative z-10">
         <Navbar />
         <HeroSection />
+        <ScrollReveal>
+          <PosterBlock
+            src="/certa-comparison.png"
+            eyebrow="Certa Explained · Issue N° 01"
+            title="The cost of probabilistic medicine — and the case for compiled certainty."
+            caption="Without Certa // tangled, hallucinated outputs.   With Certa // deterministic, source-grounded artifacts."
+          />
+        </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
           <PatientNarrativeSection />
@@ -40,6 +92,15 @@ const Index = () => {
         <GeoDivider />
         <ScrollReveal>
           <ProjectAlphaSection />
+        </ScrollReveal>
+        <GeoDivider />
+        <ScrollReveal>
+          <PosterBlock
+            src="/certa-hero-mesh.png"
+            eyebrow="Architecture · The Operational Layer"
+            title="One ontology. Every data source. Every clinical surface."
+            caption="From source-of-truth guidelines through the Certa ontology to AI-powered applications at the point of care."
+          />
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
