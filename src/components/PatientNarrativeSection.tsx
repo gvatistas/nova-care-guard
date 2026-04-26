@@ -260,7 +260,7 @@ const ScreeningNode: FC<{
         style={{ background: `linear-gradient(135deg, ${color}15, transparent)` }} />
     )}
     <div className="flex items-center justify-between mb-1.5 relative">
-      <p className="text-[16px] font-normal" style={{ letterSpacing: "-0.01em", color: "#111827" }}>{label}</p>
+      <p className="text-[16px] font-normal" style={{ letterSpacing: "-0.01em", color: "#F3F4F6" }}>{label}</p>
       <span className={`text-[11px] font-semibold uppercase tracking-[0.08em] px-2.5 py-0.5 ${critical ? "animate-pulse" : ""}`}
         style={{ color, background: `${color}15`, border: `1px solid ${color}25` }}>{status}</span>
     </div>
@@ -289,7 +289,7 @@ const PatientNarrativeSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="py-16 px-6 relative overflow-hidden" style={{ background: "#F3F4F6" }}>
+    <section ref={ref} className="py-16 px-6 relative overflow-hidden" style={{ background: "#141d2e" }}>
       <div className="max-w-5xl mx-auto">
 
         {/* ── TOP: Jane Doe Patient Card ── */}
@@ -298,22 +298,22 @@ const PatientNarrativeSection = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="max-w-lg mx-auto border p-7 relative"
-          style={{ borderColor: "#E5E7EB", background: "#FFFFFF", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+          style={{ borderColor: "#2A3548", background: "#1A2536", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded border flex items-center justify-center shrink-0" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
+            <div className="w-14 h-14 rounded border flex items-center justify-center shrink-0" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
               <User size={24} color="#6B7280" strokeWidth={1.5} />
             </div>
             <div>
-              <h3 className="text-2xl font-light" style={{ letterSpacing: "-0.02em", color: "#111827" }}>Jane Doe, 52</h3>
+              <h3 className="text-2xl font-light" style={{ letterSpacing: "-0.02em", color: "#F3F4F6" }}>Jane Doe, 52</h3>
               <p className="text-sm mt-0.5" style={{ color: "#6B7280" }}>Female · BMI 28.4 · Smoker (12 pk-yr)</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-px mt-2">
             {[{ l: "BP", v: "138/88" }, { l: "A1c", v: "6.1%" }, { l: "LDL", v: "142" }].map((x) => (
-              <div key={x.l} className="py-2.5 border text-center" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
+              <div key={x.l} className="py-2.5 border text-center" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
                 <p className="text-[10px] uppercase tracking-[0.1em]" style={{ color: "#6B7280" }}>{x.l}</p>
-                <p className="text-[15px] mt-0.5" style={{ color: "#111827" }}>{x.v}</p>
+                <p className="text-[15px] mt-0.5" style={{ color: "#F3F4F6" }}>{x.v}</p>
               </div>
             ))}
           </div>
@@ -322,10 +322,10 @@ const PatientNarrativeSection = () => {
         {/* ── Decision tree fork ── */}
         <div className="relative mt-2">
           {/* Center stem */}
-          <div className="mx-auto" style={{ width: 1, height: 20, background: "#E5E7EB" }} />
+          <div className="mx-auto" style={{ width: 1, height: 20, background: "#2A3548" }} />
           {/* Horizontal bar */}
           <div className="relative mx-auto" style={{ width: "60%", maxWidth: "600px", height: 1 }}>
-            <div className="absolute inset-0" style={{ background: "#E5E7EB" }} />
+            <div className="absolute inset-0" style={{ background: "#2A3548" }} />
             <motion.div
               className="absolute top-0 h-full"
               animate={{
@@ -361,7 +361,7 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4 }}
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center"
-              style={{ color: RED, borderColor: `${RED}25`, background: "#FFF1F2" }}
+              style={{ color: RED, borderColor: `${RED}25`, background: "#2A1519" }}
             >
               ✕ Without Medient
             </motion.div>
@@ -378,7 +378,7 @@ const PatientNarrativeSection = () => {
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={inView ? { opacity: 1, scale: 1 } : {}} transition={{ delay: 1.4, duration: 0.5 }}
               className="mt-6 border-2 p-5 text-center w-full max-w-sm" style={{ borderColor: RED, background: `${RED}12`, boxShadow: `0 0 20px ${RED}15, inset 0 0 12px ${RED}08` }}>
               <p className="text-xs uppercase tracking-[0.15em] mb-1.5 font-bold" style={{ color: RED }}>18 Months Later</p>
-              <p className="text-base font-semibold" style={{ color: "#111827" }}>Late-stage diagnosis</p>
+              <p className="text-base font-semibold" style={{ color: "#F3F4F6" }}>Late-stage diagnosis</p>
               <p className="text-2xl font-bold mt-1" style={{ color: RED }}>$288,000</p>
               <p className="text-[11px] uppercase tracking-[0.1em] mt-0.5" style={{ color: `${RED}BB` }}>treatment cost</p>
             </motion.div>
@@ -401,7 +401,7 @@ const PatientNarrativeSection = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4 }}
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center relative z-10"
-              style={{ color: "#2563EB", borderColor: "rgba(37,99,235,0.15)", background: "#EFF6FF" }}
+              style={{ color: "#2563EB", borderColor: "rgba(37,99,235,0.15)", background: "#0F1D2E" }}
             >
               ✓ With Medient
             </motion.div>
@@ -418,7 +418,7 @@ const PatientNarrativeSection = () => {
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={inView ? { opacity: 1, scale: 1 } : {}} transition={{ delay: 1.4, duration: 0.5 }}
               className="mt-6 border-2 p-5 text-center w-full max-w-sm relative z-10" style={{ borderColor: POSITIVE, background: `${POSITIVE}12`, boxShadow: `0 0 20px ${POSITIVE}15, inset 0 0 12px ${POSITIVE}08` }}>
               <p className="text-xs uppercase tracking-[0.15em] mb-1.5 font-bold" style={{ color: POSITIVE }}>Same Visit</p>
-              <p className="text-base font-semibold" style={{ color: "#111827" }}>Early detection</p>
+              <p className="text-base font-semibold" style={{ color: "#F3F4F6" }}>Early detection</p>
               <p className="text-2xl font-bold mt-1" style={{ color: POSITIVE }}>$4,200</p>
               <p className="text-[11px] uppercase tracking-[0.1em] mt-0.5" style={{ color: `${POSITIVE}BB` }}>screening cost</p>
             </motion.div>

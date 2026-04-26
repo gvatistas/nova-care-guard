@@ -298,7 +298,7 @@ const SegmentsSection = () => {
   const [selected, setSelected] = useState<number>(0);
 
   return (
-    <section ref={ref} className="relative py-16 md:py-24" style={{ background: "#FFFFFF" }}>
+    <section ref={ref} className="relative py-16 md:py-24" style={{ background: "#1A2536" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         {/* Header */}
         <motion.div
@@ -307,10 +307,10 @@ const SegmentsSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
+          <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#F3F4F6" }}>
             Value propositions across our customer base.
           </h2>
-          <p className="mt-3 text-base max-w-2xl" style={{ color: "#374151" }}>
+          <p className="mt-3 text-base max-w-2xl" style={{ color: "#D1D5DB" }}>
             One pipeline. Six deployment surfaces.
           </p>
         </motion.div>
@@ -319,7 +319,7 @@ const SegmentsSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-0">
 
           {/* Left — Segment list */}
-          <div className="border-r" style={{ borderColor: "#E5E7EB" }}>
+          <div className="border-r" style={{ borderColor: "#2A3548" }}>
             {segments.map((seg, i) => {
               const isActive = selected === i;
               return (
@@ -331,7 +331,7 @@ const SegmentsSection = () => {
                   onClick={() => setSelected(i)}
                    className="w-full text-left px-6 py-5 border-b transition-all duration-300 cursor-pointer"
                    style={{
-                     borderColor: "#E5E7EB",
+                     borderColor: "#2A3548",
                      background: isActive ? SEGMENT_COLORS[i].bg : "transparent",
                      borderLeft: isActive ? `2px solid ${SEGMENT_COLORS[i].accent}` : "2px solid transparent",
                    }}
@@ -380,10 +380,10 @@ const SegmentsSection = () => {
                        <p className="text-[10px] uppercase tracking-[0.15em] mb-2" style={{ color: SEGMENT_COLORS[i].accent }}>
                          {seg.short}
                        </p>
-                       <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#111827" }}>
+                       <h3 className="text-2xl font-semibold mb-3" style={{ letterSpacing: "-0.02em", color: "#F3F4F6" }}>
                          {seg.name}
                        </h3>
-                       <p className="text-sm leading-relaxed mb-6" style={{ color: "#374151" }}>
+                       <p className="text-sm leading-relaxed mb-6" style={{ color: "#D1D5DB" }}>
                          {seg.value}
                        </p>
                        <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#6B7280" }}>

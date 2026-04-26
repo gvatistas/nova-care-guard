@@ -54,14 +54,14 @@ const DecisionTreeSection = () => {
   const getColX = (i: number) => (totalWidth / 2) - ((3 * colWidth) / 2) + i * colWidth + colWidth / 2 - 30;
 
   return (
-    <section className="py-24 md:py-32 px-6" style={{ backgroundColor: "#F3F4F6" }}>
+    <section className="py-24 md:py-32 px-6" style={{ backgroundColor: "#141d2e" }}>
       <div className="max-w-6xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="font-mono text-3xl md:text-4xl font-light text-center mb-4"
-          style={{ color: "#111827" }}
+          style={{ color: "#F3F4F6" }}
         >
           Clinical Decision Architecture
         </motion.h2>
@@ -196,10 +196,10 @@ const DecisionTreeSection = () => {
         {/* Mobile */}
         <div className="md:hidden space-y-10">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#374151" }}>
+            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#4A5568" }}>
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#374151" }} />
             </div>
-            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#111827" }}>PATIENT DATA INGESTED</p>
+            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#F3F4F6" }}>PATIENT DATA INGESTED</p>
           </div>
           {PATHWAYS.map((p) => (
             <div key={p.id} className="border-l-2 ml-6 pl-6 pb-4" style={{ borderColor: p.color + "60" }}>
@@ -214,17 +214,17 @@ const DecisionTreeSection = () => {
                         backgroundColor: ni === p.nodes.length - 1 ? p.color + "30" : "transparent",
                       }}
                     />
-                    <span className="font-mono text-[10px]" style={{ color: "#374151" }}>{label}</span>
+                    <span className="font-mono text-[10px]" style={{ color: "#D1D5DB" }}>{label}</span>
                   </div>
                 ))}
               </div>
             </div>
           ))}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#374151" }}>
+            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 mb-2" style={{ borderColor: "#4A5568" }}>
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#374151" }} />
             </div>
-            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#111827" }}>COMPILED CLINICAL ACTION PLAN</p>
+            <p className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#F3F4F6" }}>COMPILED CLINICAL ACTION PLAN</p>
           </div>
         </div>
 
@@ -234,11 +234,11 @@ const DecisionTreeSection = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
           className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 border-t pt-10"
-          style={{ borderColor: "#E5E7EB" }}
+          style={{ borderColor: "#2A3548" }}
         >
           {STATS.map((s, i) => (
             <div key={i} className="text-center">
-              <p className="font-mono text-sm tracking-wide" style={{ color: "#111827" }}>{s.value}</p>
+              <p className="font-mono text-sm tracking-wide" style={{ color: "#F3F4F6" }}>{s.value}</p>
               <p className="text-xs mt-1 font-sans" style={{ color: "#6B7280" }}>{s.desc}</p>
             </div>
           ))}

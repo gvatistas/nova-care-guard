@@ -20,14 +20,14 @@ const Level1Section = () => {
   const stepLabels = ["Patient arrives", "Risks detected", "Clinical analysis", "Screenings ordered", "Patient outcome"];
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#FFFFFF" }}>
+    <section ref={ref} className="relative py-24 md:py-32" style={{ background: "#1A2536" }}>
       <div className="relative max-w-[1440px] mx-auto px-8">
         {/* Header */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} className="mb-10">
-          <h2 className="font-mono font-light leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#111827" }}>
+          <h2 className="font-mono font-light leading-[1.15] tracking-[-0.02em]" style={{ fontSize: "2.5rem", color: "#F3F4F6" }}>
             Same patient. Same clinic. <span style={{ color: "#6B7280" }}>Different outcome.</span>
           </h2>
-          <p className="font-mono mt-3" style={{ color: "#374151", fontSize: "1.125rem" }}>Sarah Mitchell, 52 — 3 undetected risks enter the same clinical workflow.</p>
+          <p className="font-mono mt-3" style={{ color: "#D1D5DB", fontSize: "1.125rem" }}>Sarah Mitchell, 52 — 3 undetected risks enter the same clinical workflow.</p>
         </motion.div>
 
         {/* Timeline progress */}
@@ -51,7 +51,7 @@ const Level1Section = () => {
               </div>
               {i < 4 && (
                 <div className="flex-1 h-px mx-1 relative">
-                  <div className="absolute inset-0" style={{ background: "#E5E7EB" }} />
+                  <div className="absolute inset-0" style={{ background: "#2A3548" }} />
                   <motion.div
                     className="absolute inset-y-0 left-0"
                     style={{ background: "#111827" }}
@@ -71,24 +71,24 @@ const Level1Section = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.4 }}
-            className="border overflow-hidden" style={{ borderColor: "#E5E7EB", background: "#FFF1F2" }}
+            className="border overflow-hidden" style={{ borderColor: "#2A3548", background: "#2A1519" }}
           >
             <div className="px-5 py-3 border-b flex items-center justify-between"
-              style={{ borderColor: "#E5E7EB", background: "linear-gradient(90deg, rgba(225,29,72,0.06), transparent)" }}>
+              style={{ borderColor: "#2A3548", background: "linear-gradient(90deg, rgba(225,29,72,0.06), transparent)" }}>
               <span className="font-mono tracking-[0.15em] uppercase" style={{ color: RED, fontSize: "1rem" }}>Without Medient</span>
               <span className="font-mono tracking-[0.1em] uppercase" style={{ fontSize: "0.75rem", color: "#6B7280" }}>Standard workflow</span>
             </div>
 
-            <div className="p-5 space-y-0" style={{ background: "#FFFFFF" }}>
+            <div className="p-5 space-y-0" style={{ background: "#1A2536" }}>
               <AnimatePresence mode="wait">
                 {step >= 0 && (
                   <motion.div key="w-patient" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-full border flex items-center justify-center" style={{ borderColor: "#E5E7EB" }}>
-                        <span className="font-mono" style={{ fontSize: "1.125rem", color: "#374151" }}>S</span>
+                      <div className="w-10 h-10 rounded-full border flex items-center justify-center" style={{ borderColor: "#2A3548" }}>
+                        <span className="font-mono" style={{ fontSize: "1.125rem", color: "#D1D5DB" }}>S</span>
                       </div>
                       <div>
-                        <div className="font-mono" style={{ fontSize: "1rem", color: "#111827" }}>Sarah Mitchell, 52</div>
+                        <div className="font-mono" style={{ fontSize: "1rem", color: "#F3F4F6" }}>Sarah Mitchell, 52</div>
                         <div className="font-mono" style={{ fontSize: "0.875rem", color: "#6B7280" }}>Routine 15-min visit</div>
                       </div>
                     </div>
@@ -104,7 +104,7 @@ const Level1Section = () => {
                     { label: "Colorectal — No colonoscopy, age 52", found: false },
                     { label: "Cardiovascular — BP 142/88", found: false },
                   ].map((risk, i) => (
-                    <div key={i} className="flex items-center gap-3 py-2 border-b" style={{ borderColor: "#E5E7EB10" }}>
+                    <div key={i} className="flex items-center gap-3 py-2 border-b" style={{ borderColor: "#FFFFFF10" }}>
                       <motion.div
                         animate={{ scale: [1, 1.3, 1] }}
                         transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
@@ -125,11 +125,11 @@ const Level1Section = () => {
 
               {step >= 2 && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-                  <div className="py-3 px-4 border" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
+                  <div className="py-3 px-4 border" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
                     <div className="font-mono tracking-[0.15em] uppercase mb-2" style={{ fontSize: "0.875rem", color: "#6B7280" }}>MD Manual Review</div>
-                    <div className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Time pressure · No decision support · Guidelines not consulted</div>
+                    <div className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Time pressure · No decision support · Guidelines not consulted</div>
                     <div className="mt-2 flex items-center gap-2">
-                      <div className="h-1 flex-1" style={{ background: "#E5E7EB" }}>
+                      <div className="h-1 flex-1" style={{ background: "#2A3548" }}>
                         <motion.div animate={{ width: "33%" }} className="h-full" style={{ backgroundColor: AMBER }} />
                       </div>
                       <span className="font-mono" style={{ color: AMBER, fontSize: "0.875rem" }}>1 / 3</span>
@@ -142,15 +142,15 @@ const Level1Section = () => {
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
                   <div className="font-mono tracking-[0.2em] uppercase mb-2" style={{ fontSize: "0.75rem", color: "#6B7280" }}>Screenings ordered</div>
                   <div className="py-2 px-3 border-l-2 mb-1" style={{ borderColor: AMBER, background: `${AMBER}08` }}>
-                    <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Chest X-ray ordered</span>
+                    <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Chest X-ray ordered</span>
                     <span className="font-mono ml-2" style={{ fontSize: "0.75rem", color: "#6B7280" }}>(not LDCT — wrong test)</span>
                   </div>
                   <div className="py-2 px-3 border-l-2 mb-1" style={{ borderColor: `${RED}44`, background: `${RED}06` }}>
-                    <span className="font-mono line-through" style={{ fontSize: "0.875rem", color: "#9CA3AF" }}>Colonoscopy</span>
+                    <span className="font-mono line-through" style={{ fontSize: "0.875rem", color: "#6B7280" }}>Colonoscopy</span>
                     <span className="font-mono ml-2" style={{ color: RED, fontSize: "0.75rem" }}>Not ordered</span>
                   </div>
                   <div className="py-2 px-3 border-l-2" style={{ borderColor: `${RED}44`, background: `${RED}06` }}>
-                    <span className="font-mono line-through" style={{ fontSize: "0.875rem", color: "#9CA3AF" }}>BP Management</span>
+                    <span className="font-mono line-through" style={{ fontSize: "0.875rem", color: "#6B7280" }}>BP Management</span>
                     <span className="font-mono ml-2" style={{ color: RED, fontSize: "0.75rem" }}>Not addressed</span>
                   </div>
                 </motion.div>
@@ -158,19 +158,19 @@ const Level1Section = () => {
 
               {step >= 4 && (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                  className="border py-4 px-4 text-center" style={{ borderColor: `${RED}33`, background: "#FFF1F2" }}>
+                  className="border py-4 px-4 text-center" style={{ borderColor: `${RED}33`, background: "#2A1519" }}>
                   <div className="font-mono tracking-[0.2em] uppercase mb-3" style={{ color: `${RED}AA`, fontSize: "0.75rem" }}>18 months later</div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Late-stage diagnosis</span>
+                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Late-stage diagnosis</span>
                       <span className="font-mono" style={{ color: RED, fontSize: "1rem" }}>Stage IIIB</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Treatment cost</span>
+                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Treatment cost</span>
                       <span className="font-mono" style={{ color: RED, fontSize: "1rem" }}>$280K+</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Survival rate</span>
+                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Survival rate</span>
                       <span className="font-mono" style={{ color: RED, fontSize: "1rem" }}>Significantly reduced</span>
                     </div>
                   </div>
@@ -184,24 +184,24 @@ const Level1Section = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.5 }}
-            className="border overflow-hidden" style={{ borderColor: "#E5E7EB", background: "#F0FDF4" }}
+            className="border overflow-hidden" style={{ borderColor: "#2A3548", background: "#0F2419" }}
           >
             <div className="px-5 py-3 border-b flex items-center justify-between"
-              style={{ borderColor: "#E5E7EB", background: "linear-gradient(90deg, rgba(5,150,105,0.06), transparent)" }}>
+              style={{ borderColor: "#2A3548", background: "linear-gradient(90deg, rgba(5,150,105,0.06), transparent)" }}>
               <span className="font-mono tracking-[0.15em] uppercase" style={{ color: "#059669", fontSize: "1rem" }}>With Medient</span>
               <span className="font-mono tracking-[0.1em] uppercase" style={{ fontSize: "0.75rem", color: "#6B7280" }}>Clinical logic pipeline</span>
             </div>
 
-            <div className="p-5 space-y-0" style={{ background: "#FFFFFF" }}>
+            <div className="p-5 space-y-0" style={{ background: "#1A2536" }}>
               {step >= 0 && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-full border flex items-center justify-center" style={{ borderColor: "#059669", background: "rgba(5,150,105,0.05)" }}>
-                      <span className="font-mono" style={{ fontSize: "1.125rem", color: "#111827" }}>S</span>
+                      <span className="font-mono" style={{ fontSize: "1.125rem", color: "#F3F4F6" }}>S</span>
                     </div>
                     <div>
-                      <div className="font-mono" style={{ fontSize: "1rem", color: "#111827" }}>Sarah Mitchell, 52</div>
-                      <div className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>EHR data auto-ingested in &lt;0.3s</div>
+                      <div className="font-mono" style={{ fontSize: "1rem", color: "#F3F4F6" }}>Sarah Mitchell, 52</div>
+                      <div className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>EHR data auto-ingested in &lt;0.3s</div>
                     </div>
                   </div>
                 </motion.div>
@@ -213,13 +213,13 @@ const Level1Section = () => {
                   {[
                     { label: "Lung — LDCT eligible, USPSTF criteria met", color: RED, tag: "CRITICAL" },
                     { label: "Colorectal — Colonoscopy overdue per ACS", color: AMBER, tag: "HIGH" },
-                    { label: "Cardiovascular — Statin evaluation per ACC/AHA", color: "#111827", tag: "ELEVATED" },
+                    { label: "Cardiovascular — Statin evaluation per ACC/AHA", color: "#F3F4F6", tag: "ELEVATED" },
                   ].map((risk, i) => (
                     <motion.div key={i}
                       initial={{ opacity: 0, x: 10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 + i * 0.15 }}
-                      className="flex items-center gap-3 py-2 border-b" style={{ borderColor: "#E5E7EB20" }}
+                      className="flex items-center gap-3 py-2 border-b" style={{ borderColor: "#FFFFFF20" }}
                     >
                       <motion.div
                         animate={{ scale: [1, 1.3, 1] }}
@@ -227,7 +227,7 @@ const Level1Section = () => {
                         className="w-2 h-2 rounded-full shrink-0"
                         style={{ backgroundColor: risk.color }}
                       />
-                      <span className="font-mono flex-1" style={{ fontSize: "0.875rem", color: "#374151" }}>{risk.label}</span>
+                      <span className="font-mono flex-1" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>{risk.label}</span>
                       <span className="font-mono tracking-[0.1em] uppercase px-1.5 py-0.5 border rounded-sm"
                         style={{ color: risk.color, borderColor: `${risk.color}44`, fontSize: "0.75rem" }}>
                         {risk.tag}
@@ -239,11 +239,11 @@ const Level1Section = () => {
 
               {step >= 2 && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-                  <div className="py-3 px-4 border" style={{ borderColor: "#E5E7EB", background: "#F9FAFB" }}>
-                    <div className="font-mono tracking-[0.15em] uppercase mb-2" style={{ fontSize: "0.875rem", color: "#374151" }}>Medient Clinical Engine</div>
-                    <div className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Deterministic · Guideline-compiled · Every pathway verified</div>
+                  <div className="py-3 px-4 border" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
+                    <div className="font-mono tracking-[0.15em] uppercase mb-2" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Medient Clinical Engine</div>
+                    <div className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Deterministic · Guideline-compiled · Every pathway verified</div>
                     <div className="mt-2 flex items-center gap-2">
-                      <div className="h-1 flex-1" style={{ background: "#E5E7EB" }}>
+                      <div className="h-1 flex-1" style={{ background: "#2A3548" }}>
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: "100%" }}
@@ -251,7 +251,7 @@ const Level1Section = () => {
                           className="h-full" style={{ background: "#111827" }}
                         />
                       </div>
-                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#111827" }}>3 / 3</span>
+                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#F3F4F6" }}>3 / 3</span>
                     </div>
                     <div className="mt-2 flex gap-2">
                       {["INGEST", "COMPILE", "VERIFY", "EXECUTE"].map((s, i) => (
@@ -260,7 +260,7 @@ const Level1Section = () => {
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.3 + i * 0.25 }}
                           className="font-mono tracking-[0.15em] uppercase border px-1.5 py-0.5"
-                          style={{ fontSize: "0.75rem", color: "#6B7280", borderColor: "#E5E7EB" }}>
+                          style={{ fontSize: "0.75rem", color: "#6B7280", borderColor: "#2A3548" }}>
                           {s}
                         </motion.span>
                       ))}
@@ -285,7 +285,7 @@ const Level1Section = () => {
                       style={{ borderColor: "#059669", background: "rgba(5,150,105,0.04)" }}
                     >
                       <div>
-                        <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>{order.name}</span>
+                        <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>{order.name}</span>
                         <span className="font-mono ml-2" style={{ fontSize: "0.75rem", color: "#6B7280" }}>{order.guideline}</span>
                       </div>
                       <span className="font-mono tracking-[0.1em] uppercase" style={{ fontSize: "0.75rem", color: "#059669" }}>{order.status}</span>
@@ -296,20 +296,20 @@ const Level1Section = () => {
 
               {step >= 4 && (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                  className="border py-4 px-4 text-center" style={{ borderColor: "#059669", background: "#F0FDF4" }}>
+                  className="border py-4 px-4 text-center" style={{ borderColor: "#059669", background: "#0F2419" }}>
                   <div className="font-mono tracking-[0.2em] uppercase mb-3" style={{ color: "#6B7280", fontSize: "0.75rem" }}>Same visit · Same day</div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Detection</span>
-                      <span className="font-mono" style={{ color: "#111827", fontSize: "1rem" }}>Caught early — Stage IA</span>
+                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Detection</span>
+                      <span className="font-mono" style={{ color: "#F3F4F6", fontSize: "1rem" }}>Caught early — Stage IA</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Screening cost</span>
-                      <span className="font-mono" style={{ color: "#111827", fontSize: "1rem" }}>$4,200</span>
+                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Screening cost</span>
+                      <span className="font-mono" style={{ color: "#F3F4F6", fontSize: "1rem" }}>$4,200</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#374151" }}>Survival rate</span>
-                      <span className="font-mono" style={{ color: "#111827", fontSize: "1rem" }}>Significantly improved</span>
+                      <span className="font-mono" style={{ fontSize: "0.875rem", color: "#D1D5DB" }}>Survival rate</span>
+                      <span className="font-mono" style={{ color: "#F3F4F6", fontSize: "1rem" }}>Significantly improved</span>
                     </div>
                   </div>
                 </motion.div>
@@ -322,7 +322,7 @@ const Level1Section = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 text-center">
             <button onClick={() => setStep(0)}
               className="font-mono tracking-[0.15em] uppercase border px-6 py-2 transition-colors duration-300 hover:bg-[#111827] hover:text-white hover:border-[#111827]"
-              style={{ fontSize: "1rem", color: "#6B7280", borderColor: "#E5E7EB" }}>
+              style={{ fontSize: "1rem", color: "#6B7280", borderColor: "#2A3548" }}>
               Replay
             </button>
           </motion.div>

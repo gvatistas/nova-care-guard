@@ -85,14 +85,14 @@ const PipelineSection = () => {
   const current = stages[currentIdx]!;
 
   return (
-    <section id="pipeline" ref={ref} className="relative py-24 md:py-32" style={{ background: "#FFFFFF" }}>
+    <section id="pipeline" ref={ref} className="relative py-24 md:py-32" style={{ background: "#1A2536" }}>
       <div className="absolute inset-0 pointer-events-none z-0"
         style={{ backgroundImage: `linear-gradient(rgba(107,114,128,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(107,114,128,0.07) 1px, transparent 1px)`, backgroundSize: "35px 35px" }} />
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 mb-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }} className="lg:col-span-7">
-            <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#111827" }}>
+            <h2 className="font-normal text-3xl md:text-4xl" style={{ letterSpacing: "-0.03em", color: "#F3F4F6" }}>
               How it works.
             </h2>
           </motion.div>
@@ -114,7 +114,7 @@ const PipelineSection = () => {
 
         {/* Timeline */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.3 }} className="relative mb-8 mt-6">
-          <div className="h-px w-full" style={{ backgroundColor: "#E5E7EB" }} />
+          <div className="h-px w-full" style={{ backgroundColor: "#2A3548" }} />
           <motion.div className="absolute top-0 left-0 h-px" style={{ backgroundColor: "#111827" }}
             animate={{ width: `${((currentIdx + 1) / 5) * 100}%` }} transition={{ duration: 0.6 }} />
           <div className="absolute top-0 left-0 w-full flex justify-between" style={{ transform: "translateY(-50%)" }}>
@@ -144,8 +144,8 @@ const PipelineSection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.4, duration: 0.6 }}
           className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-0 border overflow-hidden"
-          style={{ borderColor: "#E5E7EB", background: "#FFFFFF" }}>
-          <div className="relative p-8 md:p-12 flex items-center justify-center border-b md:border-b-0 md:border-r" style={{ minHeight: "320px", borderColor: "#E5E7EB" }}>
+          style={{ borderColor: "#2A3548", background: "#1A2536" }}>
+          <div className="relative p-8 md:p-12 flex items-center justify-center border-b md:border-b-0 md:border-r" style={{ minHeight: "320px", borderColor: "#2A3548" }}>
             <div className="w-full max-w-[280px] aspect-square relative">
               {stages.map((_, i) => (
                 <div key={i} className="absolute inset-0 transition-opacity duration-500" style={{ opacity: i === currentIdx ? 1 : 0 }}>
@@ -159,13 +159,13 @@ const PipelineSection = () => {
           <div className="p-8 md:p-12 pt-12 md:pt-16 flex flex-col justify-center">
             <motion.div key={currentIdx} initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
               <div className="flex items-center gap-3 mb-2">
-                <span className="w-8 h-8 flex items-center justify-center border rotate-45" style={{ borderColor: "#374151" }}>
-                  <span className="-rotate-45 text-sm" style={{ color: "#111827" }}>{current.num}</span>
+                <span className="w-8 h-8 flex items-center justify-center border rotate-45" style={{ borderColor: "#4A5568" }}>
+                  <span className="-rotate-45 text-sm" style={{ color: "#F3F4F6" }}>{current.num}</span>
                 </span>
                 <span className="text-[12px] font-medium uppercase" style={{ letterSpacing: "0.05em", color: "#6B7280" }}>{current.short}</span>
               </div>
-              <h3 className="font-semibold text-xl mb-4" style={{ letterSpacing: "-0.02em", color: "#111827" }}>{current.name}</h3>
-              <p className="text-base mb-5" style={{ lineHeight: 1.7, letterSpacing: "-0.01em", color: "#374151" }}>{current.desc}</p>
+              <h3 className="font-semibold text-xl mb-4" style={{ letterSpacing: "-0.02em", color: "#F3F4F6" }}>{current.name}</h3>
+              <p className="text-base mb-5" style={{ lineHeight: 1.7, letterSpacing: "-0.01em", color: "#D1D5DB" }}>{current.desc}</p>
               
               <div className="flex items-center gap-2 mt-6">
                 {stages.map((_, i) => (
@@ -181,13 +181,13 @@ const PipelineSection = () => {
 
         {/* Compliance bar */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}
-          className="mt-8 grid grid-cols-3 gap-px" style={{ backgroundColor: "#E5E7EB" }}>
+          className="mt-8 grid grid-cols-3 gap-px" style={{ backgroundColor: "#2A3548" }}>
           {[
             { name: "HIPAA", status: "Compliant", color: "#059669" },
             { name: "FHIR R4", status: "Native", color: "#059669" },
             { name: "HL7 CDS Hooks", status: "Supported", color: "#059669" },
           ].map((c) => (
-            <div key={c.name} className="p-4 text-center" style={{ background: "#F3F4F6" }}>
+            <div key={c.name} className="p-4 text-center" style={{ background: "#141d2e" }}>
               <span className="text-[11px] font-medium uppercase block mb-1" style={{ letterSpacing: "0.1em", color: "#6B7280" }}>{c.name}</span>
               <span className="text-[13px] font-medium" style={{ color: c.color, letterSpacing: "0.05em" }}>{c.status}</span>
             </div>
