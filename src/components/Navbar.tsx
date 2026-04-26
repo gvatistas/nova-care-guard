@@ -4,54 +4,64 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
         background: scrolled
-          ? "linear-gradient(180deg, rgba(28,28,28,0.75) 0%, rgba(28,28,28,0.45) 70%, transparent 100%)"
-          : "linear-gradient(180deg, rgba(28,28,28,0.4) 0%, rgba(28,28,28,0.15) 60%, transparent 100%)",
-        backdropFilter: scrolled ? "blur(20px) saturate(1.4)" : "blur(12px) saturate(1.2)",
-        WebkitBackdropFilter: scrolled ? "blur(20px) saturate(1.4)" : "blur(12px) saturate(1.2)",
+          ? "linear-gradient(180deg, hsla(var(--certa-ink) / 0.92) 0%, hsla(var(--certa-ink) / 0.7) 70%, transparent 100%)"
+          : "linear-gradient(180deg, hsla(var(--certa-ink) / 0.55) 0%, hsla(var(--certa-ink) / 0.2) 60%, transparent 100%)",
+        backdropFilter: scrolled ? "blur(14px)" : "blur(8px)",
+        WebkitBackdropFilter: scrolled ? "blur(14px)" : "blur(8px)",
       }}
     >
-      {/* Subtle bottom edge line */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-700"
+        className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500"
         style={{
-          background: "linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 70%, transparent 95%)",
+          background:
+            "linear-gradient(90deg, transparent 5%, hsla(var(--certa-bone) / 0.18) 50%, transparent 95%)",
           opacity: scrolled ? 1 : 0,
         }}
       />
-      <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-3">
-          <img src="/certa-mark.png" alt="Certa" className="w-9 h-9" />
-          <span className="text-[26px] font-normal lowercase" style={{ letterSpacing: "-0.02em", color: "#FFFFFF", fontFamily: "'JetBrains Mono', monospace" }}>certa</span>
+      <div className="mx-auto max-w-content px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
+        <a href="#top" className="flex items-center gap-3 group">
+          <span className="w-2 h-2 rotate-45 bg-bone group-hover:bg-signal-blue transition-colors" />
+          <span
+            className="text-bone text-mono-eyebrow"
+            style={{ fontSize: "0.95rem", letterSpacing: "0.22em" }}
+          >
+            CERTA
+          </span>
+          <span className="hidden md:inline-block h-3 w-px bg-bone/20" />
+          <span className="hidden md:inline text-mono-eyebrow text-bone/45">DOSSIER 01</span>
         </a>
-        <div className="flex items-center gap-6 md:gap-10">
-          <a href="#pipeline" className="hidden md:block text-[13px] font-medium uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.05em" }}>
-            Architecture
-          </a>
-          <a href="#project-alpha" className="hidden md:block text-[13px] font-medium uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.05em" }}>
-            Project Alpha
-          </a>
+
+        <div className="flex items-center gap-2 md:gap-3">
+          {[
+            { href: "#problem", label: "Problem" },
+            { href: "#how-it-works", label: "Architecture" },
+            { href: "#customers", label: "Customers" },
+            { href: "#guidebench", label: "GuideBench" },
+            { href: "#pricing", label: "Pricing" },
+          ].map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="hidden md:inline-flex items-center px-3 py-2 text-mono-eyebrow text-bone/55 hover:text-bone transition-colors"
+            >
+              {l.label}
+            </a>
+          ))}
           <a
             href="#contact"
-            className="text-[13px] font-medium uppercase px-6 py-2.5 transition-all duration-500 backdrop-blur-md rounded-sm"
-            style={{
-              letterSpacing: "0.05em",
-              color: "rgba(255,255,255,0.85)",
-              background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-              border: "1px solid rgba(255,255,255,0.1)",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.04)",
-            }}
+            className="ml-2 inline-flex items-center gap-2 px-4 md:px-5 py-2.5 bg-bone text-ink text-mono-eyebrow hover:bg-bone/90 transition-colors"
           >
-            Get Started
+            TRY THE API →
           </a>
         </div>
       </div>
