@@ -1,147 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,200;0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,200;0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap');
-
 @layer base {
   :root {
-    /* Certa — Palantir-inspired deep navy */
-    --background: 218 35% 12%;
-    --foreground: 220 14% 96%;
+    /* ─── Certa Surface (DARK-BASE override of spec) ─── */
+    --certa-ink: 224 24% 14%;        /* #1A1F2C  primary dark anchor */
+    --certa-carbon: 220 43% 8%;      /* #0B1220  inset / deeper card */
+    --certa-obsidian: 222 30% 11%;   /* #131A26  alternation surface */
+    --certa-bone: 213 11% 88%;       /* #DDE1E6  primary text on dark */
+    --certa-cloud: 220 14% 96%;      /* #F3F4F6  pure light, used sparingly for white insets only */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 26% 14%;
+    /* ─── Ink (text on dark) ─── */
+    --certa-fg: 213 11% 92%;         /* #E5E7EB */
+    --certa-graphite: 218 11% 70%;   /* #A8AEB8 secondary */
+    --certa-muted: 220 9% 55%;       /* #818892 captions / mono labels */
+    --certa-rule: 220 13% 22%;       /* #2F3645 borders on dark */
+    --certa-rule-strong: 218 14% 32%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 26% 14%;
+    /* ─── Signals (earned by data, never decoration) ─── */
+    --signal-green: 158 82% 39%;     /* #059669 */
+    --signal-amber: 32 89% 38%;      /* #B45309 */
+    --signal-red: 0 73% 41%;         /* #B91C1C */
+    --signal-blue: 217 91% 60%;      /* #2563EB → brighter on dark */
 
-    --primary: 220 26% 14%;
-    --primary-foreground: 0 0% 100%;
+    /* ─── Segment accents ─── */
+    --seg-purple: 262 83% 58%;       /* #7C3AED */
+    --seg-blue: 217 91% 60%;         /* #2563EB */
+    --seg-cyan: 188 91% 37%;         /* #0891B2 */
+    --seg-amber: 32 95% 44%;         /* #D97706 */
+    --seg-brown: 25 75% 31%;         /* #92400E */
+    --seg-slate: 215 14% 34%;        /* #4B5563 */
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 26% 14%;
-
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-
-    --accent: 220 26% 14%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 347 77% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 220 26% 14%;
-
+    /* ─── shadcn token aliases ─── */
+    --background: var(--certa-ink);
+    --foreground: var(--certa-fg);
+    --card: var(--certa-carbon);
+    --card-foreground: var(--certa-fg);
+    --popover: var(--certa-carbon);
+    --popover-foreground: var(--certa-fg);
+    --primary: var(--certa-bone);
+    --primary-foreground: var(--certa-ink);
+    --secondary: var(--certa-obsidian);
+    --secondary-foreground: var(--certa-bone);
+    --muted: var(--certa-obsidian);
+    --muted-foreground: var(--certa-muted);
+    --accent: var(--certa-obsidian);
+    --accent-foreground: var(--certa-bone);
+    --destructive: var(--signal-red);
+    --destructive-foreground: var(--certa-bone);
+    --border: var(--certa-rule);
+    --input: var(--certa-rule);
+    --ring: var(--certa-graphite);
     --radius: 0rem;
 
-    --black: 220 26% 14%;
-    --gray-950: 220 26% 14%;
-    --gray-900: 220 26% 14%;
-    --gray-800: 217 19% 27%;
+    /* legacy gray ramp used in older components */
+    --gray-950: var(--certa-carbon);
+    --gray-900: var(--certa-ink);
+    --gray-800: 217 19% 22%;
     --gray-700: 215 14% 34%;
-    --gray-600: 220 9% 46%;
-    --gray-500: 220 9% 46%;
-    --gray-400: 218 11% 65%;
-    --gray-300: 220 13% 91%;
-    --gray-200: 220 14% 96%;
+    --gray-600: var(--certa-muted);
+    --gray-500: var(--certa-muted);
+    --gray-400: var(--certa-graphite);
+    --gray-300: var(--certa-rule-strong);
+    --gray-200: var(--certa-rule);
     --white: 0 0% 100%;
+    --black: var(--certa-carbon);
+    --emerald: var(--signal-green);
+    --amber: var(--signal-amber);
+    --coral: var(--signal-red);
+    --teal: 188 91% 37%;
+    --blue: var(--signal-blue);
+    --warm: var(--signal-amber);
 
-    --emerald: 160 84% 39%;
-    --amber: 38 92% 50%;
-    --coral: 347 77% 50%;
+    --sidebar-background: var(--certa-carbon);
+    --sidebar-foreground: var(--certa-bone);
+    --sidebar-primary: var(--certa-bone);
+    --sidebar-primary-foreground: var(--certa-ink);
+    --sidebar-accent: var(--certa-obsidian);
+    --sidebar-accent-foreground: var(--certa-bone);
+    --sidebar-border: var(--certa-rule);
+    --sidebar-ring: var(--certa-graphite);
 
-    --sidebar-background: 220 26% 14%;
-    --sidebar-foreground: 220 14% 96%;
-    --sidebar-primary: 220 26% 14%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 20%;
-    --sidebar-accent-foreground: 220 14% 96%;
-    --sidebar-border: 217 19% 27%;
-    --sidebar-ring: 220 26% 14%;
+    /* ─── Motion (cinematic — 30–50% slower than typical web motion) ─── */
+    --dur-fast: 220ms;
+    --dur-base: 440ms;
+    --dur-slow: 900ms;
+    --dur-canvas: 40s;
+    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-}
 
-@layer base {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
   * {
     @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1.8;
-    letter-spacing: 0.01em;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', -apple-system, "Segoe UI", system-ui, sans-serif;
     font-weight: 400;
-    letter-spacing: -0.02em;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.005em;
+    font-feature-settings: "ss01", "cv11", "tnum";
+  }
+
+  *:focus-visible {
+    outline: 2px solid hsl(var(--certa-graphite));
+    outline-offset: 2px;
   }
 }
 
-/* === Geometric textures === */
-
-.texture-crosshatch {
-  background-image:
-    linear-gradient(30deg, rgba(107,114,128,0.015) 1px, transparent 1px),
-    linear-gradient(150deg, rgba(107,114,128,0.015) 1px, transparent 1px),
-    linear-gradient(-30deg, rgba(107,114,128,0.01) 1px, transparent 1px);
-  background-size: 60px 60px, 60px 60px, 80px 80px;
+@layer utilities {
+  /* ─── Type scale per spec §2.3 ─── */
+  .text-display {
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 300;
+  }
+  .text-h1 {
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    font-weight: 400;
+  }
+  .text-h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+  .text-h3 {
+    font-size: 1.375rem;
+    line-height: 1.36;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+  }
+  .text-body-lg {
+    font-size: 1.125rem;
+    line-height: 1.66;
+    font-weight: 400;
+  }
+  .text-body {
+    font-size: 1rem;
+    line-height: 1.75;
+    font-weight: 400;
+  }
+  .text-body-sm {
+    font-size: 0.875rem;
+    line-height: 1.57;
+  }
+  .text-mono-eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.6875rem;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .text-mono-data {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.875rem;
+    line-height: 1.57;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .text-mono-code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .text-serif {
+    font-family: 'Newsreader', 'Times New Roman', serif;
+    font-weight: 300;
+    letter-spacing: -0.015em;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .font-serif {
+    font-family: 'Newsreader', 'Times New Roman', serif;
+  }
 }
 
-.texture-diamonds {
-  background-image:
-    linear-gradient(45deg, rgba(107,114,128,0.02) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(107,114,128,0.02) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(107,114,128,0.02) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(107,114,128,0.02) 75%);
-  background-size: 40px 40px;
-  background-position: 0 0, 0 20px, 20px -20px, -20px 0;
+/* ─── Paper grain (4% opacity dossier texture) ─── */
+.paper-grain {
+  position: relative;
 }
-
-.texture-facets {
-  background-image:
-    linear-gradient(60deg, transparent 48%, rgba(107,114,128,0.018) 48%, rgba(107,114,128,0.018) 52%, transparent 52%),
-    linear-gradient(-60deg, transparent 48%, rgba(107,114,128,0.018) 48%, rgba(107,114,128,0.018) 52%, transparent 52%);
-  background-size: 80px 140px;
-}
-
-.texture-angular {
-  background-image:
-    linear-gradient(135deg, rgba(107,114,128,0.02) 1px, transparent 1px),
-    linear-gradient(-135deg, rgba(107,114,128,0.015) 1px, transparent 1px);
-  background-size: 100px 100px;
-}
-
-.texture-noise::before {
+.paper-grain::after {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.4;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
   pointer-events: none;
-  z-index: 0;
+  mix-blend-mode: overlay;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  z-index: 1;
 }
 
-/* 3D tilt panel */
-.panel-3d {
-  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+/* ─── Section divider — 1px rule with rotated-square pip ─── */
+.divider-rule {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--certa-rule)) 22%, hsl(var(--certa-rule-strong)) 50%, hsl(var(--certa-rule)) 78%, transparent);
+  margin: 0;
 }
-.panel-3d:hover {
-  transform: perspective(1000px) rotateX(-1deg) rotateY(1deg) translateY(-2px);
-  box-shadow: 0 20px 60px -20px rgba(107,114,128,0.08), 0 0 0 1px rgba(107,114,128,0.1);
+.divider-rule::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  background: hsl(var(--certa-graphite));
+  transform: translateX(-50%) rotate(45deg);
+  opacity: 0.5;
 }
-
-/* Geometric section divider */
+.divider-geo {
+  /* legacy alias for older sections */
+  composes: divider-rule;
+}
 .divider-geo {
   position: relative;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(229,231,235,0.5) 20%, rgba(229,231,235,0.8) 50%, rgba(229,231,235,0.5) 80%, transparent);
+  background: linear-gradient(90deg, transparent, hsl(var(--certa-rule)) 22%, hsl(var(--certa-rule-strong)) 50%, hsl(var(--certa-rule)) 78%, transparent);
 }
 .divider-geo::before {
   content: '';
@@ -150,29 +252,67 @@
   top: -3px;
   width: 7px;
   height: 7px;
-  background: hsl(var(--foreground));
+  background: hsl(var(--certa-graphite));
   transform: translateX(-50%) rotate(45deg);
-  opacity: 0.25;
+  opacity: 0.5;
 }
 
-/* Scrollbar — minimal */
-::-webkit-scrollbar {
-  width: 2px;
+/* ─── Crosshatch grid for §5 How It Works ─── */
+.texture-crosshatch {
+  background-image:
+    linear-gradient(0deg, hsla(var(--certa-rule) / 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, hsla(var(--certa-rule) / 0.4) 1px, transparent 1px);
+  background-size: 35px 35px;
+  background-position: -1px -1px;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+.texture-diamonds {
+  background-image:
+    linear-gradient(45deg, hsla(var(--certa-rule) / 0.25) 25%, transparent 25%),
+    linear-gradient(-45deg, hsla(var(--certa-rule) / 0.25) 25%, transparent 25%);
+  background-size: 40px 40px;
 }
+.texture-facets {
+  background-image:
+    linear-gradient(60deg, transparent 48%, hsla(var(--certa-rule) / 0.2) 48%, hsla(var(--certa-rule) / 0.2) 52%, transparent 52%),
+    linear-gradient(-60deg, transparent 48%, hsla(var(--certa-rule) / 0.2) 48%, hsla(var(--certa-rule) / 0.2) 52%, transparent 52%);
+  background-size: 80px 140px;
+}
+.texture-angular {
+  background-image:
+    linear-gradient(135deg, hsla(var(--certa-rule) / 0.2) 1px, transparent 1px),
+    linear-gradient(-135deg, hsla(var(--certa-rule) / 0.2) 1px, transparent 1px);
+  background-size: 100px 100px;
+}
+
+/* ─── Animations ─── */
+@keyframes critPulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.18; }
+}
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes scanLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+@keyframes packetFlow {
+  0% { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
+  background: hsl(var(--certa-rule-strong));
+  border-radius: 0;
 }
 
-/* Selection */
 ::selection {
-  background: rgba(17,24,39,0.15);
-  color: #111827;
-}
-
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
+  background: hsla(var(--certa-bone) / 0.18);
+  color: hsl(var(--certa-bone));
 }
