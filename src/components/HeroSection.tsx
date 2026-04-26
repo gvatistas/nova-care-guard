@@ -385,93 +385,116 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen overflow-hidden" style={{ background: "#141d2e" }}>
+    <section className="relative min-h-screen overflow-hidden" style={{ background: "#141d2e" }}>
       <div ref={mountRef} className="absolute inset-0 z-0" />
 
+      {/* Frame chrome — top + bottom mono strips, like the Certa cover */}
+      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between border-b border-bone/10 px-6 md:px-10 pt-20 md:pt-24 pb-3 pointer-events-none">
+        <span className="text-mono-eyebrow text-bone/55">CERTA HEALTH ／ FORMERLY PCARE+</span>
+        <span className="text-mono-eyebrow text-bone/55 hidden md:inline">PALANTIR STARTUP FELLOW ／ COHORT 002</span>
+      </div>
+
+      {/* Centered radial glow behind the headline */}
       <div
         className="absolute inset-0 z-[5] pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 50% 45% at 50% 48%, rgba(229,231,235,0.88) 0%, rgba(229,231,235,0.55) 40%, rgba(229,231,235,0.2) 70%, transparent 100%)",
+            "radial-gradient(ellipse 55% 50% at 50% 50%, rgba(20,29,46,0.85) 0%, rgba(20,29,46,0.55) 40%, rgba(20,29,46,0.15) 70%, transparent 100%)",
         }}
       />
 
-      <div className="relative z-10 flex h-full w-full items-center justify-center">
-        <div className="max-w-3xl flex flex-col items-center text-center px-6">
+      <div className="relative z-10 flex min-h-screen w-full items-center justify-center pt-32 pb-32">
+        <div className="max-w-4xl flex flex-col items-center text-center px-6">
+          {/* Eyebrow with crosshair pip */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.15 }}
+            className="flex items-center gap-3 mb-8"
+          >
+            <span className="w-1.5 h-1.5 rotate-45 bg-bone/60" />
+            <span className="text-mono-eyebrow text-bone/65">DOSSIER Nº 01 ／ THE OPERATIONAL LAYER</span>
+            <span className="w-1.5 h-1.5 rotate-45 bg-bone/60" />
+          </motion.div>
+
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.3 }}
-            className="font-light"
+            transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="font-serif text-bone"
             style={{
-              fontSize: "clamp(2.5rem, 5vw, 4rem)",
-              lineHeight: 1.08,
-              letterSpacing: "-0.03em",
-              color: "#F3F4F6",
+              fontSize: "clamp(2.6rem, 5.6vw, 4.4rem)",
+              lineHeight: 1.06,
+              letterSpacing: "-0.025em",
+              fontWeight: 300,
             }}
           >
-            Unlocking proactive healthcare for all.
+            The operational layer for AI<br className="hidden md:inline" /> in healthcare.
           </motion.h1>
 
+          {/* Hairline divider with rotated square pip */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="mt-8 text-lg"
-            style={{
-              maxWidth: 1280,
-              lineHeight: 1.7,
-              letterSpacing: "-0.01em",
-              color: "#D1D5DB",
-            }}
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ duration: 1, delay: 0.6 }}
+            className="relative mt-8 mb-7 w-40 h-px"
+            style={{ background: "rgba(221,225,230,0.25)" }}
           >
-            <p>
-              Medient compiles all clinical guidelines into deterministic,
-              verified decision infrastructure; bridging AI and
-              evidence-based care across all data sources, EHRs and
-              patient encounters.
-            </p>
+            <span
+              className="absolute left-1/2 -translate-x-1/2 -top-[3px] w-1.5 h-1.5 rotate-45"
+              style={{ background: "rgba(221,225,230,0.55)" }}
+            />
           </motion.div>
 
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="text-bone/85 max-w-2xl mx-auto"
+            style={{ fontSize: "clamp(1rem, 1.2vw, 1.125rem)", lineHeight: 1.65 }}
+          >
+            Certa makes probabilistic models behave deterministically inside the clinic.
+            Published guidelines compile into verified, FHIR-native decision artifacts that any
+            agent — Claude, ChatGPT, your in-house assistant — calls as a tool. No inference at runtime.
+            No hallucination. Every recommendation traceable to its source page and paragraph.
+          </motion.p>
+
+          {/* CTA pair */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="mt-12 flex flex-row gap-6"
+            transition={{ duration: 0.9, delay: 1 }}
+            className="mt-12 flex flex-col sm:flex-row gap-3"
           >
             <a
               href="#contact"
-              className="group relative text-[13px] font-semibold uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden backdrop-blur-lg rounded-sm"
-              style={{
-                letterSpacing: "0.08em",
-                color: "rgba(255,255,255,0.85)",
-                background: "linear-gradient(135deg, rgba(55,65,81,0.55), rgba(55,65,81,0.35))",
-                border: "1px solid rgba(255,255,255,0.08)",
-                boxShadow: "0 4px 30px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)",
-              }}
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-mono-eyebrow bg-bone text-ink hover:bg-bone/90 transition-colors"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "rgba(255,255,255,0.15)" }} />
-              <span className="relative z-10">Request Demo</span>
+              TRY THE API →
             </a>
             <a
-              href="#pipeline"
-              className="group relative text-[13px] font-medium uppercase px-8 py-3.5 transition-all duration-500 overflow-hidden backdrop-blur-lg rounded-sm"
-              style={{
-                letterSpacing: "0.08em",
-                color: "rgba(255,255,255,0.85)",
-                background: "linear-gradient(135deg, rgba(55,65,81,0.55), rgba(55,65,81,0.35))",
-                border: "1px solid rgba(255,255,255,0.08)",
-                boxShadow: "0 4px 30px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)",
-              }}
+              href="#how-it-works"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-mono-eyebrow border border-bone/30 text-bone/85 hover:border-bone/60 hover:text-bone transition-colors"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "rgba(255,255,255,0.15)" }} />
-              <span className="relative z-10">Read White Paper</span>
+              READ THE WHITEPAPER
             </a>
           </motion.div>
         </div>
       </div>
+
+      {/* Trust strip — bottom rule */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.4 }}
+        className="absolute bottom-0 left-0 right-0 z-20 border-t border-bone/10 px-6 md:px-10 py-4 flex flex-wrap items-center justify-between gap-x-8 gap-y-2"
+      >
+        <span className="text-mono-eyebrow text-bone/55">PALANTIR STARTUP FELLOW</span>
+        <span className="text-mono-eyebrow text-bone/55 hidden sm:inline">SEED ／ $3M / $15M</span>
+        <span className="text-mono-eyebrow text-bone/55 hidden md:inline">SOC 2 TYPE II ／ IN PROGRESS</span>
+        <span className="text-mono-eyebrow text-bone/55 hidden lg:inline">FHIR R4 ／ MCP ／ CDS HOOKS</span>
+        <span className="text-mono-eyebrow text-bone/55">CERTAHEALTH.AI</span>
+      </motion.div>
     </section>
   );
 };
