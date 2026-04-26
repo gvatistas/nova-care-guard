@@ -8,6 +8,7 @@ import SegmentsSection from "@/components/SegmentsSection";
 import ProjectAlphaSection from "@/components/ProjectAlphaSection";
 import GuideBenchSection from "@/components/GuideBenchSection";
 import CTASection from "@/components/CTASection";
+import ArchitectureExhibit from "@/components/ArchitectureExhibit";
 
 const GeoDivider = () => <div className="divider-geo mx-6 md:mx-8" />;
 
