@@ -346,7 +346,7 @@ const PatientNarrativeSection = () => {
         {/* ── TWO LANES ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mt-0">
 
-          {/* ── LEFT: Without Medient ── */}
+          {/* ── LEFT: Without Certa ── */}
           <motion.div
             className="flex flex-col items-center flex-1"
             animate={{
@@ -363,7 +363,7 @@ const PatientNarrativeSection = () => {
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center"
               style={{ color: RED, borderColor: `${RED}25`, background: "#2A1519" }}
             >
-              ✕ Without Medient
+              ✕ Without Certa
             </motion.div>
 
             <div className="w-full max-w-sm flex flex-col items-center gap-0">
@@ -384,7 +384,7 @@ const PatientNarrativeSection = () => {
             </motion.div>
           </motion.div>
 
-          {/* ── RIGHT: With Medient ── */}
+          {/* ── RIGHT: With Certa ── */}
           <motion.div
             className="flex flex-col items-center relative flex-1"
             animate={{
@@ -403,7 +403,7 @@ const PatientNarrativeSection = () => {
               className="text-[13px] uppercase tracking-[0.15em] mb-6 font-semibold px-5 py-2.5 border self-center relative z-10"
               style={{ color: "#2563EB", borderColor: "rgba(37,99,235,0.15)", background: "#0F1D2E" }}
             >
-              ✓ With Medient
+              ✓ With Certa
             </motion.div>
 
             <div className="w-full max-w-sm flex flex-col items-center gap-0 relative z-10">
