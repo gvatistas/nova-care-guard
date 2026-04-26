@@ -385,7 +385,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen overflow-hidden" style={{ background: "#E5E7EB" }}>
+    <section className="relative h-screen overflow-hidden" style={{ background: "#141d2e" }}>
       <div ref={mountRef} className="absolute inset-0 z-0" />
 
       <div
