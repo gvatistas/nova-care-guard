@@ -162,11 +162,17 @@ const Index = () => {
         <Navbar />
         <HeroSection />
         <ScrollReveal>
-          <PosterBlock
+          <ExhibitBlock
             src="/certa-comparison.png"
-            eyebrow="Certa Explained · Issue N° 01"
-            title="The cost of probabilistic medicine — and the case for compiled certainty."
-            caption="Without Certa // tangled, hallucinated outputs.   With Certa // deterministic, source-grounded artifacts."
+            figure="Fig. 01"
+            classification="Internal // Technical Brief 001"
+            title="Probabilistic medicine has no audit trail. Certa compiles certainty instead."
+            thesis="Generative models infer plausible-sounding clinical outputs across an unbounded probability space — without provenance, without reproducibility, without recourse. Certa replaces inference with compilation: every output traces deterministically to a versioned node in a single clinical ontology."
+            spec={[
+              { k: "Problem", v: "Unbounded inference, no source attribution, non-reproducible outputs across runs and clinicians." },
+              { k: "Method", v: "A single source-of-truth ontology compiled from primary literature, guidelines, and institutional protocol." },
+              { k: "Guarantee", v: "Every artifact is deterministic, citable to a node ID, and reproducible across time, sites, and reviewers." },
+            ]}
           />
         </ScrollReveal>
         <GeoDivider />
