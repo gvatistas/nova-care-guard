@@ -73,6 +73,14 @@ const Index = () => {
       <div className="relative z-10">
         <Navbar />
         <HeroSection />
+        <ScrollReveal>
+          <PosterBlock
+            src="/certa-comparison.png"
+            eyebrow="Certa Explained · Issue N° 01"
+            title="The cost of probabilistic medicine — and the case for compiled certainty."
+            caption="Without Certa // tangled, hallucinated outputs.   With Certa // deterministic, source-grounded artifacts."
+          />
+        </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
           <PatientNarrativeSection />
@@ -84,6 +92,15 @@ const Index = () => {
         <GeoDivider />
         <ScrollReveal>
           <ProjectAlphaSection />
+        </ScrollReveal>
+        <GeoDivider />
+        <ScrollReveal>
+          <PosterBlock
+            src="/certa-hero-mesh.png"
+            eyebrow="Architecture · The Operational Layer"
+            title="One ontology. Every data source. Every clinical surface."
+            caption="From source-of-truth guidelines through the Certa ontology to AI-powered applications at the point of care."
+          />
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
