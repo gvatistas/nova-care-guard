@@ -30,7 +30,7 @@ const Navbar = () => {
       />
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
-          <img src="/certa-mark.svg" alt="Certa" className="w-8 h-8" style={{ color: "#FFFFFF" }} />
+          <img src="/certa-mark.svg" alt="Certa" className="w-8 h-8" />
           <span className="text-[26px] font-normal lowercase" style={{ letterSpacing: "-0.02em", color: "#FFFFFF", fontFamily: "'JetBrains Mono', monospace" }}>certa</span>
         </a>
         <div className="flex items-center gap-6 md:gap-10">
