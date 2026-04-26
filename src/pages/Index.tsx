@@ -189,11 +189,17 @@ const Index = () => {
         </ScrollReveal>
         <GeoDivider />
         <ScrollReveal>
-          <PosterBlock
+          <ExhibitBlock
             src="/certa-hero-mesh.png"
-            eyebrow="Architecture · The Operational Layer"
+            figure="Fig. 02"
+            classification="Internal // Architecture Brief"
             title="One ontology. Every data source. Every clinical surface."
-            caption="From source-of-truth guidelines through the Certa ontology to AI-powered applications at the point of care."
+            thesis="Certa is the operational layer between fragmented healthcare data and the decisions made on top of it — a single, versioned ontology that compiles guidelines, evidence, and institutional protocol into the artifacts clinicians actually use."
+            spec={[
+              { k: "Inputs", v: "Primary literature, society guidelines, payer policy, institutional protocol, EHR signal." },
+              { k: "Core", v: "A versioned, governed clinical ontology. One source of truth. One graph. One audit trail." },
+              { k: "Surfaces", v: "Point-of-care decision support, prior-auth, trial matching, quality reporting — all source-grounded." },
+            ]}
           />
         </ScrollReveal>
         <GeoDivider />
