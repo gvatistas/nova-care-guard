@@ -19,7 +19,7 @@ const PricingSection = () => {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-px border border-rule" style={{ background: "hsl(var(--certa-rule))" }}>
-        {c.tiers.map((t, i) => {
+        {(c.tiers as readonly { name: string; tag: string; price: string; unit: string; blurb: string; features: readonly string[]; cta: { label: string; href: string }; accent: string; featured?: boolean }[]).map((t, i) => {
           const accentColor =
             t.accent === "blue" ? "hsl(var(--signal-blue))" : t.accent === "bone" ? "hsl(var(--certa-bone))" : "hsl(var(--certa-graphite))";
           return (
