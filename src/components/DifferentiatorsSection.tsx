@@ -87,7 +87,7 @@ const DifferentiatorsSection = () => {
           transition={{ duration: 0.4 }}
           className="border overflow-hidden" style={{ borderColor: "#2A3548", background: "#1A2536" }}>
           <div className="px-6 md:px-8 py-4 flex items-center gap-4"
-            style={{ background: "#1F2B3E", borderBottom: "1px solid #E5E7EB" }}>
+            style={{ background: "#1F2B3E", borderBottom: "1px solid #2A3548" }}>
             <span style={{ fontSize: "1.5rem", color: "#D1D5DB" }}>{diff.icon}</span>
             <h3 className="font-mono font-light" style={{ fontSize: "1.5rem", color: "#F3F4F6" }}>{diff.headline}</h3>
           </div>
