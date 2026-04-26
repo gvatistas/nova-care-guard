@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import * as THREE from "three";
 
-const BG = 0xe5e7eb;
+const BG = 0x141d2e;
 
 const HeroSection = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -385,7 +385,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen overflow-hidden" style={{ background: "#E5E7EB" }}>
+    <section className="relative h-screen overflow-hidden" style={{ background: "#141d2e" }}>
       <div ref={mountRef} className="absolute inset-0 z-0" />
 
       <div

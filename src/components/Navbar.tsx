@@ -29,8 +29,9 @@ const Navbar = () => {
         }}
       />
       <div className="max-w-[1440px] mx-auto px-8 h-16 md:h-20 flex items-center justify-between">
-        <a href="#" className="flex items-center">
-          <span className="text-[22px] font-bold" style={{ letterSpacing: "0.12em", color: "#FFFFFF" }}>MEDIENT</span>
+        <a href="#" className="flex items-center gap-3">
+          <img src="/certa-mark.svg" alt="Certa" className="w-8 h-8" />
+          <span className="text-[26px] font-normal lowercase" style={{ letterSpacing: "-0.02em", color: "#FFFFFF", fontFamily: "'JetBrains Mono', monospace" }}>certa</span>
         </a>
         <div className="flex items-center gap-6 md:gap-10">
           <a href="#pipeline" className="hidden md:block text-[13px] font-medium uppercase hover:text-white transition-colors duration-300" style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.05em" }}>
