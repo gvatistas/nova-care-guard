@@ -289,7 +289,7 @@ const PatientNarrativeSection = () => {
   }, [inView]);
 
   return (
-    <section ref={ref} className="py-16 px-6 relative overflow-hidden" style={{ background: "#141d2e" }}>
+    <section ref={ref} className="py-16 px-6 relative overflow-hidden" style={{ background: "hsl(var(--certa-ink))" }}>
       <div className="max-w-5xl mx-auto">
 
         {/* ── TOP: Jane Doe Patient Card ── */}
@@ -298,10 +298,10 @@ const PatientNarrativeSection = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="max-w-lg mx-auto border p-7 relative"
-          style={{ borderColor: "#2A3548", background: "#1A2536", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+          style={{ borderColor: "hsl(var(--certa-rule))", background: "hsl(var(--certa-carbon))", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded border flex items-center justify-center shrink-0" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
+            <div className="w-14 h-14 rounded border flex items-center justify-center shrink-0" style={{ borderColor: "hsl(var(--certa-rule))", background: "hsl(var(--certa-obsidian))" }}>
               <User size={24} color="#6B7280" strokeWidth={1.5} />
             </div>
             <div>
@@ -311,7 +311,7 @@ const PatientNarrativeSection = () => {
           </div>
           <div className="grid grid-cols-3 gap-px mt-2">
             {[{ l: "BP", v: "138/88" }, { l: "A1c", v: "6.1%" }, { l: "LDL", v: "142" }].map((x) => (
-              <div key={x.l} className="py-2.5 border text-center" style={{ borderColor: "#2A3548", background: "#1F2B3E" }}>
+              <div key={x.l} className="py-2.5 border text-center" style={{ borderColor: "hsl(var(--certa-rule))", background: "hsl(var(--certa-obsidian))" }}>
                 <p className="text-[10px] uppercase tracking-[0.1em]" style={{ color: "#6B7280" }}>{x.l}</p>
                 <p className="text-[15px] mt-0.5" style={{ color: "#F3F4F6" }}>{x.v}</p>
               </div>
