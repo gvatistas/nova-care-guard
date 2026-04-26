@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <rect x="6" y="6" width="188" height="188" rx="22" stroke="currentColor" stroke-width="8"/>
+  <g stroke="currentColor" stroke-width="8" stroke-linejoin="miter" fill="none">
+    <path d="M 100 28 L 128 56 L 128 80 L 100 80 L 72 80 L 72 56 Z"/>
+    <path d="M 172 100 L 144 128 L 120 128 L 120 100 L 120 72 L 144 72 Z"/>
+    <path d="M 100 172 L 72 144 L 72 120 L 100 120 L 128 120 L 128 144 Z"/>
+    <path d="M 28 100 L 56 72 L 80 72 L 80 100 L 80 128 L 56 128 Z"/>
+  </g>
+  <g stroke="currentColor" stroke-width="6" fill="none">
+    <path d="M 80 80 L 92 80 L 92 92 L 80 92 Z"/>
+    <path d="M 120 80 L 108 80 L 108 92 L 120 92 Z"/>
+    <path d="M 80 120 L 92 120 L 92 108 L 80 108 Z"/>
+    <path d="M 120 120 L 108 120 L 108 108 L 120 108 Z"/>
+  </g>
+  <rect x="92" y="92" width="16" height="16" fill="currentColor"/>
+  <g stroke="currentColor" stroke-width="4" fill="none" opacity="0.85">
+    <path d="M 88 44 L 112 44"/>
+    <path d="M 156 88 L 156 112"/>
+    <path d="M 88 156 L 112 156"/>
+    <path d="M 44 88 L 44 112"/>
+  </g>
+</svg>
