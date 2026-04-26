@@ -39,13 +39,13 @@ const Level1Section = () => {
                 <button onClick={() => setStep(i)}
                   className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-mono transition-all duration-500 ${
                     step >= i
-                      ? "border-[#111827] bg-[#111827]/10 text-[#111827]"
-                      : "border-[#E5E7EB] text-[#9CA3AF]"
+                      ? "border-[#FFFFFF] bg-[#1A2536]/10 text-[#F3F4F6]"
+                      : "border-[#2A3548] text-[#6B7280]"
                   }`}
                   style={{ fontSize: "0.875rem" }}>
                   {i + 1}
                 </button>
-                <span className={`font-mono tracking-[0.1em] uppercase transition-colors duration-300 ${step >= i ? "text-[#374151]" : "text-[#9CA3AF]"}`} style={{ fontSize: "0.75rem" }}>
+                <span className={`font-mono tracking-[0.1em] uppercase transition-colors duration-300 ${step >= i ? "text-[#D1D5DB]" : "text-[#6B7280]"}`} style={{ fontSize: "0.75rem" }}>
                   {label}
                 </span>
               </div>
@@ -321,7 +321,7 @@ const Level1Section = () => {
         {step >= 4 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 text-center">
             <button onClick={() => setStep(0)}
-              className="font-mono tracking-[0.15em] uppercase border px-6 py-2 transition-colors duration-300 hover:bg-[#111827] hover:text-white hover:border-[#111827]"
+              className="font-mono tracking-[0.15em] uppercase border px-6 py-2 transition-colors duration-300 hover:bg-[#1A2536] hover:text-white hover:border-[#FFFFFF]"
               style={{ fontSize: "1rem", color: "#6B7280", borderColor: "#2A3548" }}>
               Replay
             </button>
