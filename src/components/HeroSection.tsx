@@ -31,13 +31,6 @@ const HeroSection = () => {
           }}
         />
         <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, hsl(var(--certa-ink)) 0%, hsla(var(--certa-ink)/0.78) 14%, hsla(var(--certa-ink)/0.50) 38%, hsla(var(--certa-ink)/0.62) 70%, hsl(var(--certa-ink)) 100%)",
-          }}
-        />
-        <div
           className="absolute inset-0 mix-blend-multiply"
           style={{
             background:
