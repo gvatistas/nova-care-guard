@@ -164,7 +164,7 @@ export const PacketStream: React.FC<{
   color?: string;
   className?: string;
   height?: number;
-}> = ({ count = 6, color = "hsl(var(--signal-blue))", className, height = 24 }) => (
+}> = ({ count = 6, color = "hsl(var(--certa-terra-bright))", className, height = 24 }) => (
   <div className={cn("relative w-full overflow-hidden", className)} style={{ height }}>
     <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2" style={{ background: "hsl(var(--certa-rule))" }} />
     {Array.from({ length: count }).map((_, i) => (
