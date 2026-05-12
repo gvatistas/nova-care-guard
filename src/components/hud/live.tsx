@@ -34,7 +34,7 @@ export const TerminalFrame: React.FC<{
   children: React.ReactNode;
   className?: string;
   scan?: boolean;
-}> = ({ title, status = "● LIVE", statusColor = "hsl(var(--signal-green))", children, className, scan = true }) => (
+}> = ({ title, status = "● LIVE", statusColor = "hsl(var(--certa-terra-bright))", children, className, scan = true }) => (
   <div className={cn("relative border border-rule bg-carbon/80", className)}>
     {/* corner ticks */}
     {(["tl", "tr", "bl", "br"] as const).map((p) => (
@@ -87,8 +87,8 @@ export const Ticker: React.FC<{
         transition={{ duration: speed, repeat: Infinity, ease: "linear" }}
       >
         {doubled.map((it, i) => (
-          <span key={i} className="text-mono-eyebrow text-bone/55 inline-flex items-center gap-3">
-            <span className="w-1.5 h-1.5 rotate-45 bg-bone/30" />
+          <span key={i} className="text-mono-eyebrow text-bone/65 inline-flex items-center gap-3">
+            <span className="w-1.5 h-1.5 bg-terra-bright" />
             {it}
           </span>
         ))}
@@ -164,7 +164,7 @@ export const PacketStream: React.FC<{
   color?: string;
   className?: string;
   height?: number;
-}> = ({ count = 6, color = "hsl(var(--signal-blue))", className, height = 24 }) => (
+}> = ({ count = 6, color = "hsl(var(--certa-terra-bright))", className, height = 24 }) => (
   <div className={cn("relative w-full overflow-hidden", className)} style={{ height }}>
     <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2" style={{ background: "hsl(var(--certa-rule))" }} />
     {Array.from({ length: count }).map((_, i) => (

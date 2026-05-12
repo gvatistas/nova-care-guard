@@ -6,19 +6,21 @@
 
 @layer base {
   :root {
-    /* ─── Certa Surface (DARK-BASE override of spec) ─── */
-    --certa-ink: 224 24% 14%;        /* #1A1F2C  primary dark anchor */
-    --certa-carbon: 220 43% 8%;      /* #0B1220  inset / deeper card */
-    --certa-obsidian: 222 30% 11%;   /* #131A26  alternation surface */
-    --certa-bone: 213 11% 88%;       /* #DDE1E6  primary text on dark */
-    --certa-cloud: 220 14% 96%;      /* #F3F4F6  pure light, used sparingly for white insets only */
+    /* ─── Certa Surface (TACTICAL — near-pure black, Gotham/Shield AI) ─── */
+    --certa-ink: 0 0% 4%;            /* #0A0A0A  primary near-black anchor */
+    --certa-carbon: 0 0% 2%;         /* #050505  inset / deepest surface */
+    --certa-obsidian: 0 0% 7%;       /* #121212  alternation surface */
+    --certa-bone: 0 0% 92%;           /* #EBEBEB  primary text on black */
+    --certa-cloud: 0 0% 96%;          /* #F5F5F5  rare light insets */
+    --certa-terra: 18 88% 41%;        /* #C2410C  operations / ACTIVE accent */
+    --certa-terra-bright: 22 95% 53%; /* #F97316  hover / live ticks */
 
     /* ─── Ink (text on dark) ─── */
     --certa-fg: 213 11% 92%;         /* #E5E7EB */
     --certa-graphite: 218 11% 70%;   /* #A8AEB8 secondary */
     --certa-muted: 220 9% 55%;       /* #818892 captions / mono labels */
-    --certa-rule: 220 13% 22%;       /* #2F3645 borders on dark */
-    --certa-rule-strong: 218 14% 32%;
+    --certa-rule: 0 0% 18%;          /* #2E2E2E borders on black */
+    --certa-rule-strong: 0 0% 28%;   /* #474747 */
 
     /* ─── Signals (earned by data, never decoration) ─── */
     --signal-green: 158 82% 39%;     /* #059669 */

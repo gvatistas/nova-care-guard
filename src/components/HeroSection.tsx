@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import heroImg from "@/assets/hero-cinematic.jpg";
+import heroImg from "@/assets/hero-tactical.jpg";
 import { site } from "@/content/site";
 import { Ticker, BlinkingCursor } from "@/components/hud/live";
 
@@ -20,14 +20,14 @@ const HeroSection = () => {
           height={1080}
           fetchPriority="high"
           className="h-full w-full object-cover"
-          style={{ filter: "saturate(0.85) contrast(1.05)" }}
+          style={{ filter: "saturate(0.75) contrast(1.15)" }}
         />
-        {/* Two-stage scrim — readable type on top, atmospheric on bottom */}
+        {/* Two-stage scrim — tactical, near-pure black */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, hsl(var(--certa-ink)) 0%, hsla(var(--certa-ink)/0.78) 14%, hsla(var(--certa-ink)/0.50) 38%, hsla(var(--certa-ink)/0.62) 70%, hsl(var(--certa-ink)) 100%)",
+              "linear-gradient(180deg, hsl(var(--certa-ink)) 0%, hsla(var(--certa-ink)/0.85) 18%, hsla(var(--certa-ink)/0.55) 50%, hsla(var(--certa-ink)/0.78) 85%, hsl(var(--certa-ink)) 100%)",
           }}
         />
         <div
@@ -48,11 +48,14 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* ─── Top dossier strip (under navbar) ─────────────────────────── */}
+      {/* ─── Top dossier strip (under navbar + news bar) ─────────────── */}
       <div className="absolute top-0 left-0 right-0 z-20 pt-24 md:pt-28">
         <div className="mx-auto max-w-content px-6 md:px-10">
           <div className="flex items-center justify-between border-y border-bone/15 py-2.5">
-            <span className="text-mono-eyebrow text-bone/65">{c.classified.left}</span>
+            <span className="inline-flex items-center gap-2 text-mono-eyebrow text-bone/65">
+              <span className="w-1.5 h-1.5 bg-terra-bright" />
+              {c.classified.left}
+            </span>
             <span className="text-mono-eyebrow text-bone/65 hidden md:inline">{c.classified.right}</span>
           </div>
         </div>
@@ -79,17 +82,18 @@ const HeroSection = () => {
                 initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.3, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="font-serif text-bone"
+                className="text-bone uppercase"
                 style={{
-                  fontSize: "clamp(3rem, 7.4vw, 6.4rem)",
-                  lineHeight: 0.98,
-                  letterSpacing: "-0.035em",
-                  fontWeight: 300,
+                  fontSize: "clamp(2.6rem, 6.6vw, 5.6rem)",
+                  lineHeight: 0.96,
+                  letterSpacing: "-0.025em",
+                  fontWeight: 500,
                   textWrap: "balance",
                 }}
               >
+                <span className="text-bone/45 mr-3 font-mono" style={{ fontWeight: 400 }}>01—</span>
                 The operational layer<br className="hidden md:inline" />
-                <span className="italic text-bone/85"> for AI in healthcare.</span>
+                <span className="text-bone/70"> for AI in healthcare.</span>
               </motion.h1>
 
               <motion.div
@@ -116,7 +120,7 @@ const HeroSection = () => {
               >
                 <a
                   href={c.primaryCta.href}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-bone text-ink text-mono-eyebrow hover:bg-bone/90 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-terra text-bone text-mono-eyebrow border border-terra-bright/40 hover:bg-terra-bright transition-colors"
                 >
                   {c.primaryCta.label} →
                 </a>
@@ -139,7 +143,7 @@ const HeroSection = () => {
               <div className="border border-bone/20 bg-ink/70 backdrop-blur-sm">
                 <div className="flex items-center justify-between border-b border-bone/15 px-3 py-2">
                   <span className="text-mono-eyebrow text-bone/55">CERTA ／ STATUS</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-signal-green animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-terra-bright animate-pulse" />
                 </div>
                 <div className="p-3 space-y-2.5">
                   <div className="flex justify-between text-mono-eyebrow">
@@ -159,9 +163,9 @@ const HeroSection = () => {
                     <span className="text-bone tabular">14:22 UTC</span>
                   </div>
                   <div className="border-t border-bone/15 pt-2.5 mt-2.5">
-                    <div className="flex items-center gap-1.5 text-mono-eyebrow text-signal-green">
+                    <div className="flex items-center gap-1.5 text-mono-eyebrow text-terra-bright">
                       <span>$ certa.compile</span>
-                      <BlinkingCursor color="hsl(var(--signal-green))" />
+                      <BlinkingCursor color="hsl(var(--certa-terra-bright))" />
                     </div>
                   </div>
                 </div>
