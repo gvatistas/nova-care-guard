@@ -38,6 +38,8 @@ export default {
         obsidian: "hsl(var(--certa-obsidian))",
         bone: "hsl(var(--certa-bone))",
         cloud: "hsl(var(--certa-cloud))",
+        terra: "hsl(var(--certa-terra))",
+        "terra-bright": "hsl(var(--certa-terra-bright))",
 
         // Certa ink (text)
         fg: "hsl(var(--certa-fg))",

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import heroImg from "@/assets/hero-cinematic.jpg";
+import heroImg from "@/assets/hero-tactical.jpg";
 import { site } from "@/content/site";
 import { Ticker, BlinkingCursor } from "@/components/hud/live";
 
@@ -20,9 +20,16 @@ const HeroSection = () => {
           height={1080}
           fetchPriority="high"
           className="h-full w-full object-cover"
-          style={{ filter: "saturate(0.85) contrast(1.05)" }}
+          style={{ filter: "saturate(0.75) contrast(1.15)" }}
         />
-        {/* Two-stage scrim — readable type on top, atmospheric on bottom */}
+        {/* Two-stage scrim — tactical, near-pure black */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, hsl(var(--certa-ink)) 0%, hsla(var(--certa-ink)/0.85) 18%, hsla(var(--certa-ink)/0.55) 50%, hsla(var(--certa-ink)/0.78) 85%, hsl(var(--certa-ink)) 100%)",
+          }}
+        />
         <div
           className="absolute inset-0"
           style={{
