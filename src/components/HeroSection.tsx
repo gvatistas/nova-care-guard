@@ -48,11 +48,14 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* ─── Top dossier strip (under navbar) ─────────────────────────── */}
+      {/* ─── Top dossier strip (under navbar + news bar) ─────────────── */}
       <div className="absolute top-0 left-0 right-0 z-20 pt-24 md:pt-28">
         <div className="mx-auto max-w-content px-6 md:px-10">
           <div className="flex items-center justify-between border-y border-bone/15 py-2.5">
-            <span className="text-mono-eyebrow text-bone/65">{c.classified.left}</span>
+            <span className="inline-flex items-center gap-2 text-mono-eyebrow text-bone/65">
+              <span className="w-1.5 h-1.5 bg-terra-bright" />
+              {c.classified.left}
+            </span>
             <span className="text-mono-eyebrow text-bone/65 hidden md:inline">{c.classified.right}</span>
           </div>
         </div>
